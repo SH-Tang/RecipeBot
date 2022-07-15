@@ -16,14 +16,47 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Threading.Tasks;
+using Discord;
+using Discord.WebSocket;
 
 namespace WeekendBot
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private DiscordSocketClient discordClient;
+
+        public static Task Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            return new Program().MainAsync();
+        }
+
+        public async Task MainAsync()
+        {
+            discordClient = new DiscordSocketClient();
+
+            discordClient.Log += Log;
+
+            //  You can assign your bot token to a string, and pass that in to connect.
+            //  This is, however, insecure, particularly if you plan to have your code hosted in a public repository.
+            var token = "token";
+
+            // Some alternative options would be to keep your token in an Environment Variable or a standalone file.
+            // var token = Environment.GetEnvironmentVariable("NameOfYourEnvironmentVariable");
+            // var token = File.ReadAllText("token.txt");
+            // var token = JsonConvert.DeserializeObject<AConfigurationClass>(File.ReadAllText("config.json")).Token;
+
+            await discordClient.LoginAsync(TokenType.Bot, token);
+            await discordClient.StartAsync();
+
+            // Block this task until the program is closed.
+            await Task.Delay(-1);
+        }
+
+        private Task Log(LogMessage msg)
+        {
+            Console.WriteLine(msg.ToString());
+            return Task.CompletedTask;
         }
     }
 }
