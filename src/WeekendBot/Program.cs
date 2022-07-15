@@ -16,49 +16,84 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using WeekendBot.Services;
 
 namespace WeekendBot
 {
     internal class Program
     {
+        private readonly IConfiguration configuration;
         private DiscordSocketClient discordClient;
-        private IConfiguration configuration;
+
+        private Program()
+        {
+            IConfigurationBuilder builder = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("config.json");
+
+            configuration = builder.Build();
+        }
 
         public static Task Main(string[] args)
         {
             return new Program().MainAsync();
         }
 
-        public Program()
+        private async Task MainAsync()
         {
-            var builder = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("config.json");
+            using (ServiceProvider services = GetServiceProvider())
+            {
+                await ConfigureDiscordClient(services);
+                await ConfigureCommandService(services);
+                await ConfigureCommandHandlingService(services);
 
-            configuration = builder.Build();
+                // Block this task until the program is closed.
+                await Task.Delay(-1);
+            }
         }
 
-        public async Task MainAsync()
+        private async Task ConfigureDiscordClient(IServiceProvider services)
         {
-            discordClient = new DiscordSocketClient();
-            discordClient.Log += Log;
+            discordClient = services.GetRequiredService<DiscordSocketClient>();
+            discordClient.Log += LogAsync;
 
             string token = configuration["Token"];
             await discordClient.LoginAsync(TokenType.Bot, token);
             await discordClient.StartAsync();
-
-            // Block this task until the program is closed.
-            await Task.Delay(-1);
         }
 
-        private static Task Log(LogMessage msg)
+        private static async Task ConfigureCommandHandlingService(IServiceProvider services)
+        {
+            var commandHandlingService = services.GetRequiredService<CommandHandlingService>();
+            await commandHandlingService.InitializeServiceAsync();
+        }
+
+        private static async Task ConfigureCommandService(IServiceProvider services)
+        {
+            var commandService = services.GetRequiredService<CommandService>();
+            commandService.Log += LogAsync;
+
+            await Task.CompletedTask;
+        }
+
+        private static Task LogAsync(LogMessage msg)
         {
             Console.WriteLine(msg.ToString());
             return Task.CompletedTask;
+        }
+
+        private static ServiceProvider GetServiceProvider()
+        {
+            return new ServiceCollection()
+                .AddSingleton<DiscordSocketClient>()
+                .AddSingleton<CommandService>()
+                .AddSingleton<CommandHandlingService>()
+                .BuildServiceProvider();
         }
     }
 }
