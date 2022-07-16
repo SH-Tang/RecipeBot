@@ -84,6 +84,5 @@ namespace WeekendBot.Implementations.Test
             // Assert
             Assert.Equal("Ja, dat is het!", message);
         }
-
     }
 }
