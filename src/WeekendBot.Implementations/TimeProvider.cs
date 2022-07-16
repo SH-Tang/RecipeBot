@@ -15,14 +15,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using WeekendBot.Core;
 
-namespace WeekendBot.Implementations;
-
-public class TimeProvider : ITimeProvider
+namespace WeekendBot.Implementations
 {
-    public DateTime GetCurrentDateTime()
+    /// <summary>
+    /// Provider for providing time information.
+    /// </summary>
+    public class TimeProvider : ITimeProvider
     {
-        return DateTime.Now;
+        public DateTime GetCurrentDateTime()
+        {
+            return DateTime.Now;
+        }
     }
 }

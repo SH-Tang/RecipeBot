@@ -2,9 +2,8 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <BaseOutputPath>$(SolutionDir)\bin\</BaseOutputPath>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\build\WeekendBot.targets" />
 
   <ItemGroup>
     <None Include="..\..\licenses\Copying.licenseheader" Link="Copying.licenseheader" />
