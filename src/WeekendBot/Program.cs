@@ -31,7 +31,7 @@ namespace WeekendBot
     internal class Program
     {
         private readonly IConfiguration configuration;
-        private DiscordSocketClient discordClient;
+        private DiscordSocketClient discordClient = null!;
 
         private Program()
         {
