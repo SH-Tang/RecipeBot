@@ -41,16 +41,61 @@ namespace WeekendBot.Implementations
         public string GetIsWeekendMessage()
         {
             return IsWeekend(timeProvider.GetCurrentDateTime())
-                ? "Ja, dat is het!"
-                : "Nee, dat is het niet...";
+                       ? "Ja, dat is het!"
+                       : "Nee, dat is het niet...";
+        }
+
+        public string GetTimeToWeekendMessage()
+        {
+            DateTime currentDateTime = timeProvider.GetCurrentDateTime();
+            if (IsWeekend(currentDateTime))
+            {
+                return "De tijd tot het weekend is 0s, want het is al weekend!";
+            }
+
+            TimeSpan timeUntilWeekend = GetTimeSpanUntilWeekend(currentDateTime);
+            return $"De tijd tot het weekend is {timeUntilWeekend}, oftewel:" + Environment.NewLine +
+                   $"- {timeUntilWeekend.TotalDays} dagen" + Environment.NewLine +
+                   $"- {timeUntilWeekend.TotalHours} uren" + Environment.NewLine +
+                   $"- {timeUntilWeekend.TotalMinutes} minuten" + Environment.NewLine +
+                   $"- {timeUntilWeekend.TotalHours} seconden";
         }
 
         private static bool IsWeekend(DateTime currentDateTime)
         {
             DayOfWeek currentDayOfWeek = currentDateTime.DayOfWeek;
-            return (currentDayOfWeek == DayOfWeek.Friday
-                    || currentDayOfWeek == DayOfWeek.Saturday
+            return (currentDayOfWeek == DayOfWeek.Saturday
                     || currentDayOfWeek == DayOfWeek.Sunday);
+        }
+
+        private static TimeSpan GetTimeSpanUntilWeekend(DateTime currentDateTime)
+        {
+            DateTime closestWeekendDateTimeByDays = currentDateTime.AddDays(GetNumberOfDaysUntilWeekend(currentDateTime));
+            var closestWeekendDateTime = new DateTime(closestWeekendDateTimeByDays.Year,
+                                                      closestWeekendDateTimeByDays.Month,
+                                                      closestWeekendDateTimeByDays.Day);
+
+            return closestWeekendDateTime - currentDateTime;
+        }
+
+        private static int GetNumberOfDaysUntilWeekend(DateTime currentDateTime)
+        {
+            DayOfWeek dayOfWeek = currentDateTime.DayOfWeek;
+            switch (dayOfWeek)
+            {
+                case DayOfWeek.Monday:
+                    return 5;
+                case DayOfWeek.Tuesday:
+                    return 4;
+                case DayOfWeek.Wednesday:
+                    return 3;
+                case DayOfWeek.Thursday:
+                    return 2;
+                case DayOfWeek.Friday:
+                    return 1;
+                default:
+                    return 0;
+            }
         }
     }
 }

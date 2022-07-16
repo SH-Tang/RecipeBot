@@ -27,5 +27,11 @@ namespace WeekendBot.Core
         /// </summary>
         /// <returns>A <see cref="string"/> containing a message whether it is weekend.</returns>
         string GetIsWeekendMessage();
+
+        /// <summary>
+        /// Gets a formatted message representing the time until the weekend.
+        /// </summary>
+        /// <returns>A <see cref="string"/> containing a message until it is weekend.</returns>
+        string GetTimeToWeekendMessage();
     }
 }
