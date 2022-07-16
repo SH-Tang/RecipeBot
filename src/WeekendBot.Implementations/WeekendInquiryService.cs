@@ -58,7 +58,7 @@ namespace WeekendBot.Implementations
                    $"- {timeUntilWeekend.TotalDays} dagen" + Environment.NewLine +
                    $"- {timeUntilWeekend.TotalHours} uren" + Environment.NewLine +
                    $"- {timeUntilWeekend.TotalMinutes} minuten" + Environment.NewLine +
-                   $"- {timeUntilWeekend.TotalHours} seconden";
+                   $"- {timeUntilWeekend.TotalSeconds} seconden";
         }
 
         private static bool IsWeekend(DateTime currentDateTime)

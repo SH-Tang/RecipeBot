@@ -105,7 +105,7 @@ namespace WeekendBot.Implementations.Test
                                      $"- {expectedTimeToWeekend.TotalDays} dagen" + Environment.NewLine +
                                      $"- {expectedTimeToWeekend.TotalHours} uren" + Environment.NewLine +
                                      $"- {expectedTimeToWeekend.TotalMinutes} minuten" + Environment.NewLine +
-                                     $"- {expectedTimeToWeekend.TotalHours} seconden";
+                                     $"- {expectedTimeToWeekend.TotalSeconds} seconden";
             Assert.Equal(expectedMessage, message);
         }
 
