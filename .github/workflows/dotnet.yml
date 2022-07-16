@@ -30,7 +30,7 @@ jobs:
       uses: dorny/test-reporter@v1
       if: always()
       with:
-        Name: xUnit Tests
-        path: 'src/**/*.trx
+        name: xUnit Tests
+        path: "src/**/*.trx"
         reporter: dotnet-trx
         fail-on-error: 'true'
