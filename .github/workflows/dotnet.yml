@@ -22,6 +22,8 @@ jobs:
         dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore $env:build_directory --verbosity normal --configfile $env:build_directory/NuGet.config
+    - name: Creating dummy config
+      run: New-Item $env:build_directory/config.json
     - name: Build
       run: dotnet build $env:build_directory --no-restore
     - name: Test
