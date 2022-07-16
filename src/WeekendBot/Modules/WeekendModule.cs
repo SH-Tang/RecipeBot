@@ -21,37 +21,39 @@ using Discord.Commands;
 using WeekendBot.Core;
 using WeekendBot.Utils;
 
-namespace WeekendBot.Modules;
-
-/// <summary>
-/// Definition containing the weekend module commands.
-/// </summary>
-public class WeekendModule : ModuleBase<SocketCommandContext>
+namespace WeekendBot.Modules
 {
-    private readonly IWeekendInquiryService inquiryService;
 
     /// <summary>
-    /// Creates a new instance of <see cref="WeekendModule"/>.
+    /// Definition containing the weekend module commands.
     /// </summary>
-    /// <param name="inquiryService">The <see cref="IWeekendInquiryService"/>.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inquiryService"/> is <c>null</c>.</exception>
-    public WeekendModule(IWeekendInquiryService inquiryService)
+    public class WeekendModule : ModuleBase<SocketCommandContext>
     {
-        this.inquiryService = inquiryService;
-        inquiryService.IsNotNull(nameof(inquiryService));
-    }
+        private readonly IWeekendInquiryService inquiryService;
 
-    [Command("weekend?")]
-    [Summary("Responds whether the current day is a weekend.")]
-    public Task GetIsItWeekendResponseAsync()
-    {
-        return ReplyAsync(inquiryService.GetIsWeekendMessage());
-    }
+        /// <summary>
+        /// Creates a new instance of <see cref="WeekendModule"/>.
+        /// </summary>
+        /// <param name="inquiryService">The <see cref="IWeekendInquiryService"/>.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="inquiryService"/> is <c>null</c>.</exception>
+        public WeekendModule(IWeekendInquiryService inquiryService)
+        {
+            this.inquiryService = inquiryService;
+            inquiryService.IsNotNull(nameof(inquiryService));
+        }
 
-    [Command("timetoweekend?")]
-    [Summary("Responds to time until it encounters the weekend.")]
-    public Task GetTimeToWeekendResponseAsync()
-    {
-        return ReplyAsync(inquiryService.GetTimeToWeekendMessage());
+        [Command("weekend?")]
+        [Summary("Responds whether the current day is a weekend.")]
+        public Task GetIsItWeekendResponseAsync()
+        {
+            return ReplyAsync(inquiryService.GetIsWeekendMessage());
+        }
+
+        [Command("timetoweekend?")]
+        [Summary("Responds to time until it encounters the weekend.")]
+        public Task GetTimeToWeekendResponseAsync()
+        {
+            return ReplyAsync(inquiryService.GetTimeToWeekendMessage());
+        }
     }
 }
