@@ -22,7 +22,8 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using WeekendBot.Modules;
+using WeekendBot.Core;
+using WeekendBot.Implementations;
 using WeekendBot.Services;
 
 namespace WeekendBot
@@ -94,6 +95,8 @@ namespace WeekendBot
                 .AddSingleton<DiscordSocketClient>()
                 .AddSingleton<CommandService>()
                 .AddSingleton<CommandHandlingService>()
+                .AddScoped<ITimeProvider, TimeProvider>()
+                .AddTransient<IWeekendInquiryService, WeekendInquiryService>()
                 .BuildServiceProvider();
         }
     }

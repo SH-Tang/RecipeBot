@@ -60,7 +60,7 @@ namespace WeekendBot.Services
             //
             // If you do not use Dependency Injection, pass null.
             // See Dependency Injection guide for more information.
-            await commands.AddModuleAsync<InfoModule>(services);
+            await commands.AddModuleAsync<WeekendModule>(services);
         }
 
         private async Task HandleCommandAsync(SocketMessage messageParam)
