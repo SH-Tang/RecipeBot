@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WeekendBot.Core\WeekendBot.Core.csproj" />
     <ProjectReference Include="..\WeekendBot.Utils\WeekendBot.Utils.csproj" />
   </ItemGroup>
 
