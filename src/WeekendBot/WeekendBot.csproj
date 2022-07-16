@@ -18,6 +18,10 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WeekendBot.Utils\WeekendBot.Utils.csproj" />
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy $(SolutionDir)\config.json $(OutDir) /f /y /i" />
   </Target>

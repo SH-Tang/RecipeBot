@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <BaseOutputPath>$(SolutionDir)\bin\</BaseOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\licenses\Copying.licenseheader" Link="Copying.licenseheader" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WeekendBot.Core\WeekendBot.Core.csproj" />
+    <ProjectReference Include="..\WeekendBot.Utils\WeekendBot.Utils.csproj" />
+  </ItemGroup>
+
+</Project>
