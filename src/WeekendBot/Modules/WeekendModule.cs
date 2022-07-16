@@ -47,4 +47,11 @@ public class WeekendModule : ModuleBase<SocketCommandContext>
     {
         return ReplyAsync(inquiryService.GetIsWeekendMessage());
     }
+
+    [Command("timetoweekend?")]
+    [Summary("Responds to time until it encounters the weekend.")]
+    public Task GetTimeToWeekendResponseAsync()
+    {
+        return ReplyAsync(inquiryService.GetTimeToWeekendMessage());
+    }
 }
