@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Threading.Tasks;
 using WeekendBot.Core;
 
 namespace WeekendBot.Components
@@ -25,9 +26,9 @@ namespace WeekendBot.Components
     /// </summary>
     public class TimeProvider : ITimeProvider
     {
-        public DateTime GetCurrentDateTime()
+        public Task<DateTime> GetCurrentDateTimeAsync()
         {
-            return DateTime.Now;
+            return Task.FromResult(DateTime.Now);
         }
     }
 }

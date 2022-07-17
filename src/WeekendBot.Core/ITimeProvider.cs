@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Threading.Tasks;
 
 namespace WeekendBot.Core
 {
@@ -28,6 +29,6 @@ namespace WeekendBot.Core
         /// Gets the current date time on the host.
         /// </summary>
         /// <returns>A <see cref="DateTime"/> representing the current date time on the host.</returns>
-        DateTime GetCurrentDateTime();
+        Task<DateTime> GetCurrentDateTimeAsync();
     }
 }

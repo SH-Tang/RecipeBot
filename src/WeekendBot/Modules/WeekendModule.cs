@@ -43,16 +43,18 @@ namespace WeekendBot.Modules
 
         [Command("weekend?")]
         [Summary("Responds whether the current day is a weekend.")]
-        public Task GetIsItWeekendResponseAsync()
+        public async Task GetIsItWeekendResponseAsync()
         {
-            return ReplyAsync(inquiryService.GetIsWeekendMessage());
+            string message = await inquiryService.GetIsWeekendMessageAsync();
+            await ReplyAsync(message);
         }
 
         [Command("timetoweekend?")]
         [Summary("Responds to time until it encounters the weekend.")]
-        public Task GetTimeToWeekendResponseAsync()
+        public async Task GetTimeToWeekendResponseAsync()
         {
-            return ReplyAsync(inquiryService.GetTimeToWeekendMessage());
+            string message = await inquiryService.GetTimeToWeekendMessageAsync();
+            await ReplyAsync(message);
         }
     }
 }

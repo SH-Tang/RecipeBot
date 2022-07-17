@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using NSubstitute;
 using WeekendBot.Core;
 using Xunit;
@@ -42,11 +43,11 @@ namespace WeekendBot.Components.Test
 
         [Theory]
         [MemberData(nameof(WeekDays))]
-        public void GetIsWeekendMessage_DayIsWeekDay_ReturnsExpectedMessage(DateTime currentDate, DayOfWeek expectedDayOfWeek)
+        public async Task GetIsWeekendMessageAsync_DayIsWeekDayDateTime_ReturnsExpectedMessage(DateTime currentDate, DayOfWeek expectedDayOfWeek)
         {
             // Setup
             var timeProvider = Substitute.For<ITimeProvider>();
-            timeProvider.GetCurrentDateTime().ReturnsForAnyArgs(currentDate);
+            timeProvider.GetCurrentDateTimeAsync().ReturnsForAnyArgs(currentDate);
 
             var service = new WeekendInquiryService(timeProvider);
 
@@ -54,7 +55,7 @@ namespace WeekendBot.Components.Test
             Assert.Equal(expectedDayOfWeek, currentDate.DayOfWeek);
 
             // Call
-            string message = service.GetIsWeekendMessage();
+            string message = await service.GetIsWeekendMessageAsync();
 
             // Assert
             Assert.Equal("Nee, dat is het niet...", message);
@@ -62,11 +63,11 @@ namespace WeekendBot.Components.Test
 
         [Theory]
         [MemberData(nameof(WeekendDays))]
-        public void GetIsWeekendMessage_DayIsWeekendDay_ReturnsExpectedMessage(DateTime currentDate, DayOfWeek expectedDayOfWeek)
+        public async Task GetIsWeekendMessageAsync_DayIsWeekendDateTime_ReturnsExpectedMessage(DateTime currentDate, DayOfWeek expectedDayOfWeek)
         {
             // Setup
             var timeProvider = Substitute.For<ITimeProvider>();
-            timeProvider.GetCurrentDateTime().Returns(currentDate);
+            timeProvider.GetCurrentDateTimeAsync().Returns(currentDate);
 
             var service = new WeekendInquiryService(timeProvider);
 
@@ -74,7 +75,7 @@ namespace WeekendBot.Components.Test
             Assert.Equal(expectedDayOfWeek, currentDate.DayOfWeek);
 
             // Call
-            string message = service.GetIsWeekendMessage();
+            string message = await service.GetIsWeekendMessageAsync();
 
             // Assert
             Assert.Equal("Ja, dat is het!", message);
@@ -82,11 +83,11 @@ namespace WeekendBot.Components.Test
 
         [Theory]
         [MemberData(nameof(WeekDays))]
-        public void GetTimeToWeekendMessage_DayIsWeekDay_ReturnsExpectedMessage(DateTime currentDate, DayOfWeek expectedDayOfWeek)
+        public async Task GetTimeToWeekendMessageAsync_DayIsWeekDateTime_ReturnsExpectedMessage(DateTime currentDate, DayOfWeek expectedDayOfWeek)
         {
             // Setup
             var timeProvider = Substitute.For<ITimeProvider>();
-            timeProvider.GetCurrentDateTime().Returns(currentDate);
+            timeProvider.GetCurrentDateTimeAsync().Returns(currentDate);
 
             var service = new WeekendInquiryService(timeProvider);
 
@@ -94,7 +95,7 @@ namespace WeekendBot.Components.Test
             Assert.Equal(expectedDayOfWeek, currentDate.DayOfWeek);
 
             // Call
-            string message = service.GetTimeToWeekendMessage();
+            string message = await service.GetTimeToWeekendMessageAsync();
 
             // Assert
             TimeSpan expectedTimeToWeekend = weekendDateTime - currentDate;
@@ -108,11 +109,11 @@ namespace WeekendBot.Components.Test
 
         [Theory]
         [MemberData(nameof(WeekendDays))]
-        public void GetTimeToWeekendMessage_DayIsWeekendDay_ReturnsExpectedMessage(DateTime currentDate, DayOfWeek expectedDayOfWeek)
+        public async Task GetTimeToWeekendMessageAsync_DayIsWeekendDateTime_ReturnsExpectedMessage(DateTime currentDate, DayOfWeek expectedDayOfWeek)
         {
             // Setup
             var timeProvider = Substitute.For<ITimeProvider>();
-            timeProvider.GetCurrentDateTime().Returns(currentDate);
+            timeProvider.GetCurrentDateTimeAsync().Returns(currentDate);
 
             var service = new WeekendInquiryService(timeProvider);
 
@@ -120,7 +121,7 @@ namespace WeekendBot.Components.Test
             Assert.Equal(expectedDayOfWeek, currentDate.DayOfWeek);
 
             // Call
-            string message = service.GetTimeToWeekendMessage();
+            string message = await service.GetTimeToWeekendMessageAsync();
 
             // Assert
             Assert.Equal("De tijd tot het weekend is 0s, want het is al weekend!", message);
