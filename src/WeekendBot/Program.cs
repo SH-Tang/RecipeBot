@@ -24,6 +24,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeekendBot.Components;
 using WeekendBot.Core;
+using WeekendBot.Modules;
 using WeekendBot.Services;
 
 namespace WeekendBot
@@ -72,7 +73,10 @@ namespace WeekendBot
         private static async Task ConfigureCommandHandlingService(IServiceProvider services)
         {
             var commandHandlingService = services.GetRequiredService<CommandHandlingService>();
-            await commandHandlingService.InitializeServiceAsync();
+            await commandHandlingService.InitializeServiceAsync(new []
+            {
+                typeof(WeekendModule)
+            });
         }
 
         private static async Task ConfigureCommandService(IServiceProvider services)

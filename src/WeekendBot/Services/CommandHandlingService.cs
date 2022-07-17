@@ -16,11 +16,12 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
-using WeekendBot.Modules;
 using WeekendBot.Utils;
 
 namespace WeekendBot.Services
@@ -33,6 +34,8 @@ namespace WeekendBot.Services
         private readonly DiscordSocketClient client;
         private readonly CommandService commands;
         private readonly IServiceProvider services;
+
+        private readonly bool isInitialized;
 
         /// <summary>
         /// Creates a new instance of <see cref="CommandHandlingService"/>.
@@ -48,11 +51,36 @@ namespace WeekendBot.Services
 
             client = services.GetRequiredService<DiscordSocketClient>();
             client.MessageReceived += HandleCommandAsync;
+
+            isInitialized = false;
         }
 
-        public async Task InitializeServiceAsync()
+        /// <summary>
+        /// Initializes the handler with a set of moduleTypes.
+        /// </summary>
+        /// <param name="moduleTypes">The collection of <see cref="Type"/> of modules to add.</param>
+        /// <returns>A <see cref="Task"/> indicating the status of the operation.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="moduleTypes"/>
+        /// is <c>null</c>.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when the service is already initialized.</exception>
+        public async Task InitializeServiceAsync(IEnumerable<Type> moduleTypes)
         {
-            // Here we discover all of the command modules in the entry 
+            moduleTypes.IsNotNull(nameof(moduleTypes));
+
+            if (!isInitialized)
+            {
+                IEnumerable<Task> addingModuleTask = CreateAddingModuleTasks(moduleTypes);
+                await Task.WhenAll(addingModuleTask);
+            }
+            else
+            {
+                throw new InvalidOperationException("Service is already initialized.");
+            }
+        }
+
+        private IEnumerable<Task> CreateAddingModuleTasks(IEnumerable<Type> modulesTypesToAdd)
+        {
+            // Here we discover all of the command moduleTypes in the entry 
             // assembly and load them. Starting from Discord.NET 2.0, a
             // service provider is required to be passed into the
             // module registration method to inject the 
@@ -60,7 +88,9 @@ namespace WeekendBot.Services
             //
             // If you do not use Dependency Injection, pass null.
             // See Dependency Injection guide for more information.
-            await commands.AddModuleAsync<WeekendModule>(services);
+            return modulesTypesToAdd.Select(moduleType => commands.AddModuleAsync(moduleType, services))
+                                    .Cast<Task>()
+                                    .ToArray();
         }
 
         private async Task HandleCommandAsync(SocketMessage messageParam)
