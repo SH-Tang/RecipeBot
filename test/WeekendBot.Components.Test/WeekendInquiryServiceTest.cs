@@ -25,6 +25,8 @@ namespace WeekendBot.Components.Test
 {
     public class WeekendInquiryServiceTest
     {
+        private static readonly DateTime weekendDateTime = new DateTime(2022, 7, 15, 16, 0, 0);
+
         [Fact]
         public void Constructor_WithArguments_ExpectedValues()
         {
@@ -40,11 +42,9 @@ namespace WeekendBot.Components.Test
 
         [Theory]
         [MemberData(nameof(WeekDays))]
-        public void GetIsWeekendMessage_DayIsWeekDay_ReturnsExpectedMessage(int day, DayOfWeek expectedDayOfWeek)
+        public void GetIsWeekendMessage_DayIsWeekDay_ReturnsExpectedMessage(DateTime currentDate, DayOfWeek expectedDayOfWeek)
         {
             // Setup
-            var currentDate = new DateTime(2022, 7, day);
-
             var timeProvider = Substitute.For<ITimeProvider>();
             timeProvider.GetCurrentDateTime().ReturnsForAnyArgs(currentDate);
 
@@ -62,11 +62,9 @@ namespace WeekendBot.Components.Test
 
         [Theory]
         [MemberData(nameof(WeekendDays))]
-        public void GetIsWeekendMessage_DayIsWeekendDay_ReturnsExpectedMessage(int day, DayOfWeek expectedDayOfWeek)
+        public void GetIsWeekendMessage_DayIsWeekendDay_ReturnsExpectedMessage(DateTime currentDate, DayOfWeek expectedDayOfWeek)
         {
             // Setup
-            var currentDate = new DateTime(2022, 7, day);
-
             var timeProvider = Substitute.For<ITimeProvider>();
             timeProvider.GetCurrentDateTime().Returns(currentDate);
 
@@ -84,12 +82,9 @@ namespace WeekendBot.Components.Test
 
         [Theory]
         [MemberData(nameof(WeekDays))]
-        public void GetTimeToWeekendMessage_DayIsWeekDay_ReturnsExpectedMessage(int day, DayOfWeek expectedDayOfWeek)
+        public void GetTimeToWeekendMessage_DayIsWeekDay_ReturnsExpectedMessage(DateTime currentDate, DayOfWeek expectedDayOfWeek)
         {
             // Setup
-            var random = new Random(21);
-            var currentDate = new DateTime(2022, 7, day, random.Next(23), random.Next(59), random.Next(59));
-
             var timeProvider = Substitute.For<ITimeProvider>();
             timeProvider.GetCurrentDateTime().Returns(currentDate);
 
@@ -102,7 +97,7 @@ namespace WeekendBot.Components.Test
             string message = service.GetTimeToWeekendMessage();
 
             // Assert
-            TimeSpan expectedTimeToWeekend = new DateTime(2022, 7, 16) - currentDate;
+            TimeSpan expectedTimeToWeekend = weekendDateTime - currentDate;
             string expectedMessage = $"De tijd tot het weekend is {expectedTimeToWeekend}, oftewel:" + Environment.NewLine +
                                      $"- {expectedTimeToWeekend.TotalDays} dagen" + Environment.NewLine +
                                      $"- {expectedTimeToWeekend.TotalHours} uren" + Environment.NewLine +
@@ -113,12 +108,9 @@ namespace WeekendBot.Components.Test
 
         [Theory]
         [MemberData(nameof(WeekendDays))]
-        public void GetTimeToWeekendMessage_DayIsWeekendDay_ReturnsExpectedMessage(int day, DayOfWeek expectedDayOfWeek)
+        public void GetTimeToWeekendMessage_DayIsWeekendDay_ReturnsExpectedMessage(DateTime currentDate, DayOfWeek expectedDayOfWeek)
         {
             // Setup
-            var random = new Random(21);
-            var currentDate = new DateTime(2022, 7, day);
-
             var timeProvider = Substitute.For<ITimeProvider>();
             timeProvider.GetCurrentDateTime().Returns(currentDate);
 
@@ -136,48 +128,66 @@ namespace WeekendBot.Components.Test
 
         private static IEnumerable<object[]> WeekDays()
         {
+            int year = weekendDateTime.Year;
+            int month = weekendDateTime.Month;
+
             yield return new object[]
             {
-                11,
+                CreateDateTime(11, month, year),
                 DayOfWeek.Monday
             };
 
             yield return new object[]
             {
-                12,
+                CreateDateTime(12, month, year),
                 DayOfWeek.Tuesday
             };
 
             yield return new object[]
             {
-                13,
+                CreateDateTime(13, month, year),
                 DayOfWeek.Wednesday
             };
 
             yield return new object[]
             {
-                14,
+                CreateDateTime(14, month, year),
                 DayOfWeek.Thursday
             };
 
             yield return new object[]
             {
-                15,
+                new DateTime(year, month, 15, 15, 59, 59),
                 DayOfWeek.Friday
             };
         }
 
+        private static DateTime CreateDateTime(int day, int month, int year)
+        {
+            var random = new Random(21);
+            return new DateTime(year, month, day, random.Next(24), random.Next(60), random.Next(60));
+        }
+
         private static IEnumerable<object[]> WeekendDays()
         {
+            int year = weekendDateTime.Year;
+            int month = weekendDateTime.Month;
+
             yield return new object[]
             {
-                16,
+                new DateTime(year, month, 15, 16, 0, 0),
+                DayOfWeek.Friday
+            };
+
+            yield return new object[]
+            {
+                CreateDateTime(16, month, year),
                 DayOfWeek.Saturday
             };
 
             yield return new object[]
             {
-                17,
+                CreateDateTime(17, month, year),
                 DayOfWeek.Sunday
             };
         }

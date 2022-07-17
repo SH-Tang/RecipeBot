@@ -23,7 +23,6 @@ using WeekendBot.Utils;
 
 namespace WeekendBot.Modules
 {
-
     /// <summary>
     /// Definition containing the weekend module commands.
     /// </summary>
