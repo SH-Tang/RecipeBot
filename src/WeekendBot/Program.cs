@@ -24,6 +24,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeekendBot.Components;
 using WeekendBot.Core;
+using WeekendBot.Modules;
 using WeekendBot.Services;
 
 namespace WeekendBot
@@ -71,8 +72,11 @@ namespace WeekendBot
 
         private static async Task ConfigureCommandHandlingService(IServiceProvider services)
         {
-            var commandHandlingService = services.GetRequiredService<CommandHandlingService>();
-            await commandHandlingService.InitializeServiceAsync();
+            var commandHandlingService = services.GetRequiredService<ExplicitDiscordCommandHandler>();
+            await commandHandlingService.InitializeHandlerAsync(new []
+            {
+                typeof(WeekendModule)
+            });
         }
 
         private static async Task ConfigureCommandService(IServiceProvider services)
@@ -94,7 +98,7 @@ namespace WeekendBot
             return new ServiceCollection()
                 .AddSingleton<DiscordSocketClient>()
                 .AddSingleton<CommandService>()
-                .AddSingleton<CommandHandlingService>()
+                .AddSingleton<ExplicitDiscordCommandHandler>()
                 .AddScoped<ITimeProvider, TimeProvider>()
                 .AddTransient<IWeekendInquiryService, WeekendInquiryService>()
                 .BuildServiceProvider();
