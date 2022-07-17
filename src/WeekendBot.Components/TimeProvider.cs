@@ -18,7 +18,7 @@
 using System;
 using WeekendBot.Core;
 
-namespace WeekendBot.Implementations
+namespace WeekendBot.Components
 {
     /// <summary>
     /// Provider for providing time information.

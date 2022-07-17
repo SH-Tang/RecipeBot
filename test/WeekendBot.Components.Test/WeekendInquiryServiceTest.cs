@@ -21,7 +21,7 @@ using NSubstitute;
 using WeekendBot.Core;
 using Xunit;
 
-namespace WeekendBot.Implementations.Test
+namespace WeekendBot.Components.Test
 {
     public class WeekendInquiryServiceTest
     {

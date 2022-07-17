@@ -19,7 +19,7 @@ using System;
 using WeekendBot.Core;
 using WeekendBot.Utils;
 
-namespace WeekendBot.Implementations
+namespace WeekendBot.Components
 {
     /// <summary>
     /// Service for inquiring whether it is weekend.

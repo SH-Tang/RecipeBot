@@ -22,8 +22,8 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WeekendBot.Components;
 using WeekendBot.Core;
-using WeekendBot.Implementations;
 using WeekendBot.Services;
 
 namespace WeekendBot

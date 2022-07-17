@@ -21,9 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\WeekendBot.Components\WeekendBot.Components.csproj" />
     <ProjectReference Include="..\..\src\WeekendBot.Core\WeekendBot.Core.csproj">
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\WeekendBot.Implementations\WeekendBot.Implementations.csproj">
     </ProjectReference>
   </ItemGroup>
 
