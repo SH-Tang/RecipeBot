@@ -13,11 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Test", "test\Wee
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeekendBot.Core", "src\WeekendBot.Core\WeekendBot.Core.csproj", "{1A498D17-459D-44F5-855F-A33C6C976DDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeekendBot.Implementations", "src\WeekendBot.Implementations\WeekendBot.Implementations.csproj", "{2E8F24C7-4832-47ED-A00C-666CF1D1C0E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeekendBot.Components", "src\WeekendBot.Components\WeekendBot.Components.csproj", "{2E8F24C7-4832-47ED-A00C-666CF1D1C0E5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeekendBot.Utils", "src\WeekendBot.Utils\WeekendBot.Utils.csproj", "{43FFEAAD-E141-404C-BAEB-87A472FA3779}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeekendBot.Implementations.Test", "test\WeekendBot.Implementations.Test\WeekendBot.Implementations.Test.csproj", "{D899E724-88EB-4318-8591-71182C4F8B32}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeekendBot.Components.Test", "test\WeekendBot.Components.Test\WeekendBot.Components.Test.csproj", "{D899E724-88EB-4318-8591-71182C4F8B32}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
