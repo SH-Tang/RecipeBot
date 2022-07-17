@@ -67,19 +67,19 @@ namespace WeekendBot.Services
         /// <returns>A <see cref="Task"/> indicating the status of the operation.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="moduleTypes"/>
         /// is <c>null</c>.</exception>
-        /// <exception cref="InvalidOperationException">Thrown when the service is already initialized.</exception>
-        public async Task InitializeServiceAsync(IEnumerable<Type> moduleTypes)
+        /// <exception cref="InvalidOperationException">Thrown when the handler is already initialized.</exception>
+        public async Task InitializeHandlerAsync(IEnumerable<Type> moduleTypes)
         {
             moduleTypes.IsNotNull(nameof(moduleTypes));
 
             if (!isInitialized)
             {
-                IEnumerable<Task> addingModuleTask = CreateAddingModuleTasks(moduleTypes);
-                await Task.WhenAll(addingModuleTask);
+                IEnumerable<Task> addingModuleTypeTasks = CreateAddingModuleTasks(moduleTypes);
+                await Task.WhenAll(addingModuleTypeTasks);
             }
             else
             {
-                throw new InvalidOperationException("Service is already initialized.");
+                throw new InvalidOperationException("Handler is already initialized.");
             }
         }
 
