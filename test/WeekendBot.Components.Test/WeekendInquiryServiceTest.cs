@@ -126,6 +126,12 @@ namespace WeekendBot.Components.Test
             Assert.Equal("De tijd tot het weekend is 0s, want het is al weekend!", message);
         }
 
+        private static DateTime CreateDateTime(int day, int month, int year)
+        {
+            var random = new Random(21);
+            return new DateTime(year, month, day, random.Next(24), random.Next(60), random.Next(60));
+        }
+
         private static IEnumerable<object[]> WeekDays()
         {
             int year = weekendDateTime.Year;
@@ -160,12 +166,6 @@ namespace WeekendBot.Components.Test
                 new DateTime(year, month, 15, 15, 59, 59),
                 DayOfWeek.Friday
             };
-        }
-
-        private static DateTime CreateDateTime(int day, int month, int year)
-        {
-            var random = new Random(21);
-            return new DateTime(year, month, day, random.Next(24), random.Next(60), random.Next(60));
         }
 
         private static IEnumerable<object[]> WeekendDays()
