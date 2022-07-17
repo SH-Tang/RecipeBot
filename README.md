@@ -1,5 +1,5 @@
 # WeekendBot
-![example workflow](https://github.com/SiuHinTang /WeekendBot/actions/workflows/dotnet.yml/badge.svg)
+![example workflow](https://github.com/SiuHinTang/WeekendBot/actions/workflows/dotnet.yml/badge.svg)
 A simple bot that keeps track of "Weekend" related items:
 
 * A short message indicating whether it is weekend (or not)
