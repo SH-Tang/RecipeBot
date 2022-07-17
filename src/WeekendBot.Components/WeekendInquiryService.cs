@@ -65,8 +65,19 @@ namespace WeekendBot.Components
         private static bool IsWeekend(DateTime currentDateTime)
         {
             DayOfWeek currentDayOfWeek = currentDateTime.DayOfWeek;
-            return (currentDayOfWeek == DayOfWeek.Saturday
-                    || currentDayOfWeek == DayOfWeek.Sunday);
+
+            if (currentDayOfWeek == DayOfWeek.Saturday
+                || currentDayOfWeek == DayOfWeek.Sunday)
+            {
+                return true;
+            }
+
+            if (currentDayOfWeek == DayOfWeek.Friday && currentDateTime.Hour >= 16)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private static TimeSpan GetTimeSpanUntilWeekend(DateTime currentDateTime)
@@ -74,7 +85,8 @@ namespace WeekendBot.Components
             DateTime closestWeekendDateTimeByDays = currentDateTime.AddDays(GetNumberOfDaysUntilWeekend(currentDateTime));
             var closestWeekendDateTime = new DateTime(closestWeekendDateTimeByDays.Year,
                                                       closestWeekendDateTimeByDays.Month,
-                                                      closestWeekendDateTimeByDays.Day);
+                                                      closestWeekendDateTimeByDays.Day,
+                                                      16, 0, 0);
 
             return closestWeekendDateTime - currentDateTime;
         }
@@ -85,15 +97,14 @@ namespace WeekendBot.Components
             switch (dayOfWeek)
             {
                 case DayOfWeek.Monday:
-                    return 5;
-                case DayOfWeek.Tuesday:
                     return 4;
-                case DayOfWeek.Wednesday:
+                case DayOfWeek.Tuesday:
                     return 3;
-                case DayOfWeek.Thursday:
+                case DayOfWeek.Wednesday:
                     return 2;
-                case DayOfWeek.Friday:
+                case DayOfWeek.Thursday:
                     return 1;
+                case DayOfWeek.Friday:
                 default:
                     return 0;
             }

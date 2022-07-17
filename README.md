@@ -1,10 +1,14 @@
 # WeekendBot
 ![Unit tests](https://github.com/SiuHinTang/WeekendBot/actions/workflows/dotnet.yml/badge.svg)
 
-A simple bot that keeps track of "Weekend" related items:
+> Saturday and Sunday, or Friday evening until Sunday night:
+> 
+> **Source:** [Cambridge Dictionary](https://dictionary.cambridge.org/dictionary/english/weekend)
+
+A simple bot that keeps track of "Weekend" (hereafter defined as Fridays, past 4pm) related items:
 
 * A short message indicating whether it is weekend (or not)
-* A message to indicate how much time before it is a weekend (day) (unless it already is weekend :wink:)
+* A message to indicate how much time before it is weekend (unless it already is weekend :wink:)
 
 
 # License
