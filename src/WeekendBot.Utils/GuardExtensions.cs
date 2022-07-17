@@ -25,7 +25,7 @@ namespace WeekendBot.Utils
     public static class GuardExtensions
     {
         /// <summary>
-        /// Guards that <param name="argument"> is not <c>null</c>.</param>
+        /// Guards that <paramref name="argument"/> is not <c>null</c>.
         /// </summary>
         /// <typeparam name="T">The type of <paramref name="argument"/></typeparam>
         /// <param name="argument">The argument to guard.</param>

@@ -21,42 +21,47 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
 using WeekendBot.Utils;
 
 namespace WeekendBot.Services
 {
     /// <summary>
-    /// The service to deal with Discord commands.
+    /// The handler to deal with explicit Discord commands when prefixed with an identifier.
     /// </summary>
-    public class CommandHandlingService
+    public class ExplicitDiscordCommandHandler
     {
         private readonly DiscordSocketClient client;
-        private readonly CommandService commands;
+        private readonly CommandService commandService;
         private readonly IServiceProvider services;
 
         private readonly bool isInitialized;
 
         /// <summary>
-        /// Creates a new instance of <see cref="CommandHandlingService"/>.
+        /// Creates a new instance of <see cref="ExplicitDiscordCommandHandler"/>.
         /// </summary>
-        /// <param name="services">The <see cref="IServiceProvider"/>.</param>
+        /// <param name="services">The <see cref="IServiceProvider"/> for providing services.</param>
+        /// <param name="commandService">The <see cref="CommandService"/>.</param>
+        /// <param name="client">The <see cref="DiscordSocketClient"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-        public CommandHandlingService(IServiceProvider services)
+        public ExplicitDiscordCommandHandler(IServiceProvider services,
+                                             CommandService commandService,
+                                             DiscordSocketClient client)
         {
             services.IsNotNull(nameof(services));
+            commandService.IsNotNull(nameof(commandService));
+            client.IsNotNull(nameof(client));
 
             this.services = services;
-            commands = services.GetRequiredService<CommandService>();
+            this.commandService = commandService;
 
-            client = services.GetRequiredService<DiscordSocketClient>();
-            client.MessageReceived += HandleCommandAsync;
+            this.client = client;
+            this.client.MessageReceived += HandleCommandAsync;
 
             isInitialized = false;
         }
 
         /// <summary>
-        /// Initializes the handler with a set of moduleTypes.
+        /// Initializes the handler with a collection of modules.
         /// </summary>
         /// <param name="moduleTypes">The collection of <see cref="Type"/> of modules to add.</param>
         /// <returns>A <see cref="Task"/> indicating the status of the operation.</returns>
@@ -80,15 +85,7 @@ namespace WeekendBot.Services
 
         private IEnumerable<Task> CreateAddingModuleTasks(IEnumerable<Type> modulesTypesToAdd)
         {
-            // Here we discover all of the command moduleTypes in the entry 
-            // assembly and load them. Starting from Discord.NET 2.0, a
-            // service provider is required to be passed into the
-            // module registration method to inject the 
-            // required dependencies.
-            //
-            // If you do not use Dependency Injection, pass null.
-            // See Dependency Injection guide for more information.
-            return modulesTypesToAdd.Select(moduleType => commands.AddModuleAsync(moduleType, services))
+            return modulesTypesToAdd.Select(moduleType => commandService.AddModuleAsync(moduleType, services))
                                     .Cast<Task>()
                                     .ToArray();
         }
@@ -118,7 +115,7 @@ namespace WeekendBot.Services
 
             // Execute the command with the command context we just
             // created, along with the service provider for precondition checks.
-            await commands.ExecuteAsync(context, argPos, services);
+            await commandService.ExecuteAsync(context, argPos, services);
         }
     }
 }

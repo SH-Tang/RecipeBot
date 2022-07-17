@@ -72,7 +72,7 @@ namespace WeekendBot
 
         private static async Task ConfigureCommandHandlingService(IServiceProvider services)
         {
-            var commandHandlingService = services.GetRequiredService<CommandHandlingService>();
+            var commandHandlingService = services.GetRequiredService<ExplicitDiscordCommandHandler>();
             await commandHandlingService.InitializeServiceAsync(new []
             {
                 typeof(WeekendModule)
@@ -98,7 +98,7 @@ namespace WeekendBot
             return new ServiceCollection()
                 .AddSingleton<DiscordSocketClient>()
                 .AddSingleton<CommandService>()
-                .AddSingleton<CommandHandlingService>()
+                .AddSingleton<ExplicitDiscordCommandHandler>()
                 .AddScoped<ITimeProvider, TimeProvider>()
                 .AddTransient<IWeekendInquiryService, WeekendInquiryService>()
                 .BuildServiceProvider();
