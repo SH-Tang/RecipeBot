@@ -15,6 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using System.Threading.Tasks;
+
 namespace WeekendBot.Core
 {
     /// <summary>
@@ -26,12 +28,12 @@ namespace WeekendBot.Core
         /// Gets a message whether it is weekend.
         /// </summary>
         /// <returns>A <see cref="string"/> containing a message whether it is weekend.</returns>
-        string GetIsWeekendMessage();
+        Task<string> GetIsWeekendMessageAsync();
 
         /// <summary>
         /// Gets a formatted message representing the time until the weekend.
         /// </summary>
         /// <returns>A <see cref="string"/> containing a message until it is weekend.</returns>
-        string GetTimeToWeekendMessage();
+        Task<string> GetTimeToWeekendMessageAsync();
     }
 }

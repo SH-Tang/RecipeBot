@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Threading.Tasks;
 using WeekendBot.Core;
 using WeekendBot.Utils;
 
@@ -39,16 +40,18 @@ namespace WeekendBot.Components
             this.timeProvider = timeProvider;
         }
 
-        public string GetIsWeekendMessage()
+        public async Task<string> GetIsWeekendMessageAsync()
         {
-            return IsWeekend(timeProvider.GetCurrentDateTime())
-                       ? "Ja, dat is het!"
-                       : "Nee, dat is het niet...";
+            DateTime currentDateTime = await timeProvider.GetCurrentDateTimeAsync();
+            string message = IsWeekend(currentDateTime)
+                                 ? "Ja, dat is het!"
+                                 : "Nee, dat is het niet...";
+            return message;
         }
 
-        public string GetTimeToWeekendMessage()
+        public async Task<string> GetTimeToWeekendMessageAsync()
         {
-            DateTime currentDateTime = timeProvider.GetCurrentDateTime();
+            DateTime currentDateTime = await timeProvider.GetCurrentDateTimeAsync();
             if (IsWeekend(currentDateTime))
             {
                 return "De tijd tot het weekend is 0s, want het is al weekend!";
