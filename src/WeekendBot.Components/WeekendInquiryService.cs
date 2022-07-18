@@ -17,7 +17,9 @@
 
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using WeekendBot.Core;
+using WeekendBot.Core.Options;
 using WeekendBot.Utils;
 
 namespace WeekendBot.Components
@@ -28,16 +30,21 @@ namespace WeekendBot.Components
     public class WeekendInquiryService : IWeekendInquiryService
     {
         private readonly ITimeProvider timeProvider;
+        private readonly StringFormatOptions formatOptions;
 
         /// <summary>
         /// Creates a new instance of <see cref="WeekendInquiryService"/>.
         /// </summary>
         /// <param name="timeProvider">The <see cref="ITimeProvider"/> for providing time information.</param>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeProvider"/> is <c>null.</c></exception>
-        public WeekendInquiryService(ITimeProvider timeProvider)
+        /// <param name="options">The options to format the string with.</param>
+        /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null.</c></exception>
+        public WeekendInquiryService(ITimeProvider timeProvider, IOptions<StringFormatOptions> options)
         {
             timeProvider.IsNotNull(nameof(timeProvider));
+            options.IsNotNull(nameof(options));
+
             this.timeProvider = timeProvider;
+            formatOptions = options.Value;
         }
 
         public async Task<string> GetIsWeekendMessageAsync()
@@ -58,13 +65,13 @@ namespace WeekendBot.Components
             }
 
             TimeSpan timeUntilWeekend = GetTimeSpanUntilWeekend(currentDateTime);
-            return $"De tijd tot het weekend is {timeUntilWeekend}, oftewel:" + Environment.NewLine +
-                   $"- {timeUntilWeekend.TotalDays} dagen" + Environment.NewLine +
-                   $"- {timeUntilWeekend.TotalHours} uren" + Environment.NewLine +
-                   $"- {timeUntilWeekend.TotalMinutes} minuten" + Environment.NewLine +
-                   $"- {timeUntilWeekend.TotalSeconds} seconden";
+            return $"De tijd tot {formatOptions.Format(GetWeekendDateTime(currentDateTime))} is {formatOptions.Format(timeUntilWeekend)}, oftewel:" + Environment.NewLine +
+                   $"- {formatOptions.Format(timeUntilWeekend.TotalDays)} dagen" + Environment.NewLine +
+                   $"- {formatOptions.Format(timeUntilWeekend.TotalHours)} uren" + Environment.NewLine +
+                   $"- {formatOptions.Format(timeUntilWeekend.TotalMinutes)} minuten" + Environment.NewLine +
+                   $"- {formatOptions.Format(timeUntilWeekend.TotalSeconds)} seconden";
         }
-
+        
         private static bool IsWeekend(DateTime currentDateTime)
         {
             DayOfWeek currentDayOfWeek = currentDateTime.DayOfWeek;
@@ -85,13 +92,17 @@ namespace WeekendBot.Components
 
         private static TimeSpan GetTimeSpanUntilWeekend(DateTime currentDateTime)
         {
+            return GetWeekendDateTime(currentDateTime) - currentDateTime;
+        }
+
+        private static DateTime GetWeekendDateTime(DateTime currentDateTime)
+        {
             DateTime closestWeekendDateTimeByDays = currentDateTime.AddDays(GetNumberOfDaysUntilWeekend(currentDateTime));
             var closestWeekendDateTime = new DateTime(closestWeekendDateTimeByDays.Year,
                                                       closestWeekendDateTimeByDays.Month,
                                                       closestWeekendDateTimeByDays.Day,
                                                       16, 0, 0);
-
-            return closestWeekendDateTime - currentDateTime;
+            return closestWeekendDateTime;
         }
 
         private static int GetNumberOfDaysUntilWeekend(DateTime currentDateTime)
