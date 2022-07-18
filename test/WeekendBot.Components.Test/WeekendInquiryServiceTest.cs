@@ -18,8 +18,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using NSubstitute;
+using WeekendBot.Components;
 using WeekendBot.Core;
+using WeekendBot.Core.Options;
 using Xunit;
 
 namespace WeekendBot.Components.Test
@@ -33,9 +36,10 @@ namespace WeekendBot.Components.Test
         {
             // Setup
             var timeProvider = Substitute.For<ITimeProvider>();
+            var formatOptions = Substitute.For<IOptions<StringFormatOptions>>();
 
             // Call
-            var service = new WeekendInquiryService(timeProvider);
+            var service = new WeekendInquiryService(timeProvider, formatOptions);
 
             // Assert
             Assert.IsAssignableFrom<IWeekendInquiryService>(service);
@@ -46,10 +50,12 @@ namespace WeekendBot.Components.Test
         public async Task GetIsWeekendMessageAsync_DayIsWeekDayDateTime_ReturnsExpectedMessage(DateTime currentDate, DayOfWeek expectedDayOfWeek)
         {
             // Setup
+            var formatOptions = Substitute.For<IOptions<StringFormatOptions>>();
+
             var timeProvider = Substitute.For<ITimeProvider>();
             timeProvider.GetCurrentDateTimeAsync().ReturnsForAnyArgs(currentDate);
 
-            var service = new WeekendInquiryService(timeProvider);
+            var service = new WeekendInquiryService(timeProvider, formatOptions);
 
             // Precondition
             Assert.Equal(expectedDayOfWeek, currentDate.DayOfWeek);
@@ -66,10 +72,12 @@ namespace WeekendBot.Components.Test
         public async Task GetIsWeekendMessageAsync_DayIsWeekendDateTime_ReturnsExpectedMessage(DateTime currentDate, DayOfWeek expectedDayOfWeek)
         {
             // Setup
+            var formatOptions = Substitute.For<IOptions<StringFormatOptions>>();
+            
             var timeProvider = Substitute.For<ITimeProvider>();
             timeProvider.GetCurrentDateTimeAsync().Returns(currentDate);
 
-            var service = new WeekendInquiryService(timeProvider);
+            var service = new WeekendInquiryService(timeProvider, formatOptions);
 
             // Precondition
             Assert.Equal(expectedDayOfWeek, currentDate.DayOfWeek);
@@ -86,10 +94,14 @@ namespace WeekendBot.Components.Test
         public async Task GetTimeToWeekendMessageAsync_DayIsWeekDateTime_ReturnsExpectedMessage(DateTime currentDate, DayOfWeek expectedDayOfWeek)
         {
             // Setup
+            var options = Substitute.For<IOptions<StringFormatOptions>>();
+            var formatOptions = new StringFormatOptions();
+            options.Value.ReturnsForAnyArgs(formatOptions);
+
             var timeProvider = Substitute.For<ITimeProvider>();
             timeProvider.GetCurrentDateTimeAsync().Returns(currentDate);
 
-            var service = new WeekendInquiryService(timeProvider);
+            var service = new WeekendInquiryService(timeProvider, options);
 
             // Precondition
             Assert.Equal(expectedDayOfWeek, currentDate.DayOfWeek);
@@ -99,11 +111,11 @@ namespace WeekendBot.Components.Test
 
             // Assert
             TimeSpan expectedTimeToWeekend = weekendDateTime - currentDate;
-            string expectedMessage = $"De tijd tot het weekend is {expectedTimeToWeekend}, oftewel:" + Environment.NewLine +
-                                     $"- {expectedTimeToWeekend.TotalDays} dagen" + Environment.NewLine +
-                                     $"- {expectedTimeToWeekend.TotalHours} uren" + Environment.NewLine +
-                                     $"- {expectedTimeToWeekend.TotalMinutes} minuten" + Environment.NewLine +
-                                     $"- {expectedTimeToWeekend.TotalSeconds} seconden";
+            string expectedMessage = $"De tijd tot {formatOptions.Format(weekendDateTime)} is {formatOptions.Format(expectedTimeToWeekend)}, oftewel:" + Environment.NewLine +
+                                     $"- {formatOptions.Format(expectedTimeToWeekend.TotalDays)} dagen" + Environment.NewLine +
+                                     $"- {formatOptions.Format(expectedTimeToWeekend.TotalHours)} uren" + Environment.NewLine +
+                                     $"- {formatOptions.Format(expectedTimeToWeekend.TotalMinutes)} minuten" + Environment.NewLine +
+                                     $"- {formatOptions.Format(expectedTimeToWeekend.TotalSeconds)} seconden";
             Assert.Equal(expectedMessage, message);
         }
 
@@ -112,10 +124,12 @@ namespace WeekendBot.Components.Test
         public async Task GetTimeToWeekendMessageAsync_DayIsWeekendDateTime_ReturnsExpectedMessage(DateTime currentDate, DayOfWeek expectedDayOfWeek)
         {
             // Setup
+            var formatOptions = Substitute.For<IOptions<StringFormatOptions>>();
+            
             var timeProvider = Substitute.For<ITimeProvider>();
             timeProvider.GetCurrentDateTimeAsync().Returns(currentDate);
 
-            var service = new WeekendInquiryService(timeProvider);
+            var service = new WeekendInquiryService(timeProvider, formatOptions);
 
             // Precondition
             Assert.Equal(expectedDayOfWeek, currentDate.DayOfWeek);
