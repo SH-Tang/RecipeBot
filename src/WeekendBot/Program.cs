@@ -24,22 +24,24 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeekendBot.Components;
 using WeekendBot.Core;
+using WeekendBot.Core.Options;
+using WeekendBot.Handler;
 using WeekendBot.Modules;
-using WeekendBot.Services;
 
 namespace WeekendBot
 {
     internal class Program
     {
-        private readonly IConfiguration configuration;
+        private readonly IConfiguration configurationRoot;
         private DiscordSocketClient discordClient = null!;
 
         private Program()
         {
-            IConfigurationBuilder builder = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("config.json");
+            IConfigurationBuilder builder = new ConfigurationBuilder()
+                                            .SetBasePath(AppContext.BaseDirectory)
+                                            .AddJsonFile("config.json");
 
-            configuration = builder.Build();
+            configurationRoot = builder.Build();
         }
 
         public static Task Main(string[] args)
@@ -65,7 +67,7 @@ namespace WeekendBot
             discordClient = services.GetRequiredService<DiscordSocketClient>();
             discordClient.Log += LogAsync;
 
-            string token = configuration["Token"];
+            string token = configurationRoot["Token"];
             await discordClient.LoginAsync(TokenType.Bot, token);
             await discordClient.StartAsync();
         }
@@ -73,7 +75,7 @@ namespace WeekendBot
         private static async Task ConfigureCommandHandlingService(IServiceProvider services)
         {
             var commandHandlingService = services.GetRequiredService<ExplicitDiscordCommandHandler>();
-            await commandHandlingService.InitializeHandlerAsync(new []
+            await commandHandlingService.InitializeHandlerAsync(new[]
             {
                 typeof(WeekendModule)
             });
@@ -93,15 +95,24 @@ namespace WeekendBot
             return Task.CompletedTask;
         }
 
-        private static ServiceProvider GetServiceProvider()
+        private ServiceProvider GetServiceProvider()
         {
-            return new ServiceCollection()
-                .AddSingleton<DiscordSocketClient>()
-                .AddSingleton<CommandService>()
-                .AddSingleton<ExplicitDiscordCommandHandler>()
-                .AddScoped<ITimeProvider, TimeProvider>()
-                .AddTransient<IWeekendInquiryService, WeekendInquiryService>()
-                .BuildServiceProvider();
+            var services = new ServiceCollection();
+            ConfigureServices(services);
+
+            return services.BuildServiceProvider(true);
+        }
+
+        private void ConfigureServices(IServiceCollection services)
+        {
+            services.AddSingleton<DiscordSocketClient>()
+                    .AddSingleton<CommandService>()
+                    .AddSingleton<ExplicitDiscordCommandHandler>()
+                    .AddTransient<ITimeProvider, TimeProvider>()
+                    .AddTransient<IWeekendInquiryService, WeekendInquiryService>()
+                    .Configure<ExplicitDiscordCommandOptions>(
+                        settings => configurationRoot.GetSection(ExplicitDiscordCommandOptions.SectionKey)
+                                                     .Bind(settings));
         }
     }
 }
