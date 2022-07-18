@@ -15,18 +15,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-namespace WeekendBot.Core.Handler
+namespace WeekendBot.Core.Options
 {
     /// <summary>
-    /// Options class to set options for the explicit Discord command handler.
+    /// Class to set options for explicit Discord commands.
     /// </summary>
-    public class ExplicitDiscordCommandHandlerOptions
+    public class ExplicitDiscordCommandOptions
     {
-        public const string DiscordCommand = "DiscordCommand";
+        /// <summary>
+        /// Gets the key of the section to retrieve the settings from.
+        /// </summary>
+        public const string SectionKey = "CommandOptions";
 
         /// <summary>
         /// Gets or sets the prefix the Discord commands should have before being invoked.
         /// </summary>
-        public string CommandPrefix { get; set; } = "~";
+        public char CommandPrefix { get; set; } = '~';
     }
 }
