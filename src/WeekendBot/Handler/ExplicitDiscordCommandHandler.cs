@@ -21,9 +21,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.Options;
+using WeekendBot.Core.Options;
 using WeekendBot.Utils;
 
-namespace WeekendBot.Services
+namespace WeekendBot.Handler
 {
     /// <summary>
     /// The handler to deal with explicit Discord commands when prefixed with an identifier.
@@ -31,6 +33,7 @@ namespace WeekendBot.Services
     public class ExplicitDiscordCommandHandler
     {
         private readonly DiscordSocketClient client;
+        private readonly ExplicitDiscordCommandOptions commandOptions;
         private readonly CommandService commandService;
         private readonly IServiceProvider services;
 
@@ -42,14 +45,17 @@ namespace WeekendBot.Services
         /// <param name="services">The <see cref="IServiceProvider"/> for providing services.</param>
         /// <param name="commandService">The <see cref="CommandService"/>.</param>
         /// <param name="client">The <see cref="DiscordSocketClient"/>.</param>
+        /// <param name="options">The <see cref="ExplicitDiscordCommandOptions"/> to configure the handler with.</param>
         /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
         public ExplicitDiscordCommandHandler(IServiceProvider services,
                                              CommandService commandService,
-                                             DiscordSocketClient client)
+                                             DiscordSocketClient client,
+                                             IOptions<ExplicitDiscordCommandOptions> options)
         {
             services.IsNotNull(nameof(services));
             commandService.IsNotNull(nameof(commandService));
             client.IsNotNull(nameof(client));
+            options.IsNotNull(nameof(options));
 
             this.services = services;
             this.commandService = commandService;
@@ -57,6 +63,8 @@ namespace WeekendBot.Services
             this.client = client;
             this.client.MessageReceived += HandleCommandAsync;
 
+            commandOptions = options.Value;
+            
             isInitialized = false;
         }
 
@@ -103,7 +111,7 @@ namespace WeekendBot.Services
             var argPos = 0;
 
             // Determine if the message is a command based on the prefix and make sure no bots trigger commands
-            if (!(message.HasCharPrefix('~', ref argPos) ||
+            if (!(message.HasCharPrefix(commandOptions.CommandPrefix, ref argPos) ||
                   message.HasMentionPrefix(client.CurrentUser, ref argPos)) ||
                 message.Author.IsBot)
             {
