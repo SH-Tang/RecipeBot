@@ -11,13 +11,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{53CFAFAB-E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Test", "test\WeekendBot.Test\WeekendBot.Test.csproj", "{2D616A91-4FAC-47C8-A9AC-131D29946852}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeekendBot.Core", "src\WeekendBot.Core\WeekendBot.Core.csproj", "{1A498D17-459D-44F5-855F-A33C6C976DDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Core", "src\WeekendBot.Core\WeekendBot.Core.csproj", "{1A498D17-459D-44F5-855F-A33C6C976DDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeekendBot.Components", "src\WeekendBot.Components\WeekendBot.Components.csproj", "{2E8F24C7-4832-47ED-A00C-666CF1D1C0E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Components", "src\WeekendBot.Components\WeekendBot.Components.csproj", "{2E8F24C7-4832-47ED-A00C-666CF1D1C0E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeekendBot.Utils", "src\WeekendBot.Utils\WeekendBot.Utils.csproj", "{43FFEAAD-E141-404C-BAEB-87A472FA3779}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Utils", "src\WeekendBot.Utils\WeekendBot.Utils.csproj", "{43FFEAAD-E141-404C-BAEB-87A472FA3779}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeekendBot.Components.Test", "test\WeekendBot.Components.Test\WeekendBot.Components.Test.csproj", "{D899E724-88EB-4318-8591-71182C4F8B32}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Components.Test", "test\WeekendBot.Components.Test\WeekendBot.Components.Test.csproj", "{D899E724-88EB-4318-8591-71182C4F8B32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeekendBot.Core.Test", "test\WeekendBot.Core.Test\WeekendBot.Core.Test.csproj", "{0E10421C-3ACF-4D0D-B56A-8D372133CB30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +51,10 @@ Global
 		{D899E724-88EB-4318-8591-71182C4F8B32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D899E724-88EB-4318-8591-71182C4F8B32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D899E724-88EB-4318-8591-71182C4F8B32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E10421C-3ACF-4D0D-B56A-8D372133CB30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E10421C-3ACF-4D0D-B56A-8D372133CB30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E10421C-3ACF-4D0D-B56A-8D372133CB30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E10421C-3ACF-4D0D-B56A-8D372133CB30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 		{2E8F24C7-4832-47ED-A00C-666CF1D1C0E5} = {BA3E796C-2EE6-474D-9A32-A44EE404FB7F}
 		{43FFEAAD-E141-404C-BAEB-87A472FA3779} = {BA3E796C-2EE6-474D-9A32-A44EE404FB7F}
 		{D899E724-88EB-4318-8591-71182C4F8B32} = {53CFAFAB-E237-4883-95F9-CACA954CB5F1}
+		{0E10421C-3ACF-4D0D-B56A-8D372133CB30} = {53CFAFAB-E237-4883-95F9-CACA954CB5F1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3CD9C2F5-4FA6-4425-96F3-E77B60D2ED3F}
