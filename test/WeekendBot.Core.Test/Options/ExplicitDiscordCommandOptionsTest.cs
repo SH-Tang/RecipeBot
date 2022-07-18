@@ -23,6 +23,16 @@ namespace WeekendBot.Core.Test.Options;
 public class ExplicitDiscordCommandOptionsTest
 {
     [Fact]
+    public void SectionKey_Always_ReturnsExpectedValue()
+    {
+        // Call
+        const string key = ExplicitDiscordCommandOptions.SectionKey;
+
+        // Assert
+        Assert.Equal("CommandOptions", key);
+    }
+
+    [Fact]
     public void Constructor_Always_ExpectedProperties()
     {
         // Call
@@ -31,5 +41,5 @@ public class ExplicitDiscordCommandOptionsTest
         // Assert
         Assert.Equal("CommandOptions", ExplicitDiscordCommandOptions.SectionKey);
         Assert.Equal('~', options.CommandPrefix);
-    }   
+    }
 }

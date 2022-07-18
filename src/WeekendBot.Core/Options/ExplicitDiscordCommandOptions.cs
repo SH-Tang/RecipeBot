@@ -18,7 +18,7 @@
 namespace WeekendBot.Core.Options
 {
     /// <summary>
-    /// Class to set options for explicit Discord commands.
+    /// Class containing options for explicit Discord commands.
     /// </summary>
     public class ExplicitDiscordCommandOptions
     {
