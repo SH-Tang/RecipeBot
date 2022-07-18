@@ -111,8 +111,11 @@ namespace WeekendBot
                     .AddTransient<ITimeProvider, TimeProvider>()
                     .AddTransient<IWeekendInquiryService, WeekendInquiryService>()
                     .Configure<ExplicitDiscordCommandOptions>(
-                        settings => configurationRoot.GetSection(ExplicitDiscordCommandOptions.SectionKey)
-                                                     .Bind(settings));
+                        options => configurationRoot.GetSection(ExplicitDiscordCommandOptions.SectionKey)
+                                                     .Bind(options))
+                    .Configure<StringFormatOptions>(
+                        options => configurationRoot.GetSection(StringFormatOptions.SectionKey)
+                                                    .Bind(options));
         }
     }
 }
