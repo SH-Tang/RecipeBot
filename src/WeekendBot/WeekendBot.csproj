@@ -17,6 +17,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+    <PackageReference Include="ReHackt.Extensions.Options.Validation" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,7 +28,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /f /y /i $(SolutionDir)\config.json $(OutDir)" />
+    <Exec Command="xcopy /f /d /y /i $(SolutionDir)\config.json $(OutDir)" />
   </Target>
 
 </Project>

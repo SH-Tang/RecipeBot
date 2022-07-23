@@ -118,13 +118,13 @@ namespace WeekendBot
 
         private void ConfigureOptions(IServiceCollection services)
         {
-            services.Configure<ExplicitDiscordCommandOptions>(
+            services.ConfigureAndValidate<ExplicitDiscordCommandOptions>(
                         options => configurationRoot.GetSection(ExplicitDiscordCommandOptions.SectionKey)
                                                     .Bind(options))
-                    .Configure<StringFormatOptions>(
+                    .ConfigureAndValidate<StringFormatOptions>(
                         options => configurationRoot.GetSection(StringFormatOptions.SectionKey)
                                                     .Bind(options))
-                    .Configure<BotInformationOptions>(
+                    .ConfigureAndValidate<BotInformationOptions>(
                         options => configurationRoot.GetSection(BotInformationOptions.SectionKey)
                                                     .Bind(options));
         }

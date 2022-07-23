@@ -15,6 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using System.ComponentModel.DataAnnotations;
+
 namespace Discord.Common.InfoModule;
 
 /// <summary>
@@ -40,5 +42,6 @@ public class BotInformationOptions
     /// <summary>
     /// Gets or sets the url of the bot to retrieve more information from.
     /// </summary>
+    [Url]
     public string? BotInformationUrl { get; set; }
 }
