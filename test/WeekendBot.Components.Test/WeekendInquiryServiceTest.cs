@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using NSubstitute;
-using WeekendBot.Components;
 using WeekendBot.Core;
 using WeekendBot.Core.Options;
 using Xunit;
@@ -73,7 +72,7 @@ namespace WeekendBot.Components.Test
         {
             // Setup
             var formatOptions = Substitute.For<IOptions<StringFormatOptions>>();
-            
+
             var timeProvider = Substitute.For<ITimeProvider>();
             timeProvider.GetCurrentDateTimeAsync().Returns(currentDate);
 
@@ -125,7 +124,7 @@ namespace WeekendBot.Components.Test
         {
             // Setup
             var formatOptions = Substitute.For<IOptions<StringFormatOptions>>();
-            
+
             var timeProvider = Substitute.For<ITimeProvider>();
             timeProvider.GetCurrentDateTimeAsync().Returns(currentDate);
 

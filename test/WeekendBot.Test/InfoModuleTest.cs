@@ -29,10 +29,11 @@ public class InfoModuleTest
     public void Constructor_WithArguments_ExpectedValues()
     {
         // Setup
-        var inquiryService = Substitute.For<CommandService>();
+        var commandService = Substitute.For<CommandService>();
+        var commandInfoService = Substitute.For<IDiscordCommandInformationService>();
 
         // Call
-        var module = new InfoModule(inquiryService);
+        var module = new InfoModule(commandService, commandInfoService);
 
         // Assert
         Assert.IsAssignableFrom<ModuleBase<SocketCommandContext>>(module);

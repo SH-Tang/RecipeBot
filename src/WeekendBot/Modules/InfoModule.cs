@@ -16,6 +16,8 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -28,33 +30,36 @@ namespace WeekendBot.Modules
     /// </summary>
     public class InfoModule : ModuleBase<SocketCommandContext>
     {
-        private readonly CommandService service;
+        private readonly CommandService commandService;
+        private readonly IDiscordCommandInformationService discordCommandInformationService;
 
         /// <summary>
         /// Creates a new instance of <see cref="InfoModule"/>.
         /// </summary>
-        /// <param name="service">The <see cref="CommandService"/>.</param>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="service"/> is <c>null</c>.</exception>
-        public InfoModule(CommandService service)
+        /// <param name="commandService">The <see cref="CommandService"/>.</param>
+        /// <param name="discordCommandInformationService">The <see cref="IDiscordCommandInformationService"/>.</param>
+        /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
+        public InfoModule(CommandService commandService, IDiscordCommandInformationService discordCommandInformationService)
         {
-            service.IsNotNull(nameof(service));
-            this.service = service;
+            commandService.IsNotNull(nameof(commandService));
+            discordCommandInformationService.IsNotNull(nameof(discordCommandInformationService));
+
+            this.commandService = commandService;
+            this.discordCommandInformationService = discordCommandInformationService;
         }
 
         [Command("help")]
         [Summary("Provides information about all the available commands.")]
-        public Task GetHelpResponseAsync()
+        public async Task GetHelpResponseAsync()
         {
-            var embedBuilder = new EmbedBuilder();
-            foreach (CommandInfo command in service.Commands)
-            {
-                // Get the command Summary attribute information
-                string embedFieldText = command.Summary ?? $"No description available{Environment.NewLine}";
+            IEnumerable<DiscordCommandInformation> commandInfos =
+                commandService.Commands.Select(c => new DiscordCommandInformation(c.Name)
+                {
+                    Summary = c.Summary
+                }).ToArray();
 
-                embedBuilder.AddField(command.Name, embedFieldText);
-            }
-
-            return ReplyAsync("List of available commands", false, embedBuilder.Build());
+            Embed embedSummaryInformation = await discordCommandInformationService.GetCommandInfoSummaries(commandInfos);
+            await ReplyAsync(null, false, embedSummaryInformation);
         }
     }
 }
