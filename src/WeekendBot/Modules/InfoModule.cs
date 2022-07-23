@@ -19,33 +19,42 @@ using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
+using WeekendBot.Utils;
 
 namespace WeekendBot.Modules
 {
+    /// <summary>
+    /// Definition of commands that provide information about the bot.
+    /// </summary>
     public class InfoModule : ModuleBase<SocketCommandContext>
     {
-        private const DayOfWeek weekends = DayOfWeek.Friday | DayOfWeek.Saturday | DayOfWeek.Sunday;
+        private readonly CommandService service;
 
-        [Command("weekend?")]
-        [Summary("Responds whether the current day is a weekend.")]
-        public Task GetIsItWeekendResponseAsync()
+        /// <summary>
+        /// Creates a new instance of <see cref="InfoModule"/>.
+        /// </summary>
+        /// <param name="service">The <see cref="CommandService"/>.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="service"/> is <c>null</c>.</exception>
+        public InfoModule(CommandService service)
         {
-            DateTime currentTime = DateTime.Now;
-            string message = ((currentTime.DayOfWeek & weekends) != 0)
-                ? "Ja het is weekend! XD"
-                : "Nee, dat is het niet :(";
-            return ReplyAsync(message);
+            service.IsNotNull(nameof(service));
+            this.service = service;
         }
 
-        [Command("Bijna weekend?")]
-        [Summary("Keeps track who is invoking almost weekend.")]
-        public Task AlmostWeekendResponseAsync()
+        [Command("help")]
+        [Summary("Provides information about all the available commands.")]
+        public Task GetHelpResponseAsync()
         {
-            SocketUser user = Context.User;
-            var messageReference = new MessageReference(Context.Message.Id);
+            var embedBuilder = new EmbedBuilder();
+            foreach (CommandInfo command in service.Commands)
+            {
+                // Get the command Summary attribute information
+                string embedFieldText = command.Summary ?? $"No description available{Environment.NewLine}";
 
-            return ReplyAsync($"Gebruiker {user.Username} heeft bijna weekend gespammed!");
+                embedBuilder.AddField(command.Name, embedFieldText);
+            }
+
+            return ReplyAsync("List of available commands", false, embedBuilder.Build());
         }
     }
 }
