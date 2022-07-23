@@ -119,8 +119,11 @@ namespace WeekendBot.Components
                 case DayOfWeek.Thursday:
                     return 1;
                 case DayOfWeek.Friday:
-                default:
+                case DayOfWeek.Saturday:
+                case DayOfWeek.Sunday:
                     return 0;
+                default:
+                    throw new NotSupportedException($"Unexpected value {dayOfWeek} of {typeof(DayOfWeek)}");
             }
         }
     }

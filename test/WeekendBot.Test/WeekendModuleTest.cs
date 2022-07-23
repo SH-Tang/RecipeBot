@@ -19,6 +19,7 @@ using Discord.Commands;
 using NSubstitute;
 using WeekendBot.Core;
 using WeekendBot.Modules;
+using WeekendBot.TestUtils;
 using Xunit;
 
 namespace WeekendBot.Test
@@ -36,6 +37,42 @@ namespace WeekendBot.Test
 
             // Assert
             Assert.IsAssignableFrom<ModuleBase<SocketCommandContext>>(module);
+        }
+
+        [Fact]
+        public void GetIsItWeekendResponseAsync_Always_ReturnsExpectedAttributes()
+        {
+            // Call
+            CommandAttribute commandAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, CommandAttribute>(
+                nameof(WeekendModule.GetIsItWeekendResponseAsync));
+            SummaryAttribute summaryAttribute= ReflectionHelper.GetCustomAttribute<WeekendModule, SummaryAttribute>(
+                nameof(WeekendModule.GetIsItWeekendResponseAsync));
+
+            // Assert
+            Assert.NotNull(commandAttribute);
+            Assert.Equal("weekend?", commandAttribute.Text.ToLower());
+
+            Assert.NotNull(commandAttribute);
+            const string expectedSummary = "Gets a response whether the current (local) time is defined as a weekend.";
+            Assert.Equal(expectedSummary, summaryAttribute.Text);
+        }
+
+        [Fact]
+        public void GetTimeToWeekendResponseAsync_Always_ReturnsExpectedAttributes()
+        {
+            // Call
+            CommandAttribute commandAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, CommandAttribute>(
+                nameof(WeekendModule.GetTimeToWeekendResponseAsync));
+            SummaryAttribute summaryAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, SummaryAttribute>(
+                nameof(WeekendModule.GetTimeToWeekendResponseAsync));
+
+            // Assert
+            Assert.NotNull(commandAttribute);
+            Assert.Equal("timetoweekend?", commandAttribute.Text.ToLower());
+
+            Assert.NotNull(commandAttribute);
+            const string expectedSummary = "Gets a response between the time of invoking the command and until it is the first weekend date time.";
+            Assert.Equal(expectedSummary, summaryAttribute.Text);
         }
     }
 }
