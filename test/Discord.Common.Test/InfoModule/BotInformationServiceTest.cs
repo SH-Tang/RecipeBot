@@ -53,10 +53,11 @@ public class BotInformationServiceTest
         Assert.Equal(botInformationOptions.BotInformationUrl, result.Url);
 
         AuthorInformation? authorInformation = botInformationOptions.AuthorInformation;
-        EmbedAuthor? embedAuthor = result.Author;
-        Assert.Equal(authorInformation?.AuthorName, embedAuthor.Value.Name);
-        Assert.Equal(authorInformation?.AuthorUrl, embedAuthor.Value.Url);
-        Assert.Equal(authorInformation?.AuthorAvatarUrl, embedAuthor.Value.IconUrl);
+        Assert.NotNull(result.Author);
+        EmbedAuthor embedAuthor = result.Author!.Value;
+        Assert.Equal(authorInformation?.AuthorName, embedAuthor.Name);
+        Assert.Equal(authorInformation?.AuthorUrl, embedAuthor.Url);
+        Assert.Equal(authorInformation?.AuthorAvatarUrl, embedAuthor.IconUrl);
     }
 
     [Fact]
