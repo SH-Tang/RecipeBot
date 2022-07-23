@@ -20,13 +20,12 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
-using Discord;
-using WeekendBot.Modules;
+using Discord.Common.InfoModule;
 using Xunit;
 
-namespace WeekendBot.Test;
+namespace Discord.Common.Test.InfoModule;
 
-public class CommandInfoServiceTest
+public class DiscordCommandInformationServiceTest
 {
     [Fact]
     public async Task GetCommandInfoSummaries_WithCommandInfos_ReturnsExpectedEmbed()
@@ -64,6 +63,6 @@ public class CommandInfoServiceTest
         Assert.Equal(field.Name, info.Name);
 
         string expectedSummary = info.Summary ?? $"No description available.{Environment.NewLine}";
-        Assert.Equal(expectedSummary, field.Value);
+        Assert.Equal(expectedSummary, (string)field.Value);
     }
 }

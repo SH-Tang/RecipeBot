@@ -16,12 +16,13 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using Discord.Commands;
+using Discord.Common.InfoModule;
 using NSubstitute;
-using WeekendBot.Modules;
 using WeekendBot.TestUtils;
 using Xunit;
+using DiscordCommonInfoModule = Discord.Common.InfoModule.InfoModule;
 
-namespace WeekendBot.Test;
+namespace Discord.Common.Test.InfoModule;
 
 public class InfoModuleTest
 {
@@ -33,7 +34,7 @@ public class InfoModuleTest
         var commandInfoService = Substitute.For<IDiscordCommandInformationService>();
 
         // Call
-        var module = new InfoModule(commandService, commandInfoService);
+        var module = new DiscordCommonInfoModule(commandService, commandInfoService);
 
         // Assert
         Assert.IsAssignableFrom<ModuleBase<SocketCommandContext>>(module);
@@ -43,10 +44,10 @@ public class InfoModuleTest
     public void GetHelpResponseAsync_Always_ReturnsExpectedAttributes()
     {
         // Call
-        CommandAttribute commandAttribute = ReflectionHelper.GetCustomAttribute<InfoModule, CommandAttribute>(
-            nameof(InfoModule.GetHelpResponseAsync));
-        SummaryAttribute summaryAttribute = ReflectionHelper.GetCustomAttribute<InfoModule, SummaryAttribute>(
-            nameof(InfoModule.GetHelpResponseAsync));
+        CommandAttribute commandAttribute = ReflectionHelper.GetCustomAttribute<DiscordCommonInfoModule, CommandAttribute>(
+            nameof(DiscordCommonInfoModule.GetHelpResponseAsync));
+        SummaryAttribute summaryAttribute = ReflectionHelper.GetCustomAttribute<DiscordCommonInfoModule, SummaryAttribute>(
+            nameof(DiscordCommonInfoModule.GetHelpResponseAsync));
 
         // Assert
         Assert.NotNull(commandAttribute);

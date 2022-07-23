@@ -19,6 +19,7 @@ using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.Common.InfoModule;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

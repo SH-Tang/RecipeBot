@@ -18,7 +18,7 @@
 using System;
 using WeekendBot.Utils;
 
-namespace WeekendBot.Modules;
+namespace Discord.Common.InfoModule;
 
 /// <summary>
 /// Class containing information about a Discord command.

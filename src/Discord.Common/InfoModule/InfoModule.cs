@@ -19,11 +19,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Discord;
 using Discord.Commands;
 using WeekendBot.Utils;
 
-namespace WeekendBot.Modules
+namespace Discord.Common.InfoModule
 {
     /// <summary>
     /// Definition of commands that provide information about the bot.
@@ -36,7 +35,7 @@ namespace WeekendBot.Modules
         /// <summary>
         /// Creates a new instance of <see cref="InfoModule"/>.
         /// </summary>
-        /// <param name="commandService">The <see cref="CommandService"/>.</param>
+        /// <param name="commandService">The <see cref="Discord.Commands.CommandService"/>.</param>
         /// <param name="discordCommandInformationService">The <see cref="IDiscordCommandInformationService"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
         public InfoModule(CommandService commandService, IDiscordCommandInformationService discordCommandInformationService)
