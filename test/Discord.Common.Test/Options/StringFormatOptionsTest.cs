@@ -15,30 +15,31 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using WeekendBot.Core.Options;
 using Xunit;
 
-namespace WeekendBot.Core.Test.Options;
+namespace Discord.Common.Test.Options;
 
-public class ExplicitDiscordCommandOptionsTest
+public class StringFormatOptionsTest
 {
     [Fact]
     public void SectionKey_Always_ReturnsExpectedValue()
     {
         // Call
-        const string key = ExplicitDiscordCommandOptions.SectionKey;
+        const string key = StringFormatOptions.SectionKey;
 
         // Assert
-        Assert.Equal("CommandOptions", key);
+        Assert.Equal("StringFormatOptions", key);
     }
 
     [Fact]
     public void Constructor_Always_ExpectedProperties()
     {
         // Call
-        var options = new ExplicitDiscordCommandOptions();
+        var options = new StringFormatOptions();
 
         // Assert
-        Assert.Equal('~', options.CommandPrefix);
+        Assert.Equal("F", options.FloatingNumberFormat);
+        Assert.Equal("F", options.DateTimeFormat);
+        Assert.Equal("c", options.TimeSpanFormat);
     }
 }

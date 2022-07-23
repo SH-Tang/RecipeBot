@@ -19,7 +19,6 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using WeekendBot.Core;
-using WeekendBot.Core.Options;
 using WeekendBot.Utils;
 
 namespace WeekendBot.Components

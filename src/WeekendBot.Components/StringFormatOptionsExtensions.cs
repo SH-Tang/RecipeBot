@@ -16,20 +16,27 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using WeekendBot.Core.Options;
+using Options;
+using Options;
+using Options;
+using Options;
+using Options;
+using Options;
+using Options;
+using Options;
 using WeekendBot.Utils;
 
 namespace WeekendBot.Components;
 
 /// <summary>
-/// Class containing extensions methods for the <see cref="StringFormatOptions"/>.
+/// Class containing extensions methods for the <see cref="Discord.Common.Options.StringFormatOptions"/>.
 /// </summary>
 public static class StringFormatOptionsExtensions
 {
     /// <summary>
     /// Formats a <see cref="double"/>.
     /// </summary>
-    /// <param name="options">The <see cref="StringFormatOptions"/> to format with.</param>
+    /// <param name="options">The <see cref="Discord.Common.Options.StringFormatOptions"/> to format with.</param>
     /// <param name="value">The value to format.</param>
     /// <returns>A <see cref="string"/> representing the formatted <paramref name="value"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="options"/> is <c>null</c>.</exception>
@@ -42,7 +49,7 @@ public static class StringFormatOptionsExtensions
     /// <summary>
     /// Formats a <see cref="DateTime"/>.
     /// </summary>
-    /// <param name="options">The <see cref="StringFormatOptions"/> to format with.</param>
+    /// <param name="options">The <see cref="Discord.Common.Options.StringFormatOptions"/> to format with.</param>
     /// <param name="value">The value to format.</param>
     /// <returns>A <see cref="string"/> representing the formatted <paramref name="value"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="options"/> is <c>null</c>.</exception>
@@ -55,7 +62,7 @@ public static class StringFormatOptionsExtensions
     /// <summary>
     /// Formats a <see cref="TimeSpan"/>.
     /// </summary>
-    /// <param name="options">The <see cref="StringFormatOptions"/> to format with.</param>
+    /// <param name="options">The <see cref="Discord.Common.Options.StringFormatOptions"/> to format with.</param>
     /// <param name="value">The value to format.</param>
     /// <returns>A <see cref="string"/> representing the formatted <paramref name="value"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="options"/> is <c>null</c>.</exception>

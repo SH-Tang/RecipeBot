@@ -20,9 +20,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
+using Discord.Common.Options;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
-using WeekendBot.Core.Options;
 using WeekendBot.Utils;
 
 namespace WeekendBot.Handler

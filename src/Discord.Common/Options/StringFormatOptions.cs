@@ -17,7 +17,7 @@
 
 using System;
 
-namespace WeekendBot.Core.Options;
+namespace Discord.Common.Options;
 
 /// <summary>
 /// Class containing options for string formats.
