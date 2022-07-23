@@ -77,7 +77,8 @@ namespace WeekendBot
             var commandHandlingService = services.GetRequiredService<ExplicitDiscordCommandHandler>();
             await commandHandlingService.InitializeHandlerAsync(new[]
             {
-                typeof(WeekendModule)
+                typeof(WeekendModule),
+                typeof(InfoModule)
             });
         }
 
