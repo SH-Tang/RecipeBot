@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using Discord.Common.Options;
+using Discord.Common.Handler;
 using Xunit;
 
-namespace Discord.Common.Test.Options;
+namespace Discord.Common.Test.Handler;
 
 public class ExplicitDiscordCommandOptionsTest
 {

@@ -19,6 +19,7 @@ using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.Common.Handler;
 using Discord.Common.InfoModule;
 using Discord.Common.Options;
 using Discord.WebSocket;
@@ -26,7 +27,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeekendBot.Components;
 using WeekendBot.Core;
-using WeekendBot.Handler;
 using WeekendBot.Modules;
 
 namespace WeekendBot
