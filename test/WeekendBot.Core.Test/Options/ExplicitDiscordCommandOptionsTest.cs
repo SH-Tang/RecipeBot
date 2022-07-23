@@ -39,7 +39,6 @@ public class ExplicitDiscordCommandOptionsTest
         var options = new ExplicitDiscordCommandOptions();
 
         // Assert
-        Assert.Equal("CommandOptions", ExplicitDiscordCommandOptions.SectionKey);
         Assert.Equal('~', options.CommandPrefix);
     }
 }

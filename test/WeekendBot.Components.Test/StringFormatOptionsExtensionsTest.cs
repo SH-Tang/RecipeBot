@@ -23,9 +23,9 @@ using Xunit;
 
 namespace WeekendBot.Components.Test;
 
-public class StringFormatExtensionsTest
+public class StringFormatOptionsExtensionsTest
 {
-    public StringFormatExtensionsTest()
+    public StringFormatOptionsExtensionsTest()
     {
         CultureInfo.CurrentCulture = CultureInfo.CreateSpecificCulture("nl-NL");
     }
