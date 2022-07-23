@@ -21,7 +21,7 @@ using System.Globalization;
 using Discord.Common.Options;
 using Xunit;
 
-namespace WeekendBot.Components.Test;
+namespace Discord.Common.Test.Options;
 
 public class StringFormatOptionsExtensionsTest
 {

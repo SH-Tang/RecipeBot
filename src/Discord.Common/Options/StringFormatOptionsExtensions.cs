@@ -16,10 +16,9 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using Discord.Common.Options;
 using WeekendBot.Utils;
 
-namespace WeekendBot.Components;
+namespace Discord.Common.Options;
 
 /// <summary>
 /// Class containing extensions methods for the <see cref="StringFormatOptions"/>.
