@@ -37,7 +37,7 @@ namespace WeekendBot.Handler
         private readonly CommandService commandService;
         private readonly IServiceProvider services;
 
-        private readonly bool isInitialized;
+        private bool isInitialized;
 
         /// <summary>
         /// Creates a new instance of <see cref="ExplicitDiscordCommandHandler"/>.
@@ -84,6 +84,7 @@ namespace WeekendBot.Handler
             {
                 IEnumerable<Task> addingModuleTypeTasks = CreateAddingModuleTasks(moduleTypes);
                 await Task.WhenAll(addingModuleTypeTasks);
+                isInitialized = true;
             }
             else
             {
