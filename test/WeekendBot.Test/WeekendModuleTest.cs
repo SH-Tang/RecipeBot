@@ -19,6 +19,7 @@ using Discord.Commands;
 using NSubstitute;
 using WeekendBot.Core;
 using WeekendBot.Modules;
+using WeekendBot.TestUtils;
 using Xunit;
 
 namespace WeekendBot.Test
@@ -36,6 +37,30 @@ namespace WeekendBot.Test
 
             // Assert
             Assert.IsAssignableFrom<ModuleBase<SocketCommandContext>>(module);
+        }
+
+        [Fact]
+        public void GetIsItWeekendResponseAsync_Always_ReturnsExpectedCommandAttribute()
+        {
+            // Call
+            CommandAttribute commandAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, CommandAttribute>(
+                nameof(WeekendModule.GetIsItWeekendResponseAsync));
+
+            // Assert
+            Assert.NotNull(commandAttribute);
+            Assert.Equal("weekend?", commandAttribute.Text.ToLower());
+        }
+
+        [Fact]
+        public void GetTimeToWeekendResponseAsync_Always_ReturnsExpectedCommandAttribute()
+        {
+            // Call
+            CommandAttribute commandAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, CommandAttribute>(
+                nameof(WeekendModule.GetTimeToWeekendResponseAsync));
+
+            // Assert
+            Assert.NotNull(commandAttribute);
+            Assert.Equal("timetoweekend?", commandAttribute.Text.ToLower());
         }
     }
 }
