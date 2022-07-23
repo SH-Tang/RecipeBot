@@ -36,7 +36,7 @@ namespace WeekendBot.TestUtils
         /// <returns>The <typeparamref name="TAttribute"/>, <c>null</c> if the attribute was not found.</returns>
         /// <exception cref="ArgumentException">Thrown when <paramref name="methodName"/> is <c>null</c>, empty
         /// or consists of whitespace.</exception>
-        public static TAttribute GetCustomAttribute<TObject, TAttribute>(string methodName)
+        public static TAttribute? GetCustomAttribute<TObject, TAttribute>(string methodName)
             where TObject : class
             where TAttribute : Attribute
         {
