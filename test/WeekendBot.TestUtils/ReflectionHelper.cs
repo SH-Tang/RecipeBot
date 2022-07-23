@@ -17,6 +17,7 @@
 
 using System;
 using System.Reflection;
+using WeekendBot.Utils;
 
 namespace WeekendBot.TestUtils
 {
@@ -54,19 +55,12 @@ namespace WeekendBot.TestUtils
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="argumentTypes"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="methodName"/> is <c>null</c>, empty
         /// or consists of whitespace.</exception>
-        public static TAttribute GetCustomAttribute<TObject, TAttribute>(string methodName, Type[] argumentTypes)
+        private static TAttribute GetCustomAttribute<TObject, TAttribute>(string methodName, Type[] argumentTypes)
             where TObject : class
             where TAttribute : Attribute
         {
-            if (argumentTypes == null)
-            {
-                throw new ArgumentNullException(nameof(argumentTypes));
-            }
-
-            if (string.IsNullOrWhiteSpace(methodName))
-            {
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(methodName));
-            }
+            argumentTypes.IsNotNull(nameof(argumentTypes));
+            methodName.IsNotNullOrWhiteSpaces(nameof(methodName));
 
             return typeof(TObject).GetMethod(methodName, argumentTypes)?.GetCustomAttribute<TAttribute>();
         }
