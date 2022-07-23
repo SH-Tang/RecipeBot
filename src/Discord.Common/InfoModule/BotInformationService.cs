@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using WeekendBot.Utils;
 
 namespace Discord.Common.InfoModule;
@@ -27,6 +28,19 @@ namespace Discord.Common.InfoModule;
 /// </summary>
 public class BotInformationService
 {
+    private readonly BotInformationOptions options;
+
+    /// <summary>
+    /// Creates a new instance of <see cref="BotInformationService"/>.
+    /// </summary>
+    /// <param name="options">The options to supply additional information about the bot.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="options"/> is <c>null</c>.</exception>
+    public BotInformationService(IOptions<BotInformationOptions> options)
+    {
+        options.IsNotNull(nameof(options));
+        this.options = options.Value;
+    }
+
     /// <summary>
     /// Gets an <see cref="Embed"/> that contains the summaries of all available commands.
     /// </summary>
@@ -36,14 +50,38 @@ public class BotInformationService
     {
         commandInfos.IsNotNull(nameof(commandInfos));
 
-        var embedBuilder = new EmbedBuilder();
+        EmbedBuilder embedBuilder = CreateEmbedBuilder();
         foreach (DiscordCommandInformation command in commandInfos)
         {
             string embedFieldText = command.Summary ?? $"No description available.{Environment.NewLine}";
-
             embedBuilder.AddField(command.Name, embedFieldText);
         }
 
         return Task.FromResult(embedBuilder.Build());
+    }
+
+    private EmbedBuilder CreateEmbedBuilder()
+    {
+        AuthorInformation? authorInformation = options.AuthorInformation;
+        var embedBuilder = new EmbedBuilder
+        {
+            Title = GetHelpTitle(),
+            Color = Color.Blue,
+            Url = options.BotInformationUrl,
+            Author = new EmbedAuthorBuilder
+            {
+                Name = authorInformation?.AuthorName,
+                Url = authorInformation?.AuthorUrl,
+                IconUrl = authorInformation?.AuthorAvatarUrl
+            }
+        };
+        return embedBuilder;
+    }
+
+    private string GetHelpTitle()
+    {
+        return options.BotName == null
+                   ? "Available commands"
+                   : $"Available commands for {options.BotName}";
     }
 }

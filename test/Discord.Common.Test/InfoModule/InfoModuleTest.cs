@@ -17,6 +17,7 @@
 
 using Discord.Commands;
 using Discord.Common.InfoModule;
+using Microsoft.Extensions.Options;
 using NSubstitute;
 using WeekendBot.TestUtils;
 using Xunit;
@@ -31,10 +32,11 @@ public class InfoModuleTest
     {
         // Setup
         var commandService = Substitute.For<CommandService>();
-        var commandInfoService = new BotInformationService();
+        var options = Substitute.For<IOptions<BotInformationOptions>>();
+        var infoService = new BotInformationService(options);
 
         // Call
-        var module = new DiscordCommonInfoModule(commandService, commandInfoService);
+        var module = new DiscordCommonInfoModule(commandService, infoService);
 
         // Assert
         Assert.IsAssignableFrom<ModuleBase<SocketCommandContext>>(module);

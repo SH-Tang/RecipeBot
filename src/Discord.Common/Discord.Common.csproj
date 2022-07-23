@@ -3,9 +3,14 @@
   <Import Project="$(SolutionDir)\build\WeekendBot.targets" />
 
   <ItemGroup>
+    <None Include="..\..\licenses\Copying.licenseheader" Link="Copying.licenseheader" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Discord.Net.Commands" Version="3.7.2" />
     <PackageReference Include="Discord.Net.Core" Version="3.7.2" />
     <PackageReference Include="Discord.Net.WebSocket" Version="3.7.2" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>

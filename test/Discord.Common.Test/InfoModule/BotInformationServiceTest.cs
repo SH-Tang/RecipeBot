@@ -21,16 +21,53 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.Common.InfoModule;
+using Microsoft.Extensions.Options;
+using NSubstitute;
 using Xunit;
 
 namespace Discord.Common.Test.InfoModule;
 
 public class BotInformationServiceTest
 {
-    [Fact]
-    public async Task GetCommandInfoSummaries_WithCommandInfos_ReturnsExpectedEmbed()
+    [Theory]
+    [MemberData(nameof(GetInfoOptions))]
+    public async Task GetCommandInfoSummaries_WithOptions_ReturnsEmbedWithExpectedMetaData(
+        BotInformationOptions botInformationOptions)
     {
         // Setup
+        var options = Substitute.For<IOptions<BotInformationOptions>>();
+        options.Value.Returns(botInformationOptions);
+
+        var service = new BotInformationService(options);
+
+        // Call
+        Embed result = await service.GetCommandInfoSummaries(Enumerable.Empty<DiscordCommandInformation>());
+
+        // Assert
+        Assert.Equal(Color.Blue, result.Color);
+
+        string expectedTitle = botInformationOptions.BotInformationUrl == null
+                                   ? "Available commands"
+                                   : $"Available commands for {botInformationOptions.BotName}";
+        Assert.Equal(expectedTitle, result.Title);
+        Assert.Equal(botInformationOptions.BotInformationUrl, result.Url);
+
+        AuthorInformation? authorInformation = botInformationOptions.AuthorInformation;
+        EmbedAuthor? embedAuthor = result.Author;
+        Assert.Equal(authorInformation?.AuthorName, embedAuthor.Value.Name);
+        Assert.Equal(authorInformation?.AuthorUrl, embedAuthor.Value.Url);
+        Assert.Equal(authorInformation?.AuthorAvatarUrl, embedAuthor.Value.IconUrl);
+    }
+
+    [Fact]
+    public async Task GetCommandInfoSummaries_WithCommandInfos_ReturnsExpectedEmbedFields()
+    {
+        // Setup
+        var options = Substitute.For<IOptions<BotInformationOptions>>();
+        options.Value.Returns(new BotInformationOptions());
+
+        var service = new BotInformationService(options);
+
         var infoWithoutSummary = new DiscordCommandInformation("Command1");
         var infoWithSummary = new DiscordCommandInformation("Command2")
         {
@@ -41,8 +78,6 @@ public class BotInformationServiceTest
             infoWithoutSummary,
             infoWithSummary
         };
-
-        var service = new BotInformationService();
 
         // Call
         Embed result = await service.GetCommandInfoSummaries(commandInfos);
@@ -63,6 +98,29 @@ public class BotInformationServiceTest
         Assert.Equal(field.Name, info.Name);
 
         string expectedSummary = info.Summary ?? $"No description available.{Environment.NewLine}";
-        Assert.Equal(expectedSummary, (string)field.Value);
+        Assert.Equal(expectedSummary, field.Value);
+    }
+
+    private static IEnumerable<object[]> GetInfoOptions()
+    {
+        yield return new object[]
+        {
+            new BotInformationOptions()
+        };
+
+        yield return new object[]
+        {
+            new BotInformationOptions
+            {
+                AuthorInformation = new AuthorInformation
+                {
+                    AuthorName = "Soup",
+                    AuthorAvatarUrl = @"https://www.google.com/",
+                    AuthorUrl = @"https://www.bing.com/",
+                },
+                BotName = "Bot Name",
+                BotInformationUrl = @"https://github.com/",
+            }
+        };
     }
 }
