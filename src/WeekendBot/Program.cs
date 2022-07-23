@@ -99,20 +99,25 @@ namespace WeekendBot
         {
             var services = new ServiceCollection();
             ConfigureServices(services);
+            ConfigureOptions(services);
 
             return services.BuildServiceProvider(true);
         }
 
-        private void ConfigureServices(IServiceCollection services)
+        private static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<DiscordSocketClient>()
                     .AddSingleton<CommandService>()
                     .AddSingleton<ExplicitDiscordCommandHandler>()
                     .AddTransient<ITimeProvider, TimeProvider>()
-                    .AddTransient<IWeekendInquiryService, WeekendInquiryService>()
-                    .Configure<ExplicitDiscordCommandOptions>(
+                    .AddTransient<IWeekendInquiryService, WeekendInquiryService>();
+        }
+
+        private void ConfigureOptions(IServiceCollection services)
+        {
+            services.Configure<ExplicitDiscordCommandOptions>(
                         options => configurationRoot.GetSection(ExplicitDiscordCommandOptions.SectionKey)
-                                                     .Bind(options))
+                                                    .Bind(options))
                     .Configure<StringFormatOptions>(
                         options => configurationRoot.GetSection(StringFormatOptions.SectionKey)
                                                     .Bind(options));
