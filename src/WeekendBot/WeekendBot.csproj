@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /d /f /y /i $(SolutionDir)\config.json $(OutDir)" />
+    <Exec Command="xcopy /f /y /i $(SolutionDir)\config.json $(OutDir)" />
   </Target>
 
 </Project>

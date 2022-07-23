@@ -123,6 +123,9 @@ namespace WeekendBot
                                                     .Bind(options))
                     .Configure<StringFormatOptions>(
                         options => configurationRoot.GetSection(StringFormatOptions.SectionKey)
+                                                    .Bind(options))
+                    .Configure<BotInformationOptions>(
+                        options => configurationRoot.GetSection(BotInformationOptions.SectionKey)
                                                     .Bind(options));
         }
     }
