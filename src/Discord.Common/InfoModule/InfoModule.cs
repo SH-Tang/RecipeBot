@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
-using Discord.WebSocket;
 using WeekendBot.Utils;
 
 namespace Discord.Common.InfoModule
@@ -31,15 +30,15 @@ namespace Discord.Common.InfoModule
     public class InfoModule : ModuleBase<SocketCommandContext>
     {
         private readonly CommandService commandService;
-        private readonly IBotInformationService botInformationService;
+        private readonly BotInformationService botInformationService;
 
         /// <summary>
         /// Creates a new instance of <see cref="InfoModule"/>.
         /// </summary>
-        /// <param name="commandService">The <see cref="Discord.Commands.CommandService"/>.</param>
-        /// <param name="botInformationService">The <see cref="IBotInformationService"/>.</param>
+        /// <param name="commandService">The <see cref="CommandService"/>.</param>
+        /// <param name="botInformationService">The <see cref="BotInformationService"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-        public InfoModule(CommandService commandService, IBotInformationService botInformationService)
+        public InfoModule(CommandService commandService, BotInformationService botInformationService)
         {
             commandService.IsNotNull(nameof(commandService));
             botInformationService.IsNotNull(nameof(botInformationService));

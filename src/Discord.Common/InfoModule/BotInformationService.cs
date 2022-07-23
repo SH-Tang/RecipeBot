@@ -25,8 +25,13 @@ namespace Discord.Common.InfoModule;
 /// <summary>
 /// Service for providing information about the bot.
 /// </summary>
-public class BotInformationService : IBotInformationService
+public class BotInformationService
 {
+    /// <summary>
+    /// Gets an <see cref="Embed"/> that contains the summaries of all available commands.
+    /// </summary>
+    /// <returns>A <see cref="Embed"/> containing summaries of all available commands.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="commandInfos"/> is <c>null</c>.</exception>
     public Task<Embed> GetCommandInfoSummaries(IEnumerable<DiscordCommandInformation> commandInfos)
     {
         commandInfos.IsNotNull(nameof(commandInfos));
@@ -38,7 +43,7 @@ public class BotInformationService : IBotInformationService
 
             embedBuilder.AddField(command.Name, embedFieldText);
         }
-        
+
         return Task.FromResult(embedBuilder.Build());
     }
 }
