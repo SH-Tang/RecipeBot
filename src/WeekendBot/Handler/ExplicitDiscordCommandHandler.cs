@@ -64,7 +64,7 @@ namespace WeekendBot.Handler
             this.client.MessageReceived += HandleCommandAsync;
 
             commandOptions = options.Value;
-            
+
             isInitialized = false;
         }
 

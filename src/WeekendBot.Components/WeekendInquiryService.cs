@@ -71,7 +71,7 @@ namespace WeekendBot.Components
                    $"- {formatOptions.Format(timeUntilWeekend.TotalMinutes)} minuten" + Environment.NewLine +
                    $"- {formatOptions.Format(timeUntilWeekend.TotalSeconds)} seconden";
         }
-        
+
         private static bool IsWeekend(DateTime currentDateTime)
         {
             DayOfWeek currentDayOfWeek = currentDateTime.DayOfWeek;
