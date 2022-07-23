@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Discord.Common.Options;
 using Xunit;
 
 namespace WeekendBot.Components.Test;

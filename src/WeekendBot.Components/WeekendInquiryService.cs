@@ -17,6 +17,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Discord.Common.Options;
 using Microsoft.Extensions.Options;
 using WeekendBot.Core;
 using WeekendBot.Utils;
