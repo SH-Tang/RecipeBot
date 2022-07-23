@@ -18,27 +18,18 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using WeekendBot.Utils;
 
 namespace Discord.Common.InfoModule;
 
 /// <summary>
-/// Service for providing information about <see cref="DiscordCommandInformation"/>.
+/// Interface for describing services related to retrieving information about the bot.
 /// </summary>
-public class DiscordCommandInformationService : IDiscordCommandInformationService
+public interface IBotInformationService
 {
-    public Task<Embed> GetCommandInfoSummaries(IEnumerable<DiscordCommandInformation> commandInfos)
-    {
-        commandInfos.IsNotNull(nameof(commandInfos));
-
-        var embedBuilder = new EmbedBuilder();
-        foreach (DiscordCommandInformation command in commandInfos)
-        {
-            string embedFieldText = command.Summary ?? $"No description available.{Environment.NewLine}";
-
-            embedBuilder.AddField(command.Name, embedFieldText);
-        }
-
-        return Task.FromResult(embedBuilder.Build());
-    }
+    /// <summary>
+    /// Gets an <see cref="Embed"/> that contains the summaries of all available commands.
+    /// </summary>
+    /// <returns>A <see cref="Embed"/> containing summaries of all available commands.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="commandInfos"/> is <c>null</c>.</exception>
+    Task<Embed> GetCommandInfoSummaries(IEnumerable<DiscordCommandInformation> commandInfos);
 }

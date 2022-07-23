@@ -31,7 +31,7 @@ public class InfoModuleTest
     {
         // Setup
         var commandService = Substitute.For<CommandService>();
-        var commandInfoService = Substitute.For<IDiscordCommandInformationService>();
+        var commandInfoService = Substitute.For<IBotInformationService>();
 
         // Call
         var module = new DiscordCommonInfoModule(commandService, commandInfoService);

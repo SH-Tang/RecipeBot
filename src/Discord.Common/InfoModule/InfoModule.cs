@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
+using Discord.WebSocket;
 using WeekendBot.Utils;
 
 namespace Discord.Common.InfoModule
@@ -30,21 +31,21 @@ namespace Discord.Common.InfoModule
     public class InfoModule : ModuleBase<SocketCommandContext>
     {
         private readonly CommandService commandService;
-        private readonly IDiscordCommandInformationService discordCommandInformationService;
+        private readonly IBotInformationService botInformationService;
 
         /// <summary>
         /// Creates a new instance of <see cref="InfoModule"/>.
         /// </summary>
         /// <param name="commandService">The <see cref="Discord.Commands.CommandService"/>.</param>
-        /// <param name="discordCommandInformationService">The <see cref="IDiscordCommandInformationService"/>.</param>
+        /// <param name="botInformationService">The <see cref="IBotInformationService"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-        public InfoModule(CommandService commandService, IDiscordCommandInformationService discordCommandInformationService)
+        public InfoModule(CommandService commandService, IBotInformationService botInformationService)
         {
             commandService.IsNotNull(nameof(commandService));
-            discordCommandInformationService.IsNotNull(nameof(discordCommandInformationService));
+            botInformationService.IsNotNull(nameof(botInformationService));
 
             this.commandService = commandService;
-            this.discordCommandInformationService = discordCommandInformationService;
+            this.botInformationService = botInformationService;
         }
 
         [Command("help")]
@@ -57,7 +58,7 @@ namespace Discord.Common.InfoModule
                     Summary = c.Summary
                 }).ToArray();
 
-            Embed embedSummaryInformation = await discordCommandInformationService.GetCommandInfoSummaries(commandInfos);
+            Embed embedSummaryInformation = await botInformationService.GetCommandInfoSummaries(commandInfos);
             await ReplyAsync(null, false, embedSummaryInformation);
         }
     }

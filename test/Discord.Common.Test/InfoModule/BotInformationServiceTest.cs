@@ -25,7 +25,7 @@ using Xunit;
 
 namespace Discord.Common.Test.InfoModule;
 
-public class DiscordCommandInformationServiceTest
+public class BotInformationServiceTest
 {
     [Fact]
     public async Task GetCommandInfoSummaries_WithCommandInfos_ReturnsExpectedEmbed()
@@ -42,7 +42,7 @@ public class DiscordCommandInformationServiceTest
             infoWithSummary
         };
 
-        var service = new DiscordCommandInformationService();
+        var service = new BotInformationService();
 
         // Call
         Embed result = await service.GetCommandInfoSummaries(commandInfos);

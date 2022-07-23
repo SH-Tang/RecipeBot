@@ -113,7 +113,7 @@ namespace WeekendBot
                     .AddSingleton<ExplicitDiscordCommandHandler>()
                     .AddTransient<ITimeProvider, TimeProvider>()
                     .AddTransient<IWeekendInquiryService, WeekendInquiryService>()
-                    .AddTransient<IDiscordCommandInformationService, DiscordCommandInformationService>();
+                    .AddTransient<IBotInformationService, BotInformationService>();
         }
 
         private void ConfigureOptions(IServiceCollection services)
