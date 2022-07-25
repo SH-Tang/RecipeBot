@@ -42,7 +42,6 @@ namespace WeekendBot.Utils
         /// <summary>
         /// Guards that <paramref name="argument"/> is not <c>null</c> or consists of only whitespaces.
         /// </summary>
-        /// <typeparam name="T">The type of <paramref name="argument"/></typeparam>
         /// <param name="argument">The argument to guard.</param>
         /// <param name="argumentName">The name of the argument.</param>
         /// <exception cref="ArgumentException">Thrown when <paramref name="argument"/> is <c>null</c> or consists of only whitespaces.</exception>

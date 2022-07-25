@@ -46,17 +46,17 @@ public class InfoModuleTest
     public void GetHelpResponseAsync_Always_ReturnsExpectedAttributes()
     {
         // Call
-        CommandAttribute commandAttribute = ReflectionHelper.GetCustomAttribute<DiscordCommonInfoModule, CommandAttribute>(
+        CommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttribute<DiscordCommonInfoModule, CommandAttribute>(
             nameof(DiscordCommonInfoModule.GetHelpResponseAsync));
-        SummaryAttribute summaryAttribute = ReflectionHelper.GetCustomAttribute<DiscordCommonInfoModule, SummaryAttribute>(
+        SummaryAttribute? summaryAttribute = ReflectionHelper.GetCustomAttribute<DiscordCommonInfoModule, SummaryAttribute>(
             nameof(DiscordCommonInfoModule.GetHelpResponseAsync));
 
         // Assert
         Assert.NotNull(commandAttribute);
-        Assert.Equal("help", commandAttribute.Text.ToLower());
+        Assert.Equal("help", commandAttribute!.Text.ToLower());
 
         Assert.NotNull(commandAttribute);
         const string expectedSummary = "Provides information about all the available commands.";
-        Assert.Equal(expectedSummary, summaryAttribute.Text);
+        Assert.Equal(expectedSummary, summaryAttribute!.Text);
     }
 }
