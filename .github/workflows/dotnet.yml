@@ -6,12 +6,15 @@ on:
     - master
   pull_request:
     branches: [ master ]
-
+    paths-ignore:
+    - '**/README.md'
+    - 'licenses/**'
+    - '.git*'
 env:
   build_directory: ./
 
 jobs:
-  build:
+  xUnit_Windows_run:
 
     runs-on: windows-latest
 
