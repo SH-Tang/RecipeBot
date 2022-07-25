@@ -19,13 +19,14 @@ using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.Common.Handler;
+using Discord.Common.InfoModule;
+using Discord.Common.Options;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeekendBot.Components;
 using WeekendBot.Core;
-using WeekendBot.Core.Options;
-using WeekendBot.Handler;
 using WeekendBot.Modules;
 
 namespace WeekendBot
@@ -77,7 +78,8 @@ namespace WeekendBot
             var commandHandlingService = services.GetRequiredService<ExplicitDiscordCommandHandler>();
             await commandHandlingService.InitializeHandlerAsync(new[]
             {
-                typeof(WeekendModule)
+                typeof(WeekendModule),
+                typeof(InfoModule)
             });
         }
 
@@ -110,16 +112,20 @@ namespace WeekendBot
                     .AddSingleton<CommandService>()
                     .AddSingleton<ExplicitDiscordCommandHandler>()
                     .AddTransient<ITimeProvider, TimeProvider>()
-                    .AddTransient<IWeekendInquiryService, WeekendInquiryService>();
+                    .AddTransient<IWeekendInquiryService, WeekendInquiryService>()
+                    .AddTransient<BotInformationService>();
         }
 
         private void ConfigureOptions(IServiceCollection services)
         {
-            services.Configure<ExplicitDiscordCommandOptions>(
+            services.ConfigureAndValidate<ExplicitDiscordCommandOptions>(
                         options => configurationRoot.GetSection(ExplicitDiscordCommandOptions.SectionKey)
                                                     .Bind(options))
-                    .Configure<StringFormatOptions>(
+                    .ConfigureAndValidate<StringFormatOptions>(
                         options => configurationRoot.GetSection(StringFormatOptions.SectionKey)
+                                                    .Bind(options))
+                    .ConfigureAndValidate<BotInformation>(
+                        options => configurationRoot.GetSection(BotInformation.SectionKey)
                                                     .Bind(options));
         }
     }

@@ -15,21 +15,32 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-namespace WeekendBot.Core.Options
-{
-    /// <summary>
-    /// Class containing options for explicit Discord commands.
-    /// </summary>
-    public class ExplicitDiscordCommandOptions
-    {
-        /// <summary>
-        /// Gets the key of the section to retrieve the settings from.
-        /// </summary>
-        public const string SectionKey = "CommandOptions";
+using Discord.Common.InfoModule;
+using Xunit;
 
-        /// <summary>
-        /// Gets or sets the prefix the Discord commands should have before being invoked.
-        /// </summary>
-        public char CommandPrefix { get; set; } = '~';
+namespace Discord.Common.Test.InfoModule;
+
+public class BotInformationTest
+{
+    [Fact]
+    public void SectionKey_Always_ReturnsExpectedValue()
+    {
+        // Call
+        const string key = BotInformation.SectionKey;
+
+        // Assert
+        Assert.Equal("BotInformation", key);
+    }
+
+    [Fact]
+    public void Constructor_Always_ExpectedProperties()
+    {
+        // Call
+        var options = new BotInformation();
+
+        // Assert
+        Assert.Null(options.AuthorInformation);
+        Assert.Null(options.BotInformationUrl);
+        Assert.Null(options.BotName);
     }
 }

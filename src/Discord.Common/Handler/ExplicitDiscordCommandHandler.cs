@@ -22,10 +22,9 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
-using WeekendBot.Core.Options;
 using WeekendBot.Utils;
 
-namespace WeekendBot.Handler
+namespace Discord.Common.Handler
 {
     /// <summary>
     /// The handler to deal with explicit Discord commands when prefixed with an identifier.
@@ -37,7 +36,7 @@ namespace WeekendBot.Handler
         private readonly CommandService commandService;
         private readonly IServiceProvider services;
 
-        private readonly bool isInitialized;
+        private bool isInitialized;
 
         /// <summary>
         /// Creates a new instance of <see cref="ExplicitDiscordCommandHandler"/>.
@@ -64,7 +63,7 @@ namespace WeekendBot.Handler
             this.client.MessageReceived += HandleCommandAsync;
 
             commandOptions = options.Value;
-            
+
             isInitialized = false;
         }
 
@@ -84,6 +83,7 @@ namespace WeekendBot.Handler
             {
                 IEnumerable<Task> addingModuleTypeTasks = CreateAddingModuleTasks(moduleTypes);
                 await Task.WhenAll(addingModuleTypeTasks);
+                isInitialized = true;
             }
             else
             {

@@ -6,4 +6,8 @@
     <None Include="..\..\licenses\Copying.licenseheader" Link="Copying.licenseheader" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\WeekendBot.Utils\WeekendBot.Utils.csproj" />
+  </ItemGroup>
+
 </Project>

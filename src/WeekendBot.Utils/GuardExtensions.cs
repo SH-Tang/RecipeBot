@@ -38,5 +38,20 @@ namespace WeekendBot.Utils
                 throw new ArgumentNullException(argumentName);
             }
         }
+
+        /// <summary>
+        /// Guards that <paramref name="argument"/> is not <c>null</c> or consists of only whitespaces.
+        /// </summary>
+        /// <typeparam name="T">The type of <paramref name="argument"/></typeparam>
+        /// <param name="argument">The argument to guard.</param>
+        /// <param name="argumentName">The name of the argument.</param>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="argument"/> is <c>null</c> or consists of only whitespaces.</exception>
+        public static void IsNotNullOrWhiteSpaces(this string argument, string argumentName)
+        {
+            if (argument == null)
+            {
+                throw new ArgumentException($"{argumentName} cannot be null or exists of whitespaces only.", argumentName);
+            }
+        }
     }
 }

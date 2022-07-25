@@ -17,9 +17,9 @@
 
 using System;
 using System.Threading.Tasks;
+using Discord.Common.Options;
 using Microsoft.Extensions.Options;
 using WeekendBot.Core;
-using WeekendBot.Core.Options;
 using WeekendBot.Utils;
 
 namespace WeekendBot.Components
@@ -71,7 +71,7 @@ namespace WeekendBot.Components
                    $"- {formatOptions.Format(timeUntilWeekend.TotalMinutes)} minuten" + Environment.NewLine +
                    $"- {formatOptions.Format(timeUntilWeekend.TotalSeconds)} seconden";
         }
-        
+
         private static bool IsWeekend(DateTime currentDateTime)
         {
             DayOfWeek currentDayOfWeek = currentDateTime.DayOfWeek;

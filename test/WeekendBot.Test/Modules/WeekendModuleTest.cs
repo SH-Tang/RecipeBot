@@ -22,7 +22,7 @@ using WeekendBot.Modules;
 using WeekendBot.TestUtils;
 using Xunit;
 
-namespace WeekendBot.Test
+namespace WeekendBot.Test.Modules
 {
     public class WeekendModuleTest
     {
@@ -45,7 +45,7 @@ namespace WeekendBot.Test
             // Call
             CommandAttribute commandAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, CommandAttribute>(
                 nameof(WeekendModule.GetIsItWeekendResponseAsync));
-            SummaryAttribute summaryAttribute= ReflectionHelper.GetCustomAttribute<WeekendModule, SummaryAttribute>(
+            SummaryAttribute summaryAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, SummaryAttribute>(
                 nameof(WeekendModule.GetIsItWeekendResponseAsync));
 
             // Assert

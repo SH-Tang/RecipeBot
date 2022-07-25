@@ -15,31 +15,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using WeekendBot.Core.Options;
-using Xunit;
-
-namespace WeekendBot.Core.Test.Options;
-
-public class ExplicitDiscordCommandOptionsTest
+namespace Discord.Common.Handler
 {
-    [Fact]
-    public void SectionKey_Always_ReturnsExpectedValue()
+    /// <summary>
+    /// Class containing options for explicit Discord commands.
+    /// </summary>
+    public class ExplicitDiscordCommandOptions
     {
-        // Call
-        const string key = ExplicitDiscordCommandOptions.SectionKey;
+        /// <summary>
+        /// Gets the key of the section to retrieve the settings from.
+        /// </summary>
+        public const string SectionKey = "CommandOptions";
 
-        // Assert
-        Assert.Equal("CommandOptions", key);
-    }
-
-    [Fact]
-    public void Constructor_Always_ExpectedProperties()
-    {
-        // Call
-        var options = new ExplicitDiscordCommandOptions();
-
-        // Assert
-        Assert.Equal("CommandOptions", ExplicitDiscordCommandOptions.SectionKey);
-        Assert.Equal('~', options.CommandPrefix);
+        /// <summary>
+        /// Gets or sets the prefix the Discord commands should have before being invoked.
+        /// </summary>
+        public char CommandPrefix { get; set; } = '~';
     }
 }

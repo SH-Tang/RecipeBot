@@ -7,12 +7,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Discord.Net.Commands" Version="3.7.2" />
+    <PackageReference Include="Discord.Net.Core" Version="3.7.2" />
+    <PackageReference Include="Discord.Net.WebSocket" Version="3.7.2" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Discord.Common\Discord.Common.csproj" />
-    <ProjectReference Include="..\WeekendBot.Core\WeekendBot.Core.csproj" />
     <ProjectReference Include="..\WeekendBot.Utils\WeekendBot.Utils.csproj" />
   </ItemGroup>
 
