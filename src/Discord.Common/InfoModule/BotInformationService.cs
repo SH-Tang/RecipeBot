@@ -28,17 +28,17 @@ namespace Discord.Common.InfoModule;
 /// </summary>
 public class BotInformationService
 {
-    private readonly BotInformationOptions options;
+    private readonly BotInformation botInformation;
 
     /// <summary>
     /// Creates a new instance of <see cref="BotInformationService"/>.
     /// </summary>
-    /// <param name="options">The options to supply additional information about the bot.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="options"/> is <c>null</c>.</exception>
-    public BotInformationService(IOptions<BotInformationOptions> options)
+    /// <param name="botInfo">The <see cref="BotInformation"/> to supply additional information about the bot.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="botInfo"/> is <c>null</c>.</exception>
+    public BotInformationService(IOptions<BotInformation> botInfo)
     {
-        options.IsNotNull(nameof(options));
-        this.options = options.Value;
+        botInfo.IsNotNull(nameof(botInfo));
+        botInformation = botInfo.Value;
     }
 
     /// <summary>
@@ -62,12 +62,12 @@ public class BotInformationService
 
     private EmbedBuilder CreateEmbedBuilder()
     {
-        AuthorInformation? authorInformation = options.AuthorInformation;
+        AuthorInformation? authorInformation = botInformation.AuthorInformation;
         var embedBuilder = new EmbedBuilder
         {
-            Title = GetHelpTitle(),
+            Title = GetSummaryTitle(),
             Color = Color.Blue,
-            Url = options.BotInformationUrl,
+            Url = botInformation.BotInformationUrl,
             Author = new EmbedAuthorBuilder
             {
                 Name = authorInformation?.AuthorName,
@@ -78,10 +78,10 @@ public class BotInformationService
         return embedBuilder;
     }
 
-    private string GetHelpTitle()
+    private string GetSummaryTitle()
     {
-        return options.BotName == null
+        return botInformation.BotName == null
                    ? "Available commands"
-                   : $"Available commands for {options.BotName}";
+                   : $"Available commands for {botInformation.BotName}";
     }
 }

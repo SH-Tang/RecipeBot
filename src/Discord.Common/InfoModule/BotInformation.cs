@@ -20,9 +20,9 @@ using System.ComponentModel.DataAnnotations;
 namespace Discord.Common.InfoModule;
 
 /// <summary>
-/// Class containing options for displaying information about the bot.
+/// Class containing data for displaying information about the bot.
 /// </summary>
-public class BotInformationOptions
+public class BotInformation
 {
     /// <summary>
     /// Gets the key of the section to retrieve the settings from.

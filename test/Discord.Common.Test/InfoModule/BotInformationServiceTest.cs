@@ -32,11 +32,11 @@ public class BotInformationServiceTest
     [Theory]
     [MemberData(nameof(GetInfoOptions))]
     public async Task GetCommandInfoSummaries_WithOptions_ReturnsEmbedWithExpectedMetaData(
-        BotInformationOptions botInformationOptions)
+        BotInformation botInformation)
     {
         // Setup
-        var options = Substitute.For<IOptions<BotInformationOptions>>();
-        options.Value.Returns(botInformationOptions);
+        var options = Substitute.For<IOptions<BotInformation>>();
+        options.Value.Returns(botInformation);
 
         var service = new BotInformationService(options);
 
@@ -46,13 +46,13 @@ public class BotInformationServiceTest
         // Assert
         Assert.Equal(Color.Blue, result.Color);
 
-        string expectedTitle = botInformationOptions.BotInformationUrl == null
+        string expectedTitle = botInformation.BotInformationUrl == null
                                    ? "Available commands"
-                                   : $"Available commands for {botInformationOptions.BotName}";
+                                   : $"Available commands for {botInformation.BotName}";
         Assert.Equal(expectedTitle, result.Title);
-        Assert.Equal(botInformationOptions.BotInformationUrl, result.Url);
+        Assert.Equal(botInformation.BotInformationUrl, result.Url);
 
-        AuthorInformation? authorInformation = botInformationOptions.AuthorInformation;
+        AuthorInformation? authorInformation = botInformation.AuthorInformation;
         Assert.NotNull(result.Author);
         EmbedAuthor embedAuthor = result.Author!.Value;
         Assert.Equal(authorInformation?.AuthorName, embedAuthor.Name);
@@ -64,8 +64,8 @@ public class BotInformationServiceTest
     public async Task GetCommandInfoSummaries_WithCommandInfos_ReturnsExpectedEmbedFields()
     {
         // Setup
-        var options = Substitute.For<IOptions<BotInformationOptions>>();
-        options.Value.Returns(new BotInformationOptions());
+        var options = Substitute.For<IOptions<BotInformation>>();
+        options.Value.Returns(new BotInformation());
 
         var service = new BotInformationService(options);
 
@@ -106,12 +106,12 @@ public class BotInformationServiceTest
     {
         yield return new object[]
         {
-            new BotInformationOptions()
+            new BotInformation()
         };
 
         yield return new object[]
         {
-            new BotInformationOptions
+            new BotInformation
             {
                 AuthorInformation = new AuthorInformation
                 {

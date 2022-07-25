@@ -32,7 +32,7 @@ public class InfoModuleTest
     {
         // Setup
         var commandService = Substitute.For<CommandService>();
-        var options = Substitute.For<IOptions<BotInformationOptions>>();
+        var options = Substitute.For<IOptions<BotInformation>>();
         var infoService = new BotInformationService(options);
 
         // Call

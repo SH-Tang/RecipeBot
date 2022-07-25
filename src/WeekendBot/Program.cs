@@ -124,8 +124,8 @@ namespace WeekendBot
                     .ConfigureAndValidate<StringFormatOptions>(
                         options => configurationRoot.GetSection(StringFormatOptions.SectionKey)
                                                     .Bind(options))
-                    .ConfigureAndValidate<BotInformationOptions>(
-                        options => configurationRoot.GetSection(BotInformationOptions.SectionKey)
+                    .ConfigureAndValidate<BotInformation>(
+                        options => configurationRoot.GetSection(BotInformation.SectionKey)
                                                     .Bind(options));
         }
     }

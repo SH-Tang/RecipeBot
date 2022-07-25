@@ -20,13 +20,13 @@ using Xunit;
 
 namespace Discord.Common.Test.InfoModule;
 
-public class BotInformationOptionsTest
+public class BotInformationTest
 {
     [Fact]
     public void SectionKey_Always_ReturnsExpectedValue()
     {
         // Call
-        const string key = BotInformationOptions.SectionKey;
+        const string key = BotInformation.SectionKey;
 
         // Assert
         Assert.Equal("BotInformation", key);
@@ -36,7 +36,7 @@ public class BotInformationOptionsTest
     public void Constructor_Always_ExpectedProperties()
     {
         // Call
-        var options = new BotInformationOptions();
+        var options = new BotInformation();
 
         // Assert
         Assert.Null(options.AuthorInformation);
