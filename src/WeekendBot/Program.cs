@@ -19,6 +19,7 @@ using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.Common;
 using Discord.Common.Handler;
 using Discord.Common.InfoModule;
 using Discord.Common.Options;
@@ -66,7 +67,7 @@ namespace WeekendBot
         private async Task ConfigureDiscordClient(IServiceProvider services)
         {
             discordClient = services.GetRequiredService<DiscordSocketClient>();
-            discordClient.Log += LogAsync;
+            discordClient.Log += message => LogAsync(services, message);
 
             string token = configurationRoot["Token"];
             await discordClient.LoginAsync(TokenType.Bot, token);
@@ -86,14 +87,16 @@ namespace WeekendBot
         private static async Task ConfigureCommandService(IServiceProvider services)
         {
             var commandService = services.GetRequiredService<CommandService>();
-            commandService.Log += LogAsync;
+            commandService.Log += message => LogAsync(services, message);
 
             await Task.CompletedTask;
         }
 
-        private static Task LogAsync(LogMessage msg)
+        private static Task LogAsync(IServiceProvider services, LogMessage msg)
         {
-            Console.WriteLine(msg.ToString());
+            var logger = services.GetRequiredService<ILogger>();
+            logger.LogInfoAsync(msg.Message);
+
             return Task.CompletedTask;
         }
 
@@ -111,6 +114,7 @@ namespace WeekendBot
             services.AddSingleton<DiscordSocketClient>()
                     .AddSingleton<CommandService>()
                     .AddSingleton<ExplicitDiscordCommandHandler>()
+                    .AddSingleton<ILogger, ConsoleLogger>()
                     .AddTransient<ITimeProvider, TimeProvider>()
                     .AddTransient<IWeekendInquiryService, WeekendInquiryService>()
                     .AddTransient<BotInformationService>();
