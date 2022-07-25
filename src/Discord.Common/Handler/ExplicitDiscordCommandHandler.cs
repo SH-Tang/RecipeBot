@@ -22,10 +22,9 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
-using WeekendBot.Core.Options;
 using WeekendBot.Utils;
 
-namespace WeekendBot.Handler
+namespace Discord.Common.Handler
 {
     /// <summary>
     /// The handler to deal with explicit Discord commands when prefixed with an identifier.

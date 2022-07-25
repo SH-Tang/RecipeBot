@@ -18,10 +18,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Discord.Common.Options;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using WeekendBot.Core;
-using WeekendBot.Core.Options;
 using Xunit;
 
 namespace WeekendBot.Components.Test

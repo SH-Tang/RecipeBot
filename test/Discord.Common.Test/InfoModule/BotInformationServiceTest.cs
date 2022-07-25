@@ -87,7 +87,7 @@ public class BotInformationServiceTest
         ImmutableArray<EmbedField> embedFields = result.Fields;
         Assert.Equal(commandInfos.Count(), embedFields.Length);
 
-        int index = 0;
+        var index = 0;
         foreach (EmbedField embedField in embedFields)
         {
             AssertEmbedField(embedField, commandInfos.ElementAt(index++));
@@ -117,10 +117,10 @@ public class BotInformationServiceTest
                 {
                     AuthorName = "Soup",
                     AuthorAvatarUrl = @"https://www.google.com/",
-                    AuthorUrl = @"https://www.bing.com/",
+                    AuthorUrl = @"https://www.bing.com/"
                 },
                 BotName = "Bot Name",
-                BotInformationUrl = @"https://github.com/",
+                BotInformationUrl = @"https://github.com/"
             }
         };
     }

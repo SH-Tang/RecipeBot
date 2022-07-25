@@ -18,10 +18,10 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using WeekendBot.Core.Options;
+using Discord.Common.Options;
 using Xunit;
 
-namespace WeekendBot.Components.Test;
+namespace Discord.Common.Test.Options;
 
 public class StringFormatOptionsExtensionsTest
 {

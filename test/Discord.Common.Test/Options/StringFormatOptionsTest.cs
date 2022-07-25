@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using WeekendBot.Core.Options;
+using Discord.Common.Options;
 using Xunit;
 
-namespace WeekendBot.Core.Test.Options;
+namespace Discord.Common.Test.Options;
 
 public class StringFormatOptionsTest
 {
