@@ -43,36 +43,36 @@ namespace WeekendBot.Test.Modules
         public void GetIsItWeekendResponseAsync_Always_ReturnsExpectedAttributes()
         {
             // Call
-            CommandAttribute commandAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, CommandAttribute>(
+            CommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, CommandAttribute>(
                 nameof(WeekendModule.GetIsItWeekendResponseAsync));
-            SummaryAttribute summaryAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, SummaryAttribute>(
+            SummaryAttribute? summaryAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, SummaryAttribute>(
                 nameof(WeekendModule.GetIsItWeekendResponseAsync));
 
             // Assert
             Assert.NotNull(commandAttribute);
-            Assert.Equal("weekend?", commandAttribute.Text.ToLower());
+            Assert.Equal("weekend?", commandAttribute!.Text.ToLower());
 
             Assert.NotNull(commandAttribute);
             const string expectedSummary = "Gets a response whether the current (local) time is defined as a weekend.";
-            Assert.Equal(expectedSummary, summaryAttribute.Text);
+            Assert.Equal(expectedSummary, summaryAttribute!.Text);
         }
 
         [Fact]
         public void GetTimeToWeekendResponseAsync_Always_ReturnsExpectedAttributes()
         {
             // Call
-            CommandAttribute commandAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, CommandAttribute>(
+            CommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, CommandAttribute>(
                 nameof(WeekendModule.GetTimeToWeekendResponseAsync));
-            SummaryAttribute summaryAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, SummaryAttribute>(
+            SummaryAttribute? summaryAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, SummaryAttribute>(
                 nameof(WeekendModule.GetTimeToWeekendResponseAsync));
 
             // Assert
             Assert.NotNull(commandAttribute);
-            Assert.Equal("timetoweekend?", commandAttribute.Text.ToLower());
+            Assert.Equal("timetoweekend?", commandAttribute!.Text.ToLower());
 
             Assert.NotNull(commandAttribute);
             const string expectedSummary = "Gets a response between the time of invoking the command and until it is the first weekend date time.";
-            Assert.Equal(expectedSummary, summaryAttribute.Text);
+            Assert.Equal(expectedSummary, summaryAttribute!.Text);
         }
     }
 }
