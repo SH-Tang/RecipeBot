@@ -22,7 +22,7 @@ using WeekendBot.Modules;
 using WeekendBot.TestUtils;
 using Xunit;
 
-namespace WeekendBot.Test
+namespace WeekendBot.Test.Modules
 {
     public class WeekendModuleTest
     {
