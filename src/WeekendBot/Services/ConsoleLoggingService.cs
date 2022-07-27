@@ -23,7 +23,7 @@ using Microsoft.Extensions.Options;
 using WeekendBot.Core;
 using WeekendBot.Utils;
 
-namespace WeekendBot.Components;
+namespace WeekendBot.Services;
 
 /// <summary>
 /// Console implementation of a logging service.
