@@ -26,6 +26,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeekendBot.Components;
 using WeekendBot.Core;
+using WeekendBot.Services;
 using WeekendBot.Utils;
 
 namespace WeekendBot;
@@ -66,7 +67,7 @@ public class WeekendBotApplicationServiceProvider
         services.AddSingleton<DiscordSocketClient>()
                 .AddSingleton<CommandService>()
                 .AddSingleton<ExplicitDiscordCommandHandler>()
-                .AddSingleton<ILogger, ConsoleLogger>()
+                .AddSingleton<ILoggingService, ConsoleLoggingService>()
                 .AddTransient<ITimeProvider, TimeProvider>()
                 .AddTransient<IWeekendInquiryService, WeekendInquiryService>()
                 .AddTransient<BotInformationService>();

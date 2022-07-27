@@ -107,7 +107,7 @@ public class WeekendBotApplication
 
     private static Task LogAsync(IServiceProvider services, LogMessage msg)
     {
-        var logger = services.GetRequiredService<ILogger>();
+        var logger = services.GetRequiredService<ILoggingService>();
         logger.LogInfoAsync(msg.Message);
 
         return Task.CompletedTask;
