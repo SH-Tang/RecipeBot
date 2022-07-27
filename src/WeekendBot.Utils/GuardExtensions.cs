@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.IO;
 
 namespace WeekendBot.Utils
 {
@@ -50,6 +51,42 @@ namespace WeekendBot.Utils
             if (argument == null)
             {
                 throw new ArgumentException($"{argumentName} cannot be null or exists of whitespaces only.", argumentName);
+            }
+        }
+
+        /// <summary>
+        /// Guards that <paramref name="argument"/> is a valid, accessible file path.
+        /// </summary>
+        /// <param name="argument">The argument to guard.</param>
+        /// <param name="argumentName">The name of the argument.</param>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="argument"/> is:
+        /// <list type="bullet">
+        /// <item>An invalid file path or;</item>
+        /// <item>A non-existing file path or;</item>
+        /// <item>the file path does not have the sufficient permissions to access.</item>
+        /// </list></exception>
+        public static void IsExistingFilePath(this string argument, string argumentName)
+        {
+            if (!File.Exists(argument))
+            {
+                throw new ArgumentException($"{argumentName} must be an existing and accessible file path.", argumentName);
+            }
+        }
+
+        /// <summary>
+        /// Guards that <paramref name="argument"/> is a valid argument.
+        /// </summary>
+        /// <param name="argument">The argument to guard.</param>
+        /// <param name="getIsValidArgumentFunc">The function to evaluate whether the argument is valid.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="parameterName">The name of the parameter.</param>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="getIsValidArgumentFunc"/> returns <c>true</c>
+        /// based on the <paramref name="argument"/>.</exception>
+        public static void IsValidArgument<T>(this T argument, Func<T, bool> getIsValidArgumentFunc, string message, string parameterName)
+        {
+            if (!getIsValidArgumentFunc(argument))
+            {
+                throw new ArgumentException(message, parameterName);
             }
         }
     }
