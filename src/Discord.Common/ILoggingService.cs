@@ -36,19 +36,19 @@ public interface ILoggingService
     /// </summary>
     /// <param name="message">The message to log.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    Task LogWarningAsync (string message);
+    Task LogWarningAsync(string message);
 
     /// <summary>
     /// Logs an error message.
     /// </summary>
     /// <param name="message">The message to log.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    Task LogErrorAsync (string message);
+    Task LogErrorAsync(string message);
 
     /// <summary>
     /// Logs an informational message when in debug mode.
     /// </summary>
     /// <param name="message">The message to log.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    Task LogDebugAsync (string message);
+    Task LogDebugAsync(string message);
 }
