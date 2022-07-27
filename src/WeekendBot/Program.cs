@@ -29,6 +29,7 @@ using Microsoft.Extensions.DependencyInjection;
 using WeekendBot.Components;
 using WeekendBot.Core;
 using WeekendBot.Modules;
+using WeekendBot.Services;
 
 namespace WeekendBot
 {
@@ -94,7 +95,7 @@ namespace WeekendBot
 
         private static Task LogAsync(IServiceProvider services, LogMessage msg)
         {
-            var logger = services.GetRequiredService<ILogger>();
+            var logger = services.GetRequiredService<ILoggingService>();
             logger.LogInfoAsync(msg.Message);
 
             return Task.CompletedTask;
@@ -114,7 +115,7 @@ namespace WeekendBot
             services.AddSingleton<DiscordSocketClient>()
                     .AddSingleton<CommandService>()
                     .AddSingleton<ExplicitDiscordCommandHandler>()
-                    .AddSingleton<ILogger, ConsoleLogger>()
+                    .AddSingleton<ILoggingService, ConsoleLoggingService>()
                     .AddTransient<ITimeProvider, TimeProvider>()
                     .AddTransient<IWeekendInquiryService, WeekendInquiryService>()
                     .AddTransient<BotInformationService>();
