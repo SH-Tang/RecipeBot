@@ -20,9 +20,9 @@ using System.Threading.Tasks;
 namespace Discord.Common;
 
 /// <summary>
-/// Interface describing logging functionality.
+/// Interface describing a service for logging.
 /// </summary>
-public interface ILogger
+public interface ILoggingService
 {
     /// <summary>
     /// Logs an informational message.

@@ -26,20 +26,20 @@ using WeekendBot.Utils;
 namespace WeekendBot.Components;
 
 /// <summary>
-/// Console implementation of a logger.
+/// Console implementation of a logging service.
 /// </summary>
-public class ConsoleLogger : ILogger
+public class ConsoleLoggingService : ILoggingService
 {
     private readonly ITimeProvider timeProvider;
     private readonly StringFormatOptions formatOptions;
 
     /// <summary>
-    /// Creates a new instance of <see cref="ConsoleLogger"/>.
+    /// Creates a new instance of <see cref="ConsoleLoggingService"/>.
     /// </summary>
     /// <param name="timeProvider">The <see cref="ITimeProvider"/> to retrieve the time with.</param>
     /// <param name="formatOptions">The options to format the messages with.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeProvider"/> is <c>null</c>.</exception>
-    public ConsoleLogger(ITimeProvider timeProvider, IOptions<StringFormatOptions> formatOptions)
+    public ConsoleLoggingService(ITimeProvider timeProvider, IOptions<StringFormatOptions> formatOptions)
     {
         timeProvider.IsNotNull(nameof(timeProvider));
         formatOptions.IsNotNull(nameof(formatOptions));
