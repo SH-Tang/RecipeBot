@@ -57,7 +57,9 @@ namespace Discord.Common.Handler
             options.IsNotNull(nameof(options));
 
             this.services = services;
+
             this.commandService = commandService;
+            commandService.CommandExecuted += CommandServiceOnCommandExecuted;
 
             this.client = client;
             this.client.MessageReceived += HandleCommandAsync;
@@ -111,9 +113,9 @@ namespace Discord.Common.Handler
             var argPos = 0;
 
             // Determine if the message is a command based on the prefix and make sure no bots trigger commands
-            if (!(message.HasCharPrefix(commandOptions.CommandPrefix, ref argPos) ||
-                  message.HasMentionPrefix(client.CurrentUser, ref argPos)) ||
-                message.Author.IsBot)
+            if (!(message.HasCharPrefix(commandOptions.CommandPrefix, ref argPos) 
+                  || message.HasMentionPrefix(client.CurrentUser, ref argPos)) 
+                || message.Author.IsBot)
             {
                 return;
             }
@@ -124,6 +126,17 @@ namespace Discord.Common.Handler
             // Execute the command with the command context we just
             // created, along with the service provider for precondition checks.
             await commandService.ExecuteAsync(context, argPos, services);
+        }
+
+        private static async Task CommandServiceOnCommandExecuted(
+            Optional<CommandInfo> commandInfo, ICommandContext commandContext, IResult result)
+        {
+            if (!commandInfo.IsSpecified || result.IsSuccess)
+            {
+                return;
+            }
+
+            await commandContext.Channel.SendMessageAsync($"Command {commandInfo.Value.Name} failed: {result.ErrorReason}");
         }
     }
 }
