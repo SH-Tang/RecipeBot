@@ -27,7 +27,7 @@ using WeekendBot.Utils;
 namespace Discord.Common.Handlers
 {
     /// <summary>
-    /// The text handler to deal with Discord commands when prefixed with an identifier.
+    /// The text handler to deal with Discord commands.
     /// </summary>
     public class TextDiscordCommandHandler
     {
