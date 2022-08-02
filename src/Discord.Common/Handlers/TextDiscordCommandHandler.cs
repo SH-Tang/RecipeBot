@@ -24,7 +24,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using WeekendBot.Utils;
 
-namespace Discord.Common.Handler
+namespace Discord.Common.Handlers
 {
     /// <summary>
     /// The text handler to deal with Discord commands when prefixed with an identifier.
@@ -32,7 +32,8 @@ namespace Discord.Common.Handler
     public class TextDiscordCommandHandler
     {
         private readonly DiscordSocketClient client;
-        private readonly TextDiscordCommandOptions commandOptions;
+        private readonly ILoggingService logger;
+        private readonly DiscordCommandOptions commandOptions;
         private readonly CommandService commandService;
         private readonly IServiceProvider services;
 
@@ -44,19 +45,22 @@ namespace Discord.Common.Handler
         /// <param name="services">The <see cref="IServiceProvider"/> for providing services.</param>
         /// <param name="commandService">The <see cref="CommandService"/>.</param>
         /// <param name="client">The <see cref="DiscordSocketClient"/>.</param>
-        /// <param name="options">The <see cref="TextDiscordCommandOptions"/> to configure the handler with.</param>
+        /// <param name="options">The <see cref="DiscordCommandOptions"/> to configure the handler with.</param>
+        /// <param name="logger">The <see cref="ILoggingService"/> to use for the logging.</param>
         /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
         public TextDiscordCommandHandler(
             IServiceProvider services, CommandService commandService, DiscordSocketClient client,
-            IOptions<TextDiscordCommandOptions> options)
+            IOptions<DiscordCommandOptions> options, ILoggingService logger)
         {
             services.IsNotNull(nameof(services));
             commandService.IsNotNull(nameof(commandService));
             client.IsNotNull(nameof(client));
             options.IsNotNull(nameof(options));
+            logger.IsNotNull(nameof(logger));
 
             this.services = services;
-
+            this.logger = logger;
+            
             this.commandService = commandService;
             commandService.CommandExecuted += CommandServiceOnCommandExecuted;
 
@@ -75,7 +79,9 @@ namespace Discord.Common.Handler
         /// <returns>A <see cref="Task"/> indicating the status of the operation.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="moduleTypes"/>
         /// is <c>null</c>.</exception>
-        /// <exception cref="InvalidOperationException">Thrown when the handler is already initialized.</exception>
+        /// <exception cref="ArgumentException">Thrown when a duplicate module <see cref="Type"/> was added.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when the handler is already initialized
+        /// or when an invalid <see cref="Type"/> was added.</exception>
         public async Task InitializeHandlerAsync(IEnumerable<Type> moduleTypes)
         {
             moduleTypes.IsNotNull(nameof(moduleTypes));
@@ -127,7 +133,7 @@ namespace Discord.Common.Handler
             await commandService.ExecuteAsync(context, argPos, services);
         }
 
-        private static async Task CommandServiceOnCommandExecuted(
+        private async Task CommandServiceOnCommandExecuted(
             Optional<CommandInfo> commandInfo, ICommandContext commandContext, IResult result)
         {
             if (!commandInfo.IsSpecified || result.IsSuccess)
@@ -135,7 +141,9 @@ namespace Discord.Common.Handler
                 return;
             }
 
-            await commandContext.Channel.SendMessageAsync($"Command {commandInfo.Value.Name} failed: {result.ErrorReason}");
+            var errorMessage = $"Command {commandInfo.Value.Name} failed: {result.ErrorReason}";
+            await commandContext.Channel.SendMessageAsync(errorMessage);
+            await logger.LogErrorAsync(errorMessage);
         }
     }
 }

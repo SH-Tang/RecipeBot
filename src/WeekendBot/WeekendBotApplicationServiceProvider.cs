@@ -18,7 +18,7 @@
 using System;
 using Discord.Commands;
 using Discord.Common;
-using Discord.Common.Handler;
+using Discord.Common.Handlers;
 using Discord.Common.InfoModule;
 using Discord.Common.Options;
 using Discord.WebSocket;
@@ -75,8 +75,8 @@ public class WeekendBotApplicationServiceProvider
 
     private void ConfigureOptions(IServiceCollection services)
     {
-        services.ConfigureAndValidate<TextDiscordCommandOptions>(
-                    options => configuration.GetSection(TextDiscordCommandOptions.SectionKey)
+        services.ConfigureAndValidate<DiscordCommandOptions>(
+                    options => configuration.GetSection(DiscordCommandOptions.SectionKey)
                                             .Bind(options))
                 .ConfigureAndValidate<StringFormatOptions>(
                     options => configuration.GetSection(StringFormatOptions.SectionKey)
