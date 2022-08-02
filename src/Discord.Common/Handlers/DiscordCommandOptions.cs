@@ -31,5 +31,10 @@ namespace Discord.Common.Handlers
         /// Gets or sets the prefix the Discord commands should have before being invoked.
         /// </summary>
         public char CommandPrefix { get; set; } = '~';
+
+        /// <summary>
+        /// Gets or sets the Id for the test Discord server.
+        /// </summary>
+        public ulong TestGuildId { get; set; }   
     }
 }
