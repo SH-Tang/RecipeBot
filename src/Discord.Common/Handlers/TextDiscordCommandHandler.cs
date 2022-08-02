@@ -62,15 +62,17 @@ namespace Discord.Common.Handlers
             this.logger = logger;
             
             this.commandService = commandService;
-            commandService.CommandExecuted += CommandServiceOnCommandExecuted;
+            commandService.CommandExecuted += CommandExecutedEventHandler;
+            commandService.Log += LogEventHandler;
 
             this.client = client;
-            this.client.MessageReceived += HandleCommandAsync;
+            this.client.MessageReceived += MessageReceivedEventHandler;
 
             commandOptions = options.Value;
 
             isInitialized = false;
         }
+
 
         /// <summary>
         /// Initializes the handler with a collection of modules.
@@ -101,11 +103,10 @@ namespace Discord.Common.Handlers
         private IEnumerable<Task> CreateAddingModuleTasks(IEnumerable<Type> modulesTypesToAdd)
         {
             return modulesTypesToAdd.Select(moduleType => commandService.AddModuleAsync(moduleType, services))
-                                    .Cast<Task>()
                                     .ToArray();
         }
 
-        private async Task HandleCommandAsync(SocketMessage messageParam)
+        private async Task MessageReceivedEventHandler(SocketMessage messageParam)
         {
             // Don't process the command if it was a system message
             var message = messageParam as SocketUserMessage;
@@ -133,7 +134,7 @@ namespace Discord.Common.Handlers
             await commandService.ExecuteAsync(context, argPos, services);
         }
 
-        private async Task CommandServiceOnCommandExecuted(
+        private async Task CommandExecutedEventHandler(
             Optional<CommandInfo> commandInfo, ICommandContext commandContext, IResult result)
         {
             if (!commandInfo.IsSpecified || result.IsSuccess)
@@ -144,6 +145,11 @@ namespace Discord.Common.Handlers
             var errorMessage = $"Command {commandInfo.Value.Name} failed: {result.ErrorReason}";
             await commandContext.Channel.SendMessageAsync(errorMessage);
             await logger.LogErrorAsync(errorMessage);
+        }
+
+        private Task LogEventHandler(LogMessage arg)
+        {
+            return logger.LogDebugAsync(arg.Message);
         }
     }
 }
