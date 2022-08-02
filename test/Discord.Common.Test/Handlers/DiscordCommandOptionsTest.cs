@@ -20,7 +20,7 @@ using Xunit;
 
 namespace Discord.Common.Test.Handlers;
 
-public class TextDiscordCommandOptionsTest
+public class DiscordCommandOptionsTest
 {
     [Fact]
     public void SectionKey_Always_ReturnsExpectedValue()

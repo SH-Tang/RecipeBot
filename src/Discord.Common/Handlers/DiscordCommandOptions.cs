@@ -20,7 +20,7 @@ namespace Discord.Common.Handlers
     /// <summary>
     /// Class containing options for Discord commands.
     /// </summary>
-    public class TextDiscordCommandOptions
+    public class DiscordCommandOptions
     {
         /// <summary>
         /// Gets the key of the section to retrieve the settings from.
