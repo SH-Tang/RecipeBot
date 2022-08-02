@@ -27,29 +27,28 @@ using WeekendBot.Utils;
 namespace Discord.Common.Handler
 {
     /// <summary>
-    /// The handler to deal with explicit Discord commands when prefixed with an identifier.
+    /// The text handler to deal with Discord commands when prefixed with an identifier.
     /// </summary>
-    public class ExplicitDiscordCommandHandler
+    public class TextDiscordCommandHandler
     {
         private readonly DiscordSocketClient client;
-        private readonly ExplicitDiscordCommandOptions commandOptions;
+        private readonly TextDiscordCommandOptions commandOptions;
         private readonly CommandService commandService;
         private readonly IServiceProvider services;
 
         private bool isInitialized;
 
         /// <summary>
-        /// Creates a new instance of <see cref="ExplicitDiscordCommandHandler"/>.
+        /// Creates a new instance of <see cref="TextDiscordCommandHandler"/>.
         /// </summary>
         /// <param name="services">The <see cref="IServiceProvider"/> for providing services.</param>
         /// <param name="commandService">The <see cref="CommandService"/>.</param>
         /// <param name="client">The <see cref="DiscordSocketClient"/>.</param>
-        /// <param name="options">The <see cref="ExplicitDiscordCommandOptions"/> to configure the handler with.</param>
+        /// <param name="options">The <see cref="TextDiscordCommandOptions"/> to configure the handler with.</param>
         /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-        public ExplicitDiscordCommandHandler(IServiceProvider services,
-                                             CommandService commandService,
-                                             DiscordSocketClient client,
-                                             IOptions<ExplicitDiscordCommandOptions> options)
+        public TextDiscordCommandHandler(
+            IServiceProvider services, CommandService commandService, DiscordSocketClient client,
+            IOptions<TextDiscordCommandOptions> options)
         {
             services.IsNotNull(nameof(services));
             commandService.IsNotNull(nameof(commandService));

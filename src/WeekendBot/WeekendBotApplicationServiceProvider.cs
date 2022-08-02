@@ -66,7 +66,7 @@ public class WeekendBotApplicationServiceProvider
     {
         services.AddSingleton<DiscordSocketClient>()
                 .AddSingleton<CommandService>()
-                .AddSingleton<ExplicitDiscordCommandHandler>()
+                .AddSingleton<TextDiscordCommandHandler>()
                 .AddSingleton<ILoggingService, ConsoleLoggingService>()
                 .AddTransient<ITimeProvider, TimeProvider>()
                 .AddTransient<IWeekendInquiryService, WeekendInquiryService>()
@@ -75,8 +75,8 @@ public class WeekendBotApplicationServiceProvider
 
     private void ConfigureOptions(IServiceCollection services)
     {
-        services.ConfigureAndValidate<ExplicitDiscordCommandOptions>(
-                    options => configuration.GetSection(ExplicitDiscordCommandOptions.SectionKey)
+        services.ConfigureAndValidate<TextDiscordCommandOptions>(
+                    options => configuration.GetSection(TextDiscordCommandOptions.SectionKey)
                                             .Bind(options))
                 .ConfigureAndValidate<StringFormatOptions>(
                     options => configuration.GetSection(StringFormatOptions.SectionKey)
