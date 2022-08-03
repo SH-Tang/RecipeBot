@@ -89,8 +89,8 @@ public class WeekendBotApplication
 
     private static async Task ConfigureCommandHandlingService(IServiceProvider services)
     {
-        var commandHandlingService = services.GetRequiredService<TextDiscordCommandHandler>();
-        await commandHandlingService.InitializeHandlerAsync(new[]
+        var textCommandHandlingService = services.GetRequiredService<TextDiscordCommandHandler>();
+        await textCommandHandlingService.InitializeHandlerAsync(new[]
         {
             typeof(WeekendModule),
             typeof(InfoModule)

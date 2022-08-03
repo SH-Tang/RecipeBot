@@ -16,11 +16,13 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using Discord;
 using Discord.Commands;
 using Discord.Common;
 using Discord.Common.Handlers;
 using Discord.Common.InfoModule;
 using Discord.Common.Options;
+using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -64,9 +66,17 @@ public class WeekendBotApplicationServiceProvider
 
     private static void ConfigureServices(IServiceCollection services)
     {
-        services.AddSingleton<DiscordSocketClient>()
+        DiscordSocketConfig socketConfig = new()
+        {
+            UseInteractionSnowflakeDate = false
+        };
+
+        services.AddSingleton(socketConfig)
+                .AddSingleton<DiscordSocketClient>()
                 .AddSingleton<CommandService>()
                 .AddSingleton<TextDiscordCommandHandler>()
+                .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
+                .AddSingleton<InteractionDiscordCommandHandler>()
                 .AddSingleton<ILoggingService, ConsoleLoggingService>()
                 .AddTransient<ITimeProvider, TimeProvider>()
                 .AddTransient<IWeekendInquiryService, WeekendInquiryService>()
