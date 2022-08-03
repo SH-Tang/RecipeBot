@@ -63,10 +63,9 @@ public class InteractionDiscordCommandHandler
         this.logger = logger;
 
         this.interactionService = interactionService;
-        interactionService.Log += OnLogEventHandler;
+        interactionService.Log += async message => await OnLogEventHandler(message);
 
         this.client = client;
-        client.Ready += ReadyEventHandler;
         client.InteractionCreated += InteractionCreatedEventHandler;
 
         isInitialized = false;
@@ -90,6 +89,8 @@ public class InteractionDiscordCommandHandler
         {
             IEnumerable<Task> addingModuleTypeTasks = CreateAddingModuleTasks(moduleTypes);
             await Task.WhenAll(addingModuleTypeTasks);
+
+            client.Ready += ReadyEventHandler;
             isInitialized = true;
         }
         else
@@ -115,9 +116,25 @@ public class InteractionDiscordCommandHandler
 #endif
     }
 
-    private Task OnLogEventHandler(LogMessage arg)
+    private async Task OnLogEventHandler(LogMessage arg)
     {
-        return logger.LogDebugAsync(arg.Message);
+        string message = arg.Message;
+        if (!string.IsNullOrWhiteSpace(message))
+        {
+            await logger.LogDebugAsync($"{arg.Source} - {message}");
+        }
+
+        Exception exception = arg.Exception;
+        if (exception != null)
+        {
+            await logger.LogErrorAsync($"{arg.Source} - {exception.Message}");
+
+            string? stackTrace = exception.StackTrace;
+            if (!string.IsNullOrWhiteSpace(stackTrace))
+            {
+                await logger.LogErrorAsync(stackTrace);
+            }
+        }
     }
 
     private async Task InteractionCreatedEventHandler(SocketInteraction interaction)
