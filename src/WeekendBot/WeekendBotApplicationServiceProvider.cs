@@ -66,7 +66,7 @@ public class WeekendBotApplicationServiceProvider
 
     private static void ConfigureServices(IServiceCollection services)
     {
-        DiscordSocketConfig socketConfig = new()
+        var socketConfig = new DiscordSocketConfig()
         {
             UseInteractionSnowflakeDate = false
         };

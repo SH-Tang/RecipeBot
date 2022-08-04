@@ -66,7 +66,7 @@ public class InteractionDiscordCommandHandler
         interactionService.Log += async message => await OnLogEventHandler(message);
 
         this.client = client;
-        client.InteractionCreated += InteractionCreatedEventHandler;
+        client.InteractionCreated += async arg => await InteractionCreatedEventHandler(arg);
 
         isInitialized = false;
     }
