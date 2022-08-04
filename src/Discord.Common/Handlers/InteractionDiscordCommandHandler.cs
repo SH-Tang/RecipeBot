@@ -153,8 +153,16 @@ public class InteractionDiscordCommandHandler
                 await logger.LogErrorAsync(errorMessage);
             }
         }
-        catch
+        catch (Exception e)
         {
+            await logger.LogErrorAsync(e.Message);
+
+            string? stackTrace = e.StackTrace;
+            if (!string.IsNullOrWhiteSpace(stackTrace))
+            {
+                await logger.LogErrorAsync(stackTrace);
+            }
+
             // If Slash Command execution fails it is most likely that the original interaction acknowledgement will persist. It is a good idea to delete the original
             // response, or at least let the user know that something went wrong during the command execution.
             if (interaction.Type is InteractionType.ApplicationCommand)
