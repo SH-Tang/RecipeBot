@@ -16,8 +16,6 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord.Interactions;
 using Discord.WebSocket;
@@ -29,15 +27,9 @@ namespace Discord.Common.Handlers;
 /// <summary>
 /// The command handler that uses the Discord interaction framework.
 /// </summary>
-public class InteractionDiscordCommandHandler
+public class InteractionDiscordCommandHandler : DiscordCommandHandlerBase
 {
-    private readonly DiscordSocketClient client;
-    private readonly ILoggingService logger;
-    private readonly DiscordCommandOptions commandOptions;
     private readonly InteractionService interactionService;
-    private readonly IServiceProvider services;
-
-    private bool isInitialized;
 
     /// <summary>
     /// Creates a new instance of <see cref="TextDiscordCommandHandler"/>.
@@ -49,60 +41,25 @@ public class InteractionDiscordCommandHandler
     /// <param name="logger">The <see cref="ILoggingService"/> to use for the logging.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     public InteractionDiscordCommandHandler(
-        IServiceProvider services, InteractionService interactionService, DiscordSocketClient client,
-        IOptions<DiscordCommandOptions> options, ILoggingService logger)
+        IServiceProvider services, DiscordSocketClient client,
+        IOptions<DiscordCommandOptions> options, ILoggingService logger, InteractionService interactionService)
+        : base(services, client, options, logger)
     {
-        services.IsNotNull(nameof(services));
         interactionService.IsNotNull(nameof(interactionService));
-        client.IsNotNull(nameof(client));
-        options.IsNotNull(nameof(options));
-        logger.IsNotNull(nameof(logger));
-
-        this.services = services;
-        commandOptions = options.Value;
-        this.logger = logger;
 
         this.interactionService = interactionService;
         interactionService.Log += async message => await OnLogEventHandler(message);
 
-        this.client = client;
-        client.InteractionCreated += async arg => await InteractionCreatedEventHandler(arg);
+        Client.InteractionCreated += async arg => await InteractionCreatedEventHandler(arg);
 
-        isInitialized = false;
+        AddModuleFunc = (provider, type) => interactionService.AddModuleAsync(type, provider);
     }
 
-    /// <summary>
-    /// Initializes the handler with a collection of modules.
-    /// </summary>
-    /// <param name="moduleTypes">The collection of <see cref="Type"/> of modules to add.</param>
-    /// <returns>A <see cref="Task"/> indicating the status of the operation.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="moduleTypes"/>
-    /// is <c>null</c>.</exception>
-    /// <exception cref="ArgumentException">Thrown when a duplicate module <see cref="Type"/> was added.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when the handler is already initialized
-    /// or when an invalid <see cref="Type"/> was added.</exception>
-    public async Task InitializeHandlerAsync(IEnumerable<Type> moduleTypes)
+    protected override Func<IServiceProvider, Type, Task> AddModuleFunc { get; }
+
+    protected override void PostProcessInitialization()
     {
-        moduleTypes.IsNotNull(nameof(moduleTypes));
-
-        if (!isInitialized)
-        {
-            IEnumerable<Task> addingModuleTypeTasks = CreateAddingModuleTasks(moduleTypes);
-            await Task.WhenAll(addingModuleTypeTasks);
-
-            client.Ready += ReadyEventHandler;
-            isInitialized = true;
-        }
-        else
-        {
-            throw new InvalidOperationException("Handler is already initialized.");
-        }
-    }
-
-    private IEnumerable<Task> CreateAddingModuleTasks(IEnumerable<Type> modulesTypesToAdd)
-    {
-        return modulesTypesToAdd.Select(moduleType => interactionService.AddModuleAsync(moduleType, services))
-                                .ToArray();
+        Client.Ready += ReadyEventHandler;
     }
 
     private async Task ReadyEventHandler()
@@ -110,31 +67,10 @@ public class InteractionDiscordCommandHandler
         // Context & Slash commands can be automatically registered, but this process needs to happen after the client enters the READY state.
         // Since Global Commands take around 1 hour to register, we should use a test guild to instantly update and test our commands.
 #if DEBUG
-        await interactionService.RegisterCommandsToGuildAsync(commandOptions.TestGuildId);
+        await interactionService.RegisterCommandsToGuildAsync(CommandOptions.TestGuildId);
 #else
         await _handler.RegisterCommandsGloballyAsync(true);
 #endif
-    }
-
-    private async Task OnLogEventHandler(LogMessage arg)
-    {
-        string message = arg.Message;
-        if (!string.IsNullOrWhiteSpace(message))
-        {
-            await logger.LogDebugAsync($"{arg.Source} - {message}");
-        }
-
-        Exception exception = arg.Exception;
-        if (exception != null)
-        {
-            await logger.LogErrorAsync($"{arg.Source} - {exception.Message}");
-
-            string? stackTrace = exception.StackTrace;
-            if (!string.IsNullOrWhiteSpace(stackTrace))
-            {
-                await logger.LogErrorAsync(stackTrace);
-            }
-        }
     }
 
     private async Task InteractionCreatedEventHandler(SocketInteraction interaction)
@@ -142,25 +78,25 @@ public class InteractionDiscordCommandHandler
         try
         {
             // Create an execution context that matches the generic type parameter of your InteractionModuleBase<T> modules.
-            var context = new SocketInteractionContext(client, interaction);
+            var context = new SocketInteractionContext(Client, interaction);
 
             // Execute the incoming command.
-            IResult? result = await interactionService.ExecuteCommandAsync(context, services);
+            IResult? result = await interactionService.ExecuteCommandAsync(context, Services);
             if (!result.IsSuccess)
             {
                 var errorMessage = $"Command failed: {result.ErrorReason}";
                 await context.Channel.SendMessageAsync(errorMessage);
-                await logger.LogErrorAsync(errorMessage);
+                await Logger.LogErrorAsync(errorMessage);
             }
         }
         catch (Exception e)
         {
-            await logger.LogErrorAsync(e.Message);
+            await Logger.LogErrorAsync(e.Message);
 
             string? stackTrace = e.StackTrace;
             if (!string.IsNullOrWhiteSpace(stackTrace))
             {
-                await logger.LogErrorAsync(stackTrace);
+                await Logger.LogErrorAsync(stackTrace);
             }
 
             // If Slash Command execution fails it is most likely that the original interaction acknowledgement will persist. It is a good idea to delete the original
