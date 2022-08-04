@@ -16,12 +16,16 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using Discord.Commands;
+using Discord.Common.Handlers;
 using Discord.Common.InfoModule;
+using Discord.Interactions;
+using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using WeekendBot.TestUtils;
 using Xunit;
 using DiscordCommonInfoModule = Discord.Common.InfoModule.InfoModule;
+using SummaryAttribute = Discord.Commands.SummaryAttribute;
 
 namespace Discord.Common.Test.InfoModule;
 
@@ -32,11 +36,16 @@ public class InfoModuleTest
     {
         // Setup
         var commandService = Substitute.For<CommandService>();
+        var discordCommandOptions = Substitute.For<IOptions<DiscordCommandOptions>>();
+
+        var socketClient = Substitute.For<DiscordSocketClient>();
+        var interactionService = new InteractionService(socketClient);
+
         var options = Substitute.For<IOptions<BotInformation>>();
         var infoService = new BotInformationService(options);
 
         // Call
-        var module = new DiscordCommonInfoModule(commandService, infoService);
+        var module = new DiscordCommonInfoModule(commandService, interactionService, discordCommandOptions, infoService);
 
         // Assert
         Assert.IsAssignableFrom<ModuleBase<SocketCommandContext>>(module);
