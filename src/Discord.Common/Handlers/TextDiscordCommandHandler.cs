@@ -16,8 +16,6 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -29,82 +27,36 @@ namespace Discord.Common.Handlers
     /// <summary>
     /// The text handler to deal with Discord commands.
     /// </summary>
-    public class TextDiscordCommandHandler
+    public class TextDiscordCommandHandler : DiscordCommandHandlerBase
     {
-        private readonly DiscordSocketClient client;
-        private readonly ILoggingService logger;
-        private readonly DiscordCommandOptions commandOptions;
         private readonly CommandService commandService;
-        private readonly IServiceProvider services;
-
-        private bool isInitialized;
 
         /// <summary>
         /// Creates a new instance of <see cref="TextDiscordCommandHandler"/>.
         /// </summary>
         /// <param name="services">The <see cref="IServiceProvider"/> for providing services.</param>
-        /// <param name="commandService">The <see cref="CommandService"/>.</param>
         /// <param name="client">The <see cref="DiscordSocketClient"/>.</param>
         /// <param name="options">The <see cref="DiscordCommandOptions"/> to configure the handler with.</param>
         /// <param name="logger">The <see cref="ILoggingService"/> to use for the logging.</param>
+        /// <param name="commandService">The <see cref="CommandService"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
         public TextDiscordCommandHandler(
-            IServiceProvider services, CommandService commandService, DiscordSocketClient client,
-            IOptions<DiscordCommandOptions> options, ILoggingService logger)
+            IServiceProvider services, DiscordSocketClient client,
+            IOptions<DiscordCommandOptions> options, ILoggingService logger, CommandService commandService)
+            : base(services, client, options, logger)
         {
-            services.IsNotNull(nameof(services));
             commandService.IsNotNull(nameof(commandService));
-            client.IsNotNull(nameof(client));
-            options.IsNotNull(nameof(options));
-            logger.IsNotNull(nameof(logger));
 
-            this.services = services;
-            this.logger = logger;
-            
             this.commandService = commandService;
             commandService.CommandExecuted += CommandExecutedEventHandler;
             commandService.Log += LogEventHandler;
 
-            this.client = client;
-            this.client.MessageReceived += MessageReceivedEventHandler;
+            Client.MessageReceived += MessageReceivedEventHandler;
 
-            commandOptions = options.Value;
-
-            isInitialized = false;
+            AddModuleFunc = (provider, type) => commandService.AddModuleAsync(type, provider);
         }
 
-
-        /// <summary>
-        /// Initializes the handler with a collection of modules.
-        /// </summary>
-        /// <param name="moduleTypes">The collection of <see cref="Type"/> of modules to add.</param>
-        /// <returns>A <see cref="Task"/> indicating the status of the operation.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="moduleTypes"/>
-        /// is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">Thrown when a duplicate module <see cref="Type"/> was added.</exception>
-        /// <exception cref="InvalidOperationException">Thrown when the handler is already initialized
-        /// or when an invalid <see cref="Type"/> was added.</exception>
-        public async Task InitializeHandlerAsync(IEnumerable<Type> moduleTypes)
-        {
-            moduleTypes.IsNotNull(nameof(moduleTypes));
-
-            if (!isInitialized)
-            {
-                IEnumerable<Task> addingModuleTypeTasks = CreateAddingModuleTasks(moduleTypes);
-                await Task.WhenAll(addingModuleTypeTasks);
-                isInitialized = true;
-            }
-            else
-            {
-                throw new InvalidOperationException("Handler is already initialized.");
-            }
-        }
-
-        private IEnumerable<Task> CreateAddingModuleTasks(IEnumerable<Type> modulesTypesToAdd)
-        {
-            return modulesTypesToAdd.Select(moduleType => commandService.AddModuleAsync(moduleType, services))
-                                    .ToArray();
-        }
+        protected override Func<IServiceProvider, Type, Task> AddModuleFunc { get; }
 
         private async Task MessageReceivedEventHandler(SocketMessage messageParam)
         {
@@ -119,19 +71,19 @@ namespace Discord.Common.Handlers
             var argPos = 0;
 
             // Determine if the message is a command based on the prefix and make sure no bots trigger commands
-            if (!(message.HasCharPrefix(commandOptions.CommandPrefix, ref argPos) 
-                  || message.HasMentionPrefix(client.CurrentUser, ref argPos)) 
+            if (!(message.HasCharPrefix(CommandOptions.CommandPrefix, ref argPos)
+                  || message.HasMentionPrefix(Client.CurrentUser, ref argPos))
                 || message.Author.IsBot)
             {
                 return;
             }
 
             // Create a WebSocket-based command context based on the message
-            var context = new SocketCommandContext(client, message);
+            var context = new SocketCommandContext(Client, message);
 
             // Execute the command with the command context we just
             // created, along with the service provider for precondition checks.
-            await commandService.ExecuteAsync(context, argPos, services);
+            await commandService.ExecuteAsync(context, argPos, Services);
         }
 
         private async Task CommandExecutedEventHandler(
@@ -144,12 +96,12 @@ namespace Discord.Common.Handlers
 
             var errorMessage = $"Command {commandInfo.Value.Name} failed: {result.ErrorReason}";
             await commandContext.Channel.SendMessageAsync(errorMessage);
-            await logger.LogErrorAsync(errorMessage);
+            await Logger.LogErrorAsync(errorMessage);
         }
 
         private Task LogEventHandler(LogMessage arg)
         {
-            return logger.LogDebugAsync(arg.Message);
+            return Logger.LogDebugAsync(arg.Message);
         }
     }
 }
