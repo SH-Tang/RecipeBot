@@ -22,86 +22,81 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using WeekendBot.Utils;
 
-namespace Discord.Common.Handlers
+namespace Discord.Common.Handlers;
+
+/// <summary>
+/// The text handler to deal with Discord commands.
+/// </summary>
+public class TextDiscordCommandHandler : DiscordCommandHandlerBase
 {
+    private readonly CommandService commandService;
+
+    /// <inheritdoc />
     /// <summary>
-    /// The text handler to deal with Discord commands.
+    /// Creates a new instance of <see cref="TextDiscordCommandHandler"/>.
     /// </summary>
-    public class TextDiscordCommandHandler : DiscordCommandHandlerBase
+    /// <param name="commandService">The <see cref="CommandService"/>.</param>
+    public TextDiscordCommandHandler(
+        IServiceProvider services, DiscordSocketClient client,
+        IOptions<DiscordCommandOptions> options, ILoggingService logger, CommandService commandService)
+        : base(services, client, options, logger)
     {
-        private readonly CommandService commandService;
+        commandService.IsNotNull(nameof(commandService));
 
-        /// <summary>
-        /// Creates a new instance of <see cref="TextDiscordCommandHandler"/>.
-        /// </summary>
-        /// <param name="services">The <see cref="IServiceProvider"/> for providing services.</param>
-        /// <param name="client">The <see cref="DiscordSocketClient"/>.</param>
-        /// <param name="options">The <see cref="DiscordCommandOptions"/> to configure the handler with.</param>
-        /// <param name="logger">The <see cref="ILoggingService"/> to use for the logging.</param>
-        /// <param name="commandService">The <see cref="CommandService"/>.</param>
-        /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-        public TextDiscordCommandHandler(
-            IServiceProvider services, DiscordSocketClient client,
-            IOptions<DiscordCommandOptions> options, ILoggingService logger, CommandService commandService)
-            : base(services, client, options, logger)
+        this.commandService = commandService;
+        commandService.CommandExecuted += CommandExecutedEventHandler;
+        commandService.Log += LogEventHandler;
+
+        Client.MessageReceived += MessageReceivedEventHandler;
+
+        AddModuleFunc = (provider, type) => commandService.AddModuleAsync(type, provider);
+    }
+
+    protected override Func<IServiceProvider, Type, Task> AddModuleFunc { get; }
+
+    private async Task MessageReceivedEventHandler(SocketMessage messageParam)
+    {
+        // Don't process the command if it was a system message
+        var message = messageParam as SocketUserMessage;
+        if (message == null)
         {
-            commandService.IsNotNull(nameof(commandService));
-
-            this.commandService = commandService;
-            commandService.CommandExecuted += CommandExecutedEventHandler;
-            commandService.Log += LogEventHandler;
-
-            Client.MessageReceived += MessageReceivedEventHandler;
-
-            AddModuleFunc = (provider, type) => commandService.AddModuleAsync(type, provider);
+            return;
         }
 
-        protected override Func<IServiceProvider, Type, Task> AddModuleFunc { get; }
+        // Create a number to track where the prefix ends and the command begins
+        var argPos = 0;
 
-        private async Task MessageReceivedEventHandler(SocketMessage messageParam)
+        // Determine if the message is a command based on the prefix and make sure no bots trigger commands
+        if (!(message.HasCharPrefix(CommandOptions.CommandPrefix, ref argPos)
+              || message.HasMentionPrefix(Client.CurrentUser, ref argPos))
+            || message.Author.IsBot)
         {
-            // Don't process the command if it was a system message
-            var message = messageParam as SocketUserMessage;
-            if (message == null)
-            {
-                return;
-            }
-
-            // Create a number to track where the prefix ends and the command begins
-            var argPos = 0;
-
-            // Determine if the message is a command based on the prefix and make sure no bots trigger commands
-            if (!(message.HasCharPrefix(CommandOptions.CommandPrefix, ref argPos)
-                  || message.HasMentionPrefix(Client.CurrentUser, ref argPos))
-                || message.Author.IsBot)
-            {
-                return;
-            }
-
-            // Create a WebSocket-based command context based on the message
-            var context = new SocketCommandContext(Client, message);
-
-            // Execute the command with the command context we just
-            // created, along with the service provider for precondition checks.
-            await commandService.ExecuteAsync(context, argPos, Services);
+            return;
         }
 
-        private async Task CommandExecutedEventHandler(
-            Optional<CommandInfo> commandInfo, ICommandContext commandContext, IResult result)
-        {
-            if (!commandInfo.IsSpecified || result.IsSuccess)
-            {
-                return;
-            }
+        // Create a WebSocket-based command context based on the message
+        var context = new SocketCommandContext(Client, message);
 
-            var errorMessage = $"Command {commandInfo.Value.Name} failed: {result.ErrorReason}";
-            await commandContext.Channel.SendMessageAsync(errorMessage);
-            await Logger.LogErrorAsync(errorMessage);
+        // Execute the command with the command context we just
+        // created, along with the service provider for precondition checks.
+        await commandService.ExecuteAsync(context, argPos, Services);
+    }
+
+    private async Task CommandExecutedEventHandler(
+        Optional<CommandInfo> commandInfo, ICommandContext commandContext, IResult result)
+    {
+        if (!commandInfo.IsSpecified || result.IsSuccess)
+        {
+            return;
         }
 
-        private Task LogEventHandler(LogMessage arg)
-        {
-            return Logger.LogDebugAsync(arg.Message);
-        }
+        var errorMessage = $"Command {commandInfo.Value.Name} failed: {result.ErrorReason}";
+        await commandContext.Channel.SendMessageAsync(errorMessage);
+        await Logger.LogErrorAsync(errorMessage);
+    }
+
+    private Task LogEventHandler(LogMessage arg)
+    {
+        return Logger.LogDebugAsync(arg.Message);
     }
 }

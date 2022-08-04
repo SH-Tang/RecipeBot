@@ -31,15 +31,11 @@ public class InteractionDiscordCommandHandler : DiscordCommandHandlerBase
 {
     private readonly InteractionService interactionService;
 
+    /// <inheritdoc />
     /// <summary>
-    /// Creates a new instance of <see cref="TextDiscordCommandHandler"/>.
+    /// Creates a new instance of <see cref="InteractionDiscordCommandHandler"/>.
     /// </summary>
-    /// <param name="services">The <see cref="IServiceProvider"/> for providing services.</param>
     /// <param name="interactionService">The <see cref="InteractionService"/>.</param>
-    /// <param name="client">The <see cref="DiscordSocketClient"/>.</param>
-    /// <param name="options">The <see cref="DiscordCommandOptions"/> to configure the handler with.</param>
-    /// <param name="logger">The <see cref="ILoggingService"/> to use for the logging.</param>
-    /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     public InteractionDiscordCommandHandler(
         IServiceProvider services, DiscordSocketClient client,
         IOptions<DiscordCommandOptions> options, ILoggingService logger, InteractionService interactionService)

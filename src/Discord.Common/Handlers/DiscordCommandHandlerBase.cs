@@ -53,9 +53,9 @@ public abstract class DiscordCommandHandlerBase
         options.IsNotNull(nameof(options));
         logger.IsNotNull(nameof(logger));
 
-        this.Services = services;
+        Services = services;
         CommandOptions = options.Value;
-        this.Logger = logger;
+        Logger = logger;
 
         Client = client;
 
