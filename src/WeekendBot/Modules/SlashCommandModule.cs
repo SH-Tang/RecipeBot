@@ -15,16 +15,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Common;
 using Discord.Interactions;
+using Discord.WebSocket;
 
 namespace WeekendBot.Modules;
 
 public class SlashCommandModule : InteractionModuleBase<SocketInteractionContext>
 {
     private readonly ILoggingService logger;
+    private static IAttachment? attachmentArgument;
 
     public SlashCommandModule(ILoggingService logger)
     {
@@ -37,44 +40,82 @@ public class SlashCommandModule : InteractionModuleBase<SocketInteractionContext
         await RespondAsync(text: $":ping_pong: It took me {Context.Client.Latency}ms to respond to you!", ephemeral: true);
     }
 
-    [SlashCommand("food", "Tell us about your favorite food!")]
-    public async Task FoodPreference()
+    [SlashCommand("recipe", "Tell us about your recipe")]
+    public async Task FoodPreference([Summary("image", "The image of the recipe result")] IAttachment attachment)
     {
-        await Context.Interaction.RespondWithModalAsync<FoodModal>("food_menu");
+        attachmentArgument = attachment;
+        // ModalBuilder? modalBuilder = new ModalBuilder()
+        //                              .WithTitle("Recipe entry")
+        //                              .WithCustomId("food_menu")
+        //                              .AddTextInput("RecipeTitle", "title")
+        //                              .AddTextInput("Notes", "notes", TextInputStyle.Paragraph,
+        //                                            "Insert optional notes here", required: false);
+        try
+        {
+            await Context.Interaction.RespondWithModalAsync<RecipeModal>("recipe");
+        }
+        catch
+        {
+            attachmentArgument = null;
+        }
     }
 
     // Responds to the modal.
-    [ModalInteraction("food_menu")]
-    public async Task ModalResponse(FoodModal modal)
+    [ModalInteraction("recipe")]
+    public async Task ModalResponse(RecipeModal modal)
     {
         // Build the message to send.
-        string message = "hey @everyone, I just learned " +
-                         $"{Context.User.Mention}'s favorite food is " +
-                         $"{modal.Food} because {modal.Reason}.";
-
-        // Specify the AllowedMentions so we don't actually ping everyone.
-        var mentions = new AllowedMentions()
-        {
-            AllowedTypes = AllowedMentionTypes.Users
-        };
+        // string message = $"Passed modal information:{Environment.NewLine}" +
+        //                  $"Recipe title: {modal.RecipeTitle}{Environment.NewLine}" +
+        //                  $"Notes: {modal.Notes}{Environment.NewLine}";
 
         // Respond to the modal, this is required or the Modal freezes up. Note that RespondAsync is the only
         // allowable respond method for modals.
-        await RespondAsync();
+        SocketUser? user = Context.User;
+
+        EmbedBuilder? embedBuilder = new EmbedBuilder()
+                                     .WithTitle(modal.RecipeTitle)
+                                     .WithAuthor(user.Username, user.GetAvatarUrl())
+                                     .WithColor(Color.Green)
+                                     .WithImageUrl(attachmentArgument.Url)
+                                     // .AddField("Is Image?", attachmentArgument.ContentType.StartsWith("image/"))
+                                     // .AddField("Image url", attachmentArgument.Url)
+                                     // .AddField("Image size", attachmentArgument.Size)
+                                     .AddField("Ingredienten", modal.Ingredients)
+                                     .AddField("Stappen", modal.Steps)
+                                     .WithCurrentTimestamp();
+
+        // if (!string.IsNullOrWhiteSpace(modal.Notes))
+        // {
+        //     embedBuilder.AddField("Aantekeningen", modal.Notes);
+        // }
+
+
+        // await RespondAsync(embed: embedBuiler.Build());
+
+        await RespondAsync(embed: embedBuilder.Build());
+        attachmentArgument = null;
     }
 
-    public class FoodModal : IModal
+    public class RecipeModal : IModal
     {
-        // Strings with the ModalTextInput attribute will automatically become components.
-        [InputLabel("What??")]
-        [ModalTextInput("food_name", placeholder: "Pizza", maxLength: 20)]
-        public string Food { get; set; }
+        [ModalTextInput("title")]
+        [InputLabel("Title")]
+        public string RecipeTitle { get; set; }
 
-        // Additional paremeters can be specified to further customize the input.
-        [InputLabel("Why??")]
-        [ModalTextInput("food_reason", TextInputStyle.Paragraph, "Kuz it's tasty", maxLength: 500, initValue:"Soup")]
-        public string Reason { get; set; }
+        [InputLabel("Ingredienten")]
+        [ModalTextInput("ingredients", TextInputStyle.Paragraph, maxLength: EmbedFieldBuilder.MaxFieldValueLength)]
+        public string Ingredients { get; set; }
 
-        public string Title => "Fav Food";
+        [InputLabel("Stappen")]
+        [ModalTextInput("steps", TextInputStyle.Paragraph, maxLength: EmbedFieldBuilder.MaxFieldValueLength)]
+        public string Steps { get; set; }
+
+        // [InputLabel("Aantekeningen")]
+        // [ModalTextInput("notes", TextInputStyle.Paragraph, maxLength: EmbedFieldBuilder.MaxFieldValueLength)]
+        // [RequiredInput(false)]
+        // public string Notes { get; set; }
+
+        public string Title => "Recipe";
     }
 }
