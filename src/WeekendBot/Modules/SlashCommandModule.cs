@@ -34,6 +34,12 @@ public class SlashCommandModule : InteractionModuleBase<SocketInteractionContext
         this.logger = logger;
     }
 
+    private Task ClientOnMessageReceived(SocketMessage arg)
+    {
+        // arg.GetJumpUrl will retrieve direct message to jump to the message.
+        return Task.CompletedTask;
+    }
+
     [SlashCommand("ping", "Pings the bot and returns its latency.")]
     public async Task GreetUserAsync()
     {
@@ -52,10 +58,12 @@ public class SlashCommandModule : InteractionModuleBase<SocketInteractionContext
         //                                            "Insert optional notes here", required: false);
         try
         {
+            Context.Client.MessageReceived += ClientOnMessageReceived;
             await Context.Interaction.RespondWithModalAsync<RecipeModal>("recipe");
         }
         catch
         {
+            Context.Client.MessageReceived -= ClientOnMessageReceived;
             attachmentArgument = null;
         }
     }
@@ -77,7 +85,7 @@ public class SlashCommandModule : InteractionModuleBase<SocketInteractionContext
                                      .WithTitle(modal.RecipeTitle)
                                      .WithAuthor(user.Username, user.GetAvatarUrl())
                                      .WithColor(Color.Green)
-                                     .WithImageUrl(attachmentArgument.Url)
+                                     .WithThumbnailUrl(attachmentArgument.Url)
                                      // .AddField("Is Image?", attachmentArgument.ContentType.StartsWith("image/"))
                                      // .AddField("Image url", attachmentArgument.Url)
                                      // .AddField("Image size", attachmentArgument.Size)
@@ -90,11 +98,17 @@ public class SlashCommandModule : InteractionModuleBase<SocketInteractionContext
         //     embedBuilder.AddField("Aantekeningen", modal.Notes);
         // }
 
-
         // await RespondAsync(embed: embedBuiler.Build());
 
-        await RespondAsync(embed: embedBuilder.Build());
-        attachmentArgument = null;
+        try
+        {
+            await RespondAsync(embed: embedBuilder.Build());
+        }
+        catch
+        {
+            Context.Client.MessageReceived -= ClientOnMessageReceived;
+            attachmentArgument = null;
+        }
     }
 
     public class RecipeModal : IModal
