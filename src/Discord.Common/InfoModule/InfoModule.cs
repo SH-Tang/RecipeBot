@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.Common.Handlers;
+using Discord.Common.Options;
 using Discord.Interactions;
 using Microsoft.Extensions.Options;
 using WeekendBot.Utils;

@@ -18,6 +18,7 @@
 using Discord.Commands;
 using Discord.Common.Handlers;
 using Discord.Common.InfoModule;
+using Discord.Common.Options;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;

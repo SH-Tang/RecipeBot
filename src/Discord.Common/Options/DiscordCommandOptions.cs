@@ -15,31 +15,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using Discord.Common.Handlers;
-using Xunit;
+namespace Discord.Common.Options;
 
-namespace Discord.Common.Test.Handlers;
-
-public class DiscordCommandOptionsTest
+/// <summary>
+/// Class containing options for Discord commands.
+/// </summary>
+public class DiscordCommandOptions
 {
-    [Fact]
-    public void SectionKey_Always_ReturnsExpectedValue()
-    {
-        // Call
-        const string key = DiscordCommandOptions.SectionKey;
+    /// <summary>
+    /// Gets the key of the section to retrieve the settings from.
+    /// </summary>
+    public const string SectionKey = "CommandOptions";
 
-        // Assert
-        Assert.Equal("CommandOptions", key);
-    }
+    /// <summary>
+    /// Gets or sets the prefix the Discord commands should have before being invoked.
+    /// </summary>
+    public char CommandPrefix { get; set; } = '~';
 
-    [Fact]
-    public void Constructor_Always_ExpectedProperties()
-    {
-        // Call
-        var options = new DiscordCommandOptions();
-
-        // Assert
-        Assert.Equal('~', options.CommandPrefix);
-        Assert.Equal((ulong) 0, options.TestGuildId);
-    }
+    /// <summary>
+    /// Gets or sets the Id for the test Discord server.
+    /// </summary>
+    public ulong TestGuildId { get; set; }
 }
