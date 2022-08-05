@@ -65,12 +65,7 @@ public class WeekendBotApplicationServiceProvider
 
     private static void ConfigureServices(IServiceCollection services)
     {
-        var socketConfig = new DiscordSocketConfig
-        {
-            UseInteractionSnowflakeDate = false
-        };
-
-        services.AddSingleton(socketConfig)
+        services.AddSingleton<DiscordSocketConfig>()
                 .AddSingleton<DiscordSocketClient>()
                 .AddSingleton<CommandService>()
                 .AddSingleton<TextDiscordCommandHandler>()
