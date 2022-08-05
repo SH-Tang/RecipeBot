@@ -17,76 +17,52 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
-using Discord.Common.Options;
 using Discord.Interactions;
-using Microsoft.Extensions.Options;
 using WeekendBot.Utils;
 
-namespace Discord.Common.InfoModule
+namespace Discord.Common.InfoModule;
+
+/// <summary>
+/// Definition of text commands that provide information about the bot.
+/// </summary>
+public class InfoTextModule : ModuleBase<SocketCommandContext>
 {
+    private readonly CommandService commandService;
+    private readonly InteractionService interactionService;
+    private readonly DiscordCommandInfoFactory commandInfoFactory;
+    private readonly BotInformationService botInformationService;
+
     /// <summary>
-    /// Definition of text commands that provide information about the bot.
+    /// Creates a new instance of <see cref="InfoTextModule"/>.
     /// </summary>
-    public class InfoTextModule : ModuleBase<SocketCommandContext>
+    /// <param name="commandService">The <see cref="CommandService"/>.</param>
+    /// <param name="interactionService">The <see cref="InteractionService"/>.</param>
+    /// <param name="commandInfoFactory">The <see cref="DiscordCommandInfoFactory"/>.</param>
+    /// <param name="botInformationService">The <see cref="BotInformationService"/>.</param>
+    /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
+    public InfoTextModule(CommandService commandService, InteractionService interactionService,
+                          DiscordCommandInfoFactory commandInfoFactory, BotInformationService botInformationService)
     {
-        private readonly CommandService commandService;
-        private readonly InteractionService interactionService;
-        private readonly DiscordCommandOptions commandOptions;
-        private readonly BotInformationService botInformationService;
+        commandService.IsNotNull(nameof(commandService));
+        interactionService.IsNotNull(nameof(interactionService));
+        commandInfoFactory.IsNotNull(nameof(commandInfoFactory));
+        botInformationService.IsNotNull(nameof(botInformationService));
 
-        /// <summary>
-        /// Creates a new instance of <see cref="InfoTextModule"/>.
-        /// </summary>
-        /// <param name="commandService">The <see cref="CommandService"/>.</param>
-        /// <param name="interactionService">The <see cref="InteractionService"/>.</param>
-        /// <param name="commandOptions">The <see cref="DiscordCommandOptions"/> that were used to configure
-        /// the application with.</param>
-        /// <param name="botInformationService">The <see cref="BotInformationService"/>.</param>
-        /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-        public InfoTextModule(CommandService commandService, InteractionService interactionService,
-                              IOptions<DiscordCommandOptions> commandOptions, BotInformationService botInformationService)
-        {
-            commandService.IsNotNull(nameof(commandService));
-            interactionService.IsNotNull(nameof(interactionService));
-            commandOptions.IsNotNull(nameof(commandOptions));
-            botInformationService.IsNotNull(nameof(botInformationService));
+        this.commandService = commandService;
+        this.interactionService = interactionService;
+        this.commandInfoFactory = commandInfoFactory;
+        this.botInformationService = botInformationService;
+    }
 
-            this.commandService = commandService;
-            this.interactionService = interactionService;
-            this.commandOptions = commandOptions.Value;
-            this.botInformationService = botInformationService;
-        }
+    [Command("help")]
+    [Commands.Summary("Provides information about all the available commands.")]
+    public async Task GetHelpResponseAsync()
+    {
+        IEnumerable<DiscordCommandInfo> commandInfos = commandInfoFactory.Create(commandService.Commands, interactionService.SlashCommands);
 
-        [Command("help")]
-        [Commands.Summary("Provides information about all the available commands.")]
-        public async Task GetHelpResponseAsync()
-        {
-            var discordCommandInfos = new List<DiscordCommandInformation>();
-            discordCommandInfos.AddRange(commandService.Commands.Select(c => new DiscordCommandInformation(FormatTextCommand(c.Name))
-            {
-                Summary = c.Summary
-            }));
-
-            discordCommandInfos.AddRange(interactionService.SlashCommands.Select(c => new DiscordCommandInformation(FormatSlashCommand(c.Name))
-            {
-                Summary = c.Description
-            }));
-
-            Embed embedSummaryInformation = await botInformationService.GetCommandInfoSummaries(discordCommandInfos);
-            await ReplyAsync(null, false, embedSummaryInformation);
-        }
-
-        private string FormatTextCommand(string slashCommandName)
-        {
-            return $"{commandOptions.CommandPrefix}{slashCommandName}";
-        }
-
-        private static string FormatSlashCommand(string slashCommandName)
-        {
-            return $"/{slashCommandName}";
-        }
+        Embed embedSummaryInformation = await botInformationService.GetCommandInfoSummaries(commandInfos);
+        await ReplyAsync(null, false, embedSummaryInformation);
     }
 }

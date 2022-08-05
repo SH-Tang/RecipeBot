@@ -21,17 +21,17 @@ using WeekendBot.Utils;
 namespace Discord.Common.InfoModule;
 
 /// <summary>
-/// Class containing information about a Discord command.
+/// Class containing information about Discord commands.
 /// </summary>
-public class DiscordCommandInformation
+public class DiscordCommandInfo
 {
     /// <summary>
-    /// Creates a new instance of <see cref="DiscordCommandInformation"/>.
+    /// Creates a new instance of <see cref="DiscordCommandInfo"/>.
     /// </summary>
     /// <param name="name">The name of the command.</param>
     /// <exception cref="ArgumentException">Thrown when the <paramref name="name"/> is <c>null</c> or consists
     /// of whitespaces only.</exception>
-    public DiscordCommandInformation(string name)
+    public DiscordCommandInfo(string name)
     {
         name.IsNotNullOrWhiteSpaces(nameof(name));
         Name = name;

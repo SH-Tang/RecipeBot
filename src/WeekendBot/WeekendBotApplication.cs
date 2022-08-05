@@ -93,7 +93,7 @@ public class WeekendBotApplication
         await textCommandHandlingService.InitializeHandlerAsync(new[]
         {
             typeof(WeekendModule),
-            typeof(InfoModule)
+            typeof(InfoTextModule)
         });
     }
 

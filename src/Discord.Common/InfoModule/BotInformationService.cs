@@ -46,12 +46,12 @@ public class BotInformationService
     /// </summary>
     /// <returns>A <see cref="Embed"/> containing summaries of all available commands.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="commandInfos"/> is <c>null</c>.</exception>
-    public Task<Embed> GetCommandInfoSummaries(IEnumerable<DiscordCommandInformation> commandInfos)
+    public Task<Embed> GetCommandInfoSummaries(IEnumerable<DiscordCommandInfo> commandInfos)
     {
         commandInfos.IsNotNull(nameof(commandInfos));
 
         EmbedBuilder embedBuilder = CreateEmbedBuilder();
-        foreach (DiscordCommandInformation command in commandInfos)
+        foreach (DiscordCommandInfo command in commandInfos)
         {
             string embedFieldText = command.Summary ?? $"No description available.{Environment.NewLine}";
             embedBuilder.AddField(command.Name, embedFieldText);

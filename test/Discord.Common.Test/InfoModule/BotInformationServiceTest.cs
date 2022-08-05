@@ -41,7 +41,7 @@ public class BotInformationServiceTest
         var service = new BotInformationService(options);
 
         // Call
-        Embed result = await service.GetCommandInfoSummaries(Enumerable.Empty<DiscordCommandInformation>());
+        Embed result = await service.GetCommandInfoSummaries(Enumerable.Empty<DiscordCommandInfo>());
 
         // Assert
         Assert.Equal(Color.Blue, result.Color);
@@ -69,12 +69,12 @@ public class BotInformationServiceTest
 
         var service = new BotInformationService(options);
 
-        var infoWithoutSummary = new DiscordCommandInformation("Command1");
-        var infoWithSummary = new DiscordCommandInformation("Command2")
+        var infoWithoutSummary = new DiscordCommandInfo("Command1");
+        var infoWithSummary = new DiscordCommandInfo("Command2")
         {
             Summary = "Summary"
         };
-        IEnumerable<DiscordCommandInformation> commandInfos = new[]
+        IEnumerable<DiscordCommandInfo> commandInfos = new[]
         {
             infoWithoutSummary,
             infoWithSummary
@@ -94,7 +94,7 @@ public class BotInformationServiceTest
         }
     }
 
-    private static void AssertEmbedField(EmbedField field, DiscordCommandInformation info)
+    private static void AssertEmbedField(EmbedField field, DiscordCommandInfo info)
     {
         Assert.Equal(field.Name, info.Name);
 
