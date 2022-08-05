@@ -30,7 +30,7 @@ namespace Discord.Common.Test.InfoModule;
 public class InfoInteractionModuleTest
 {
     [Fact]
-    public void Module_has_expected_properties()
+    public void Module_is_interactive_module()
     {
         // Setup
         var commandService = Substitute.For<CommandService>();
@@ -52,7 +52,7 @@ public class InfoInteractionModuleTest
     }
 
     [Fact]
-    public void Help_command_has_expected_summary()
+    public void Help_command_has_expected_description()
     {
         // Call
         SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttribute<InfoInteractionModule, SlashCommandAttribute>(
@@ -62,7 +62,7 @@ public class InfoInteractionModuleTest
         Assert.NotNull(commandAttribute);
         Assert.Equal("help", commandAttribute!.Name.ToLower());
 
-        const string expectedSummary = "Provides information about all the available commands.";
-        Assert.Equal(expectedSummary, commandAttribute.Description);
+        const string expectedDescription = "Provides information about all the available commands.";
+        Assert.Equal(expectedDescription, commandAttribute.Description);
     }
 }

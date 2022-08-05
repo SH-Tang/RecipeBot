@@ -31,7 +31,7 @@ namespace Discord.Common.Test.InfoModule;
 public class InfoTextModuleTest
 {
     [Fact]
-    public void Module_has_expected_properties()
+    public void Module_is_text_based_module()
     {
         // Setup
         var commandService = Substitute.For<CommandService>();
