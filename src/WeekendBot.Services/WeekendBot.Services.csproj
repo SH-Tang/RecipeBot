@@ -6,4 +6,8 @@
     <None Include="..\..\licenses\Copying.licenseheader" Link="Copying.licenseheader" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Discord.Net.Interactions" Version="3.7.2" />
+  </ItemGroup>
+
 </Project>

@@ -56,9 +56,9 @@ public class InfoTextModuleTest
     public void Help_command_has_expected_summary()
     {
         // Call
-        CommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttribute<InfoTextModule, CommandAttribute>(
+        CommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<InfoTextModule, CommandAttribute>(
             nameof(InfoTextModule.GetHelpResponseAsync));
-        SummaryAttribute? summaryAttribute = ReflectionHelper.GetCustomAttribute<InfoTextModule, SummaryAttribute>(
+        SummaryAttribute? summaryAttribute = ReflectionHelper.GetCustomAttributeFromMethod<InfoTextModule, SummaryAttribute>(
             nameof(InfoTextModule.GetHelpResponseAsync));
 
         // Assert

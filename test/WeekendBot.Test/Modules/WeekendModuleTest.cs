@@ -43,9 +43,9 @@ namespace WeekendBot.Test.Modules
         public void GetIsItWeekendResponseAsync_Always_ReturnsExpectedAttributes()
         {
             // Call
-            CommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, CommandAttribute>(
+            CommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<WeekendModule, CommandAttribute>(
                 nameof(WeekendModule.GetIsItWeekendResponseAsync));
-            SummaryAttribute? summaryAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, SummaryAttribute>(
+            SummaryAttribute? summaryAttribute = ReflectionHelper.GetCustomAttributeFromMethod<WeekendModule, SummaryAttribute>(
                 nameof(WeekendModule.GetIsItWeekendResponseAsync));
 
             // Assert
@@ -61,9 +61,9 @@ namespace WeekendBot.Test.Modules
         public void GetTimeToWeekendResponseAsync_Always_ReturnsExpectedAttributes()
         {
             // Call
-            CommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, CommandAttribute>(
+            CommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<WeekendModule, CommandAttribute>(
                 nameof(WeekendModule.GetTimeToWeekendResponseAsync));
-            SummaryAttribute? summaryAttribute = ReflectionHelper.GetCustomAttribute<WeekendModule, SummaryAttribute>(
+            SummaryAttribute? summaryAttribute = ReflectionHelper.GetCustomAttributeFromMethod<WeekendModule, SummaryAttribute>(
                 nameof(WeekendModule.GetTimeToWeekendResponseAsync));
 
             // Assert
