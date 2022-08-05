@@ -27,6 +27,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeekendBot.Components;
 using WeekendBot.Core;
+using WeekendBot.Handlers;
 using WeekendBot.Services;
 using WeekendBot.Utils;
 
@@ -72,6 +73,7 @@ public class WeekendBotApplicationServiceProvider
                 .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
                 .AddSingleton<InteractionDiscordCommandHandler>()
                 .AddSingleton<ILoggingService, ConsoleLoggingService>()
+                .AddSingleton<AutoCompleteSuggestions>()
                 .AddTransient<ITimeProvider, TimeProvider>()
                 .AddTransient<IWeekendInquiryService, WeekendInquiryService>()
                 .AddTransient<BotInformationService>();

@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Common;
@@ -26,18 +25,12 @@ namespace WeekendBot.Modules;
 
 public class SlashCommandModule : InteractionModuleBase<SocketInteractionContext>
 {
-    private readonly ILoggingService logger;
     private static IAttachment? attachmentArgument;
+    private readonly ILoggingService logger;
 
     public SlashCommandModule(ILoggingService logger)
     {
         this.logger = logger;
-    }
-
-    private Task ClientOnMessageReceived(SocketMessage arg)
-    {
-        // arg.GetJumpUrl will retrieve direct message to jump to the message.
-        return Task.CompletedTask;
     }
 
     [SlashCommand("ping", "Pings the bot and returns its latency.")]
@@ -109,6 +102,12 @@ public class SlashCommandModule : InteractionModuleBase<SocketInteractionContext
             Context.Client.MessageReceived -= ClientOnMessageReceived;
             attachmentArgument = null;
         }
+    }
+
+    private Task ClientOnMessageReceived(SocketMessage arg)
+    {
+        // arg.GetJumpUrl will retrieve direct message to jump to the message.
+        return Task.CompletedTask;
     }
 
     public class RecipeModal : IModal

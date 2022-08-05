@@ -99,7 +99,8 @@ public class WeekendBotApplication
         var interactionCommandHandlingService = services.GetRequiredService<InteractionDiscordCommandHandler>();
         await interactionCommandHandlingService.InitializeHandlerAsync(new[]
         {
-            typeof(SlashCommandModule)
+            typeof(SlashCommandModule),
+            typeof(AutoCompleteModule)
         });
     }
 
