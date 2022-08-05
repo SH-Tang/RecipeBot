@@ -16,7 +16,6 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using Discord;
 using Discord.Commands;
 using Discord.Common;
 using Discord.Common.Handlers;
@@ -66,7 +65,7 @@ public class WeekendBotApplicationServiceProvider
 
     private static void ConfigureServices(IServiceCollection services)
     {
-        var socketConfig = new DiscordSocketConfig()
+        var socketConfig = new DiscordSocketConfig
         {
             UseInteractionSnowflakeDate = false
         };

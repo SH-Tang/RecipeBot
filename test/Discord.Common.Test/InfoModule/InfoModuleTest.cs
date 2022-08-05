@@ -16,7 +16,6 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using Discord.Commands;
-using Discord.Common.Handlers;
 using Discord.Common.InfoModule;
 using Discord.Common.Options;
 using Discord.Interactions;
