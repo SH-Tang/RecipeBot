@@ -31,8 +31,8 @@ jobs:
     - name: Build
       run: dotnet build $env:build_directory --no-restore
     - name: Test
-      run: dotnet test $env:build_directory --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" 
-    - name: Test Report
+      run: dotnet test $env:build_directory --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage"
+    - name: Generate unit test Report
       uses: dorny/test-reporter@v1
       if: always()
       with:
@@ -40,3 +40,5 @@ jobs:
         path: "test/**/*.trx"
         reporter: dotnet-trx
         fail-on-error: 'true'
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
