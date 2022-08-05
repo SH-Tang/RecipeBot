@@ -7,7 +7,7 @@ on:
   pull_request:
     branches: [ master ]
     paths-ignore:
-    - '**/README.md'
+    - '**README.md'
     - 'licenses/**'
     - '.git*'
 env:
