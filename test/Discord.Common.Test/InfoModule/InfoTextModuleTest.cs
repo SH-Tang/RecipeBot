@@ -24,41 +24,42 @@ using Microsoft.Extensions.Options;
 using NSubstitute;
 using WeekendBot.TestUtils;
 using Xunit;
-using DiscordCommonInfoModule = Discord.Common.InfoModule.InfoModule;
 using SummaryAttribute = Discord.Commands.SummaryAttribute;
 
 namespace Discord.Common.Test.InfoModule;
 
-public class InfoModuleTest
+public class InfoTextModuleTest
 {
     [Fact]
-    public void Constructor_WithArguments_ExpectedValues()
+    public void Module_is_text_based_module()
     {
         // Setup
         var commandService = Substitute.For<CommandService>();
-        var discordCommandOptions = Substitute.For<IOptions<DiscordCommandOptions>>();
 
         var socketClient = Substitute.For<DiscordSocketClient>();
         var interactionService = new InteractionService(socketClient);
+        
+        var discordCommandOptions = Substitute.For<IOptions<DiscordCommandOptions>>();
+        var commandInfoFactory = new DiscordCommandInfoFactory(discordCommandOptions);
 
         var options = Substitute.For<IOptions<BotInformation>>();
         var infoService = new BotInformationService(options);
 
         // Call
-        var module = new DiscordCommonInfoModule(commandService, interactionService, discordCommandOptions, infoService);
+        var module = new InfoTextModule(commandService, interactionService, commandInfoFactory, infoService);
 
         // Assert
         Assert.IsAssignableFrom<ModuleBase<SocketCommandContext>>(module);
     }
 
     [Fact]
-    public void GetHelpResponseAsync_Always_ReturnsExpectedAttributes()
+    public void Help_command_has_expected_summary()
     {
         // Call
-        CommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttribute<DiscordCommonInfoModule, CommandAttribute>(
-            nameof(DiscordCommonInfoModule.GetHelpResponseAsync));
-        SummaryAttribute? summaryAttribute = ReflectionHelper.GetCustomAttribute<DiscordCommonInfoModule, SummaryAttribute>(
-            nameof(DiscordCommonInfoModule.GetHelpResponseAsync));
+        CommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttribute<InfoTextModule, CommandAttribute>(
+            nameof(InfoTextModule.GetHelpResponseAsync));
+        SummaryAttribute? summaryAttribute = ReflectionHelper.GetCustomAttribute<InfoTextModule, SummaryAttribute>(
+            nameof(InfoTextModule.GetHelpResponseAsync));
 
         // Assert
         Assert.NotNull(commandAttribute);
