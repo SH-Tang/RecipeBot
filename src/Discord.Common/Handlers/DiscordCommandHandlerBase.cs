@@ -39,7 +39,7 @@ public abstract class DiscordCommandHandlerBase
     private bool isInitialized;
 
     /// <summary>
-    /// Creates a new instance of <see cref="TextDiscordCommandHandler"/>.
+    /// Creates a new instance of <see cref="DiscordCommandHandlerBase"/>.
     /// </summary>
     /// <param name="services">The <see cref="IServiceProvider"/> for providing services.</param>
     /// <param name="client">The <see cref="DiscordSocketClient"/>.</param>
@@ -95,9 +95,9 @@ public abstract class DiscordCommandHandlerBase
     /// The function that describes how a module type should be added to the handler.
     /// </summary>
     /// <returns>A <see cref="Func{TResult}"/> that describes how module types are added.</returns>
-    protected abstract Func<IServiceProvider, Type, Task> AddModuleFunc { get; }
+    protected abstract Func<Type, IServiceProvider, Task> AddModuleFunc { get; }
 
-    protected async Task OnLogEventHandler(LogMessage arg)
+    protected async Task LogEventHandler(LogMessage arg)
     {
         string message = arg.Message;
         if (!string.IsNullOrWhiteSpace(message))
@@ -122,7 +122,7 @@ public abstract class DiscordCommandHandlerBase
 
     private IEnumerable<Task> CreateAddingModuleTasks(IEnumerable<Type> modulesTypesToAdd)
     {
-        return modulesTypesToAdd.Select(moduleType => AddModuleFunc(Services, moduleType))
+        return modulesTypesToAdd.Select(moduleType => AddModuleFunc(moduleType, Services))
                                 .ToArray();
     }
 }

@@ -45,14 +45,12 @@ public class InteractionDiscordCommandHandler : DiscordCommandHandlerBase
         interactionService.IsNotNull(nameof(interactionService));
 
         this.interactionService = interactionService;
-        interactionService.Log += async message => await OnLogEventHandler(message);
+        interactionService.Log += async message => await LogEventHandler(message);
 
         Client.InteractionCreated += async arg => await InteractionCreatedEventHandler(arg);
-
-        AddModuleFunc = (provider, type) => interactionService.AddModuleAsync(type, provider);
     }
 
-    protected override Func<IServiceProvider, Type, Task> AddModuleFunc { get; }
+    protected override Func<Type, IServiceProvider, Task> AddModuleFunc => interactionService.AddModuleAsync;
 
     protected override void PostProcessInitialization()
     {

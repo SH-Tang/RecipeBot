@@ -46,14 +46,12 @@ public class TextDiscordCommandHandler : DiscordCommandHandlerBase
 
         this.commandService = commandService;
         commandService.CommandExecuted += CommandExecutedEventHandler;
-        commandService.Log += LogEventHandler;
+        commandService.Log += async arg => await LogEventHandler(arg);
 
         Client.MessageReceived += MessageReceivedEventHandler;
-
-        AddModuleFunc = (provider, type) => commandService.AddModuleAsync(type, provider);
     }
 
-    protected override Func<IServiceProvider, Type, Task> AddModuleFunc { get; }
+    protected override Func<Type, IServiceProvider, Task> AddModuleFunc => commandService.AddModuleAsync;
 
     private async Task MessageReceivedEventHandler(SocketMessage messageParam)
     {
@@ -94,10 +92,5 @@ public class TextDiscordCommandHandler : DiscordCommandHandlerBase
         var errorMessage = $"Command {commandInfo.Value.Name} failed: {result.ErrorReason}";
         await commandContext.Channel.SendMessageAsync(errorMessage);
         await Logger.LogErrorAsync(errorMessage);
-    }
-
-    private Task LogEventHandler(LogMessage arg)
-    {
-        return Logger.LogDebugAsync(arg.Message);
     }
 }

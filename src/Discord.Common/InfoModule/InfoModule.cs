@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
-using Discord.Common.Handlers;
 using Discord.Common.Options;
 using Discord.Interactions;
 using Microsoft.Extensions.Options;
@@ -42,7 +41,7 @@ namespace Discord.Common.InfoModule
         /// Creates a new instance of <see cref="InfoModule"/>.
         /// </summary>
         /// <param name="commandService">The <see cref="CommandService"/>.</param>
-        /// <param name="interactionService"></param>
+        /// <param name="interactionService">The <see cref="InteractionService"/>.</param>
         /// <param name="commandOptions">The <see cref="DiscordCommandOptions"/> that were used to configure
         /// the application with.</param>
         /// <param name="botInformationService">The <see cref="BotInformationService"/>.</param>
