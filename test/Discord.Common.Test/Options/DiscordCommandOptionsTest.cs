@@ -15,18 +15,18 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using Discord.Common.Handler;
+using Discord.Common.Options;
 using Xunit;
 
-namespace Discord.Common.Test.Handler;
+namespace Discord.Common.Test.Options;
 
-public class ExplicitDiscordCommandOptionsTest
+public class DiscordCommandOptionsTest
 {
     [Fact]
     public void SectionKey_Always_ReturnsExpectedValue()
     {
         // Call
-        const string key = ExplicitDiscordCommandOptions.SectionKey;
+        const string key = DiscordCommandOptions.SectionKey;
 
         // Assert
         Assert.Equal("CommandOptions", key);
@@ -36,9 +36,10 @@ public class ExplicitDiscordCommandOptionsTest
     public void Constructor_Always_ExpectedProperties()
     {
         // Call
-        var options = new ExplicitDiscordCommandOptions();
+        var options = new DiscordCommandOptions();
 
         // Assert
         Assert.Equal('~', options.CommandPrefix);
+        Assert.Equal((ulong) 0, options.TestGuildId);
     }
 }

@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.Common;
-using Discord.Common.Handler;
+using Discord.Common.Handlers;
 using Discord.Common.InfoModule;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
@@ -89,8 +89,8 @@ public class WeekendBotApplication
 
     private static async Task ConfigureCommandHandlingService(IServiceProvider services)
     {
-        var commandHandlingService = services.GetRequiredService<ExplicitDiscordCommandHandler>();
-        await commandHandlingService.InitializeHandlerAsync(new[]
+        var textCommandHandlingService = services.GetRequiredService<TextDiscordCommandHandler>();
+        await textCommandHandlingService.InitializeHandlerAsync(new[]
         {
             typeof(WeekendModule),
             typeof(InfoModule)

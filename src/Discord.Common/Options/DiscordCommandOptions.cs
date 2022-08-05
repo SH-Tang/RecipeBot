@@ -15,21 +15,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-namespace Discord.Common.Handler
+namespace Discord.Common.Options;
+
+/// <summary>
+/// Class containing options for Discord commands.
+/// </summary>
+public class DiscordCommandOptions
 {
     /// <summary>
-    /// Class containing options for explicit Discord commands.
+    /// Gets the key of the section to retrieve the settings from.
     /// </summary>
-    public class ExplicitDiscordCommandOptions
-    {
-        /// <summary>
-        /// Gets the key of the section to retrieve the settings from.
-        /// </summary>
-        public const string SectionKey = "CommandOptions";
+    public const string SectionKey = "CommandOptions";
 
-        /// <summary>
-        /// Gets or sets the prefix the Discord commands should have before being invoked.
-        /// </summary>
-        public char CommandPrefix { get; set; } = '~';
-    }
+    /// <summary>
+    /// Gets or sets the prefix the Discord commands should have before being invoked.
+    /// </summary>
+    public char CommandPrefix { get; set; } = '~';
+
+    /// <summary>
+    /// Gets or sets the Id for the test Discord server.
+    /// </summary>
+    public ulong TestGuildId { get; set; }
 }

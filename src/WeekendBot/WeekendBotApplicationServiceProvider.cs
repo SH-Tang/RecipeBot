@@ -18,9 +18,10 @@
 using System;
 using Discord.Commands;
 using Discord.Common;
-using Discord.Common.Handler;
+using Discord.Common.Handlers;
 using Discord.Common.InfoModule;
 using Discord.Common.Options;
+using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -64,9 +65,12 @@ public class WeekendBotApplicationServiceProvider
 
     private static void ConfigureServices(IServiceCollection services)
     {
-        services.AddSingleton<DiscordSocketClient>()
+        services.AddSingleton<DiscordSocketConfig>()
+                .AddSingleton<DiscordSocketClient>()
                 .AddSingleton<CommandService>()
-                .AddSingleton<ExplicitDiscordCommandHandler>()
+                .AddSingleton<TextDiscordCommandHandler>()
+                .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
+                .AddSingleton<InteractionDiscordCommandHandler>()
                 .AddSingleton<ILoggingService, ConsoleLoggingService>()
                 .AddTransient<ITimeProvider, TimeProvider>()
                 .AddTransient<IWeekendInquiryService, WeekendInquiryService>()
@@ -75,8 +79,8 @@ public class WeekendBotApplicationServiceProvider
 
     private void ConfigureOptions(IServiceCollection services)
     {
-        services.ConfigureAndValidate<ExplicitDiscordCommandOptions>(
-                    options => configuration.GetSection(ExplicitDiscordCommandOptions.SectionKey)
+        services.ConfigureAndValidate<DiscordCommandOptions>(
+                    options => configuration.GetSection(DiscordCommandOptions.SectionKey)
                                             .Bind(options))
                 .ConfigureAndValidate<StringFormatOptions>(
                     options => configuration.GetSection(StringFormatOptions.SectionKey)
