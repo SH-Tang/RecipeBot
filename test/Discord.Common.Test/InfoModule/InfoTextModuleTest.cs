@@ -24,15 +24,15 @@ using Microsoft.Extensions.Options;
 using NSubstitute;
 using WeekendBot.TestUtils;
 using Xunit;
-using DiscordCommonInfoModule = Discord.Common.InfoModule.InfoModule;
+using DiscordCommonInfoTextModule = Discord.Common.InfoModule.InfoModule;
 using SummaryAttribute = Discord.Commands.SummaryAttribute;
 
 namespace Discord.Common.Test.InfoModule;
 
-public class InfoModuleTest
+public class InfoTextModuleTest
 {
     [Fact]
-    public void Constructor_WithArguments_ExpectedValues()
+    public void Module_has_expected_properties()
     {
         // Setup
         var commandService = Substitute.For<CommandService>();
@@ -45,20 +45,20 @@ public class InfoModuleTest
         var infoService = new BotInformationService(options);
 
         // Call
-        var module = new DiscordCommonInfoModule(commandService, interactionService, discordCommandOptions, infoService);
+        var module = new DiscordCommonInfoTextModule(commandService, interactionService, discordCommandOptions, infoService);
 
         // Assert
         Assert.IsAssignableFrom<ModuleBase<SocketCommandContext>>(module);
     }
 
     [Fact]
-    public void GetHelpResponseAsync_Always_ReturnsExpectedAttributes()
+    public void Help_command_has_expected_summary()
     {
         // Call
-        CommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttribute<DiscordCommonInfoModule, CommandAttribute>(
-            nameof(DiscordCommonInfoModule.GetHelpResponseAsync));
-        SummaryAttribute? summaryAttribute = ReflectionHelper.GetCustomAttribute<DiscordCommonInfoModule, SummaryAttribute>(
-            nameof(DiscordCommonInfoModule.GetHelpResponseAsync));
+        CommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttribute<DiscordCommonInfoTextModule, CommandAttribute>(
+            nameof(DiscordCommonInfoTextModule.GetHelpResponseAsync));
+        SummaryAttribute? summaryAttribute = ReflectionHelper.GetCustomAttribute<DiscordCommonInfoTextModule, SummaryAttribute>(
+            nameof(DiscordCommonInfoTextModule.GetHelpResponseAsync));
 
         // Assert
         Assert.NotNull(commandAttribute);

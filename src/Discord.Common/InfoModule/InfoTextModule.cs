@@ -28,9 +28,9 @@ using WeekendBot.Utils;
 namespace Discord.Common.InfoModule
 {
     /// <summary>
-    /// Definition of commands that provide information about the bot.
+    /// Definition of text commands that provide information about the bot.
     /// </summary>
-    public class InfoModule : ModuleBase<SocketCommandContext>
+    public class InfoTextModule : ModuleBase<SocketCommandContext>
     {
         private readonly CommandService commandService;
         private readonly InteractionService interactionService;
@@ -38,7 +38,7 @@ namespace Discord.Common.InfoModule
         private readonly BotInformationService botInformationService;
 
         /// <summary>
-        /// Creates a new instance of <see cref="InfoModule"/>.
+        /// Creates a new instance of <see cref="InfoTextModule"/>.
         /// </summary>
         /// <param name="commandService">The <see cref="CommandService"/>.</param>
         /// <param name="interactionService">The <see cref="InteractionService"/>.</param>
@@ -46,8 +46,8 @@ namespace Discord.Common.InfoModule
         /// the application with.</param>
         /// <param name="botInformationService">The <see cref="BotInformationService"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-        public InfoModule(CommandService commandService, InteractionService interactionService,
-                          IOptions<DiscordCommandOptions> commandOptions, BotInformationService botInformationService)
+        public InfoTextModule(CommandService commandService, InteractionService interactionService,
+                              IOptions<DiscordCommandOptions> commandOptions, BotInformationService botInformationService)
         {
             commandService.IsNotNull(nameof(commandService));
             interactionService.IsNotNull(nameof(interactionService));
@@ -74,7 +74,7 @@ namespace Discord.Common.InfoModule
             {
                 Summary = c.Description
             }));
-          
+
             Embed embedSummaryInformation = await botInformationService.GetCommandInfoSummaries(discordCommandInfos);
             await ReplyAsync(null, false, embedSummaryInformation);
         }
