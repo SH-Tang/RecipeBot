@@ -74,6 +74,7 @@ public class WeekendBotApplicationServiceProvider
                 .AddSingleton<ILoggingService, ConsoleLoggingService>()
                 .AddTransient<ITimeProvider, TimeProvider>()
                 .AddTransient<IWeekendInquiryService, WeekendInquiryService>()
+                .AddTransient<DiscordCommandInfoFactory>()
                 .AddTransient<BotInformationService>();
     }
 

@@ -62,6 +62,9 @@ public class InfoInteractionModule : InteractionModuleBase<SocketInteractionCont
         IEnumerable<DiscordCommandInfo> commandInfos = commandInfoFactory.Create(commandService.Commands, interactionService.SlashCommands);
 
         Embed embedSummaryInformation = await botInformationService.GetCommandInfoSummaries(commandInfos);
-        await ReplyAsync(null, false, embedSummaryInformation);
+        await RespondAsync(null, new[]
+        {
+            embedSummaryInformation
+        });
     }
 }

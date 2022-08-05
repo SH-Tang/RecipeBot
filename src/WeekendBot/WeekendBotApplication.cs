@@ -95,6 +95,12 @@ public class WeekendBotApplication
             typeof(WeekendModule),
             typeof(InfoTextModule)
         });
+
+        var interactionCommandHandlingServices = services.GetRequiredService<InteractionDiscordCommandHandler>();
+        await interactionCommandHandlingServices.InitializeHandlerAsync(new[]
+        {
+            typeof(InfoInteractionModule)
+        });
     }
 
     private static Task ConfigureCommandService(IServiceProvider services)
