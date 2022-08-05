@@ -1,3 +1,4 @@
+![License](https://img.shields.io/github/license/SiuHinTang/WeekendBot)
 ![GitHub last commit](https://img.shields.io/github/last-commit/SiuHinTang/WeekendBot)
 ![Unit tests](https://github.com/SiuHinTang/WeekendBot/actions/workflows/dotnet.yml/badge.svg)
 [![codecov](https://codecov.io/gh/SiuHinTang/WeekendBot/branch/master/graph/badge.svg?token=20HZTP4M1O)](https://codecov.io/gh/SiuHinTang/WeekendBot)
