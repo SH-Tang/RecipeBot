@@ -15,6 +15,35 @@ A simple bot that keeps track of "Weekend" (hereafter defined as Fridays, past 4
 * A short message indicating whether it is weekend (or not)
 * A message to indicate how much time before it is weekend (unless it already is weekend :wink:)
 
+# Setup
+In order to run the Bot, a `config.json` file must be created next to the executable with the following content. Note that only the key `Token` is mandatory. The remaining object literals and their attributes are all optional, unless specified otherwise.
+
+```json
+{
+    "Token": "{Your Discord token for the Bot}",
+    "StringFormatOptions":
+    {
+        "FloatingNumberFormat": "F2",
+        "TimeSpanFormat": "d\\.hh\\:mm\\:ss",
+        "DateTimeFormat": "dddd d/MM/yy HH:mm:ss"
+    },
+    "CommandOptions":
+    {
+        "TestGuildId": "{TestGuildId}"
+    }
+}
+```
+
+## StringFormatOptions (optional)
+| Key | Description |
+|---|---|
+| FloatingNumberFormat | The number format to use for floating numbers, see also [C# Standard Numeric Formats](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings) |
+| TimeSpanFormat | The format to display time span information, see also [C# custom time span formats](https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-timespan-format-strings) |
+| DateTimeFormat | The format to display date time information, see also [C# custom date time format](https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings)
+
+## CommandOptions (optional)
+
+
 # Supported commands
 
 * `help`
