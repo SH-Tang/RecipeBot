@@ -1,4 +1,8 @@
+![License](https://img.shields.io/github/license/SiuHinTang/WeekendBot)
+![GitHub last commit](https://img.shields.io/github/last-commit/SiuHinTang/WeekendBot)
 ![Unit tests](https://github.com/SiuHinTang/WeekendBot/actions/workflows/dotnet.yml/badge.svg)
+[![codecov](https://codecov.io/gh/SiuHinTang/WeekendBot/branch/master/graph/badge.svg?token=20HZTP4M1O)](https://codecov.io/gh/SiuHinTang/WeekendBot)
+
 
 # WeekendBot
 
@@ -11,7 +15,46 @@ A simple bot that keeps track of "Weekend" (hereafter defined as Fridays, past 4
 * A short message indicating whether it is weekend (or not)
 * A message to indicate how much time before it is weekend (unless it already is weekend :wink:)
 
-# Supported commands
+# Goals
+
+The main goal of this application is to familiarize with the following frameworks:
+
+* EF Core 6 and AutoMapper
+* [Discord.Net](https://github.com/discord-net/Discord.Net)
+* xUnit 
+
+# Setup
+In order to run the Bot, a `config.json` file must be created next to the executable with the following content. Note that only the key `Token` is mandatory. The remaining object literals and their attributes are all optional, unless specified otherwise.
+
+```json
+{
+    "Token": "{Your Discord token for the Bot}",
+    "StringFormatOptions":
+    {
+        "FloatingNumberFormat": "F2",
+        "TimeSpanFormat": "d\\.hh\\:mm\\:ss",
+        "DateTimeFormat": "dddd d/MM/yy HH:mm:ss"
+    },
+    "CommandOptions":
+    {
+        "TestGuildId": "{TestGuildId}"
+    }
+}
+```
+
+## StringFormatOptions (optional)
+| Key | Description |
+|---|---|
+| FloatingNumberFormat | The number format to use for floating numbers, see also [C# Standard Numeric Formats](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings) |
+| TimeSpanFormat | The format to display time span information, see also [C# custom time span formats](https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-timespan-format-strings) |
+| DateTimeFormat | The format to display date time information, see also [C# custom date time format](https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings) |
+
+## CommandOptions (optional)
+| Key | Description |
+|---|---|
+| TestGuildId | Set this to a Discord channel to immediately test the bot and its slash commands. Global commands take an hour to register |
+
+# Supported bot commands
 
 * `help`
 
@@ -30,11 +73,3 @@ A simple bot that keeps track of "Weekend" (hereafter defined as Fridays, past 4
 # License
 
 This project was released under the GPLv3 license. A copy of this license can be found [here](/licenses).
-
-# Goals
-
-The main goal of this application is to familiarize with the following frameworks:
-
-* EF Core 6 and AutoMapper
-* [Discord.Net](https://github.com/discord-net/Discord.Net)
-* xUnit 
