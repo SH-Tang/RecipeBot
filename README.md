@@ -16,10 +16,11 @@ A simple bot that keeps track of "Weekend" (hereafter defined as Fridays, past 4
 * A message to indicate how much time before it is weekend (unless it already is weekend :wink:)
 
 ##### Table of Contents
-[Goals](#Goals)
-[Setup](#Setup)
-[Supported Bot Command](#Supported bot commands)
-[License](#License)
+
+* [Goals](#Goals)
+* [Setup](#Setup)
+* [Supported bot commands]
+* [License](#License)
 
 # Goals
 
