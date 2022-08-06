@@ -40,6 +40,6 @@ public class DiscordCommandOptionsTest
 
         // Assert
         Assert.Equal('~', options.CommandPrefix);
-        Assert.Equal((ulong) 0, options.TestGuildId);
+        Assert.Null(options.TestGuildId);
     }
 }

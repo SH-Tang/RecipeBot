@@ -35,5 +35,5 @@ public class DiscordCommandOptions
     /// <summary>
     /// Gets or sets the Id for the test Discord server.
     /// </summary>
-    public ulong TestGuildId { get; set; }
+    public ulong? TestGuildId { get; set; }
 }
