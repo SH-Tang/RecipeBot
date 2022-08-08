@@ -10,4 +10,9 @@
     <PackageReference Include="Discord.Net.Interactions" Version="3.7.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Discord.Common\Discord.Common.csproj" />
+    <ProjectReference Include="..\WeekendBot.Utils\WeekendBot.Utils.csproj" />
+  </ItemGroup>
+
 </Project>
