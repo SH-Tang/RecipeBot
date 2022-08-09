@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using WeekendBot.Utils;
 
 namespace WeekendBot.Services;
@@ -24,6 +25,11 @@ namespace WeekendBot.Services;
 /// </summary>
 public class AuthorData
 {
+    /// <summary>
+    /// Creates a new instance of <see cref="AuthorData"/>.
+    /// </summary>
+    /// <param name="authorName">The name of the author.</param>
+    /// <param name="authorImageUrl">The image <see cref="Uri"/> of the author.</param>
     public AuthorData(string authorName, string authorImageUrl)
     {
         authorName.IsNotNullOrWhiteSpaces(nameof(authorName));
