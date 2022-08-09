@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using Discord;
 using WeekendBot.Utils;
 
@@ -25,6 +26,12 @@ namespace WeekendBot.Services;
 /// </summary>
 public static class RecipeEmbedFactory
 {
+    /// <summary>
+    /// Creates an <see cref="Embed"/> based on its input arguments.
+    /// </summary>
+    /// <param name="recipeData">The <see cref="RecipeData"/> to create the <see cref="Embed"/> with.</param>
+    /// <returns>A <see cref="Embed"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="recipeData"/> is <c>null</c>.</exception>
     public static Embed Create(RecipeData recipeData)
     {
         recipeData.IsNotNull(nameof(recipeData));
