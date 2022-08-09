@@ -36,7 +36,7 @@ public class RecipeDataBuilder
     public RecipeDataBuilder AddImage(IAttachment attachment)
     {
         attachment.IsNotNull(nameof(attachment));
-        attachment.IsValidArgument(x => x.IsImage(), "Attachment must be an image.", nameof(attachment)); // TODO: refer to utils
+        attachment.IsValidArgument(x => x.IsImage(), "Attachment must be an image.", nameof(attachment));
 
         data.ImageUrl = attachment.Url;
         return this;

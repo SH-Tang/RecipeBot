@@ -16,7 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
+using WeekendBot.TestUtils;
 using Xunit;
 
 namespace WeekendBot.Services.Test;
@@ -24,7 +24,7 @@ namespace WeekendBot.Services.Test;
 public class AuthorDataTest
 {
     [Theory]
-    [MemberData(nameof(GetInvalidStringValues))]
+    [ClassData(typeof(EmptyOrNullStringValueGenerator))]
     public void AuthorData_with_invalid_author_value_throws_exception(string invalidAuthorName)
     {
         // Setup
@@ -38,7 +38,7 @@ public class AuthorDataTest
     }
 
     [Theory]
-    [MemberData(nameof(GetInvalidStringValues))]
+    [ClassData(typeof(EmptyOrNullStringValueGenerator))]
     public void AuthorData_with_invalid_author_image_url_throws_exception(string invalidAuthorImageUrl)
     {
         // Setup
@@ -49,23 +49,5 @@ public class AuthorDataTest
 
         // Assert
         Assert.Throws<ArgumentException>(call);
-    }
-
-    private static IEnumerable<object[]> GetInvalidStringValues()
-    {
-        yield return new object[]
-        {
-            string.Empty
-        };
-
-        yield return new object[]
-        {
-            "    "
-        };
-
-        yield return new object[]
-        {
-            null
-        };
     }
 }

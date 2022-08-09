@@ -27,9 +27,9 @@ public class RecipeData
     internal RecipeData(AuthorData authorData, string recipeTitle, string recipeIngredients, string cookingSteps)
     {
         authorData.IsNotNull(nameof(authorData));
-        recipeTitle.IsNotNull(nameof(recipeTitle));
-        recipeIngredients.IsNotNull(nameof(recipeIngredients));
-        cookingSteps.IsNotNull(nameof(cookingSteps));
+        recipeTitle.IsNotNullOrWhiteSpaces(nameof(recipeTitle));
+        recipeIngredients.IsNotNullOrWhiteSpaces(nameof(recipeIngredients));
+        cookingSteps.IsNotNullOrWhiteSpaces(nameof(cookingSteps));
 
         AuthorData = authorData;
         RecipeTitle = recipeTitle;

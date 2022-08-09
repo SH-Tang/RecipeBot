@@ -18,6 +18,7 @@
 using System.Collections.Generic;
 using Discord.Common.Utils;
 using NSubstitute;
+using WeekendBot.TestUtils;
 using Xunit;
 
 namespace Discord.Common.Test.Utils;
@@ -25,7 +26,7 @@ namespace Discord.Common.Test.Utils;
 public class IAttachmentExtensionsTest
 {
     [Theory]
-    [MemberData(nameof(GetNullOrEmptyStrings))]
+    [ClassData(typeof(EmptyOrNullStringValueGenerator))]
     [InlineData("someImageExtension")]
     public void Attachment_returns_true_when_image(string? imageType)
     {
@@ -38,7 +39,7 @@ public class IAttachmentExtensionsTest
     }
 
     [Theory]
-    [MemberData(nameof(GetNullOrEmptyStrings))]
+    [ClassData(typeof(EmptyOrNullStringValueGenerator))]
     [InlineData("somePrefix/")]
     public void Attachment_returns_false_when_not_an_image(string? imageType)
     {
@@ -48,23 +49,5 @@ public class IAttachmentExtensionsTest
         bool result = attachment.IsImage();
 
         Assert.False(result);
-    }
-
-    private static IEnumerable<object?[]> GetNullOrEmptyStrings()
-    {
-        yield return new object?[]
-        {
-            string.Empty
-        };
-
-        yield return new object?[]
-        {
-            null
-        };
-
-        yield return new object?[]
-        {
-            "    "
-        };
     }
 }
