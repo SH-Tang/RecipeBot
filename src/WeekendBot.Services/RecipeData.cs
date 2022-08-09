@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using WeekendBot.Utils;
 
 namespace WeekendBot.Services;
@@ -24,6 +25,16 @@ namespace WeekendBot.Services;
 /// </summary>
 public class RecipeData
 {
+    /// <summary>
+    /// Creates a new instance of <see cref="RecipeDataBuilder"/>.
+    /// </summary>
+    /// <param name="authorData">The <see cref="Services.AuthorData"/>.</param>
+    /// <param name="recipeTitle">The title of the recipe.</param>
+    /// <param name="recipeIngredients">The ingredients of the recipe.</param>
+    /// <param name="cookingSteps">The cooking steps of the recipe.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="authorData"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="recipeTitle"/>, <see cref="recipeIngredients"/>
+    /// or <paramref name="cookingSteps"/> is <c>null</c> or consists of whitespaces.</exception>
     internal RecipeData(AuthorData authorData, string recipeTitle, string recipeIngredients, string cookingSteps)
     {
         authorData.IsNotNull(nameof(authorData));
