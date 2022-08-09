@@ -39,7 +39,7 @@ public class RecipeDataBuilder
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="authorData"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="recipeTitle"/>, <see cref="recipeIngredients"/>
     /// or <paramref name="cookingSteps"/> is <c>null</c> or consists of whitespaces.</exception>
-    public RecipeDataBuilder(AuthorData authorData, string recipeTitle, string recipeIngredients, string cookingSteps)
+    public RecipeDataBuilder(AuthorData authorData, string? recipeTitle, string? recipeIngredients, string? cookingSteps)
     {
         data = new RecipeData(authorData, recipeTitle, recipeIngredients, cookingSteps);
     }
@@ -66,7 +66,7 @@ public class RecipeDataBuilder
     /// </summary>
     /// <param name="notes">The notes to add.</param>
     /// <returns>The <see cref="RecipeDataBuilder"/>.</returns>
-    public RecipeDataBuilder AddNotes(string notes)
+    public RecipeDataBuilder AddNotes(string? notes)
     {
         data.AdditionalNotes = notes;
         return this;
