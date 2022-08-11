@@ -60,7 +60,7 @@ public class InfoInteractionModuleTest
 
         // Assert
         Assert.NotNull(commandAttribute);
-        Assert.Equal("help", commandAttribute!.Name.ToLower());
+        Assert.Equal("help", commandAttribute!.Name);
 
         const string expectedDescription = "Provides information about all the available commands.";
         Assert.Equal(expectedDescription, commandAttribute.Description);
