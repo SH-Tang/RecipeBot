@@ -17,6 +17,7 @@
 
 using System;
 using Discord;
+using WeekendBot.Services.Properties;
 using WeekendBot.Utils;
 
 namespace WeekendBot.Services;
@@ -32,26 +33,53 @@ public static class RecipeEmbedFactory
     /// <param name="recipeData">The <see cref="RecipeData"/> to create the <see cref="Embed"/> with.</param>
     /// <returns>A <see cref="Embed"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="recipeData"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException">Thrown when the <paramref name="recipeData"/> contains invalid values.</exception>
+    /// <exception cref="ModalResponseException">Thrown when the response could not be successfully determined.</exception>
     public static Embed Create(RecipeData recipeData)
     {
         recipeData.IsNotNull(nameof(recipeData));
 
-        EmbedBuilder? embedBuilder = new EmbedBuilder()
-                                     .WithAuthor(recipeData.AuthorData.AuthorName, recipeData.AuthorData.AuthorImageUrl)
-                                     .WithTitle(recipeData.RecipeTitle)
-                                     .AddField("Ingredients", recipeData.RecipeIngredients)
-                                     .AddField("Cooking steps", recipeData.CookingSteps);
-
-        if (!string.IsNullOrWhiteSpace(recipeData.AdditionalNotes))
+        try
         {
-            embedBuilder.AddField("Additional notes", recipeData.AdditionalNotes);
+            EmbedBuilder embedBuilder = CreateConfiguredEmbedBuilder(recipeData);
+            return embedBuilder.Build();
         }
+        catch (InvalidOperationException e)
+        {
+            throw new ModalResponseException(string.Format(Resources.RecipeModal_response_could_not_be_determined_reason_0_, e.Message), e);
+        }
+    }
 
+    private static EmbedBuilder CreateConfiguredEmbedBuilder(RecipeData recipeData)
+    {
+        AuthorData authorData = recipeData.AuthorData;
+        EmbedBuilder embedBuilder = new EmbedBuilder().WithAuthor(authorData.AuthorName, authorData.AuthorImageUrl)
+                                                      .WithTitle(recipeData.RecipeTitle);
         if (!string.IsNullOrWhiteSpace(recipeData.ImageUrl))
         {
             embedBuilder.WithImageUrl(recipeData.ImageUrl);
         }
 
-        return embedBuilder.Build();
+        ConfigureFields(recipeData, embedBuilder);
+        
+        return embedBuilder;
+    }
+
+    private static void ConfigureFields(RecipeData recipeData, EmbedBuilder embedBuilder)
+    {
+        try
+        {
+            embedBuilder.AddField("Ingredients", recipeData.RecipeIngredients)
+                        .AddField("Cooking steps", recipeData.CookingSteps);
+
+            if (!string.IsNullOrWhiteSpace(recipeData.AdditionalNotes))
+            {
+                embedBuilder.AddField("Additional notes", recipeData.AdditionalNotes);
+            }
+        }
+        catch (ArgumentException e)
+        {
+            throw new ModalResponseException(string.Format(Resources.RecipeModal_response_could_not_be_determined_reason_0_, e.Message), e);
+        }
     }
 }
