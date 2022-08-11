@@ -15,12 +15,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Common;
 using Discord.Common.Utils;
 using Discord.Interactions;
 using Discord.WebSocket;
+using WeekendBot.Utils;
 
 namespace WeekendBot.Services;
 
@@ -29,18 +31,38 @@ namespace WeekendBot.Services;
 /// </summary>
 public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionContext>
 {
-    private static IAttachment? attachmentArgument; // Because the FormatRecipe works on a different context, attachment must be set as a global variable to pass through
+    // The ModalResponse instantiates another object to respond, so the state is not preserved between FormatRecipe and the ModalResponse
+    private static IAttachment? attachmentArgument;
+    private readonly ILoggingService logger;
+
+    /// <summary>
+    /// Creates a new instance of <see cref="RecipeInteractionModule"/>.
+    /// </summary>
+    /// <param name="logger">The logger to use.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="logger"/> is <c>null</c>.</exception>
+    public RecipeInteractionModule(ILoggingService logger)
+    {
+        logger.IsNotNull(nameof(logger));
+        this.logger = logger;
+    }
 
     [SlashCommand("recipe", "Tell us about your recipe")]
     public async Task FormatRecipe([Summary("image", "The image of the recipe result (optional)")] IAttachment? attachment = null)
     {
-        attachmentArgument = attachment;
+        if (attachment != null && !attachment.IsImage())
+        {
+            await RespondAsync("Attachment must be an image.", ephemeral: true);
+            return;
+        }
+
         try
         {
+            attachmentArgument = attachment;
             await Context.Interaction.RespondWithModalAsync<RecipeModal>(RecipeModal.ModalId);
         }
-        catch
+        catch (Exception e)
         {
+            await logger.LogErrorAsync(e);
             attachmentArgument = null;
         }
     }
@@ -48,21 +70,27 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
     [ModalInteraction(RecipeModal.ModalId)]
     public async Task ModalResponse(RecipeModal modal)
     {
-        SocketUser? user = Context.User;
-        var authorData = new AuthorData(user.Username, user.GetAvatarUrl());
-
-        RecipeDataBuilder recipeDataBuilder = new RecipeDataBuilder(authorData, modal.RecipeTitle, modal.Ingredients, modal.CookingSteps)
-            .AddNotes(modal.Notes);
-        if (attachmentArgument != null && attachmentArgument.IsImage()) // TODO: Generate error response when attachment is not an image.
-        {
-            recipeDataBuilder.AddImage(attachmentArgument);
-        }
-
-        Embed embed = RecipeEmbedFactory.Create(recipeDataBuilder.Build());
-
         try
         {
-            await RespondAsync(embed: embed);
+            SocketUser? user = Context.User;
+            Embed response = attachmentArgument != null && attachmentArgument.IsImage()
+                                 ? RecipeModalResponseService.GetRecipeModalResponse(modal, user, attachmentArgument)
+                                 : RecipeModalResponseService.GetRecipeModalResponse(modal, user);
+            await RespondAsync(embed: response);
+        }
+        catch (ModalResponseException e)
+        {
+            Task[] tasks =
+            {
+                RespondAsync(e.Message, ephemeral: true),
+                logger.LogErrorAsync(e)
+            };
+
+            Task.WaitAll(tasks);
+        }
+        catch (Exception e)
+        {
+            await logger.LogErrorAsync(e);
         }
         finally
         {
