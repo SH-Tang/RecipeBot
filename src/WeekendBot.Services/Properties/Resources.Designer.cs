@@ -61,6 +61,15 @@ namespace WeekendBot.Services.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Attachment must be an image..
+        /// </summary>
+        internal static string Attachment_must_be_an_image {
+            get {
+                return ResourceManager.GetString("Attachment_must_be_an_image", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Recipe modal response could not be successfully determined: {0}..
         /// </summary>
         internal static string RecipeModal_response_could_not_be_determined_reason_0_ {

@@ -22,6 +22,7 @@ using Discord.Common;
 using Discord.Common.Utils;
 using Discord.Interactions;
 using Discord.WebSocket;
+using WeekendBot.Services.Properties;
 using WeekendBot.Utils;
 
 namespace WeekendBot.Services;
@@ -31,7 +32,7 @@ namespace WeekendBot.Services;
 /// </summary>
 public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionContext>
 {
-    // The ModalResponse instantiates another object to respond, so the state is not preserved between FormatRecipe and the ModalResponse
+    // The OnModalResponse instantiates another object to respond, so the state is not preserved between FormatRecipe and the OnModalResponse
     private static IAttachment? attachmentArgument;
     private readonly ILoggingService logger;
 
@@ -51,7 +52,7 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
     {
         if (attachment != null && !attachment.IsImage())
         {
-            await RespondAsync("Attachment must be an image.", ephemeral: true);
+            await RespondAsync(Resources.Attachment_must_be_an_image, ephemeral: true);
             return;
         }
 
@@ -68,7 +69,7 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
     }
 
     [ModalInteraction(RecipeModal.ModalId)]
-    public async Task ModalResponse(RecipeModal modal)
+    public async Task OnModalResponse(RecipeModal modal)
     {
         try
         {

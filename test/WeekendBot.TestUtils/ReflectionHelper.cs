@@ -74,7 +74,7 @@ namespace WeekendBot.TestUtils
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="argumentTypes"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="methodName"/> is <c>null</c>, empty
         /// or consists of whitespace.</exception>
-        private static TAttribute? GetCustomAttributeFromMethod<TObject, TAttribute>(string methodName, Type[] argumentTypes)
+        public static TAttribute? GetCustomAttributeFromMethod<TObject, TAttribute>(string methodName, Type[] argumentTypes)
             where TObject : class
             where TAttribute : Attribute
         {
