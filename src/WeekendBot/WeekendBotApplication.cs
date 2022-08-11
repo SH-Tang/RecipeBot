@@ -17,6 +17,7 @@
 
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -74,7 +75,7 @@ public class WeekendBotApplication
             await ConfigureCommandService(serviceProvider);
             await ConfigureCommandHandlingService(serviceProvider);
 
-            await Task.Delay(-1);
+            await Task.Delay(Timeout.Infinite);
         }
     }
 

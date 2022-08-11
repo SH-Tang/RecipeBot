@@ -17,6 +17,7 @@
 
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WeekendBot
@@ -36,7 +37,7 @@ namespace WeekendBot
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.WriteLine(e);
-                await Task.Delay(-1);
+                await Task.Delay(Timeout.Infinite);
             }
         }
     }
