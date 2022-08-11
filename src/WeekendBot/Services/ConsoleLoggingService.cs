@@ -70,6 +70,17 @@ public class ConsoleLoggingService : ILoggingService
         Console.ResetColor();
     }
 
+    public async Task LogErrorAsync(Exception exception)
+    {
+        await LogErrorAsync(exception.Message);
+
+        string? stackTrace = exception.StackTrace;
+        if (!string.IsNullOrWhiteSpace(stackTrace))
+        {
+            await LogErrorAsync(stackTrace);
+        }
+    }
+
     public async Task LogDebugAsync(string message)
     {
 #if DEBUG
