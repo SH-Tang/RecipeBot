@@ -72,6 +72,8 @@ public class ConsoleLoggingService : ILoggingService
 
     public async Task LogErrorAsync(Exception exception)
     {
+        exception.IsNotNull(nameof(exception));
+
         await LogErrorAsync(exception.Message);
 
         string? stackTrace = exception.StackTrace;

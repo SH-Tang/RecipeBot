@@ -26,7 +26,7 @@ namespace Discord.Common.Utils;
 public static class IAttachmentExtensions
 {
     /// <summary>
-    /// Returns whether the attachment contains an image.
+    /// Returns whether the attachment represents an image.
     /// </summary>
     /// <param name="attachment">The <see cref="IAttachment"/> to check.</param>
     /// <returns><c>true</c> if <see cref="IAttachment"/> is an image; <c>false</c> otherwise.</returns>

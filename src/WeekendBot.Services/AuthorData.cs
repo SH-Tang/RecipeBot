@@ -30,6 +30,7 @@ public class AuthorData
     /// </summary>
     /// <param name="authorName">The name of the author.</param>
     /// <param name="authorImageUrl">The image <see cref="Uri"/> of the author.</param>
+    /// <exception cref="ArgumentException">Thrown when any parameter is <c>null</c>, empty or consists of whitespace only.</exception>
     public AuthorData(string authorName, string authorImageUrl)
     {
         authorName.IsNotNullOrWhiteSpaces(nameof(authorName));

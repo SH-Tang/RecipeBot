@@ -51,6 +51,7 @@ public interface ILoggingService
     /// </summary>
     /// <param name="exception">The exception to log.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="exception"/> is <c>null</c>.</exception>
     Task LogErrorAsync(Exception exception);
 
     /// <summary>
