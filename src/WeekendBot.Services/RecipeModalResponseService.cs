@@ -40,7 +40,7 @@ public static class RecipeModalResponseService
         user.IsNotNull(nameof(user));
 
         var authorData = new AuthorData(user.Username, user.GetAvatarUrl());
-        RecipeDataBuilder recipeDataBuilder = new RecipeDataBuilder(authorData, modal.RecipeTitle, modal.Ingredients, modal.CookingSteps)
+        RecipeDataBuilder recipeDataBuilder = new RecipeDataBuilder(authorData, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
             .AddNotes(modal.Notes);
 
         return RecipeEmbedFactory.Create(recipeDataBuilder.Build());
@@ -62,7 +62,7 @@ public static class RecipeModalResponseService
         user.IsNotNull(nameof(user));
 
         var authorData = new AuthorData(user.Username, user.GetAvatarUrl());
-        RecipeDataBuilder recipeDataBuilder = new RecipeDataBuilder(authorData, modal.RecipeTitle, modal.Ingredients, modal.CookingSteps)
+        RecipeDataBuilder recipeDataBuilder = new RecipeDataBuilder(authorData, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
                                               .AddNotes(modal.Notes)
                                               .AddImage(attachment);
 

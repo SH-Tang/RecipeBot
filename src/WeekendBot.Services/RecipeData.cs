@@ -35,17 +35,17 @@ public class RecipeData
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="authorData"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="recipeTitle"/>, <see cref="recipeIngredients"/>
     /// or <paramref name="cookingSteps"/> is <c>null</c> or consists of whitespaces.</exception>
-    internal RecipeData(AuthorData authorData, string? recipeTitle, string? recipeIngredients, string? cookingSteps)
+    internal RecipeData(AuthorData authorData, string recipeTitle, string recipeIngredients, string cookingSteps)
     {
         authorData.IsNotNull(nameof(authorData));
-        recipeTitle?.IsNotNullOrWhiteSpaces(nameof(recipeTitle));
-        recipeIngredients?.IsNotNullOrWhiteSpaces(nameof(recipeIngredients));
-        cookingSteps?.IsNotNullOrWhiteSpaces(nameof(cookingSteps));
+        recipeTitle.IsNotNullOrWhiteSpaces(nameof(recipeTitle));
+        recipeIngredients.IsNotNullOrWhiteSpaces(nameof(recipeIngredients));
+        cookingSteps.IsNotNullOrWhiteSpaces(nameof(cookingSteps));
 
         AuthorData = authorData;
-        RecipeTitle = recipeTitle!;
-        RecipeIngredients = recipeIngredients!;
-        CookingSteps = cookingSteps!;
+        RecipeTitle = recipeTitle;
+        RecipeIngredients = recipeIngredients;
+        CookingSteps = cookingSteps;
     }
 
     /// <summary>
