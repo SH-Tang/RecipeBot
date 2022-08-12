@@ -5,17 +5,17 @@ on:
     branches:
     - master
     paths:
-    - './src/**'
-    - './test/**'
-    - './build/**'
-    - './WeekendBot.sln'
+    - 'src/**'
+    - 'test/**'
+    - 'build/**'
+    - 'WeekendBot.sln'
   pull_request:
     branches: [ master ]
     paths:
-    - './src/**'
-    - './test/**'
-    - './build/**'
-    - './WeekendBot.sln'
+    - 'src/**'
+    - 'test/**'
+    - 'build/**'
+    - 'WeekendBot.sln'
 env:
   build_directory: ./
 

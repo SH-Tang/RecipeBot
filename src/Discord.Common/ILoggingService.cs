@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Threading.Tasks;
 
 namespace Discord.Common;
@@ -44,6 +45,14 @@ public interface ILoggingService
     /// <param name="message">The message to log.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     Task LogErrorAsync(string message);
+
+    /// <summary>
+    /// Logs an error message.
+    /// </summary>
+    /// <param name="exception">The exception to log.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="exception"/> is <c>null</c>.</exception>
+    Task LogErrorAsync(Exception exception);
 
     /// <summary>
     /// Logs an informational message when in debug mode.

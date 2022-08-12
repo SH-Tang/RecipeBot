@@ -48,7 +48,7 @@ namespace WeekendBot.Utils
         /// <exception cref="ArgumentException">Thrown when <paramref name="argument"/> is <c>null</c> or consists of only whitespaces.</exception>
         public static void IsNotNullOrWhiteSpaces(this string argument, string argumentName)
         {
-            if (argument == null)
+            if (string.IsNullOrWhiteSpace(argument))
             {
                 throw new ArgumentException($"{argumentName} cannot be null or exists of whitespaces only.", argumentName);
             }

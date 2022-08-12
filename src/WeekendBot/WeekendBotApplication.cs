@@ -17,6 +17,7 @@
 
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -27,6 +28,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeekendBot.Modules;
+using WeekendBot.Services;
 using WeekendBot.Utils;
 
 namespace WeekendBot;
@@ -73,7 +75,7 @@ public class WeekendBotApplication
             await ConfigureCommandService(serviceProvider);
             await ConfigureCommandHandlingService(serviceProvider);
 
-            await Task.Delay(-1);
+            await Task.Delay(Timeout.Infinite);
         }
     }
 
@@ -99,7 +101,8 @@ public class WeekendBotApplication
         var interactionCommandHandlingServices = services.GetRequiredService<InteractionDiscordCommandHandler>();
         await interactionCommandHandlingServices.InitializeHandlerAsync(new[]
         {
-            typeof(InfoInteractionModule)
+            typeof(InfoInteractionModule),
+            typeof(RecipeInteractionModule)
         });
     }
 

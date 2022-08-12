@@ -15,30 +15,36 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Collections;
+using System.Collections.Generic;
 
-namespace WeekendBot
+namespace WeekendBot.TestUtils;
+
+/// <summary>
+/// Generator that generates consisting of whitespaces or <c>null</c>.
+/// </summary>
+public class EmptyOrNullStringValueGenerator : IEnumerable<object?[]>
 {
-    internal class Program
+    public IEnumerator<object?[]> GetEnumerator()
     {
-        public static async Task Main(string[] args)
+        yield return new object?[]
         {
-            try
-            {
-                string configurationFilePath = Path.Combine(AppContext.BaseDirectory, "config.json");
-                var application = new WeekendBotApplication(configurationFilePath);
+            string.Empty
+        };
 
-                await application.Run();
-            }
-            catch (Exception e)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine(e);
-                await Task.Delay(Timeout.Infinite);
-            }
-        }
+        yield return new object?[]
+        {
+            "    "
+        };
+
+        yield return new object?[]
+        {
+            null
+        };
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

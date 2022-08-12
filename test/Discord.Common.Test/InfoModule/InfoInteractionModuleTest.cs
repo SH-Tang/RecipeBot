@@ -55,12 +55,12 @@ public class InfoInteractionModuleTest
     public void Help_command_has_expected_description()
     {
         // Call
-        SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttribute<InfoInteractionModule, SlashCommandAttribute>(
+        SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<InfoInteractionModule, SlashCommandAttribute>(
             nameof(InfoInteractionModule.GetHelpResponseAsync));
 
         // Assert
         Assert.NotNull(commandAttribute);
-        Assert.Equal("help", commandAttribute!.Name.ToLower());
+        Assert.Equal("help", commandAttribute!.Name);
 
         const string expectedDescription = "Provides information about all the available commands.";
         Assert.Equal(expectedDescription, commandAttribute.Description);
