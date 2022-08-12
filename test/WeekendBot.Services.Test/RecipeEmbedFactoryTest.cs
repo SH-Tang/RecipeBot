@@ -44,8 +44,9 @@ public class RecipeEmbedFactoryTest
         Embed embed = RecipeEmbedFactory.Create(recipeData);
 
         // Assert
-        EmbedAuthor embedAuthor = embed.Author.Value;
-        AssertAuthor(authorName, authorImageUrl, embedAuthor);
+        EmbedAuthor? embedAuthor = embed.Author;
+        Assert.NotNull(embedAuthor);
+        AssertAuthor(authorName, authorImageUrl, embedAuthor!.Value);
 
         Assert.Equal(recipeTitle, embed.Title);
         Assert.Null(embed.Image);
@@ -82,12 +83,15 @@ public class RecipeEmbedFactoryTest
         Embed embed = RecipeEmbedFactory.Create(recipeData);
 
         // Assert
-        EmbedAuthor embedAuthor = embed.Author.Value;
-        AssertAuthor(authorName, authorImageUrl, embedAuthor);
+        EmbedAuthor? embedAuthor = embed.Author;
+        Assert.NotNull(embedAuthor);
+        AssertAuthor(authorName, authorImageUrl, embedAuthor!.Value);
 
         Assert.Equal(recipeTitle, embed.Title);
-        EmbedImage resultImage = embed.Image.Value;
-        Assert.Equal(recipeImageUrl, resultImage.Url);
+
+        EmbedImage? embedImage = embed.Image;
+        Assert.NotNull(embedImage);
+        Assert.Equal(recipeImageUrl, embedImage!.Value.Url);
 
         Assert.Equal(3, embed.Fields.Length);
         AssertField("Ingredients", recipeIngredients, embed.Fields[0]);
@@ -120,12 +124,15 @@ public class RecipeEmbedFactoryTest
         Embed embed = RecipeEmbedFactory.Create(recipeData);
 
         // Assert
-        EmbedAuthor embedAuthor = embed.Author.Value;
-        AssertAuthor(authorName, authorImageUrl, embedAuthor);
+        EmbedAuthor? embedAuthor = embed.Author;
+        Assert.NotNull(embedAuthor);
+        AssertAuthor(authorName, authorImageUrl, embedAuthor!.Value);
 
         Assert.Equal(recipeTitle, embed.Title);
-        EmbedImage resultImage = embed.Image.Value;
-        Assert.Equal(recipeImageUrl, resultImage.Url);
+
+        EmbedImage? embedImage = embed.Image;
+        Assert.NotNull(embedImage);
+        Assert.Equal(recipeImageUrl, embedImage!.Value.Url);
 
         Assert.Equal(2, embed.Fields.Length);
         AssertField("Ingredients", recipeIngredients, embed.Fields[0]);
@@ -153,8 +160,9 @@ public class RecipeEmbedFactoryTest
         Embed embed = RecipeEmbedFactory.Create(recipeData);
 
         // Assert
-        EmbedAuthor embedAuthor = embed.Author.Value;
-        AssertAuthor(authorName, authorImageUrl, embedAuthor);
+        EmbedAuthor? embedAuthor = embed.Author;
+        Assert.NotNull(embedAuthor);
+        AssertAuthor(authorName, authorImageUrl, embedAuthor!.Value);
 
         Assert.Equal(recipeTitle, embed.Title);
         Assert.Null(embed.Image);

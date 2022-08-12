@@ -87,13 +87,17 @@ public class RecipeModalResponseServiceTest
         // Assert
         AssertCommonEmbedResponseProperties(user, modal, response);
 
-        EmbedImage resultImage = response.Image.Value;
+        EmbedImage? embedImage = response.Image;
+        Assert.NotNull(embedImage);
+        EmbedImage resultImage = embedImage!.Value;
         Assert.Equal(recipeImageUrl, resultImage.Url);
     }
 
     private static void AssertCommonEmbedResponseProperties(IUser user, RecipeModal modal, IEmbed actualResponse)
     {
-        EmbedAuthor embedAuthor = actualResponse.Author.Value;
+        EmbedAuthor? actualResponseAuthor = actualResponse.Author;
+        Assert.NotNull(actualResponseAuthor);
+        EmbedAuthor embedAuthor = actualResponseAuthor!.Value;
         AssertAuthor(user.Username, user.GetAvatarUrl(), embedAuthor);
 
         Assert.Equal(modal.RecipeTitle, actualResponse.Title);
