@@ -114,7 +114,7 @@ public class RecipeModalResponseServiceTest
         Assert.Equal(expectedAuthorImageUrl, actualAuthor.IconUrl);
     }
 
-    private static void AssertField(string expectedName, string expectedValue, EmbedField actualField)
+    private static void AssertField(string expectedName, string? expectedValue, EmbedField actualField)
     {
         Assert.Equal(expectedName, actualField.Name);
         Assert.Equal(expectedValue, actualField.Value);
