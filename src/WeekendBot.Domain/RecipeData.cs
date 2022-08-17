@@ -26,16 +26,16 @@ namespace WeekendBot.Domain;
 public class RecipeData
 {
     /// <summary>
-    /// Creates a new instance of <see cref="WeekendBot.Services.RecipeDataBuilder"/>.
+    /// Creates a new instance of <see cref="RecipeData"/>.
     /// </summary>
     /// <param name="authorData">The <see cref="Domain.AuthorData"/>.</param>
     /// <param name="recipeTitle">The title of the recipe.</param>
     /// <param name="recipeIngredients">The ingredients of the recipe.</param>
     /// <param name="cookingSteps">The cooking steps of the recipe.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="authorData"/> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="recipeTitle"/>, <see cref="recipeIngredients"/>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="recipeTitle"/>, <paramref name="recipeIngredients"/>
     /// or <paramref name="cookingSteps"/> is <c>null</c> or consists of whitespaces.</exception>
-    internal RecipeData(AuthorData authorData, string recipeTitle, string recipeIngredients, string cookingSteps)
+    public RecipeData(AuthorData authorData, string recipeTitle, string recipeIngredients, string cookingSteps)
     {
         authorData.IsNotNull(nameof(authorData));
         recipeTitle.IsNotNullOrWhiteSpaces(nameof(recipeTitle));
@@ -49,7 +49,7 @@ public class RecipeData
     }
 
     /// <summary>
-    /// Gets the <see cref="AuthorData"/>.
+    /// Gets the <see cref="Domain.AuthorData"/>.
     /// </summary>
     public AuthorData AuthorData { get; }
 
@@ -71,10 +71,10 @@ public class RecipeData
     /// <summary>
     /// Gets or sets the additional notes of the recipe.
     /// </summary>
-    public string? AdditionalNotes { get; internal set; }
+    public string? AdditionalNotes { get; set; }
 
     /// <summary>
     /// Gets or sets the image url of the recipe.
     /// </summary>
-    public string? ImageUrl { get; internal set; }
+    public string? ImageUrl { get;  set; }
 }
