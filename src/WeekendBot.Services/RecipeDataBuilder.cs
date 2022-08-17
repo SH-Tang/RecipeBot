@@ -18,12 +18,13 @@
 using System;
 using Discord;
 using Discord.Common.Utils;
+using WeekendBot.Domain;
 using WeekendBot.Utils;
 
 namespace WeekendBot.Services;
 
 /// <summary>
-/// Builder to create instances of <see cref="RecipeData"/>.
+/// Builder to create instances of <see cref="WeekendBot.Domain.RecipeData"/>.
 /// </summary>
 public class RecipeDataBuilder
 {
@@ -32,7 +33,7 @@ public class RecipeDataBuilder
     /// <summary>
     /// Creates a new instance of <see cref="RecipeDataBuilder"/>.
     /// </summary>
-    /// <param name="authorData">The <see cref="AuthorData"/>.</param>
+    /// <param name="authorData">The <see cref="WeekendBot.Domain.AuthorData"/>.</param>
     /// <param name="recipeTitle">The title of the recipe.</param>
     /// <param name="recipeIngredients">The ingredients of the recipe.</param>
     /// <param name="cookingSteps">The cooking steps of the recipe.</param>
@@ -45,7 +46,7 @@ public class RecipeDataBuilder
     }
 
     /// <summary>
-    /// Adds an attachment image url to the <see cref="RecipeData"/>.
+    /// Adds an attachment image url to the <see cref="WeekendBot.Domain.RecipeData"/>.
     /// </summary>
     /// <param name="attachment">The <see cref="IAttachment"/> to add the information from.</param>
     /// <returns>The <see cref="RecipeDataBuilder"/>.</returns>
@@ -62,7 +63,7 @@ public class RecipeDataBuilder
     }
 
     /// <summary>
-    /// Adds notes to the <see cref="RecipeData"/>.
+    /// Adds notes to the <see cref="WeekendBot.Domain.RecipeData"/>.
     /// </summary>
     /// <param name="notes">The notes to add.</param>
     /// <returns>The <see cref="RecipeDataBuilder"/>.</returns>
@@ -73,9 +74,9 @@ public class RecipeDataBuilder
     }
 
     /// <summary>
-    /// Builds the <see cref="RecipeData"/>.
+    /// Builds the <see cref="WeekendBot.Domain.RecipeData"/>.
     /// </summary>
-    /// <returns>A configured <see cref="RecipeData"/>.</returns>
+    /// <returns>A configured <see cref="WeekendBot.Domain.RecipeData"/>.</returns>
     public RecipeData Build()
     {
         return data;

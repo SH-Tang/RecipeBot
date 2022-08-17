@@ -18,7 +18,7 @@
 using System;
 using WeekendBot.Utils;
 
-namespace WeekendBot.Services;
+namespace WeekendBot.Domain;
 
 /// <summary>
 /// Class containing information about a recipe.
@@ -26,9 +26,9 @@ namespace WeekendBot.Services;
 public class RecipeData
 {
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeDataBuilder"/>.
+    /// Creates a new instance of <see cref="WeekendBot.Services.RecipeDataBuilder"/>.
     /// </summary>
-    /// <param name="authorData">The <see cref="Services.AuthorData"/>.</param>
+    /// <param name="authorData">The <see cref="Domain.AuthorData"/>.</param>
     /// <param name="recipeTitle">The title of the recipe.</param>
     /// <param name="recipeIngredients">The ingredients of the recipe.</param>
     /// <param name="cookingSteps">The cooking steps of the recipe.</param>

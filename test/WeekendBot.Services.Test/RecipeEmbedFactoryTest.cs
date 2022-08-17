@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using Discord;
 using NSubstitute;
+using WeekendBot.Domain;
 using Xunit;
 
 namespace WeekendBot.Services.Test;

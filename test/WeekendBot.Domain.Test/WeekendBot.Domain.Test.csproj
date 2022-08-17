@@ -19,4 +19,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\WeekendBot.Domain\WeekendBot.Domain.csproj" />
+    <ProjectReference Include="..\WeekendBot.TestUtils\WeekendBot.TestUtils.csproj" />
+  </ItemGroup>
+
 </Project>

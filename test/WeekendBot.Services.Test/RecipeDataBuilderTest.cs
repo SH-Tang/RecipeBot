@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using Discord;
 using Discord.Common.Utils;
 using NSubstitute;
+using WeekendBot.Domain;
 using WeekendBot.TestUtils;
 using Xunit;
 

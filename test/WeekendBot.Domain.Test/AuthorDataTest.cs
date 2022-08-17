@@ -19,7 +19,7 @@ using System;
 using WeekendBot.TestUtils;
 using Xunit;
 
-namespace WeekendBot.Services.Test;
+namespace WeekendBot.Domain.Test;
 
 public class AuthorDataTest
 {
