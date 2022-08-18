@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using WeekendBot.Domain.Utils;
 using Xunit;
 
@@ -58,14 +59,10 @@ public class UrlValidationHelperTest
     [InlineData("http://1337.net")]
     [InlineData("http://a.b-c.de")]
     [InlineData("http://223.255.255.254")]
-    public void Valid_Url_returns_true(string validUrl)
+    public void Valid_http_url_throw_nothing(string validUrl)
     {
-
         // Call
-        bool result = UrlValidationHelper.IsValidUrl(validUrl);
-
-        // Assert
-        Assert.True(result);
+        UrlValidationHelper.ValidateHttpUrl(validUrl);
     }
 
     [Theory]
@@ -91,13 +88,13 @@ public class UrlValidationHelperTest
     [InlineData("h://test")]
     [InlineData(":// should fail")]
     [InlineData("ftps://foo.bar/")]
-    public void Invalid_Url_returns_false(string invalidUrl)
+    public void Invalid_http_url_throws_exception(string invalidUrl)
     {
-
         // Call
-        bool result = UrlValidationHelper.IsValidUrl(invalidUrl);
+        Action call = () => UrlValidationHelper.ValidateHttpUrl(invalidUrl);
 
         // Assert
-        Assert.False(result);
+        var exception = Assert.Throws<ArgumentException>(call);
+        Assert.Equal("url is an invalid http or https url.", exception.Message);
     }
 }

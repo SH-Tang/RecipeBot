@@ -28,17 +28,20 @@ public static class UrlValidationHelper
     /// Validates whether the <paramref name="url"/> is a valid http or https url.
     /// </summary>
     /// <param name="url">The url to validate.</param>
-    /// <returns><c>true</c> if <paramref name="url"/> is a valid http or https url, <c>false</c> otherwise.</returns>
-    public static bool IsValidUrl(string url)
+    /// <exception cref="ArgumentException">Thrown when the <paramref name="url"/> is invalid.</exception>
+    public static void ValidateHttpUrl(string url)
     {
-        if (string.IsNullOrWhiteSpace(url))
+        if (string.IsNullOrWhiteSpace(url) || !IsValidUrl(url))
         {
-            return false;
+            throw new ArgumentException($"{nameof(url)} is an invalid http or https url.");
         }
+    }
 
+    private static bool IsValidUrl(string url)
+    {
         Uri? uriResult;
-        bool tryCreateResult = Uri.TryCreate(url, UriKind.Absolute, out uriResult);
+        bool tryCreateUriResult = Uri.TryCreate(url, UriKind.Absolute, out uriResult);
 
-        return tryCreateResult && uriResult != null && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);                                          
+        return tryCreateUriResult && uriResult != null && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);                                          
     }
 }
