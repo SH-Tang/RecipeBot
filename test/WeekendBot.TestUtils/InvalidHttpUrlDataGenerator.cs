@@ -21,9 +21,9 @@ using System.Collections.Generic;
 namespace WeekendBot.TestUtils;
 
 /// <summary>
-/// Generator that generates <see cref="string"/> consisting of whitespaces or <c>null</c>.
+/// Generator that generates invalid urls with the http(s) protocol.
 /// </summary>
-public class EmptyOrNullStringValueGenerator : IEnumerable<object?[]>
+public class InvalidHttpUrlDataGenerator : IEnumerable<object?[]>
 {
     public IEnumerator<object?[]> GetEnumerator()
     {
@@ -31,15 +31,21 @@ public class EmptyOrNullStringValueGenerator : IEnumerable<object?[]>
         {
             string.Empty
         };
-
         yield return new object?[]
         {
-            "    "
+            "         "
         };
-
         yield return new object?[]
         {
             null
+        };
+        yield return new object?[]
+        {
+            "http://"
+        };
+        yield return new object?[]
+        {
+            "https://"
         };
     }
 
