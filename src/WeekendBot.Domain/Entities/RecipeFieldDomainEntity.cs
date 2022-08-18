@@ -23,7 +23,7 @@ namespace WeekendBot.Domain.Entities;
 /// <summary>
 /// Entity containing information for a recipe field.
 /// </summary>
-public class RecipeFieldDomainEntity
+public class RecipeFieldDomainEntity : ITotalCharacterLength
 {
     /// <summary>
     /// Creates a new instance of <see cref="RecipeFieldDomainEntity"/>.
@@ -50,8 +50,5 @@ public class RecipeFieldDomainEntity
     /// </summary>
     public string FieldData { get; }
 
-    /// <summary>
-    /// Gets the total character length of the recipe field.
-    /// </summary>
     public int TotalLength => FieldName.Length + FieldData.Length;
 }

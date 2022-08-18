@@ -51,4 +51,23 @@ public class AuthorDomainEntityTest
         // Assert
         Assert.Throws<ArgumentException>(call);
     }
+
+    [Theory]
+    [InlineData("authorName")]
+    [InlineData("author name")]
+    [InlineData("author    name")]
+    [InlineData("     authorName")]
+    [InlineData("authorName     ")]
+    public void Entity_with_valid_data_returns_total_length_of_author_name(string authorName)
+    {
+        // Setup
+        const string imageUrl = "http://wwww.google.com";
+        var recipeField = new AuthorDomainEntity(authorName, imageUrl);
+
+        // Call
+        int totalLength = recipeField.TotalLength;
+
+        // Assert
+        Assert.Equal(authorName.Length, totalLength);
+    }
 }
