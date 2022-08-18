@@ -21,6 +21,7 @@ using Discord;
 using Discord.Common.Utils;
 using NSubstitute;
 using WeekendBot.Domain;
+using WeekendBot.Domain.Data;
 using WeekendBot.TestUtils;
 using Xunit;
 

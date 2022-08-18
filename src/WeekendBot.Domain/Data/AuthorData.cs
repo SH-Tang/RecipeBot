@@ -18,7 +18,7 @@
 using System;
 using WeekendBot.Utils;
 
-namespace WeekendBot.Domain;
+namespace WeekendBot.Domain.Data;
 
 /// <summary>
 /// Class containing information about the author.
