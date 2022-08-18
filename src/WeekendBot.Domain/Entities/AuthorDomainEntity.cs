@@ -36,7 +36,7 @@ public class AuthorDomainEntity
     /// <item>The <paramref name="authorName"/> is <c>null</c>, empty or consists of whitespace only.</item>
     /// <item>The <paramref name="authorImageUrl"/> is an invalid url.</item>
     /// </list></exception>
-    public AuthorDomainEntity(string authorName, string authorImageUrl)
+    internal AuthorDomainEntity(string authorName, string authorImageUrl)
     {
         authorName.IsNotNullOrWhiteSpaces(nameof(authorName));
         UrlValidationHelper.ValidateHttpUrl(authorImageUrl);
