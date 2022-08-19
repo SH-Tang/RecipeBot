@@ -42,6 +42,6 @@ public static class UrlValidationHelper
         Uri? uriResult;
         bool tryCreateUriResult = Uri.TryCreate(url, UriKind.Absolute, out uriResult);
 
-        return tryCreateUriResult && uriResult != null && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);                                          
+        return tryCreateUriResult && uriResult != null && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
     }
 }

@@ -36,8 +36,8 @@ public class RecipeDomainEntityTest
         AuthorDomainEntity authorEntity = CreateAuthorEntity();
 
         // Call
-        Func<RecipeDomainEntity> call = () => new RecipeDomainEntity(authorEntity, Enumerable.Empty<RecipeFieldDomainEntity>(),
-                                                                     invalidRecipeTitle);
+        Action call = () => new RecipeDomainEntity(authorEntity, Enumerable.Empty<RecipeFieldDomainEntity>(),
+                                                   invalidRecipeTitle);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
@@ -51,8 +51,8 @@ public class RecipeDomainEntityTest
         AuthorDomainEntity authorEntity = CreateAuthorEntity();
 
         // Call
-        Func<RecipeDomainEntity> call = () => new RecipeDomainEntity(authorEntity, Enumerable.Empty<RecipeFieldDomainEntity>(),
-                                                                     invalidRecipeTitle, imageUrl);
+        Action call = () => new RecipeDomainEntity(authorEntity, Enumerable.Empty<RecipeFieldDomainEntity>(),
+                                                   invalidRecipeTitle, imageUrl);
 
         // Assert
         Assert.Throws<ArgumentException>(call);

@@ -34,7 +34,7 @@ public class RecipeDomainEntity : ITotalCharacterLength
     /// <param name="authorEntity">The author entity.</param>
     /// <param name="recipeFieldEntities">The collection of recipe field entities.</param>
     /// <param name="title">The title of the recipe.</param>
-    /// <exception cref="ArgumentNullException">Thrown when any parameter except <paramref name="title"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when any parameter, except <paramref name="title"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="title"/> is <c>null</c>, empty or consists
     /// of whitespaces.</exception>
     internal RecipeDomainEntity(AuthorDomainEntity authorEntity, IEnumerable<RecipeFieldDomainEntity> recipeFieldEntities,

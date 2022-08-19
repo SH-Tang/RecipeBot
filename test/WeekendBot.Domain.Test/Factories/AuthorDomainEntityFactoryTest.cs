@@ -71,7 +71,7 @@ public class AuthorDomainEntityFactoryTest
         string exceptionMessage = Assert.Throws<DomainEntityCreateException>(call).Message;
         Assert.False(exceptionMessage.StartsWith("AuthorName must be less or equal to"));
     }
-    
+
     [Theory]
     [InlineData(8)]
     [InlineData(0)]
