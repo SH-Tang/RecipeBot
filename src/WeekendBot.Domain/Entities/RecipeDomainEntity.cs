@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WeekendBot.Domain.Utils;
 using WeekendBot.Utils;
 
 namespace WeekendBot.Domain.Entities;
@@ -34,8 +35,10 @@ public class RecipeDomainEntity : ITotalCharacterLength
     /// <param name="recipeFieldEntities">The collection of recipe field entities.</param>
     /// <param name="title">The title of the recipe.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter except <paramref name="title"/> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="title"/> is <c>null</c>, empty or consists of whitespaces.</exception>
-    internal RecipeDomainEntity(AuthorDomainEntity authorEntity, IEnumerable<RecipeFieldDomainEntity> recipeFieldEntities, string title)
+    /// <exception cref="ArgumentException">Thrown when <paramref name="title"/> is <c>null</c>, empty or consists
+    /// of whitespaces.</exception>
+    internal RecipeDomainEntity(AuthorDomainEntity authorEntity, IEnumerable<RecipeFieldDomainEntity> recipeFieldEntities,
+                                string title)
     {
         authorEntity.IsNotNull(nameof(authorEntity));
         recipeFieldEntities.IsNotNull(nameof(recipeFieldEntities));
@@ -47,9 +50,36 @@ public class RecipeDomainEntity : ITotalCharacterLength
     }
 
     /// <summary>
+    /// Creates a new instance of <see cref="RecipeDomainEntity"/>.
+    /// </summary>
+    /// <param name="authorEntity">The author entity.</param>
+    /// <param name="recipeFieldEntities">The collection of recipe field entities.</param>
+    /// <param name="title">The title of the recipe.</param>
+    /// <param name="recipeImageUrl">The image url of the recipe.</param>
+    /// <exception cref="ArgumentNullException">Thrown when any parameter except <paramref name="title"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException">Thrown when
+    /// <list type="bullet">
+    /// <item><paramref name="title"/> is <c>null</c>, empty or consists of whitespaces; or</item>
+    /// <item><paramref name="recipeImageUrl"/> is an invalid url.</item>
+    /// </list>
+    /// </exception>
+    internal RecipeDomainEntity(AuthorDomainEntity authorEntity, IEnumerable<RecipeFieldDomainEntity> recipeFieldEntities,
+                                string title, string recipeImageUrl)
+        : this(authorEntity, recipeFieldEntities, title)
+    {
+        UrlValidationHelper.ValidateHttpUrl(recipeImageUrl);
+        RecipeImageUrl = recipeImageUrl;
+    }
+
+    /// <summary>
     /// Gets the title of the recipe.
     /// </summary>
     public string Title { get; }
+
+    /// <summary>
+    /// Gets the image url of the recipe.
+    /// </summary>
+    public string? RecipeImageUrl { get; }
 
     /// <summary>
     /// Gets the author information.

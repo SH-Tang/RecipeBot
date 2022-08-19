@@ -26,23 +26,73 @@ namespace WeekendBot.Domain.Test.Entities;
 
 public class RecipeDomainEntityTest
 {
+    private const string imageUrl = "http://just.an.image";
+
     [Theory]
     [ClassData(typeof(EmptyOrNullStringValueGenerator))]
     public void Entity_with_invalid_recipe_title_throws_exception(string invalidRecipeTitle)
     {
         // Setup
-        var random = new Random(21);
-
         AuthorDomainEntity authorEntity = CreateAuthorEntity();
-        IEnumerable<RecipeFieldDomainEntity> recipeFieldEntities = new[]
-        {
-            CreateFieldEntity(random.Next()),
-            CreateFieldEntity(random.Next()),
-            CreateFieldEntity(random.Next())
-        };
 
         // Call
-        Func<RecipeDomainEntity> call = () => new RecipeDomainEntity(authorEntity, recipeFieldEntities, invalidRecipeTitle);
+        Func<RecipeDomainEntity> call = () => new RecipeDomainEntity(authorEntity, Enumerable.Empty<RecipeFieldDomainEntity>(),
+                                                                     invalidRecipeTitle);
+
+        // Assert
+        Assert.Throws<ArgumentException>(call);
+    }
+
+    [Theory]
+    [ClassData(typeof(EmptyOrNullStringValueGenerator))]
+    public void Entity_with_image_url_and_invalid_title_throws_exception(string invalidRecipeTitle)
+    {
+        // Setup
+        AuthorDomainEntity authorEntity = CreateAuthorEntity();
+
+        // Call
+        Func<RecipeDomainEntity> call = () => new RecipeDomainEntity(authorEntity, Enumerable.Empty<RecipeFieldDomainEntity>(),
+                                                                     invalidRecipeTitle, imageUrl);
+
+        // Assert
+        Assert.Throws<ArgumentException>(call);
+    }
+
+    [Fact]
+    public void Entity_without_image_url_sets_image_url_null()
+    {
+        // Setup
+        AuthorDomainEntity authorEntity = CreateAuthorEntity();
+
+        // Call
+        var recipe = new RecipeDomainEntity(authorEntity, Enumerable.Empty<RecipeFieldDomainEntity>(), "recipeTitle");
+
+        // Assert
+        Assert.Null(recipe.RecipeImageUrl);
+    }
+
+    [Fact]
+    public void Entity_with_valid_image_url_sets_image_url()
+    {
+        // Setup
+        AuthorDomainEntity authorEntity = CreateAuthorEntity();
+
+        // Call
+        var recipe = new RecipeDomainEntity(authorEntity, Enumerable.Empty<RecipeFieldDomainEntity>(), "recipeTitle", imageUrl);
+
+        // Assert
+        Assert.Equal(imageUrl, recipe.RecipeImageUrl);
+    }
+
+    [Theory]
+    [ClassData(typeof(InvalidHttpUrlDataGenerator))]
+    public void Entity_with_invalid_image_url_sets_image_url(string invalidImageUrl)
+    {
+        // Setup
+        AuthorDomainEntity authorEntity = CreateAuthorEntity();
+
+        // Call
+        Action call = () => new RecipeDomainEntity(authorEntity, Enumerable.Empty<RecipeFieldDomainEntity>(), "recipeTitle", invalidImageUrl);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
@@ -54,7 +104,7 @@ public class RecipeDomainEntityTest
     [InlineData("recipe    title")]
     [InlineData("     recipeTitle")]
     [InlineData("recipeTitle     ")]
-    public void Entity_with_valid_data_returns_total_length_of_properties(string recipeTitle)
+    public void Entity_with_valid_title_returns_total_length_of_properties(string recipeTitle)
     {
         // Setup
         var random = new Random(21);
@@ -77,6 +127,35 @@ public class RecipeDomainEntityTest
         Assert.Equal(expectedLength, totalLength);
     }
 
+    [Theory]
+    [InlineData("recipeTitle")]
+    [InlineData("recipe title")]
+    [InlineData("recipe    title")]
+    [InlineData("     recipeTitle")]
+    [InlineData("recipeTitle     ")]
+    public void Entity_with_valid_title_and_image_url_returns_total_length_of_properties(string recipeTitle)
+    {
+        // Setup
+        var random = new Random(21);
+
+        AuthorDomainEntity authorEntity = CreateAuthorEntity();
+        IEnumerable<RecipeFieldDomainEntity> recipeFieldEntities = new[]
+        {
+            CreateFieldEntity(random.Next()),
+            CreateFieldEntity(random.Next()),
+            CreateFieldEntity(random.Next())
+        };
+
+        var recipe = new RecipeDomainEntity(authorEntity, recipeFieldEntities, recipeTitle, imageUrl);
+
+        // Call
+        int totalLength = recipe.TotalLength;
+
+        // Assert
+        int expectedLength = recipeTitle.Length + authorEntity.TotalLength + recipeFieldEntities.Sum(f => f.TotalLength);
+        Assert.Equal(expectedLength, totalLength);
+    }
+
     [Fact]
     public void Entity_with_empty_recipe_fields_returns_total_length_of_properties()
     {
@@ -85,6 +164,23 @@ public class RecipeDomainEntityTest
 
         AuthorDomainEntity authorEntity = CreateAuthorEntity();
         var recipe = new RecipeDomainEntity(authorEntity, Enumerable.Empty<RecipeFieldDomainEntity>(), recipeTitle);
+
+        // Call
+        int totalLength = recipe.TotalLength;
+
+        // Assert
+        int expectedLength = recipeTitle.Length + authorEntity.TotalLength;
+        Assert.Equal(expectedLength, totalLength);
+    }
+
+    [Fact]
+    public void Entity_with_image_url_and_empty_recipe_fields_returns_total_length_of_properties()
+    {
+        // Setup
+        const string recipeTitle = "recipeTitle";
+
+        AuthorDomainEntity authorEntity = CreateAuthorEntity();
+        var recipe = new RecipeDomainEntity(authorEntity, Enumerable.Empty<RecipeFieldDomainEntity>(), recipeTitle, imageUrl);
 
         // Call
         int totalLength = recipe.TotalLength;
