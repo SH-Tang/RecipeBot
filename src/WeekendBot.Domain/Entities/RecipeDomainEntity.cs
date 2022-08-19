@@ -38,7 +38,7 @@ public class RecipeDomainEntity : ITotalCharacterLength
     internal RecipeDomainEntity(AuthorDomainEntity authorEntity, IEnumerable<RecipeFieldDomainEntity> recipeFieldEntities, string title)
     {
         authorEntity.IsNotNull(nameof(authorEntity));
-        authorEntity.IsNotNull(nameof(recipeFieldEntities));
+        recipeFieldEntities.IsNotNull(nameof(recipeFieldEntities));
         title.IsNotNullOrWhiteSpaces(nameof(title));
 
         AuthorEntity = authorEntity;
