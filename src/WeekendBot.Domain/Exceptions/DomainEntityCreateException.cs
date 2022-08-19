@@ -27,28 +27,6 @@ namespace WeekendBot.Domain.Exceptions;
 public class DomainEntityCreateException : Exception
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="DomainEntityCreateException"/> class.
-    /// </summary>
-    public DomainEntityCreateException() {}
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DomainEntityCreateException"/> class 
-    /// with a specified error message.
-    /// </summary>
-    /// <param name="message">The message that describes the error.</param>
-    public DomainEntityCreateException(string message)
-        : base(message) {}
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DomainEntityCreateException"/> class with a specified error message 
-    /// and a reference to the inner exception that is the cause of this exception.
-    /// </summary>
-    /// <param name="message">The error message that explains the reason for the exception.</param>
-    /// <param name="innerException">The exception that is the cause of the current exception,
-    /// or <c>null</c> if no inner exception is specified.</param>
-    public DomainEntityCreateException(string message, Exception innerException) : base(message, innerException) {}
-
-    /// <summary>
     /// Initializes a new instance of <see cref="DomainEntityCreateException"/> with
     /// serialized data.</summary>
     /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized
@@ -60,4 +38,26 @@ public class DomainEntityCreateException : Exception
     /// <exception cref="SerializationException">The class name is <c>null</c> or
     /// <see cref="Exception.HResult" /> is zero (0).</exception>
     protected DomainEntityCreateException(SerializationInfo info, StreamingContext context) : base(info, context) {}
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DomainEntityCreateException"/> class.
+    /// </summary>
+    internal DomainEntityCreateException() {}
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DomainEntityCreateException"/> class 
+    /// with a specified error message.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    internal DomainEntityCreateException(string message)
+        : base(message) {}
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DomainEntityCreateException"/> class with a specified error message 
+    /// and a reference to the inner exception that is the cause of this exception.
+    /// </summary>
+    /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="innerException">The exception that is the cause of the current exception,
+    /// or <c>null</c> if no inner exception is specified.</param>
+    internal DomainEntityCreateException(string message, Exception innerException) : base(message, innerException) {}
 }
