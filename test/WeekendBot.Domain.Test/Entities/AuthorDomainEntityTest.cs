@@ -40,6 +40,9 @@ public class AuthorDomainEntityTest
 
     [Theory]
     [ClassData(typeof(InvalidHttpUrlDataGenerator))]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("     ")]
     public void Entity_with_invalid_image_url_throws_exception(string invalidImageUrl)
     {
         // Setup

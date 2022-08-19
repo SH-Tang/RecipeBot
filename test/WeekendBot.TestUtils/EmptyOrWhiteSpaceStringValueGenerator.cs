@@ -21,23 +21,20 @@ using System.Collections.Generic;
 namespace WeekendBot.TestUtils;
 
 /// <summary>
-/// Generator that generates invalid non-empty, non-whitespace, non-<c>null</c> urls with http(s) protocol.
+/// Generator that generates <see cref="string"/> being empty or consisting of whitespace only.
 /// </summary>
-public class InvalidHttpUrlDataGenerator : IEnumerable<object?[]>
+public class EmptyOrWhiteSpaceStringValueGenerator : IEnumerable<object[]>
 {
-    public IEnumerator<object?[]> GetEnumerator()
+    public IEnumerator<object[]> GetEnumerator()
     {
-        yield return new object?[]
+        yield return new object[]
         {
-            "http://"
+            string.Empty
         };
-        yield return new object?[]
+
+        yield return new object[]
         {
-            "https://"
-        };
-        yield return new object?[]
-        {
-            "fttps://"
+            "    "
         };
     }
 

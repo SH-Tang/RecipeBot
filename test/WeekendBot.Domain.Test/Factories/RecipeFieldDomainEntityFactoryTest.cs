@@ -16,11 +16,11 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
 using NSubstitute;
 using WeekendBot.Domain.Entities;
 using WeekendBot.Domain.Exceptions;
 using WeekendBot.Domain.Factories;
+using WeekendBot.TestUtils;
 using Xunit;
 
 namespace WeekendBot.Domain.Test.Factories;
@@ -53,7 +53,7 @@ public class RecipeFieldDomainEntityFactoryTest
     }
 
     [Theory]
-    [MemberData(nameof(GetEmptyOrWhitespaceStringValues))]
+    [ClassData(typeof(EmptyOrWhiteSpaceStringValueGenerator))]
     public void Creating_entity_with_invalid_field_name_throws_exception(string invalidFieldName)
     {
         // Setup
@@ -99,7 +99,7 @@ public class RecipeFieldDomainEntityFactoryTest
     }
 
     [Theory]
-    [MemberData(nameof(GetEmptyOrWhitespaceStringValues))]
+    [ClassData(typeof(EmptyOrWhiteSpaceStringValueGenerator))]
     public void Creating_entity_with_invalid_field_data_throws_exception(string invalidFieldData)
     {
         // Setup
@@ -146,18 +146,5 @@ public class RecipeFieldDomainEntityFactoryTest
         // Assert
         Assert.Equal(fieldName, entity.FieldName);
         Assert.Equal(fieldData, entity.FieldData);
-    }
-
-    private static IEnumerable<object[]> GetEmptyOrWhitespaceStringValues()
-    {
-        yield return new object[]
-        {
-            string.Empty
-        };
-
-        yield return new object[]
-        {
-            "       "
-        };
     }
 }
