@@ -26,7 +26,7 @@ namespace WeekendBot.Domain.Entities;
 /// <summary>
 /// Entity containing data for a recipe.
 /// </summary>
-public class RecipeDomainEntity : ITotalCharacterLength
+public class RecipeDomainEntity
 {
     /// <summary>
     /// Creates a new instance of <see cref="RecipeDomainEntity"/>.
@@ -91,6 +91,9 @@ public class RecipeDomainEntity : ITotalCharacterLength
     /// </summary>
     public IEnumerable<RecipeFieldDomainEntity> RecipeFieldEntities { get; }
 
+    /// <summary>
+    /// Gets the total character length of the entity.
+    /// </summary>
     public int TotalLength
     {
         get

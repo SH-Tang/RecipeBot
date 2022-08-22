@@ -24,7 +24,7 @@ namespace WeekendBot.Domain.Entities;
 /// <summary>
 /// Entity containing author data.
 /// </summary>
-public class AuthorDomainEntity : ITotalCharacterLength
+public class AuthorDomainEntity
 {
     /// <summary>
     /// Creates a new instance of <see cref="AuthorDomainEntity"/>.
@@ -55,5 +55,8 @@ public class AuthorDomainEntity : ITotalCharacterLength
     /// </summary>
     public string AuthorImageUrl { get; }
 
+    /// <summary>
+    /// Gets the total character length of the entity.
+    /// </summary>
     public int TotalLength => AuthorName.Length;
 }
