@@ -273,6 +273,35 @@ public class RecipeDomainEntityFactoryTest
         Assert.Equal(expectedMessage, exception.Message);
     }
 
+    [Fact]
+    public void Recipe_with_invalid_image_url_throws_exception()
+    {
+        // Setup
+        var recipeCharacterLimitProvider = Substitute.For<IRecipeDomainEntityCharacterLimitProvider>();
+        recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
+        recipeCharacterLimitProvider.MaximumRecipeLength.Returns(int.MaxValue);
+
+        var authorCharacterLimitProvider = Substitute.For<IAuthorDomainEntityCharacterLimitProvider>();
+        authorCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
+
+        var fieldCharacterLimitProvider = Substitute.For<IRecipeFieldDomainEntityCharacterLimitProvider>();
+        fieldCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
+        fieldCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
+
+        RecipeData recipeData = CreateRecipeData(authorCharacterLimitProvider.MaximumAuthorNameLength,
+                                                 recipeCharacterLimitProvider.MaximumTitleLength,
+                                                 fieldCharacterLimitProvider.MaximumFieldDataLength);
+        recipeData.ImageUrl = "invalid image url";
+
+        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider, authorCharacterLimitProvider, fieldCharacterLimitProvider);
+
+        // Call                    
+        Action call = () => factory.Create(recipeData);
+
+        // Assert
+        Assert.Throws<DomainEntityCreateException>(call);
+    }
+
     private static void AssertAuthorEntity(AuthorData data, AuthorDomainEntity domainEntity)
     {
         Assert.Equal(data.AuthorName, domainEntity.AuthorName);

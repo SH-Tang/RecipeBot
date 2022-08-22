@@ -65,7 +65,7 @@ public class AuthorDomainEntityFactory
         }
         catch (ArgumentException e)
         {
-            throw new DomainEntityCreateException(e.Message);
+            throw new DomainEntityCreateException(e.Message, e);
         }
     }
 }

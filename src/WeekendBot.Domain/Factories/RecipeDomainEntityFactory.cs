@@ -66,8 +66,14 @@ public class RecipeDomainEntityFactory
                                                                 nameof(RecipeData.RecipeTitle), maximumTitleLength));
         }
 
-        
-        return CreateRecipeDomainEntity(recipeData);
+        try
+        {
+            return CreateRecipeDomainEntity(recipeData);
+        }
+        catch (ArgumentException e)
+        {
+            throw new DomainEntityCreateException(e.Message, e);
+        }
     }
 
     private RecipeDomainEntity CreateRecipeDomainEntity(RecipeData recipeData)
