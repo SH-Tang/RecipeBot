@@ -99,13 +99,13 @@ public class RecipeDomainEntityFactory
     {
         var domainEntities = new List<RecipeFieldDomainEntity>
         {
-            recipeFieldDomainEntityFactory.Create("Ingredients", recipeData.RecipeIngredients),
-            recipeFieldDomainEntityFactory.Create("Cooking steps", recipeData.CookingSteps)
+            recipeFieldDomainEntityFactory.Create(Resources.RecipeDomainEntity_FieldName_Ingredients, recipeData.RecipeIngredients),
+            recipeFieldDomainEntityFactory.Create(Resources.RecipeDomainEntity_FieldName_CookingSteps, recipeData.CookingSteps)
         };
 
         if (!string.IsNullOrWhiteSpace(recipeData.AdditionalNotes))
         {
-            domainEntities.Add(recipeFieldDomainEntityFactory.Create("Additional notes", recipeData.AdditionalNotes));
+            domainEntities.Add(recipeFieldDomainEntityFactory.Create(Resources.RecipeDomainEntity_FieldName_AdditionalNotes, recipeData.AdditionalNotes));
         }
 
         return domainEntities;

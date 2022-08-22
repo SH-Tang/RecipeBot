@@ -85,5 +85,32 @@ namespace WeekendBot.Domain.Properties {
                 return ResourceManager.GetString("Argument_0_must_be_less_or_equal_to_number_of_1_characters", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Additional notes.
+        /// </summary>
+        internal static string RecipeDomainEntity_FieldName_AdditionalNotes {
+            get {
+                return ResourceManager.GetString("RecipeDomainEntity_FieldName_AdditionalNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cooking steps.
+        /// </summary>
+        internal static string RecipeDomainEntity_FieldName_CookingSteps {
+            get {
+                return ResourceManager.GetString("RecipeDomainEntity_FieldName_CookingSteps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ingredients.
+        /// </summary>
+        internal static string RecipeDomainEntity_FieldName_Ingredients {
+            get {
+                return ResourceManager.GetString("RecipeDomainEntity_FieldName_Ingredients", resourceCulture);
+            }
+        }
     }
 }
