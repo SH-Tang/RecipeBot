@@ -104,8 +104,8 @@ public class RecipeFieldDomainEntityFactoryTest
     {
         // Setup
         var limitProvider = Substitute.For<IRecipeFieldDomainEntityCharacterLimitProvider>();
-        limitProvider.MaximumFieldNameLength.Returns(10);
-        limitProvider.MaximumFieldDataLength.Returns(10);
+        limitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
+        limitProvider.MaximumFieldDataLength.Returns(int.MaxValue);
 
         var factory = new RecipeFieldDomainEntityFactory(limitProvider);
 
