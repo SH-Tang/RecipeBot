@@ -72,7 +72,7 @@ public class RecipeModalTest
         AssertModalParagraphInput("The ingredients of your recipe", ingredientsModalInput);
 
         AssertInputLabel("Steps", cookingStepsInputLabel);
-        AssertModalParagraphInput("The cooking steps of your recipe. Enumerations are added automatically for each new line.", cookingStepsModalInput);
+        AssertModalParagraphInput("The cooking steps of your recipe", cookingStepsModalInput);
 
         AssertInputLabel("Notes", notesInputLabel);
         AssertModalParagraphInput("Additional notes for your recipe", notesModalInput);

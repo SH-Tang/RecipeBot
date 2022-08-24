@@ -45,7 +45,7 @@ public class RecipeModal : IModal
     /// Gets or sets the cooking steps of the recipe.
     /// </summary>
     [InputLabel("Steps")]
-    [ModalTextInput("steps", TextInputStyle.Paragraph, maxLength: EmbedFieldBuilder.MaxFieldValueLength, placeholder: "The cooking steps of your recipe. Enumerations are added automatically for each new line.")]
+    [ModalTextInput("steps", TextInputStyle.Paragraph, maxLength: EmbedFieldBuilder.MaxFieldValueLength, placeholder: "The cooking steps of your recipe")]
     public string? CookingSteps { get; set; }
 
     /// <summary>
