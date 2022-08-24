@@ -19,6 +19,7 @@ using Discord;
 using Discord.Common;
 using Discord.Interactions;
 using NSubstitute;
+using WeekendBot.Domain.Factories;
 using WeekendBot.TestUtils;
 using Xunit;
 
@@ -31,9 +32,11 @@ public class RecipeInteractionModuleTest
     {
         // Setup
         var loggingService = Substitute.For<ILoggingService>();
+        var limitProvider = Substitute.For<IRecipeDomainEntityCharacterLimitProvider>();
+        var responseService = new RecipeModalResponseService(limitProvider);
 
         // Call
-        var module = new RecipeInteractionModule(loggingService);
+        var module = new RecipeInteractionModule(loggingService, responseService);
 
         // Assert
         Assert.IsAssignableFrom<InteractionModuleBase<SocketInteractionContext>>(module);

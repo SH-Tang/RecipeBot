@@ -35,16 +35,21 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
     // The OnModalResponse instantiates another object to respond, so the state is not preserved between FormatRecipe and the OnModalResponse
     private static IAttachment? attachmentArgument;
     private readonly ILoggingService logger;
+    private readonly RecipeModalResponseService responseService;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeInteractionModule"/>.
     /// </summary>
     /// <param name="logger">The logger to use.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="logger"/> is <c>null</c>.</exception>
-    public RecipeInteractionModule(ILoggingService logger)
+    /// <param name="responseService">The <see cref="RecipeModalResponseService"/> to retrieve the response with.</param>
+    /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
+    public RecipeInteractionModule(ILoggingService logger,
+                                   RecipeModalResponseService responseService)
     {
         logger.IsNotNull(nameof(logger));
+        responseService.IsNotNull(nameof(responseService));
         this.logger = logger;
+        this.responseService = responseService;
     }
 
     [SlashCommand("recipe", "Tell us about your recipe")]
@@ -75,8 +80,8 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
         {
             SocketUser? user = Context.User;
             Embed response = attachmentArgument != null && attachmentArgument.IsImage()
-                                 ? RecipeModalResponseService.GetRecipeModalResponse(modal, user, attachmentArgument)
-                                 : RecipeModalResponseService.GetRecipeModalResponse(modal, user);
+                                 ? responseService.GetRecipeModalResponse(modal, user, attachmentArgument)
+                                 : responseService.GetRecipeModalResponse(modal, user);
             await RespondAsync(embed: response);
         }
         catch (ModalResponseException e)
