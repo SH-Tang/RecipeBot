@@ -15,231 +15,138 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using Discord;
-using NSubstitute;
-using WeekendBot.Domain;
-using WeekendBot.Domain.Data;
+using WeekendBot.Domain.Entities;
+using WeekendBot.Domain.TestUtils;
 using Xunit;
 
 namespace WeekendBot.Services.Test;
 
 public class RecipeEmbedFactoryTest
 {
-    [Fact]
-    public void Basic_recipe_should_return_embed_without_image_and_notes()
+    private readonly RecipeDomainEntityTestFactory domainTestFactory;
+
+    public RecipeEmbedFactoryTest()
     {
-        // Setup
-        const string authorName = "Recipe author";
-        const string authorImageUrl = "https://AuthorImage.url";
-        var authorData = new AuthorData(authorName, authorImageUrl);
-
-        const string recipeTitle = "Recipe title";
-        const string recipeIngredients = "My ingredients";
-        const string recipeSteps = "My recipe steps";
-
-        RecipeData recipeData = new RecipeDataBuilder(authorData, recipeTitle, recipeIngredients, recipeSteps)
-            .Build();
-
-        // Call
-        Embed embed = RecipeEmbedFactory.Create(recipeData);
-
-        // Assert
-        EmbedAuthor? embedAuthor = embed.Author;
-        Assert.NotNull(embedAuthor);
-        AssertAuthor(authorName, authorImageUrl, embedAuthor!.Value);
-
-        Assert.Equal(recipeTitle, embed.Title);
-        Assert.Null(embed.Image);
-
-        Assert.Equal(2, embed.Fields.Length);
-        AssertField("Ingredients", recipeIngredients, embed.Fields[0]);
-        AssertField("Cooking steps", recipeSteps, embed.Fields[1]);
+        domainTestFactory = new RecipeDomainEntityTestFactory(new RecipeDomainEntityTestFactory.ConstructionProperties
+        {
+            MaxAuthorNameLength = EmbedAuthorBuilder.MaxAuthorNameLength,
+            MaxTitleLength = EmbedBuilder.MaxTitleLength,
+            MaxFieldNameLength = EmbedFieldBuilder.MaxFieldNameLength,
+            MaxFieldDataLength = EmbedFieldBuilder.MaxFieldValueLength
+        });
     }
 
     [Fact]
-    public void Recipe_with_notes_and_image_should_return_embed_with_notes_and_image()
+    public void Basic_recipe_should_return_embed_without_image_and_fields()
     {
         // Setup
-        const string authorName = "Recipe author";
-        const string authorImageUrl = "https://AuthorImage.url";
-        var authorData = new AuthorData(authorName, authorImageUrl);
-
-        const string recipeTitle = "Recipe title";
-        const string recipeIngredients = "My ingredients";
-        const string recipeSteps = "My recipe steps";
-        const string recipeNotes = "My notes";
-
-        const string recipeImageUrl = "https://RecipeImage.url";
-        var attachment = Substitute.For<IAttachment>();
-        attachment.ContentType.Returns("image/");
-        attachment.Url.Returns(recipeImageUrl);
-
-        RecipeData recipeData = new RecipeDataBuilder(authorData, recipeTitle, recipeIngredients, recipeSteps)
-                                .AddImage(attachment)
-                                .AddNotes(recipeNotes)
-                                .Build();
+        RecipeDomainEntity recipeDomainEntity = domainTestFactory.Create();
 
         // Call
-        Embed embed = RecipeEmbedFactory.Create(recipeData);
+        Embed embed = RecipeEmbedFactory.Create(recipeDomainEntity);
 
         // Assert
+        Assert.Equal(recipeDomainEntity.Title, embed.Title);
+        Assert.Null(embed.Image);
+
         EmbedAuthor? embedAuthor = embed.Author;
         Assert.NotNull(embedAuthor);
-        AssertAuthor(authorName, authorImageUrl, embedAuthor!.Value);
+        AssertAuthor(recipeDomainEntity.AuthorEntity, embedAuthor!.Value);
 
-        Assert.Equal(recipeTitle, embed.Title);
+        AssertFields(recipeDomainEntity.RecipeFieldEntities, embed.Fields);
+    }
+
+    [Fact]
+    public void Recipe_with_fields_and_image_should_return_embed_with_fields_and_image()
+    {
+        // Setup
+        RecipeDomainEntity recipeDomainEntity = domainTestFactory.CreateWithImageAndFields();
+
+        // Call
+        Embed embed = RecipeEmbedFactory.Create(recipeDomainEntity);
+
+        // Assert
+        Assert.Equal(recipeDomainEntity.Title, embed.Title);
 
         EmbedImage? embedImage = embed.Image;
         Assert.NotNull(embedImage);
-        Assert.Equal(recipeImageUrl, embedImage!.Value.Url);
+        Assert.Equal(recipeDomainEntity.RecipeImageUrl, embedImage!.Value.Url);
 
-        Assert.Equal(3, embed.Fields.Length);
-        AssertField("Ingredients", recipeIngredients, embed.Fields[0]);
-        AssertField("Cooking steps", recipeSteps, embed.Fields[1]);
-        AssertField("Additional notes", recipeNotes, embed.Fields[2]);
+        EmbedAuthor? embedAuthor = embed.Author;
+        Assert.NotNull(embedAuthor);
+        AssertAuthor(recipeDomainEntity.AuthorEntity, embedAuthor!.Value);
+
+        AssertFields(recipeDomainEntity.RecipeFieldEntities, embed.Fields);
     }
 
     [Fact]
     public void Recipe_with_image_should_return_embed_with_image()
     {
         // Setup
-        const string authorName = "Recipe author";
-        const string authorImageUrl = "https://AuthorImage.url";
-        var authorData = new AuthorData(authorName, authorImageUrl);
-
-        const string recipeTitle = "Recipe title";
-        const string recipeIngredients = "My ingredients";
-        const string recipeSteps = "My recipe steps";
-
-        const string recipeImageUrl = "https://RecipeImage.url";
-        var attachment = Substitute.For<IAttachment>();
-        attachment.ContentType.Returns("image/");
-        attachment.Url.Returns(recipeImageUrl);
-
-        RecipeData recipeData = new RecipeDataBuilder(authorData, recipeTitle, recipeIngredients, recipeSteps)
-                                .AddImage(attachment)
-                                .Build();
+        RecipeDomainEntity recipeDomainEntity = domainTestFactory.CreateWithImage();
 
         // Call
-        Embed embed = RecipeEmbedFactory.Create(recipeData);
+        Embed embed = RecipeEmbedFactory.Create(recipeDomainEntity);
 
         // Assert
-        EmbedAuthor? embedAuthor = embed.Author;
-        Assert.NotNull(embedAuthor);
-        AssertAuthor(authorName, authorImageUrl, embedAuthor!.Value);
-
-        Assert.Equal(recipeTitle, embed.Title);
+        Assert.Equal(recipeDomainEntity.Title, embed.Title);
 
         EmbedImage? embedImage = embed.Image;
         Assert.NotNull(embedImage);
-        Assert.Equal(recipeImageUrl, embedImage!.Value.Url);
+        Assert.Equal(recipeDomainEntity.RecipeImageUrl, embedImage!.Value.Url);
 
-        Assert.Equal(2, embed.Fields.Length);
-        AssertField("Ingredients", recipeIngredients, embed.Fields[0]);
-        AssertField("Cooking steps", recipeSteps, embed.Fields[1]);
+        EmbedAuthor? embedAuthor = embed.Author;
+        Assert.NotNull(embedAuthor);
+        AssertAuthor(recipeDomainEntity.AuthorEntity, embedAuthor!.Value);
+
+        AssertFields(recipeDomainEntity.RecipeFieldEntities, embed.Fields);
     }
 
     [Fact]
-    public void Recipe_with_notes_should_return_embed_with_notes()
+    public void Recipe_with_fields_should_return_embed_with_fields()
     {
         // Setup
-        const string authorName = "Recipe author";
-        const string authorImageUrl = "https://AuthorImage.url";
-        var authorData = new AuthorData(authorName, authorImageUrl);
-
-        const string recipeTitle = "Recipe title";
-        const string recipeIngredients = "My ingredients";
-        const string recipeSteps = "My recipe steps";
-        const string recipeNotes = "My notes";
-
-        RecipeData recipeData = new RecipeDataBuilder(authorData, recipeTitle, recipeIngredients, recipeSteps)
-                                .AddNotes(recipeNotes)
-                                .Build();
+        RecipeDomainEntity recipeDomainEntity = domainTestFactory.CreateWithFields();
 
         // Call
-        Embed embed = RecipeEmbedFactory.Create(recipeData);
+        Embed embed = RecipeEmbedFactory.Create(recipeDomainEntity);
 
         // Assert
+        Assert.Equal(recipeDomainEntity.Title, embed.Title);
+
+        EmbedImage? embedImage = embed.Image;
+        Assert.Null(embedImage);
+
         EmbedAuthor? embedAuthor = embed.Author;
         Assert.NotNull(embedAuthor);
-        AssertAuthor(authorName, authorImageUrl, embedAuthor!.Value);
+        AssertAuthor(recipeDomainEntity.AuthorEntity, embedAuthor!.Value);
 
-        Assert.Equal(recipeTitle, embed.Title);
-        Assert.Null(embed.Image);
-
-        Assert.Equal(3, embed.Fields.Length);
-        AssertField("Ingredients", recipeIngredients, embed.Fields[0]);
-        AssertField("Cooking steps", recipeSteps, embed.Fields[1]);
-        AssertField("Additional notes", recipeNotes, embed.Fields[2]);
+        AssertFields(recipeDomainEntity.RecipeFieldEntities, embed.Fields);
     }
 
-    [Theory]
-    [MemberData(nameof(GetInvalidFieldCharacterLengths))]
-    public void Recipe_with_properties_with_invalid_character_count_throws_exception(
-        string recipeIngredients, string recipeSteps, string recipeNotes)
+    private static void AssertAuthor(AuthorDomainEntity authorData, EmbedAuthor actualAuthor)
     {
-        // Setup
-        const string authorName = "Recipe author";
-        const string authorImageUrl = "https://AuthorImage.url";
-        var authorData = new AuthorData(authorName, authorImageUrl);
-
-        const string recipeTitle = "Recipe title";
-        RecipeData recipeData = new RecipeDataBuilder(authorData, recipeTitle, recipeIngredients, recipeSteps)
-                                .AddNotes(recipeNotes)
-                                .Build();
-
-        // Call
-        Func<Embed> call = () => RecipeEmbedFactory.Create(recipeData);
-
-        // Assert
-        var exception = Assert.Throws<ModalResponseException>(call);
-        Exception? innerException = exception.InnerException;
-        Assert.NotNull(innerException);
-        Assert.Equal($"Recipe modal response could not be successfully determined: {innerException!.Message}.", exception.Message);
+        Assert.Equal(authorData.AuthorName, actualAuthor.Name);
+        Assert.Equal(authorData.AuthorImageUrl, actualAuthor.IconUrl);
     }
 
-    private static void AssertAuthor(string expectedAuthorName, string expectedAuthorImageUrl, EmbedAuthor actualAuthor)
+    private static void AssertFields(IEnumerable<RecipeFieldDomainEntity> fieldDomainEntities, IEnumerable<EmbedField> embedFields)
     {
-        Assert.Equal(expectedAuthorName, actualAuthor.Name);
-        Assert.Equal(expectedAuthorImageUrl, actualAuthor.IconUrl);
+        int nrOfFieldDomainEntities = fieldDomainEntities.Count();
+        Assert.Equal(nrOfFieldDomainEntities, embedFields.Count());
+        for (var i = 0; i < nrOfFieldDomainEntities; i++)
+        {
+            AssertField(fieldDomainEntities.ElementAt(i), embedFields.ElementAt(i));
+        }
     }
 
-    private static void AssertField(string expectedName, string expectedValue, EmbedField actualField)
+    private static void AssertField(RecipeFieldDomainEntity domainEntity, EmbedField actualField)
     {
-        Assert.Equal(expectedName, actualField.Name);
-        Assert.Equal(expectedValue, actualField.Value);
+        Assert.Equal(domainEntity.FieldName, actualField.Name);
+        Assert.Equal(domainEntity.FieldData, actualField.Value);
         Assert.False(actualField.Inline);
-    }
-
-    private static IEnumerable<object[]> GetInvalidFieldCharacterLengths()
-    {
-        const string recipeIngredients = "My ingredients";
-        const string recipeSteps = "My recipe steps";
-        const string recipeNotes = "My notes";
-
-        var invalidEntry = new string('x', EmbedFieldBuilder.MaxFieldValueLength + 1);
-
-        yield return new object[]
-        {
-            invalidEntry,
-            recipeSteps,
-            recipeNotes
-        };
-
-        yield return new object[]
-        {
-            recipeIngredients,
-            invalidEntry,
-            recipeNotes
-        };
-
-        yield return new object[]
-        {
-            recipeIngredients,
-            recipeSteps,
-            invalidEntry
-        };
     }
 }

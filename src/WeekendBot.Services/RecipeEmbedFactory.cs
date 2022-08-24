@@ -16,19 +16,42 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using Discord;
-using WeekendBot.Domain;
 using WeekendBot.Domain.Data;
+using WeekendBot.Domain.Entities;
 using WeekendBot.Services.Properties;
 using WeekendBot.Utils;
 
 namespace WeekendBot.Services;
 
 /// <summary>
-/// Factory to create instances of <see cref="Embed"/> that contains recipe data.
+/// Factory to create instances of <see cref="Embed"/>.
 /// </summary>
 public static class RecipeEmbedFactory
 {
+    /// <summary>
+    /// Creates an <see cref="Embed"/> based on its input arguments.
+    /// </summary>
+    /// <param name="recipe">The <see cref="RecipeDomainEntity"/> to create the <see cref="Embed"/> with.</param>
+    /// <returns>An <see cref="Embed"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="recipe"/> is <c>null</c>.</exception>
+    /// <exception cref="ModalResponseException">Thrown when the response could not be successfully determined.</exception>
+    public static Embed Create(RecipeDomainEntity recipe)
+    {
+        recipe.IsNotNull(nameof(recipe));
+
+        try
+        {
+            EmbedBuilder embedBuilder = CreateConfiguredEmbedBuilder(recipe);
+            return embedBuilder.Build();
+        }
+        catch (InvalidOperationException e)
+        {
+            throw new ModalResponseException(string.Format(Resources.RecipeModal_response_could_not_be_determined_reason_0_, e.Message), e);
+        }
+    }
+
     /// <summary>
     /// Creates an <see cref="Embed"/> based on its input arguments.
     /// </summary>
@@ -63,8 +86,38 @@ public static class RecipeEmbedFactory
         }
 
         ConfigureFields(recipeData, embedBuilder);
-        
+
         return embedBuilder;
+    }
+
+    private static EmbedBuilder CreateConfiguredEmbedBuilder(RecipeDomainEntity recipeData)
+    {
+        AuthorDomainEntity authorData = recipeData.AuthorEntity;
+        EmbedBuilder embedBuilder = new EmbedBuilder().WithAuthor(authorData.AuthorName, authorData.AuthorImageUrl)
+                                                      .WithTitle(recipeData.Title);
+        if (!string.IsNullOrWhiteSpace(recipeData.RecipeImageUrl))
+        {
+            embedBuilder.WithImageUrl(recipeData.RecipeImageUrl);
+        }
+
+        ConfigureFields(embedBuilder, recipeData.RecipeFieldEntities);
+
+        return embedBuilder;
+    }
+
+    private static void ConfigureFields(EmbedBuilder embedBuilder, IEnumerable<RecipeFieldDomainEntity> fieldDomainEntities)
+    {
+        try
+        {
+            foreach (RecipeFieldDomainEntity fieldDomainEntity in fieldDomainEntities)
+            {
+                embedBuilder.AddField(fieldDomainEntity.FieldName, fieldDomainEntity.FieldData);
+            }
+        }
+        catch (ArgumentException e)
+        {
+            throw new ModalResponseException(string.Format(Resources.RecipeModal_response_could_not_be_determined_reason_0_, e.Message), e);
+        }
     }
 
     private static void ConfigureFields(RecipeData recipeData, EmbedBuilder embedBuilder)
