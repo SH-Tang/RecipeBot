@@ -21,7 +21,7 @@ using NSubstitute;
 using WeekendBot.Domain.Factories;
 using Xunit;
 
-namespace WeekendBot.Services.Test;
+namespace WeekendBot.Discord.Test;
 
 public class RecipeModalResponseServiceTest
 {

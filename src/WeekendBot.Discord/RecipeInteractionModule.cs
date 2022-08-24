@@ -22,10 +22,10 @@ using Discord.Common;
 using Discord.Common.Utils;
 using Discord.Interactions;
 using Discord.WebSocket;
-using WeekendBot.Services.Properties;
+using WeekendBot.Discord.Properties;
 using WeekendBot.Utils;
 
-namespace WeekendBot.Services;
+namespace WeekendBot.Discord;
 
 /// <summary>
 /// Module containing commands for the recipe.

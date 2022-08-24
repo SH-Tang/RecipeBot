@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\WeekendBot.Services\WeekendBot.Services.csproj" />
+    <ProjectReference Include="..\..\src\WeekendBot.Discord\WeekendBot.Discord.csproj" />
     <ProjectReference Include="..\WeekendBot.Domain.TestUtils\WeekendBot.Domain.TestUtils.csproj" />
     <ProjectReference Include="..\WeekendBot.TestUtils\WeekendBot.TestUtils.csproj" />
   </ItemGroup>

@@ -21,7 +21,7 @@ using Discord.Common.Utils;
 using WeekendBot.Domain.Data;
 using WeekendBot.Utils;
 
-namespace WeekendBot.Services;
+namespace WeekendBot.Discord;
 
 /// <summary>
 /// Builder to create instances of <see cref="RecipeData"/>.

@@ -18,7 +18,7 @@
 using Discord;
 using Discord.Interactions;
 
-namespace WeekendBot.Services;
+namespace WeekendBot.Discord;
 
 /// <summary>
 /// Modal containing information about the recipes.

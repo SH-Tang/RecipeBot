@@ -23,7 +23,7 @@ using WeekendBot.Domain.Factories;
 using WeekendBot.TestUtils;
 using Xunit;
 
-namespace WeekendBot.Services.Test;
+namespace WeekendBot.Discord.Test;
 
 public class RecipeInteractionModuleTest
 {

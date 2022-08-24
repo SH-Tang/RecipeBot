@@ -25,15 +25,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Discord.Common", "src\Disco
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Discord.Common.Test", "test\Discord.Common.Test\Discord.Common.Test.csproj", "{415A6963-D1C0-43E7-931A-58DD3243BD8F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Services", "src\WeekendBot.Services\WeekendBot.Services.csproj", "{AB08D751-2382-4E17-8096-EE881494D68B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Discord", "src\WeekendBot.Discord\WeekendBot.Discord.csproj", "{AB08D751-2382-4E17-8096-EE881494D68B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Services.Test", "test\WeekendBot.Services.Test\WeekendBot.Services.Test.csproj", "{09FC3D38-9BC5-4002-BDB4-72F56C7F326F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Discord.Test", "test\WeekendBot.Discord.Test\WeekendBot.Discord.Test.csproj", "{09FC3D38-9BC5-4002-BDB4-72F56C7F326F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Domain", "src\WeekendBot.Domain\WeekendBot.Domain.csproj", "{7716396C-EA41-406B-9854-EE39524DC6E7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Domain.Test", "test\WeekendBot.Domain.Test\WeekendBot.Domain.Test.csproj", "{66DEFB67-34D4-4FA3-B5DB-5E29EB57BFAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeekendBot.Domain.TestUtils", "test\WeekendBot.Domain.TestUtils\WeekendBot.Domain.TestUtils.csproj", "{76DDC54E-2DF4-4AED-9E3D-FCD19EBFEB99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Domain.TestUtils", "test\WeekendBot.Domain.TestUtils\WeekendBot.Domain.TestUtils.csproj", "{76DDC54E-2DF4-4AED-9E3D-FCD19EBFEB99}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -18,11 +18,11 @@
 using System;
 using System.Collections.Generic;
 using Discord;
+using WeekendBot.Discord.Properties;
 using WeekendBot.Domain.Entities;
-using WeekendBot.Services.Properties;
 using WeekendBot.Utils;
 
-namespace WeekendBot.Services;
+namespace WeekendBot.Discord;
 
 /// <summary>
 /// Factory to create instances of <see cref="Embed"/>.

@@ -24,7 +24,7 @@ using WeekendBot.Domain.Data;
 using WeekendBot.TestUtils;
 using Xunit;
 
-namespace WeekendBot.Services.Test;
+namespace WeekendBot.Discord.Test;
 
 public class RecipeDataBuilderTest
 {

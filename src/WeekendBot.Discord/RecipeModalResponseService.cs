@@ -23,7 +23,7 @@ using WeekendBot.Domain.Exceptions;
 using WeekendBot.Domain.Factories;
 using WeekendBot.Utils;
 
-namespace WeekendBot.Services;
+namespace WeekendBot.Discord;
 
 /// <summary>
 /// Service to determine the response  based on a <see cref="RecipeModal"/>.
