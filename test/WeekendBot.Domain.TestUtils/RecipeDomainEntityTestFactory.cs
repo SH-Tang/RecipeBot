@@ -103,7 +103,7 @@ public class RecipeDomainEntityTestFactory
             CreateFieldDomainEntity(3)
         }, "https://recipeBot.recipe.image");
     }
-
+    
     private RecipeDomainEntity CreateRecipeDomainEntity(IEnumerable<RecipeFieldDomainEntity> fieldDomainEntities)
     {
         string title = GetStringWithRandomLength('x', maxTitleLength);

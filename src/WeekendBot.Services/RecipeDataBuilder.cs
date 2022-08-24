@@ -18,7 +18,6 @@
 using System;
 using Discord;
 using Discord.Common.Utils;
-using WeekendBot.Domain;
 using WeekendBot.Domain.Data;
 using WeekendBot.Utils;
 

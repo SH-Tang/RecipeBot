@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using Discord;
 using Discord.Common.Utils;
 using NSubstitute;
-using WeekendBot.Domain;
 using WeekendBot.Domain.Data;
 using WeekendBot.TestUtils;
 using Xunit;
@@ -49,7 +48,6 @@ public class RecipeDataBuilderTest
         Assert.Null(result.AdditionalNotes);
         Assert.Null(result.ImageUrl);
     }
-
 
     [Theory]
     [InlineData(null)]
