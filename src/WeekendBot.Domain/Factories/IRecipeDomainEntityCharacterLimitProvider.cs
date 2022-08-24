@@ -17,7 +17,6 @@
 
 namespace WeekendBot.Domain.Factories;
 
-
 /// <summary>
 /// Interface for describing providers of character limits for recipe domain entities
 /// </summary>

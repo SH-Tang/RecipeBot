@@ -63,7 +63,6 @@ public class DiscordCommandInfoFactory
         return discordCommandInfos;
     }
 
-
     private string FormatTextCommand(string slashCommandName)
     {
         return $"{commandOptions.CommandPrefix}{slashCommandName}";

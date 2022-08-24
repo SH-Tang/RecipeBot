@@ -38,7 +38,7 @@ public class InfoTextModuleTest
 
         var socketClient = Substitute.For<DiscordSocketClient>();
         var interactionService = new InteractionService(socketClient);
-        
+
         var discordCommandOptions = Substitute.For<IOptions<DiscordCommandOptions>>();
         var commandInfoFactory = new DiscordCommandInfoFactory(discordCommandOptions);
 

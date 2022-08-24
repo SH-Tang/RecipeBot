@@ -27,7 +27,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeekendBot.Components;
 using WeekendBot.Core;
-using WeekendBot.Discord;
 using WeekendBot.Discord.Providers;
 using WeekendBot.Discord.Services;
 using WeekendBot.Domain.Factories;

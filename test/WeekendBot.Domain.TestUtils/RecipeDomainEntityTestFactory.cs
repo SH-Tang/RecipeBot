@@ -45,9 +45,9 @@ public class RecipeDomainEntityTestFactory
 
         constructionProperties.MaxTitleLength.IsValidArgument(i => i > 0, $"{nameof(constructionProperties.MaxTitleLength)} must be larger than 0.",
                                                               nameof(constructionProperties.MaxTitleLength));
-        constructionProperties.MaxAuthorNameLength.IsValidArgument(i => i > 0, $"{nameof(constructionProperties.MaxAuthorNameLength)} must be larger than 0.", 
+        constructionProperties.MaxAuthorNameLength.IsValidArgument(i => i > 0, $"{nameof(constructionProperties.MaxAuthorNameLength)} must be larger than 0.",
                                                                    nameof(constructionProperties.MaxAuthorNameLength));
-        constructionProperties.MaxFieldNameLength.IsValidArgument(i => i > 0, $"{nameof(constructionProperties.MaxFieldNameLength)} must be larger than 0.", 
+        constructionProperties.MaxFieldNameLength.IsValidArgument(i => i > 0, $"{nameof(constructionProperties.MaxFieldNameLength)} must be larger than 0.",
                                                                   nameof(constructionProperties.MaxFieldNameLength));
         constructionProperties.MaxFieldDataLength.IsValidArgument(i => i > 0, $"{nameof(constructionProperties.MaxFieldDataLength)} must be larger than 0.",
                                                                   nameof(constructionProperties.MaxFieldDataLength));
@@ -103,7 +103,7 @@ public class RecipeDomainEntityTestFactory
             CreateFieldDomainEntity(3)
         }, "https://recipeBot.recipe.image");
     }
-    
+
     private RecipeDomainEntity CreateRecipeDomainEntity(IEnumerable<RecipeFieldDomainEntity> fieldDomainEntities)
     {
         string title = GetStringWithRandomLength('x', maxTitleLength);
