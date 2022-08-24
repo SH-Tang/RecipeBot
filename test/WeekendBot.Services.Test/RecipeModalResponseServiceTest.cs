@@ -15,8 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using Discord;
 using NSubstitute;
+using WeekendBot.Domain.Factories;
 using Xunit;
 
 namespace WeekendBot.Services.Test;
@@ -24,7 +26,41 @@ namespace WeekendBot.Services.Test;
 public class RecipeModalResponseServiceTest
 {
     [Fact]
-    public void Recipe_with_user_data_returns_expected_response()
+    public void Recipe_with_invalid_user_data_throws_exception()
+    {
+        // Setup
+        var user = Substitute.For<IUser>();
+        user.Username.Returns("Recipe author");
+        user.GetAvatarUrl().ReturnsForAnyArgs("https://AuthorImage.url");
+
+        var modal = new RecipeModal
+        {
+            RecipeTitle = "Recipe title",
+            Ingredients = "My ingredients",
+            CookingSteps = "My recipe steps",
+            Notes = "My notes"
+        };
+
+        var limitProvider = Substitute.For<IRecipeDomainEntityCharacterLimitProvider>();
+        limitProvider.MaximumTitleLength.Returns(EmbedBuilder.MaxTitleLength);
+        limitProvider.MaximumAuthorNameLength.Returns(EmbedAuthorBuilder.MaxAuthorNameLength);
+        limitProvider.MaximumFieldNameLength.Returns(EmbedFieldBuilder.MaxFieldNameLength);
+        limitProvider.MaximumFieldDataLength.Returns(EmbedFieldBuilder.MaxFieldValueLength);
+
+        var service = new RecipeModalResponseService(limitProvider);
+
+        // Call
+        Action call = () => service.GetRecipeModalResponse(modal, user);
+
+        // Assert
+        var exception = Assert.Throws<ModalResponseException>(call);
+        Exception? innerException = exception.InnerException;
+        Assert.NotNull(innerException);
+        Assert.Equal(innerException!.Message, exception.Message);
+    }
+
+    [Fact]
+    public void Recipe_with_valid_user_data_returns_expected_response()
     {
         // Setup
         const string authorName = "Recipe author";
@@ -46,8 +82,11 @@ public class RecipeModalResponseServiceTest
             Notes = recipeNotes
         };
 
+        IRecipeDomainEntityCharacterLimitProvider limitProvider = CreateDiscordRecipeDomainEntityCharacterLimitProvider();
+        var service = new RecipeModalResponseService(limitProvider);
+
         // Call
-        Embed response = RecipeModalResponseService.GetRecipeModalResponse(modal, user);
+        Embed response = service.GetRecipeModalResponse(modal, user);
 
         // Assert
         AssertCommonEmbedResponseProperties(user, modal, response);
@@ -55,7 +94,46 @@ public class RecipeModalResponseServiceTest
     }
 
     [Fact]
-    public void Recipe_with_user_data_and_attachment_returns_expected_response()
+    public void Recipe_with_valid_attachment_and_invalid_user_data_throws_exception()
+    {
+        // Setup
+        var user = Substitute.For<IUser>();
+        user.Username.Returns("Recipe author");
+        user.GetAvatarUrl().ReturnsForAnyArgs("https://AuthorImage.url");
+
+        var attachment = Substitute.For<IAttachment>();
+        attachment.ContentType.Returns("image/");
+        attachment.Url.Returns("https://RecipeImage.url");
+
+        var modal = new RecipeModal
+        {
+            RecipeTitle = "Recipe title",
+            Ingredients = "My ingredients",
+            CookingSteps = "My recipe steps",
+            Notes = "My notes"
+        };
+
+        var limitProvider = Substitute.For<IRecipeDomainEntityCharacterLimitProvider>();
+        limitProvider.MaximumTitleLength.Returns(EmbedBuilder.MaxTitleLength);
+        limitProvider.MaximumRecipeLength.Returns(0);
+        limitProvider.MaximumAuthorNameLength.Returns(EmbedAuthorBuilder.MaxAuthorNameLength);
+        limitProvider.MaximumFieldNameLength.Returns(EmbedFieldBuilder.MaxFieldNameLength);
+        limitProvider.MaximumFieldDataLength.Returns(EmbedFieldBuilder.MaxFieldValueLength);
+
+        var service = new RecipeModalResponseService(limitProvider);
+
+        // Call
+        Action call = () => service.GetRecipeModalResponse(modal, user, attachment);
+
+        // Assert
+        var exception = Assert.Throws<ModalResponseException>(call);
+        Exception? innerException = exception.InnerException;
+        Assert.NotNull(innerException);
+        Assert.Equal(innerException!.Message, exception.Message);
+    }
+
+    [Fact]
+    public void Recipe_with_valid_user_data_and_attachment_returns_expected_response()
     {
         // Setup
         const string authorName = "Recipe author";
@@ -81,8 +159,11 @@ public class RecipeModalResponseServiceTest
             Notes = recipeNotes
         };
 
+        IRecipeDomainEntityCharacterLimitProvider limitProvider = CreateDiscordRecipeDomainEntityCharacterLimitProvider();
+        var service = new RecipeModalResponseService(limitProvider);
+
         // Call
-        Embed response = RecipeModalResponseService.GetRecipeModalResponse(modal, user, attachment);
+        Embed response = service.GetRecipeModalResponse(modal, user, attachment);
 
         // Assert
         AssertCommonEmbedResponseProperties(user, modal, response);
@@ -91,6 +172,17 @@ public class RecipeModalResponseServiceTest
         Assert.NotNull(embedImage);
         EmbedImage resultImage = embedImage!.Value;
         Assert.Equal(recipeImageUrl, resultImage.Url);
+    }
+
+    private static IRecipeDomainEntityCharacterLimitProvider CreateDiscordRecipeDomainEntityCharacterLimitProvider()
+    {
+        var limitProvider = Substitute.For<IRecipeDomainEntityCharacterLimitProvider>();
+        limitProvider.MaximumTitleLength.Returns(EmbedBuilder.MaxTitleLength);
+        limitProvider.MaximumRecipeLength.Returns(EmbedBuilder.MaxDescriptionLength);
+        limitProvider.MaximumAuthorNameLength.Returns(EmbedAuthorBuilder.MaxAuthorNameLength);
+        limitProvider.MaximumFieldNameLength.Returns(EmbedFieldBuilder.MaxFieldNameLength);
+        limitProvider.MaximumFieldDataLength.Returns(EmbedFieldBuilder.MaxFieldValueLength);
+        return limitProvider;
     }
 
     private static void AssertCommonEmbedResponseProperties(IUser user, RecipeModal modal, IEmbed actualResponse)

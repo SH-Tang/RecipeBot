@@ -18,6 +18,9 @@
 using System;
 using Discord;
 using WeekendBot.Domain.Data;
+using WeekendBot.Domain.Entities;
+using WeekendBot.Domain.Exceptions;
+using WeekendBot.Domain.Factories;
 using WeekendBot.Utils;
 
 namespace WeekendBot.Services;
@@ -25,8 +28,20 @@ namespace WeekendBot.Services;
 /// <summary>
 /// Service to determine the response  based on a <see cref="RecipeModal"/>.
 /// </summary>
-public static class RecipeModalResponseService
+public class RecipeModalResponseService
 {
+    private readonly RecipeDomainEntityFactory recipeDomainEntityFactory;
+
+    /// <summary>
+    /// Creates a new instance of <see cref="RecipeModalResponseService"/>.
+    /// </summary>
+    /// <param name="limitProvider"></param>
+    public RecipeModalResponseService(IRecipeDomainEntityCharacterLimitProvider limitProvider)
+    {
+        limitProvider.IsNotNull(nameof(limitProvider));
+        recipeDomainEntityFactory = new RecipeDomainEntityFactory(limitProvider);
+    }
+
     /// <summary>
     /// Gets the modal response based on its input arguments.
     /// </summary>
@@ -35,16 +50,17 @@ public static class RecipeModalResponseService
     /// <returns>A response.</returns>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     /// <exception cref="ModalResponseException">Thrown when the response could not be successfully determined.</exception>
-    public static Embed GetRecipeModalResponse(RecipeModal modal, IUser user)
+    public Embed GetRecipeModalResponse(RecipeModal modal, IUser user)
     {
         modal.IsNotNull(nameof(modal));
         user.IsNotNull(nameof(user));
 
         var authorData = new AuthorData(user.Username, user.GetAvatarUrl());
-        RecipeDataBuilder recipeDataBuilder = new RecipeDataBuilder(authorData, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
-            .AddNotes(modal.Notes);
+        RecipeData recipeData = new RecipeDataBuilder(authorData, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
+                                .AddNotes(modal.Notes)
+                                .Build();
 
-        return RecipeEmbedFactory.Create(recipeDataBuilder.Build());
+        return RecipeEmbedFactory.Create(GetRecipeDomainEntity(recipeData));
     }
 
     /// <summary>
@@ -57,16 +73,35 @@ public static class RecipeModalResponseService
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     /// <exception cref="ArgumentException">Thrown when the <paramref name="attachment"/> is invalid.</exception>
     /// <exception cref="ModalResponseException">Thrown when the response could not be successfully determined.</exception>
-    public static Embed GetRecipeModalResponse(RecipeModal modal, IUser user, IAttachment attachment)
+    public Embed GetRecipeModalResponse(RecipeModal modal, IUser user, IAttachment attachment)
     {
         modal.IsNotNull(nameof(modal));
         user.IsNotNull(nameof(user));
 
         var authorData = new AuthorData(user.Username, user.GetAvatarUrl());
-        RecipeDataBuilder recipeDataBuilder = new RecipeDataBuilder(authorData, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
-                                              .AddNotes(modal.Notes)
-                                              .AddImage(attachment);
+        RecipeData recipeData = new RecipeDataBuilder(authorData, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
+                                .AddNotes(modal.Notes)
+                                .AddImage(attachment)
+                                .Build();
 
-        return RecipeEmbedFactory.Create(recipeDataBuilder.Build());
+        return RecipeEmbedFactory.Create(GetRecipeDomainEntity(recipeData));
+    }
+
+    /// <summary>
+    /// Gets the <see cref="RecipeDomainEntity"/> based on the input arguments.
+    /// </summary>
+    /// <param name="recipeData">The <see cref="RecipeData"/> to get the <see cref="RecipeDomainEntity"/> with.</param>
+    /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
+    /// <exception cref="ModalResponseException">Thrown when the entity could not be successfully retrieved.</exception>
+    private RecipeDomainEntity GetRecipeDomainEntity(RecipeData recipeData)
+    {
+        try
+        {
+            return recipeDomainEntityFactory.Create(recipeData);
+        }
+        catch (DomainEntityCreateException e)
+        {
+            throw new ModalResponseException(e.Message, e);
+        }
     }
 }
