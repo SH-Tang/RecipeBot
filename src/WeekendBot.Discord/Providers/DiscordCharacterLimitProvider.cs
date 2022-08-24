@@ -18,7 +18,7 @@
 using Discord;
 using WeekendBot.Domain.Factories;
 
-namespace WeekendBot.Discord;
+namespace WeekendBot.Discord.Providers;
 
 /// <summary>
 /// Class that holds the character limits of Discord.

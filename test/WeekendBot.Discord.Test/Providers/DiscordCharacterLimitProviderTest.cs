@@ -16,9 +16,10 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using Discord;
+using WeekendBot.Discord.Providers;
 using Xunit;
 
-namespace WeekendBot.Discord.Test;
+namespace WeekendBot.Discord.Test.Providers;
 
 public class DiscordCharacterLimitProviderTest
 {

@@ -18,10 +18,13 @@
 using System;
 using Discord;
 using NSubstitute;
+using WeekendBot.Discord.Exceptions;
+using WeekendBot.Discord.Services;
+using WeekendBot.Discord.Views;
 using WeekendBot.Domain.Factories;
 using Xunit;
 
-namespace WeekendBot.Discord.Test;
+namespace WeekendBot.Discord.Test.Services;
 
 public class RecipeModalResponseServiceTest
 {

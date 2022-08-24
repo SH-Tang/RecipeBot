@@ -18,11 +18,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Discord;
+using WeekendBot.Discord.Services;
 using WeekendBot.Domain.Entities;
 using WeekendBot.Domain.TestUtils;
 using Xunit;
 
-namespace WeekendBot.Discord.Test;
+namespace WeekendBot.Discord.Test.Services;
 
 public class RecipeEmbedFactoryTest
 {

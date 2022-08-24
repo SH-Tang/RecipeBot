@@ -21,7 +21,7 @@ using Discord.Common.Utils;
 using WeekendBot.Domain.Data;
 using WeekendBot.Utils;
 
-namespace WeekendBot.Discord;
+namespace WeekendBot.Discord.Services;
 
 /// <summary>
 /// Builder to create instances of <see cref="RecipeData"/>.
@@ -55,7 +55,7 @@ public class RecipeDataBuilder
     {
         if (attachment != null)
         {
-            attachment.IsValidArgument(x => x.IsImage(), "Attachment must be an image.", nameof(attachment));
+            attachment.IsValidArgument(x => IAttachmentExtensions.IsImage((IAttachment) x), "Attachment must be an image.", nameof(attachment));
             data.ImageUrl = attachment.Url;
         }
 
