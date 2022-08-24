@@ -39,20 +39,14 @@ public class RecipeDomainEntityFactoryTest
         var recipeCharacterLimitProvider = Substitute.For<IRecipeDomainEntityCharacterLimitProvider>();
         recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
         recipeCharacterLimitProvider.MaximumRecipeLength.Returns(int.MaxValue);
+        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
+        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
+        recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
 
-        var authorCharacterLimitProvider = Substitute.For<IAuthorDomainEntityCharacterLimitProvider>();
-        authorCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
-
-        var fieldCharacterLimitProvider = Substitute.For<IRecipeFieldDomainEntityCharacterLimitProvider>();
-        fieldCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
-        fieldCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
-
-        RecipeData recipeData = CreateRecipeData(authorCharacterLimitProvider.MaximumAuthorNameLength,
-                                                 recipeCharacterLimitProvider.MaximumTitleLength,
-                                                 fieldCharacterLimitProvider.MaximumFieldDataLength);
+        RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
         recipeData.AdditionalNotes = notes;
 
-        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider, authorCharacterLimitProvider, fieldCharacterLimitProvider);
+        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
 
         // Call
         RecipeDomainEntity entity = factory.Create(recipeData);
@@ -72,21 +66,15 @@ public class RecipeDomainEntityFactoryTest
         var recipeCharacterLimitProvider = Substitute.For<IRecipeDomainEntityCharacterLimitProvider>();
         recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
         recipeCharacterLimitProvider.MaximumRecipeLength.Returns(int.MaxValue);
+        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
+        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
+        recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
 
-        var authorCharacterLimitProvider = Substitute.For<IAuthorDomainEntityCharacterLimitProvider>();
-        authorCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
-
-        var fieldCharacterLimitProvider = Substitute.For<IRecipeFieldDomainEntityCharacterLimitProvider>();
-        fieldCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
-        fieldCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
-
-        const string imageUrl = "http://www.bing.com";
-        RecipeData recipeData = CreateRecipeData(authorCharacterLimitProvider.MaximumAuthorNameLength,
-                                                 recipeCharacterLimitProvider.MaximumTitleLength,
-                                                 fieldCharacterLimitProvider.MaximumFieldDataLength);
+        const string imageUrl = "http://www.recipeBotImage.com";
+        RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
         recipeData.ImageUrl = imageUrl;
 
-        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider, authorCharacterLimitProvider, fieldCharacterLimitProvider);
+        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
 
         // Call
         RecipeDomainEntity entity = factory.Create(recipeData);
@@ -106,20 +94,14 @@ public class RecipeDomainEntityFactoryTest
         var recipeCharacterLimitProvider = Substitute.For<IRecipeDomainEntityCharacterLimitProvider>();
         recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
         recipeCharacterLimitProvider.MaximumRecipeLength.Returns(int.MaxValue);
+        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
+        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
+        recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
 
-        var authorCharacterLimitProvider = Substitute.For<IAuthorDomainEntityCharacterLimitProvider>();
-        authorCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
+        RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
+        recipeData.AdditionalNotes = new string('%', recipeCharacterLimitProvider.MaximumFieldDataLength);
 
-        var fieldCharacterLimitProvider = Substitute.For<IRecipeFieldDomainEntityCharacterLimitProvider>();
-        fieldCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
-        fieldCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
-
-        RecipeData recipeData = CreateRecipeData(authorCharacterLimitProvider.MaximumAuthorNameLength,
-                                                 recipeCharacterLimitProvider.MaximumTitleLength,
-                                                 fieldCharacterLimitProvider.MaximumFieldDataLength);
-        recipeData.AdditionalNotes = new string('%', fieldCharacterLimitProvider.MaximumFieldDataLength);
-
-        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider, authorCharacterLimitProvider, fieldCharacterLimitProvider);
+        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
 
         // Call
         RecipeDomainEntity entity = factory.Create(recipeData);
@@ -144,22 +126,16 @@ public class RecipeDomainEntityFactoryTest
         var recipeCharacterLimitProvider = Substitute.For<IRecipeDomainEntityCharacterLimitProvider>();
         recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
         recipeCharacterLimitProvider.MaximumRecipeLength.Returns(int.MaxValue);
+        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
+        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
+        recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
 
-        var authorCharacterLimitProvider = Substitute.For<IAuthorDomainEntityCharacterLimitProvider>();
-        authorCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
-
-        var fieldCharacterLimitProvider = Substitute.For<IRecipeFieldDomainEntityCharacterLimitProvider>();
-        fieldCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
-        fieldCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
-
-        const string imageUrl = "http://www.bing.com";
-        RecipeData recipeData = CreateRecipeData(authorCharacterLimitProvider.MaximumAuthorNameLength,
-                                                 recipeCharacterLimitProvider.MaximumTitleLength,
-                                                 fieldCharacterLimitProvider.MaximumFieldDataLength);
+        const string imageUrl = "http://www.recipeBotImage.com";
+        RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
         recipeData.ImageUrl = imageUrl;
-        recipeData.AdditionalNotes = new string('%', fieldCharacterLimitProvider.MaximumFieldDataLength);
+        recipeData.AdditionalNotes = new string('%', recipeCharacterLimitProvider.MaximumFieldDataLength);
 
-        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider, authorCharacterLimitProvider, fieldCharacterLimitProvider);
+        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
 
         // Call
         RecipeDomainEntity entity = factory.Create(recipeData);
@@ -183,19 +159,13 @@ public class RecipeDomainEntityFactoryTest
         var recipeCharacterLimitProvider = Substitute.For<IRecipeDomainEntityCharacterLimitProvider>();
         recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
         recipeCharacterLimitProvider.MaximumRecipeLength.Returns(int.MaxValue);
+        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
+        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
+        recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
 
-        var authorCharacterLimitProvider = Substitute.For<IAuthorDomainEntityCharacterLimitProvider>();
-        authorCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
+        RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider, 1);
 
-        var fieldCharacterLimitProvider = Substitute.For<IRecipeFieldDomainEntityCharacterLimitProvider>();
-        fieldCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
-        fieldCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
-
-        RecipeData recipeData = CreateRecipeData(authorCharacterLimitProvider.MaximumAuthorNameLength,
-                                                 recipeCharacterLimitProvider.MaximumTitleLength + 1,
-                                                 fieldCharacterLimitProvider.MaximumFieldDataLength);
-
-        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider, authorCharacterLimitProvider, fieldCharacterLimitProvider);
+        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
 
         // Call
         Action call = () => factory.Create(recipeData);
@@ -216,19 +186,13 @@ public class RecipeDomainEntityFactoryTest
         var recipeCharacterLimitProvider = Substitute.For<IRecipeDomainEntityCharacterLimitProvider>();
         recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
         recipeCharacterLimitProvider.MaximumRecipeLength.Returns(int.MaxValue);
+        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
+        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
+        recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
 
-        var authorCharacterLimitProvider = Substitute.For<IAuthorDomainEntityCharacterLimitProvider>();
-        authorCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
+        RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider, -characterOffset);
 
-        var fieldCharacterLimitProvider = Substitute.For<IRecipeFieldDomainEntityCharacterLimitProvider>();
-        fieldCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
-        fieldCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
-
-        RecipeData recipeData = CreateRecipeData(authorCharacterLimitProvider.MaximumAuthorNameLength,
-                                                 recipeCharacterLimitProvider.MaximumTitleLength - characterOffset,
-                                                 fieldCharacterLimitProvider.MaximumFieldDataLength);
-
-        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider, authorCharacterLimitProvider, fieldCharacterLimitProvider);
+        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
 
         // Call
         RecipeDomainEntity entity = factory.Create(recipeData);
@@ -244,24 +208,18 @@ public class RecipeDomainEntityFactoryTest
         var recipeCharacterLimitProvider = Substitute.For<IRecipeDomainEntityCharacterLimitProvider>();
         recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
         recipeCharacterLimitProvider.MaximumRecipeLength.Returns(1);
+        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
+        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(30);
+        recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
 
-        var authorCharacterLimitProvider = Substitute.For<IAuthorDomainEntityCharacterLimitProvider>();
-        authorCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
+        RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
 
-        var fieldCharacterLimitProvider = Substitute.For<IRecipeFieldDomainEntityCharacterLimitProvider>();
-        fieldCharacterLimitProvider.MaximumFieldNameLength.Returns(30);
-        fieldCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
-
-        RecipeData recipeData = CreateRecipeData(authorCharacterLimitProvider.MaximumAuthorNameLength,
-                                                 recipeCharacterLimitProvider.MaximumTitleLength,
-                                                 fieldCharacterLimitProvider.MaximumFieldDataLength);
-
-        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider, authorCharacterLimitProvider, fieldCharacterLimitProvider);
+        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
 
         // Precondition
-        int totalCharacterLength = authorCharacterLimitProvider.MaximumAuthorNameLength +
+        int totalCharacterLength = recipeCharacterLimitProvider.MaximumAuthorNameLength +
                                    recipeCharacterLimitProvider.MaximumTitleLength +
-                                   fieldCharacterLimitProvider.MaximumFieldDataLength;
+                                   recipeCharacterLimitProvider.MaximumFieldDataLength;
         Assert.True(totalCharacterLength > recipeCharacterLimitProvider.MaximumRecipeLength);
 
         // Call                    
@@ -280,20 +238,14 @@ public class RecipeDomainEntityFactoryTest
         var recipeCharacterLimitProvider = Substitute.For<IRecipeDomainEntityCharacterLimitProvider>();
         recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
         recipeCharacterLimitProvider.MaximumRecipeLength.Returns(int.MaxValue);
+        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
+        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
+        recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
 
-        var authorCharacterLimitProvider = Substitute.For<IAuthorDomainEntityCharacterLimitProvider>();
-        authorCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
-
-        var fieldCharacterLimitProvider = Substitute.For<IRecipeFieldDomainEntityCharacterLimitProvider>();
-        fieldCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
-        fieldCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
-
-        RecipeData recipeData = CreateRecipeData(authorCharacterLimitProvider.MaximumAuthorNameLength,
-                                                 recipeCharacterLimitProvider.MaximumTitleLength,
-                                                 fieldCharacterLimitProvider.MaximumFieldDataLength);
+        RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
         recipeData.ImageUrl = "invalid image url";
 
-        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider, authorCharacterLimitProvider, fieldCharacterLimitProvider);
+        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
 
         // Call                    
         Action call = () => factory.Create(recipeData);
@@ -319,10 +271,18 @@ public class RecipeDomainEntityFactoryTest
         Assert.Equal(data.CookingSteps, cookingStepsDomainFieldEntity.FieldData);
     }
 
-    private static RecipeData CreateRecipeData(int maxAuthorNameCharacters, int maxTitleCharacters, int maxFieldCharacters)
+    private static RecipeData CreateRecipeData(IRecipeDomainEntityCharacterLimitProvider limitProvider,
+                                               int nrOfTitleCharactersOffSet)
     {
-        var authorData = new AuthorData(new string('x', maxAuthorNameCharacters), "http://www.google.com");
-        return new RecipeData(authorData, new string('+', maxTitleCharacters),
-                              new string('o', maxFieldCharacters), new string('#', maxTitleCharacters));
+        var authorData = new AuthorData(new string('x', limitProvider.MaximumAuthorNameLength), "http://www.recipeBotImage.com");
+        return new RecipeData(authorData, new string('+', limitProvider.MaximumTitleLength + nrOfTitleCharactersOffSet),
+                              new string('o', limitProvider.MaximumFieldDataLength), new string('#', limitProvider.MaximumFieldDataLength));
+    }
+
+    private static RecipeData CreateRecipeData(IRecipeDomainEntityCharacterLimitProvider limitProvider)
+    {
+        var authorData = new AuthorData(new string('x', limitProvider.MaximumAuthorNameLength), "http://www.recipeBotImage.com");
+        return new RecipeData(authorData, new string('+', limitProvider.MaximumTitleLength),
+                              new string('o', limitProvider.MaximumFieldDataLength), new string('#', limitProvider.MaximumFieldDataLength));
     }
 }

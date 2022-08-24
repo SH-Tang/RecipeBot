@@ -21,7 +21,7 @@ namespace WeekendBot.Domain.Factories;
 /// <summary>
 /// Interface for describing providers of character limits for recipe domain entities
 /// </summary>
-public interface IRecipeDomainEntityCharacterLimitProvider
+public interface IRecipeDomainEntityCharacterLimitProvider : IAuthorDomainEntityCharacterLimitProvider, IRecipeFieldDomainEntityCharacterLimitProvider
 {
     /// <summary>
     /// Gets the maximum length of the title.

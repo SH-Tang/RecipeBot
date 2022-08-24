@@ -34,18 +34,14 @@ public class RecipeDomainEntityFactory
     private readonly AuthorDomainEntityFactory authorDomainEntityFactory;
     private readonly RecipeFieldDomainEntityFactory recipeFieldDomainEntityFactory;
 
-    public RecipeDomainEntityFactory(IRecipeDomainEntityCharacterLimitProvider recipeDomainEntityCharacterLimitProvider,
-                                     IAuthorDomainEntityCharacterLimitProvider authorDomainEntityCharacterLimitProvider,
-                                     IRecipeFieldDomainEntityCharacterLimitProvider recipeFieldDomainEntityCharacterLimitProvider)
+    public RecipeDomainEntityFactory(IRecipeDomainEntityCharacterLimitProvider recipeDomainEntityCharacterLimitProvider)
     {
         recipeDomainEntityCharacterLimitProvider.IsNotNull(nameof(recipeDomainEntityCharacterLimitProvider));
-        authorDomainEntityCharacterLimitProvider.IsNotNull(nameof(authorDomainEntityCharacterLimitProvider));
-        recipeFieldDomainEntityCharacterLimitProvider.IsNotNull(nameof(recipeFieldDomainEntityCharacterLimitProvider));
 
         this.recipeDomainEntityCharacterLimitProvider = recipeDomainEntityCharacterLimitProvider;
 
-        authorDomainEntityFactory = new AuthorDomainEntityFactory(authorDomainEntityCharacterLimitProvider);
-        recipeFieldDomainEntityFactory = new RecipeFieldDomainEntityFactory(recipeFieldDomainEntityCharacterLimitProvider);
+        authorDomainEntityFactory = new AuthorDomainEntityFactory(recipeDomainEntityCharacterLimitProvider);
+        recipeFieldDomainEntityFactory = new RecipeFieldDomainEntityFactory(recipeDomainEntityCharacterLimitProvider);
     }
 
     /// <summary>
