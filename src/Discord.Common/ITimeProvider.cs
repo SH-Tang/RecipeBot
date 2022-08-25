@@ -17,18 +17,18 @@
 
 using System;
 using System.Threading.Tasks;
-using WeekendBot.Core;
 
-namespace WeekendBot.Components
+namespace Discord.Common
 {
     /// <summary>
-    /// Provider for providing time information.
+    /// Interface for providing the time.
     /// </summary>
-    public class TimeProvider : ITimeProvider
+    public interface ITimeProvider
     {
-        public Task<DateTime> GetCurrentDateTimeAsync()
-        {
-            return Task.FromResult(DateTime.Now);
-        }
+        /// <summary>
+        /// Gets the current date time on the host.
+        /// </summary>
+        /// <returns>A <see cref="DateTime"/> representing the current date time on the host.</returns>
+        Task<DateTime> GetCurrentDateTimeAsync();
     }
 }
