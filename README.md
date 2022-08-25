@@ -6,7 +6,7 @@
 
 # RecipeBot
 
-![Alt text](docs/documentation/RecipeCommand.gif?raw=true "Recipe Command within Discord")
+![Alt text](docs/RecipeCommand.gif?raw=true "Recipe Command within Discord")
 
 The RecipeBot is intended to provide the following functionality in Discord as a bot:
 
