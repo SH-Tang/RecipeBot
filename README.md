@@ -1,7 +1,7 @@
-![License](https://img.shields.io/github/license/SiuHinTang/RecipeBot)
-![GitHub last commit](https://img.shields.io/github/last-commit/SiuHinTang/RecipeBot)
-![Unit tests](https://github.com/SiuHinTang/RecipeBot/actions/workflows/dotnet.yml/badge.svg)
-[![codecov](https://codecov.io/gh/SiuHinTang/WeekendBot/branch/master/graph/badge.svg?token=20HZTP4M1O)](https://codecov.io/gh/SiuHinTang/RecipeBot)
+![License](https://img.shields.io/github/license/SH-Tang/RecipeBot)
+![GitHub last commit](https://img.shields.io/github/last-commit/SH-Tang/RecipeBot)
+[![.NET](https://github.com/SH-Tang/RecipeBot/actions/workflows/dotnet.yml/badge.svg)](https://github.com/SH-Tang/RecipeBot/actions/workflows/dotnet.yml)
+[![codecov](https://codecov.io/gh/SiuHinTang/RecipeBot/branch/master/graph/badge.svg?token=20HZTP4M1O)](https://codecov.io/gh/SiuHinTang/RecipeBot)
 
 
 # RecipeBot
