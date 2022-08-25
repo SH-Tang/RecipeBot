@@ -24,12 +24,12 @@
     <ProjectReference Include="..\Discord.Common\Discord.Common.csproj" />
     <ProjectReference Include="..\WeekendBot.Components\WeekendBot.Components.csproj" />
     <ProjectReference Include="..\WeekendBot.Core\WeekendBot.Core.csproj" />
-    <ProjectReference Include="..\WeekendBot.Services\WeekendBot.Services.csproj" />
+    <ProjectReference Include="..\WeekendBot.Discord\WeekendBot.Discord.csproj" />
     <ProjectReference Include="..\WeekendBot.Utils\WeekendBot.Utils.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /f /d /y /i $(SolutionDir)\config.json $(OutDir)" />
+    <Exec Command="xcopy /f /d /y /i &quot;$(SolutionDir)\config.json&quot; &quot;$(OutDir)&quot; " />
   </Target>
 
 </Project>

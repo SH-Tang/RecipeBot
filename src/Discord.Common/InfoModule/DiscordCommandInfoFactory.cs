@@ -44,6 +44,12 @@ public class DiscordCommandInfoFactory
         commandOptions = options.Value;
     }
 
+    /// <summary>
+    /// Creates a collection of <see cref="DiscordCommandInfo"/> based on its input arguments.
+    /// </summary>
+    /// <param name="textCommands">The collection of <see cref="CommandInfo"/>.</param>
+    /// <param name="slashCommands">The collection of <see cref="SlashCommandInfo"/>.</param>
+    /// <returns>A collection of <see cref="DiscordCommandInfo"/>.</returns>
     public IEnumerable<DiscordCommandInfo> Create(IEnumerable<CommandInfo> textCommands, IEnumerable<SlashCommandInfo> slashCommands)
     {
         textCommands.IsNotNull(nameof(textCommands));
@@ -62,7 +68,6 @@ public class DiscordCommandInfoFactory
 
         return discordCommandInfos;
     }
-
 
     private string FormatTextCommand(string slashCommandName)
     {

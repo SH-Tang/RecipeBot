@@ -15,38 +15,40 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using Discord.Common.Utils;
-using NSubstitute;
+using System;
+using WeekendBot.Domain.Data;
 using WeekendBot.TestUtils;
 using Xunit;
 
-namespace Discord.Common.Test.Utils;
+namespace WeekendBot.Domain.Test.Data;
 
-public class IAttachmentExtensionsTest
+public class AuthorDataTest
 {
     [Theory]
     [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
-    [InlineData("someImageExtension")]
-    public void Attachment_returns_true_when_image(string? imageType)
+    public void AuthorData_with_invalid_author_value_throws_exception(string invalidAuthorName)
     {
-        var attachment = Substitute.For<IAttachment>();
-        attachment.ContentType.Returns($"image/{imageType}");
+        // Setup
+        const string authorImageUrl = "Url";
 
-        bool result = attachment.IsImage();
+        // Call
+        Func<AuthorData> call = () => new AuthorData(invalidAuthorName, authorImageUrl);
 
-        Assert.True(result);
+        // Assert
+        Assert.Throws<ArgumentException>(call);
     }
 
     [Theory]
     [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
-    [InlineData("somePrefix/")]
-    public void Attachment_returns_false_when_not_an_image(string? imageType)
+    public void AuthorData_with_invalid_author_image_url_throws_exception(string invalidAuthorImageUrl)
     {
-        var attachment = Substitute.For<IAttachment>();
-        attachment.ContentType.Returns(imageType);
+        // Setup
+        const string authorName = "Author name";
 
-        bool result = attachment.IsImage();
+        // Call
+        Func<AuthorData> call = () => new AuthorData(authorName, invalidAuthorImageUrl);
 
-        Assert.False(result);
+        // Assert
+        Assert.Throws<ArgumentException>(call);
     }
 }

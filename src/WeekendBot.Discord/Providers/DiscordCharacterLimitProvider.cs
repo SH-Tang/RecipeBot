@@ -15,30 +15,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
+using Discord;
+using WeekendBot.Domain.Factories;
 
-namespace WeekendBot
+namespace WeekendBot.Discord.Providers;
+
+/// <summary>
+/// Class that holds the character limits of Discord.
+/// </summary>
+public class DiscordCharacterLimitProvider : IRecipeDomainEntityCharacterLimitProvider
 {
-    internal class Program
-    {
-        public static async Task Main(string[] args)
-        {
-            try
-            {
-                string configurationFilePath = Path.Combine(AppContext.BaseDirectory, "config.json");
-                var application = new WeekendBotApplication(configurationFilePath);
-
-                await application.Run();
-            }
-            catch (Exception e)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine(e);
-                await Task.Delay(Timeout.Infinite);
-            }
-        }
-    }
+    public int MaximumAuthorNameLength => EmbedAuthorBuilder.MaxAuthorNameLength;
+    public int MaximumFieldNameLength => EmbedFieldBuilder.MaxFieldNameLength;
+    public int MaximumFieldDataLength => EmbedFieldBuilder.MaxFieldValueLength;
+    public int MaximumTitleLength => EmbedBuilder.MaxTitleLength;
+    public int MaximumRecipeLength => EmbedBuilder.MaxEmbedLength;
 }

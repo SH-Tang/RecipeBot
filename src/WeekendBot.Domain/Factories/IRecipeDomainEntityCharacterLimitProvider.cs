@@ -15,30 +15,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
+namespace WeekendBot.Domain.Factories;
 
-namespace WeekendBot
+/// <summary>
+/// Interface for describing providers of character limits for recipe domain entities
+/// </summary>
+public interface IRecipeDomainEntityCharacterLimitProvider : IAuthorDomainEntityCharacterLimitProvider, IRecipeFieldDomainEntityCharacterLimitProvider
 {
-    internal class Program
-    {
-        public static async Task Main(string[] args)
-        {
-            try
-            {
-                string configurationFilePath = Path.Combine(AppContext.BaseDirectory, "config.json");
-                var application = new WeekendBotApplication(configurationFilePath);
+    /// <summary>
+    /// Gets the maximum length of the title.
+    /// </summary>
+    int MaximumTitleLength { get; }
 
-                await application.Run();
-            }
-            catch (Exception e)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine(e);
-                await Task.Delay(Timeout.Infinite);
-            }
-        }
-    }
+    /// <summary>
+    /// Gets the maximum length of the entire recipe.
+    /// </summary>
+    int MaximumRecipeLength { get; }
 }
