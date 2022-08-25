@@ -34,18 +34,18 @@ using RecipeBot.Utils;
 namespace RecipeBot;
 
 /// <summary>
-/// Provides all the necessary services for the <see cref="WeekendBotApplication"/>.
+/// Provides all the necessary services for the <see cref="RecipeBotApplication"/>.
 /// </summary>
-public class WeekendBotApplicationServiceProvider
+public class RecipeBotApplicationServiceProvider
 {
     private readonly IConfiguration configuration;
 
     /// <summary>
-    /// Creates a new instance of <see cref="WeekendBotApplicationServiceProvider"/>.
+    /// Creates a new instance of <see cref="RecipeBotApplicationServiceProvider"/>.
     /// </summary>
     /// <param name="configuration">The <see cref="IConfiguration"/> to initialize the services with.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="configuration"/> is <c>null</c>.</exception>
-    public WeekendBotApplicationServiceProvider(IConfiguration configuration)
+    public RecipeBotApplicationServiceProvider(IConfiguration configuration)
     {
         configuration.IsNotNull(nameof(configuration));
         this.configuration = configuration;

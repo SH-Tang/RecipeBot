@@ -29,7 +29,7 @@ namespace RecipeBot
             try
             {
                 string configurationFilePath = Path.Combine(AppContext.BaseDirectory, "config.json");
-                var application = new WeekendBotApplication(configurationFilePath);
+                var application = new RecipeBotApplication(configurationFilePath);
 
                 await application.Run();
             }

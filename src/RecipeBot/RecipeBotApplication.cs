@@ -33,20 +33,20 @@ using RecipeBot.Utils;
 namespace RecipeBot;
 
 /// <summary>
-/// The WeekendBot application.
+/// The RecipeBot application.
 /// </summary>
-public class WeekendBotApplication
+public class RecipeBotApplication
 {
     private readonly IConfiguration configurationRoot;
     private DiscordSocketClient discordClient = null!;
 
     /// <summary>
-    /// Creates a new instance of <see cref="WeekendBotApplication"/>.
+    /// Creates a new instance of <see cref="RecipeBotApplication"/>.
     /// </summary>
     /// <param name="configurationFilePath">The file path to the configuration settings.</param>
     /// <exception cref="ArgumentException">Thrown when the <paramref name="configurationFilePath"/> is not a valid json
     /// file path.</exception>
-    public WeekendBotApplication(string configurationFilePath)
+    public RecipeBotApplication(string configurationFilePath)
     {
         configurationFilePath.IsExistingFilePath(nameof(configurationFilePath));
         configurationFilePath.IsValidArgument(arg => Path.GetExtension(arg).ToLower() == ".json",
@@ -67,7 +67,7 @@ public class WeekendBotApplication
     /// <exception cref="Exception">Thrown when something went wrong while running.</exception>
     public async Task Run()
     {
-        var services = new WeekendBotApplicationServiceProvider(configurationRoot);
+        var services = new RecipeBotApplicationServiceProvider(configurationRoot);
         using (ServiceProvider serviceProvider = services.GetServiceProvider())
         {
             await ConfigureDiscordClient(serviceProvider);
