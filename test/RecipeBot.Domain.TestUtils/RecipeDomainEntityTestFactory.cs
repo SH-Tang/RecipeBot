@@ -18,8 +18,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Common.Utils;
 using RecipeBot.Domain.Entities;
-using RecipeBot.Utils;
 
 namespace RecipeBot.Domain.TestUtils;
 

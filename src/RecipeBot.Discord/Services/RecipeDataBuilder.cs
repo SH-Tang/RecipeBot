@@ -16,10 +16,10 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using Common.Utils;
 using Discord;
 using Discord.Common.Utils;
 using RecipeBot.Domain.Data;
-using RecipeBot.Utils;
 
 namespace RecipeBot.Discord.Services;
 

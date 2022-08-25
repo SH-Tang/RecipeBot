@@ -17,11 +17,11 @@
 
 using System;
 using System.Collections.Generic;
+using Common.Utils;
 using Discord;
 using RecipeBot.Discord.Exceptions;
 using RecipeBot.Discord.Properties;
 using RecipeBot.Domain.Entities;
-using RecipeBot.Utils;
 
 namespace RecipeBot.Discord.Services;
 

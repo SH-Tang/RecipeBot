@@ -18,9 +18,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Common.Utils;
 using Discord.Commands;
 using Discord.Interactions;
-using RecipeBot.Utils;
 
 namespace Discord.Common.InfoModule;
 

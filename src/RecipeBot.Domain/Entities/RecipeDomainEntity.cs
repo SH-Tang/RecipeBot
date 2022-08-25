@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RecipeBot.Utils;
+using Common.Utils;
 
 namespace RecipeBot.Domain.Entities;
 

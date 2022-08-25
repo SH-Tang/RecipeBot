@@ -17,10 +17,10 @@
 
 using System;
 using System.Threading.Tasks;
+using Common.Utils;
 using Discord.Common;
 using Discord.Common.Options;
 using Microsoft.Extensions.Options;
-using RecipeBot.Utils;
 
 namespace RecipeBot.Services;
 

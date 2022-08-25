@@ -17,7 +17,7 @@
 
 using System;
 using System.Reflection;
-using RecipeBot.Utils;
+using Common.Utils;
 
 namespace RecipeBot.TestUtils
 {

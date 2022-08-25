@@ -19,6 +19,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Utils;
 using Discord;
 using Discord.Commands;
 using Discord.Common;
@@ -28,7 +29,6 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RecipeBot.Discord;
-using RecipeBot.Utils;
 
 namespace RecipeBot;
 

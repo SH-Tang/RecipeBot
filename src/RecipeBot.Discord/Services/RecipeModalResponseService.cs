@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using Common.Utils;
 using Discord;
 using RecipeBot.Discord.Exceptions;
 using RecipeBot.Discord.Views;
@@ -23,7 +24,6 @@ using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Entities;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
-using RecipeBot.Utils;
 
 namespace RecipeBot.Discord.Services;
 

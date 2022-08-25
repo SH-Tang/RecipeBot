@@ -17,6 +17,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Common.Utils;
 using Discord;
 using Discord.Common;
 using Discord.Common.Utils;
@@ -26,7 +27,6 @@ using RecipeBot.Discord.Exceptions;
 using RecipeBot.Discord.Properties;
 using RecipeBot.Discord.Services;
 using RecipeBot.Discord.Views;
-using RecipeBot.Utils;
 
 namespace RecipeBot.Discord;
 

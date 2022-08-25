@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using Common.Utils;
 using Discord.Commands;
 using Discord.Common;
 using Discord.Common.Handlers;
@@ -29,7 +30,6 @@ using RecipeBot.Discord.Providers;
 using RecipeBot.Discord.Services;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Services;
-using RecipeBot.Utils;
 
 namespace RecipeBot;
 

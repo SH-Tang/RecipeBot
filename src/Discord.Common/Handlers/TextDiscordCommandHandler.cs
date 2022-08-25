@@ -17,11 +17,11 @@
 
 using System;
 using System.Threading.Tasks;
+using Common.Utils;
 using Discord.Commands;
 using Discord.Common.Options;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
-using RecipeBot.Utils;
 
 namespace Discord.Common.Handlers;
 

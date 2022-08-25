@@ -18,7 +18,7 @@
 using System;
 using System.IO;
 
-namespace RecipeBot.Utils
+namespace Common.Utils
 {
     /// <summary>
     /// Class containing extension methods as guards.

@@ -19,10 +19,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Common.Utils;
 using Discord.Common.Options;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
-using RecipeBot.Utils;
 
 namespace Discord.Common.Handlers;
 
