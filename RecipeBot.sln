@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeBot", "src\RecipeBot\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{53CFAFAB-E237-4883-95F9-CACA954CB5F1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeBot.Utils", "src\RecipeBot.Utils\RecipeBot.Utils.csproj", "{43FFEAAD-E141-404C-BAEB-87A472FA3779}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Utils", "src\RecipeBot.Utils\Common.Utils.csproj", "{43FFEAAD-E141-404C-BAEB-87A472FA3779}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeBot.TestUtils", "test\RecipeBot.TestUtils\RecipeBot.TestUtils.csproj", "{462DD2B3-D0CD-4750-B97F-948D3E345FEF}"
 EndProject

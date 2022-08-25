@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RecipeBot.Domain.Utils;
 using RecipeBot.Utils;
 
 namespace RecipeBot.Domain.Entities;

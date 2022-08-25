@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RecipeBot.Utils\RecipeBot.Utils.csproj" />
+    <ProjectReference Include="..\RecipeBot.Utils\Common.Utils.csproj" />
   </ItemGroup>
 
 </Project>

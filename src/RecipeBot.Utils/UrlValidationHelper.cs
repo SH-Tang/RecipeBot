@@ -17,7 +17,7 @@
 
 using System;
 
-namespace RecipeBot.Domain.Utils;
+namespace RecipeBot.Utils;
 
 /// <summary>
 /// Helper class to validate urls.
