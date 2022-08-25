@@ -1,8 +1,8 @@
 ﻿// Copyright (C) 2022 Dennis Tang. All rights reserved.
 //
-// This file is part of WeekendBot.
+// This file is part of RecipeBot.
 //
-// WeekendBot is free software: you can redistribute it and/or modify
+// RecipeBot is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
@@ -17,11 +17,11 @@
 
 using System;
 using System.Threading.Tasks;
+using Common.Utils;
 using Discord.Common.Options;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
-using WeekendBot.Utils;
 
 namespace Discord.Common.Handlers;
 

@@ -1,58 +1,22 @@
-![License](https://img.shields.io/github/license/SiuHinTang/WeekendBot)
-![GitHub last commit](https://img.shields.io/github/last-commit/SiuHinTang/WeekendBot)
-![Unit tests](https://github.com/SiuHinTang/WeekendBot/actions/workflows/dotnet.yml/badge.svg)
-[![codecov](https://codecov.io/gh/SiuHinTang/WeekendBot/branch/master/graph/badge.svg?token=20HZTP4M1O)](https://codecov.io/gh/SiuHinTang/WeekendBot)
+![License](https://img.shields.io/github/license/SiuHinTang/RecipeBot)
+![GitHub last commit](https://img.shields.io/github/last-commit/SiuHinTang/RecipeBot)
+![Unit tests](https://github.com/SiuHinTang/RecipeBot/actions/workflows/dotnet.yml/badge.svg)
+[![codecov](https://codecov.io/gh/SiuHinTang/WeekendBot/branch/master/graph/badge.svg?token=20HZTP4M1O)](https://codecov.io/gh/SiuHinTang/RecipeBot)
 
 
-# WeekendBot
+# RecipeBot
 
-> Saturday and Sunday, or Friday evening until Sunday night:
-> 
-> **Source:** [Cambridge Dictionary](https://dictionary.cambridge.org/dictionary/english/weekend)
+![Alt text](docs/RecipeCommand.gif?raw=true "Recipe Command within Discord")
 
-A simple bot that keeps track of "Weekend" (hereafter defined as Fridays, past 4pm) related items:
+The RecipeBot is intended to provide the following functionality in Discord as a bot:
 
-* A short message indicating whether it is weekend (or not)
-* A message to indicate how much time before it is weekend (unless it already is weekend :wink:)
+* Formatting recipes according to a standardised format
+* Persistence of recipes to allow retrieval based on tags or the type of dish
+* Formatting annotated web recipes according to a standardised format
 
-# Goals
-
-The main goal of this application is to familiarize with the following frameworks:
-
-* EF Core 6 and AutoMapper
-* [Discord.Net](https://github.com/discord-net/Discord.Net)
-* xUnit 
-
-# Setup
-In order to run the Bot, a `config.json` file must be created next to the executable with the following content. Note that only the key `Token` is mandatory. The remaining object literals and their attributes are all optional, unless specified otherwise.
-
-```json
-{
-    "Token": "{Your Discord token for the Bot}",
-    "StringFormatOptions":
-    {
-        "FloatingNumberFormat": "F2",
-        "TimeSpanFormat": "d\\.hh\\:mm\\:ss",
-        "DateTimeFormat": "dddd d/MM/yy HH:mm:ss"
-    },
-    "CommandOptions":
-    {
-        "TestGuildId": "{TestGuildId}"
-    }
-}
-```
-
-## StringFormatOptions (optional)
-| Key | Description |
-|---|---|
-| FloatingNumberFormat | The number format to use for floating numbers, see also [C# Standard Numeric Formats](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings) |
-| TimeSpanFormat | The format to display time span information, see also [C# custom time span formats](https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-timespan-format-strings) |
-| DateTimeFormat | The format to display date time information, see also [C# custom date time format](https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings) |
-
-## CommandOptions (optional)
-| Key | Description |
-|---|---|
-| TestGuildId | Set this to a Discord channel to immediately test the bot and its slash commands. Global commands take an hour to register |
+# Realised features
+At the moment of writing the bot is capable of:
+* Formatting user recipes according to a standard format
 
 # Supported bot commands
 
@@ -60,15 +24,35 @@ In order to run the Bot, a `config.json` file must be created next to the execut
 
    Provides a summary about all available commands in the bot.
    
-* `weekend?`
+* `recipe`
 
-   Gets a response about whether it is weekend yet.
-   
-* `timetoweekend?`
+   Spawns a modal with standard fields to allow the user to enter a recipe. The command can be invoked with or without an image of a recipe.
 
-   Gets a response between the time of invoking the command and Friday 4pm of the current week. 
-   
-   _Note_ This will result in a default response when the command is invoked between Friday 4pm and Monday 12am.
+# Deployment
+In order to run the RecipeBot, a `config.json` file must be created next to the executable with the following content. Note that only the key `Token` is mandatory. The remaining object literals and their attributes are all optional, unless specified otherwise.
+
+```json
+{
+    "Token": "{Your Discord token for the Bot}",
+    "CommandOptions":
+    {
+        "TestGuildId": "{TestGuildId}"
+    }
+}
+```
+
+## CommandOptions (optional)
+| Key | Description |
+|---|---|
+| TestGuildId | Set this to a Discord channel to immediately test the bot and its slash commands. Global commands take an hour to register |
+
+
+
+# Used libraries
+
+* [Discord.Net](https://github.com/discord-net/Discord.Net)
+* xUnit 
+* NSubstitute
 
 # License
 

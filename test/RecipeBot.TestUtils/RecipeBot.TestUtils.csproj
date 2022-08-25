@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="$(SolutionDir)\build\RecipeBot.targets" />
+
+  <ItemGroup>
+    <None Include="..\..\licenses\Copying.licenseheader" Link="Copying.licenseheader" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Common.Utils\Common.Utils.csproj" />
+    <ProjectReference Include="..\..\src\RecipeBot.Utils\Common.Utils.csproj" />
+  </ItemGroup>
+
+</Project>

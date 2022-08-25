@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$(SolutionDir)\build\WeekendBot.targets" />
+  <Import Project="$(SolutionDir)\build\RecipeBot.targets" />
 
   <ItemGroup>
     <None Include="..\..\licenses\Copying.licenseheader" Link="Copying.licenseheader" />
@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WeekendBot.Utils\WeekendBot.Utils.csproj" />
+    <ProjectReference Include="..\Common.Utils\Common.Utils.csproj" />
   </ItemGroup>
 
 </Project>
