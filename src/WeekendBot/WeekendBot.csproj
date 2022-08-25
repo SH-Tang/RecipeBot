@@ -22,8 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Discord.Common\Discord.Common.csproj" />
-    <ProjectReference Include="..\WeekendBot.Components\WeekendBot.Components.csproj" />
-    <ProjectReference Include="..\WeekendBot.Core\WeekendBot.Core.csproj" />
     <ProjectReference Include="..\WeekendBot.Discord\WeekendBot.Discord.csproj" />
     <ProjectReference Include="..\WeekendBot.Utils\WeekendBot.Utils.csproj" />
   </ItemGroup>

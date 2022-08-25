@@ -18,7 +18,6 @@
 using System;
 using System.Threading.Tasks;
 using Discord.Common;
-using WeekendBot.Core;
 
 namespace WeekendBot.Services
 {

@@ -25,8 +25,6 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using WeekendBot.Components;
-using WeekendBot.Core;
 using WeekendBot.Discord.Providers;
 using WeekendBot.Discord.Services;
 using WeekendBot.Domain.Factories;
@@ -82,7 +80,6 @@ public class WeekendBotApplicationServiceProvider
                 .AddSingleton<ILoggingService, ConsoleLoggingService>()
                 .AddSingleton<IRecipeDomainEntityCharacterLimitProvider, DiscordCharacterLimitProvider>()
                 .AddTransient<ITimeProvider, TimeProvider>()
-                .AddTransient<IWeekendInquiryService, WeekendInquiryService>()
                 .AddTransient<DiscordCommandInfoFactory>()
                 .AddTransient<BotInformationService>()
                 .AddTransient<RecipeModalResponseService>();
@@ -92,9 +89,6 @@ public class WeekendBotApplicationServiceProvider
     {
         services.ConfigureAndValidate<DiscordCommandOptions>(
                     options => configuration.GetSection(DiscordCommandOptions.SectionKey)
-                                            .Bind(options))
-                .ConfigureAndValidate<StringFormatOptions>(
-                    options => configuration.GetSection(StringFormatOptions.SectionKey)
                                             .Bind(options))
                 .ConfigureAndValidate<BotInformation>(
                     options => configuration.GetSection(BotInformation.SectionKey)

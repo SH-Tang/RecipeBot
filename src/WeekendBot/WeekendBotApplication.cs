@@ -28,7 +28,6 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeekendBot.Discord;
-using WeekendBot.Modules;
 using WeekendBot.Utils;
 
 namespace WeekendBot;
@@ -94,7 +93,6 @@ public class WeekendBotApplication
         var textCommandHandlingService = services.GetRequiredService<TextDiscordCommandHandler>();
         await textCommandHandlingService.InitializeHandlerAsync(new[]
         {
-            typeof(WeekendModule),
             typeof(InfoTextModule)
         });
 
