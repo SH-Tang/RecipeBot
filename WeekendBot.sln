@@ -5,27 +5,27 @@ VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BA3E796C-2EE6-474D-9A32-A44EE404FB7F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot", "src\WeekendBot\WeekendBot.csproj", "{DB9B4B39-18E4-48D4-9169-E1E963BE1AE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeBot", "src\RecipeBot\RecipeBot.csproj", "{DB9B4B39-18E4-48D4-9169-E1E963BE1AE4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{53CFAFAB-E237-4883-95F9-CACA954CB5F1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Utils", "src\WeekendBot.Utils\WeekendBot.Utils.csproj", "{43FFEAAD-E141-404C-BAEB-87A472FA3779}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeBot.Utils", "src\RecipeBot.Utils\RecipeBot.Utils.csproj", "{43FFEAAD-E141-404C-BAEB-87A472FA3779}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.TestUtils", "test\WeekendBot.TestUtils\WeekendBot.TestUtils.csproj", "{462DD2B3-D0CD-4750-B97F-948D3E345FEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeBot.TestUtils", "test\RecipeBot.TestUtils\RecipeBot.TestUtils.csproj", "{462DD2B3-D0CD-4750-B97F-948D3E345FEF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Discord.Common", "src\Discord.Common\Discord.Common.csproj", "{8035334A-1E70-4C66-8C11-54CC62F8EE75}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Discord.Common.Test", "test\Discord.Common.Test\Discord.Common.Test.csproj", "{415A6963-D1C0-43E7-931A-58DD3243BD8F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Discord", "src\WeekendBot.Discord\WeekendBot.Discord.csproj", "{AB08D751-2382-4E17-8096-EE881494D68B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeBot.Discord", "src\RecipeBot.Discord\RecipeBot.Discord.csproj", "{AB08D751-2382-4E17-8096-EE881494D68B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Discord.Test", "test\WeekendBot.Discord.Test\WeekendBot.Discord.Test.csproj", "{09FC3D38-9BC5-4002-BDB4-72F56C7F326F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeBot.Discord.Test", "test\RecipeBot.Discord.Test\RecipeBot.Discord.Test.csproj", "{09FC3D38-9BC5-4002-BDB4-72F56C7F326F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Domain", "src\WeekendBot.Domain\WeekendBot.Domain.csproj", "{7716396C-EA41-406B-9854-EE39524DC6E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeBot.Domain", "src\RecipeBot.Domain\RecipeBot.Domain.csproj", "{7716396C-EA41-406B-9854-EE39524DC6E7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Domain.Test", "test\WeekendBot.Domain.Test\WeekendBot.Domain.Test.csproj", "{66DEFB67-34D4-4FA3-B5DB-5E29EB57BFAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeBot.Domain.Test", "test\RecipeBot.Domain.Test\RecipeBot.Domain.Test.csproj", "{66DEFB67-34D4-4FA3-B5DB-5E29EB57BFAF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeekendBot.Domain.TestUtils", "test\WeekendBot.Domain.TestUtils\WeekendBot.Domain.TestUtils.csproj", "{76DDC54E-2DF4-4AED-9E3D-FCD19EBFEB99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeBot.Domain.TestUtils", "test\RecipeBot.Domain.TestUtils\RecipeBot.Domain.TestUtils.csproj", "{76DDC54E-2DF4-4AED-9E3D-FCD19EBFEB99}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
