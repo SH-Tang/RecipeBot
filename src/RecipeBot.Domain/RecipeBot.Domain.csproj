@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RecipeBot.Utils\Common.Utils.csproj" />
+    <ProjectReference Include="..\Common.Utils\Common.Utils.csproj" />
   </ItemGroup>
 
   <ItemGroup>
