@@ -23,7 +23,7 @@ namespace WeekendBot.TestUtils;
 /// <summary>
 /// Generator that generates <see cref="string"/> consisting of whitespaces or <c>null</c>.
 /// </summary>
-public class EmptyOrNullStringValueGenerator : IEnumerable<object?[]>
+public class NullOrWhitespacesStringValueGenerator : IEnumerable<object?[]>
 {
     public IEnumerator<object?[]> GetEnumerator()
     {

@@ -25,7 +25,7 @@ namespace WeekendBot.Domain.Test.Entities;
 public class AuthorDomainEntityTest
 {
     [Theory]
-    [ClassData(typeof(EmptyOrNullStringValueGenerator))]
+    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
     public void Entity_with_invalid_name_throws_exception(string invalidAuthorName)
     {
         // Setup

@@ -23,6 +23,7 @@ using WeekendBot.Domain.Data;
 using WeekendBot.Domain.Entities;
 using WeekendBot.Domain.Exceptions;
 using WeekendBot.Domain.Factories;
+using WeekendBot.TestUtils;
 using Xunit;
 
 namespace WeekendBot.Domain.Test.Factories;
@@ -30,9 +31,7 @@ namespace WeekendBot.Domain.Test.Factories;
 public class RecipeDomainEntityFactoryTest
 {
     [Theory]
-    [InlineData("")]
-    [InlineData("    ")]
-    [InlineData(null)]
+    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
     public void Recipe_without_image_and_notes_returns_entity_without_image_and_notes(string notes)
     {
         // Setup

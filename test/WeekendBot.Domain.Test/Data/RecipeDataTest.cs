@@ -25,7 +25,7 @@ namespace WeekendBot.Domain.Test.Data;
 public class RecipeDataTest
 {
     [Theory]
-    [ClassData(typeof(EmptyOrNullStringValueGenerator))]
+    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
     public void Given_recipe_data_with_invalid_recipe_title_throws_exception(string invalidRecipeTitle)
     {
         // Setup
@@ -40,7 +40,7 @@ public class RecipeDataTest
     }
 
     [Theory]
-    [ClassData(typeof(EmptyOrNullStringValueGenerator))]
+    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
     public void Given_recipe_data_with_invalid_recipe_ingredients_throws_exception(string invalidRecipeIngredients)
     {
         // Setup
@@ -55,7 +55,7 @@ public class RecipeDataTest
     }
 
     [Theory]
-    [ClassData(typeof(EmptyOrNullStringValueGenerator))]
+    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
     public void Given_recipe_data_with_invalid_cooking_steps_throws_exception(string invalidCookingSteps)
     {
         // Setup

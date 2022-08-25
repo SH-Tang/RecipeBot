@@ -25,7 +25,7 @@ namespace Discord.Common.Test.Utils;
 public class IAttachmentExtensionsTest
 {
     [Theory]
-    [ClassData(typeof(EmptyOrNullStringValueGenerator))]
+    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
     [InlineData("someImageExtension")]
     public void Attachment_returns_true_when_image(string? imageType)
     {
@@ -38,7 +38,7 @@ public class IAttachmentExtensionsTest
     }
 
     [Theory]
-    [ClassData(typeof(EmptyOrNullStringValueGenerator))]
+    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
     [InlineData("somePrefix/")]
     public void Attachment_returns_false_when_not_an_image(string? imageType)
     {

@@ -25,7 +25,7 @@ namespace WeekendBot.Domain.Test.Entities;
 public class RecipeFieldDomainEntityTest
 {
     [Theory]
-    [ClassData(typeof(EmptyOrNullStringValueGenerator))]
+    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
     public void Entity_with_invalid_field_name_throws_exception(string invalidFieldName)
     {
         // Setup
@@ -39,7 +39,7 @@ public class RecipeFieldDomainEntityTest
     }
 
     [Theory]
-    [ClassData(typeof(EmptyOrNullStringValueGenerator))]
+    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
     public void Entity_with_invalid_field_data_throws_exception(string invalidFieldData)
     {
         // Setup

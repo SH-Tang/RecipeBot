@@ -29,7 +29,7 @@ public class RecipeDomainEntityTest
     private const string imageUrl = "http://just.an.image";
 
     [Theory]
-    [ClassData(typeof(EmptyOrNullStringValueGenerator))]
+    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
     public void Entity_with_invalid_recipe_title_throws_exception(string invalidRecipeTitle)
     {
         // Setup
@@ -44,7 +44,7 @@ public class RecipeDomainEntityTest
     }
 
     [Theory]
-    [ClassData(typeof(EmptyOrNullStringValueGenerator))]
+    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
     public void Entity_with_image_url_and_invalid_title_throws_exception(string invalidRecipeTitle)
     {
         // Setup

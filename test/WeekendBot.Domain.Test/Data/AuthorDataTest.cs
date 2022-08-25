@@ -25,7 +25,7 @@ namespace WeekendBot.Domain.Test.Data;
 public class AuthorDataTest
 {
     [Theory]
-    [ClassData(typeof(EmptyOrNullStringValueGenerator))]
+    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
     public void AuthorData_with_invalid_author_value_throws_exception(string invalidAuthorName)
     {
         // Setup
@@ -39,7 +39,7 @@ public class AuthorDataTest
     }
 
     [Theory]
-    [ClassData(typeof(EmptyOrNullStringValueGenerator))]
+    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
     public void AuthorData_with_invalid_author_image_url_throws_exception(string invalidAuthorImageUrl)
     {
         // Setup

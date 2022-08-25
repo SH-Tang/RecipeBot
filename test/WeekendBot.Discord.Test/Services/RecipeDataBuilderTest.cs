@@ -98,7 +98,7 @@ public class RecipeDataBuilderTest
     }
 
     [Theory]
-    [ClassData(typeof(EmptyOrNullStringValueGenerator))]
+    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
     [InlineData("notImage/")]
     public void Builder_when_adding_invalid_image_attachment_then_throws_exception(string invalidContentType)
     {
