@@ -17,9 +17,9 @@
 
 using System;
 using System.Reflection;
-using WeekendBot.Utils;
+using RecipeBot.Utils;
 
-namespace WeekendBot.TestUtils
+namespace RecipeBot.TestUtils
 {
     /// <summary>
     /// Helper class containing methods related to <see cref="System.Reflection"/>.

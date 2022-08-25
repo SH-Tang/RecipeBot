@@ -16,11 +16,11 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using WeekendBot.Domain.Data;
-using WeekendBot.TestUtils;
+using RecipeBot.Domain.Data;
+using RecipeBot.TestUtils;
 using Xunit;
 
-namespace WeekendBot.Domain.Test.Data;
+namespace RecipeBot.Domain.Test.Data;
 
 public class AuthorDataTest
 {

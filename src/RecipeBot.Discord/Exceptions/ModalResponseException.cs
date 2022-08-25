@@ -18,7 +18,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace WeekendBot.Discord.Exceptions;
+namespace RecipeBot.Discord.Exceptions;
 
 /// <summary>
 /// Exception thrown when the modal response could not be successfully determined.

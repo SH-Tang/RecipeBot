@@ -18,7 +18,7 @@
 using System;
 using System.IO;
 
-namespace WeekendBot.Utils
+namespace RecipeBot.Utils
 {
     /// <summary>
     /// Class containing extension methods as guards.

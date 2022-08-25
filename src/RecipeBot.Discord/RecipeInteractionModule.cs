@@ -22,13 +22,13 @@ using Discord.Common;
 using Discord.Common.Utils;
 using Discord.Interactions;
 using Discord.WebSocket;
-using WeekendBot.Discord.Exceptions;
-using WeekendBot.Discord.Properties;
-using WeekendBot.Discord.Services;
-using WeekendBot.Discord.Views;
-using WeekendBot.Utils;
+using RecipeBot.Discord.Exceptions;
+using RecipeBot.Discord.Properties;
+using RecipeBot.Discord.Services;
+using RecipeBot.Discord.Views;
+using RecipeBot.Utils;
 
-namespace WeekendBot.Discord;
+namespace RecipeBot.Discord;
 
 /// <summary>
 /// Module containing commands for the recipe.

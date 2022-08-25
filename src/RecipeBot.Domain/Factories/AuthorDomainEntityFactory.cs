@@ -16,13 +16,13 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using WeekendBot.Domain.Data;
-using WeekendBot.Domain.Entities;
-using WeekendBot.Domain.Exceptions;
-using WeekendBot.Domain.Properties;
-using WeekendBot.Utils;
+using RecipeBot.Domain.Data;
+using RecipeBot.Domain.Entities;
+using RecipeBot.Domain.Exceptions;
+using RecipeBot.Domain.Properties;
+using RecipeBot.Utils;
 
-namespace WeekendBot.Domain.Factories;
+namespace RecipeBot.Domain.Factories;
 
 /// <summary>
 /// Factory to create instances of <see cref="AuthorDomainEntity"/>.

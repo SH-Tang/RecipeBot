@@ -18,7 +18,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace WeekendBot.Domain.Exceptions;
+namespace RecipeBot.Domain.Exceptions;
 
 /// <summary>
 /// Exception thrown when the domain entity could not successfully be created.

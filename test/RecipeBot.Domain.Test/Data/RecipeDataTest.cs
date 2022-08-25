@@ -16,11 +16,11 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using WeekendBot.Domain.Data;
-using WeekendBot.TestUtils;
+using RecipeBot.Domain.Data;
+using RecipeBot.TestUtils;
 using Xunit;
 
-namespace WeekendBot.Domain.Test.Data;
+namespace RecipeBot.Domain.Test.Data;
 
 public class RecipeDataTest
 {
@@ -33,7 +33,7 @@ public class RecipeDataTest
         const string cookingSteps = "My recipe steps";
 
         // Call
-        Func<RecipeData> call = () => new RecipeData(CreateValidAuthorData(), invalidRecipeTitle, recipeIngredients, cookingSteps);
+        Action call = () => new RecipeData(CreateValidAuthorData(), invalidRecipeTitle, recipeIngredients, cookingSteps);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
@@ -48,7 +48,7 @@ public class RecipeDataTest
         const string cookingSteps = "My recipe steps";
 
         // Call
-        Func<RecipeData> call = () => new RecipeData(CreateValidAuthorData(), recipeTitle, invalidRecipeIngredients, cookingSteps);
+        Action call = () => new RecipeData(CreateValidAuthorData(), recipeTitle, invalidRecipeIngredients, cookingSteps);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
@@ -63,7 +63,7 @@ public class RecipeDataTest
         const string recipeIngredients = "My ingredients";
 
         // Call
-        Func<RecipeData> call = () => new RecipeData(CreateValidAuthorData(), recipeTitle, recipeIngredients, invalidCookingSteps);
+        Action call = () => new RecipeData(CreateValidAuthorData(), recipeTitle, recipeIngredients, invalidCookingSteps);
 
         // Assert
         Assert.Throws<ArgumentException>(call);

@@ -20,12 +20,12 @@ using System.Collections.Generic;
 using Discord;
 using Discord.Common.Utils;
 using NSubstitute;
-using WeekendBot.Discord.Services;
-using WeekendBot.Domain.Data;
-using WeekendBot.TestUtils;
+using RecipeBot.Discord.Services;
+using RecipeBot.Domain.Data;
+using RecipeBot.TestUtils;
 using Xunit;
 
-namespace WeekendBot.Discord.Test.Services;
+namespace RecipeBot.Discord.Test.Services;
 
 public class RecipeDataBuilderTest
 {

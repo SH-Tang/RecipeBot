@@ -22,7 +22,7 @@ using Discord.Commands;
 using Discord.Common.Options;
 using Discord.Interactions;
 using Microsoft.Extensions.Options;
-using WeekendBot.Utils;
+using RecipeBot.Utils;
 
 namespace Discord.Common.InfoModule;
 

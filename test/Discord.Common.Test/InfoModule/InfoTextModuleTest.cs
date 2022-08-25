@@ -22,7 +22,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using NSubstitute;
-using WeekendBot.TestUtils;
+using RecipeBot.TestUtils;
 using Xunit;
 using SummaryAttribute = Discord.Commands.SummaryAttribute;
 

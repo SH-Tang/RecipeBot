@@ -19,13 +19,13 @@ using Discord;
 using Discord.Common;
 using Discord.Interactions;
 using NSubstitute;
-using WeekendBot.Discord.Services;
-using WeekendBot.Discord.Views;
-using WeekendBot.Domain.Factories;
-using WeekendBot.TestUtils;
+using RecipeBot.Discord.Services;
+using RecipeBot.Discord.Views;
+using RecipeBot.Domain.Factories;
+using RecipeBot.TestUtils;
 using Xunit;
 
-namespace WeekendBot.Discord.Test;
+namespace RecipeBot.Discord.Test;
 
 public class RecipeInteractionModuleTest
 {

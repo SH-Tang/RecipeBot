@@ -16,9 +16,9 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using WeekendBot.Utils;
+using RecipeBot.Utils;
 
-namespace WeekendBot.Domain.Entities;
+namespace RecipeBot.Domain.Entities;
 
 /// <summary>
 /// Entity containing information for a recipe field.

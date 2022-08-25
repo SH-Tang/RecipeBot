@@ -17,7 +17,7 @@
 
 using Discord.Common.Utils;
 using NSubstitute;
-using WeekendBot.TestUtils;
+using RecipeBot.TestUtils;
 using Xunit;
 
 namespace Discord.Common.Test.Utils;

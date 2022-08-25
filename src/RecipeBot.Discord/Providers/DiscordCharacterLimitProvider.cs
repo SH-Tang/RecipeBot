@@ -16,9 +16,9 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using Discord;
-using WeekendBot.Domain.Factories;
+using RecipeBot.Domain.Factories;
 
-namespace WeekendBot.Discord.Providers;
+namespace RecipeBot.Discord.Providers;
 
 /// <summary>
 /// Class that holds the character limits of Discord.

@@ -17,15 +17,15 @@
 
 using System;
 using Discord;
-using WeekendBot.Discord.Exceptions;
-using WeekendBot.Discord.Views;
-using WeekendBot.Domain.Data;
-using WeekendBot.Domain.Entities;
-using WeekendBot.Domain.Exceptions;
-using WeekendBot.Domain.Factories;
-using WeekendBot.Utils;
+using RecipeBot.Discord.Exceptions;
+using RecipeBot.Discord.Views;
+using RecipeBot.Domain.Data;
+using RecipeBot.Domain.Entities;
+using RecipeBot.Domain.Exceptions;
+using RecipeBot.Domain.Factories;
+using RecipeBot.Utils;
 
-namespace WeekendBot.Discord.Services;
+namespace RecipeBot.Discord.Services;
 
 /// <summary>
 /// Service to determine the response based on a <see cref="RecipeModal"/>.

@@ -18,10 +18,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WeekendBot.Domain.Utils;
-using WeekendBot.Utils;
+using RecipeBot.Domain.Utils;
+using RecipeBot.Utils;
 
-namespace WeekendBot.Domain.Entities;
+namespace RecipeBot.Domain.Entities;
 
 /// <summary>
 /// Entity containing data for a recipe.

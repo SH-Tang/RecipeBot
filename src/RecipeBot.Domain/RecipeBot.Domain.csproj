@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WeekendBot.Utils\WeekendBot.Utils.csproj" />
+    <ProjectReference Include="..\RecipeBot.Utils\RecipeBot.Utils.csproj" />
   </ItemGroup>
 
   <ItemGroup>

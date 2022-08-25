@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-namespace WeekendBot.Domain.Factories;
+namespace RecipeBot.Domain.Factories;
 
 /// <summary>
 /// Interface for describing providers of character limits for recipe field domain entities

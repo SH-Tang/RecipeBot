@@ -19,14 +19,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NSubstitute;
-using WeekendBot.Domain.Data;
-using WeekendBot.Domain.Entities;
-using WeekendBot.Domain.Exceptions;
-using WeekendBot.Domain.Factories;
-using WeekendBot.TestUtils;
+using RecipeBot.Domain.Data;
+using RecipeBot.Domain.Entities;
+using RecipeBot.Domain.Exceptions;
+using RecipeBot.Domain.Factories;
+using RecipeBot.TestUtils;
 using Xunit;
 
-namespace WeekendBot.Domain.Test.Factories;
+namespace RecipeBot.Domain.Test.Factories;
 
 public class RecipeDomainEntityFactoryTest
 {

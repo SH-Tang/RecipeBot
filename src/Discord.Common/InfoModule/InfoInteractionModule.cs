@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.Interactions;
-using WeekendBot.Utils;
+using RecipeBot.Utils;
 
 namespace Discord.Common.InfoModule;
 

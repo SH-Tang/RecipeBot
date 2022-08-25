@@ -19,7 +19,7 @@ using System;
 using System.Threading.Tasks;
 using Discord.Common;
 
-namespace WeekendBot.Services
+namespace RecipeBot.Services
 {
     /// <summary>
     /// Provider for providing time information.

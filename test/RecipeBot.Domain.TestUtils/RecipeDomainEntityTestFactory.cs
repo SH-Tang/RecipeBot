@@ -18,10 +18,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WeekendBot.Domain.Entities;
-using WeekendBot.Utils;
+using RecipeBot.Domain.Entities;
+using RecipeBot.Utils;
 
-namespace WeekendBot.Domain.TestUtils;
+namespace RecipeBot.Domain.TestUtils;
 
 /// <summary>
 /// Class which creates instances of <see cref="RecipeDomainEntity"/> that can be used for testing.

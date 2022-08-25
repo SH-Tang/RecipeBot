@@ -18,11 +18,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WeekendBot.Domain.Entities;
-using WeekendBot.TestUtils;
+using RecipeBot.Domain.Entities;
+using RecipeBot.TestUtils;
 using Xunit;
 
-namespace WeekendBot.Domain.Test.Entities;
+namespace RecipeBot.Domain.Test.Entities;
 
 public class RecipeDomainEntityTest
 {

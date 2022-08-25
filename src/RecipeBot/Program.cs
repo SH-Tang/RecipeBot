@@ -20,7 +20,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WeekendBot
+namespace RecipeBot
 {
     internal class Program
     {

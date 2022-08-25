@@ -17,11 +17,11 @@
 
 using Discord;
 using Discord.Interactions;
-using WeekendBot.Discord.Views;
-using WeekendBot.TestUtils;
+using RecipeBot.Discord.Views;
+using RecipeBot.TestUtils;
 using Xunit;
 
-namespace WeekendBot.Discord.Test.Views;
+namespace RecipeBot.Discord.Test.Views;
 
 public class RecipeModalTest
 {

@@ -17,7 +17,7 @@
 
 using System;
 
-namespace WeekendBot.Domain.Utils;
+namespace RecipeBot.Domain.Utils;
 
 /// <summary>
 /// Helper class to validate urls.

@@ -20,9 +20,9 @@ using System.Threading.Tasks;
 using Discord.Common;
 using Discord.Common.Options;
 using Microsoft.Extensions.Options;
-using WeekendBot.Utils;
+using RecipeBot.Utils;
 
-namespace WeekendBot.Services;
+namespace RecipeBot.Services;
 
 /// <summary>
 /// Console implementation of a logging service.

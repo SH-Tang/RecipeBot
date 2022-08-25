@@ -18,7 +18,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace WeekendBot.TestUtils;
+namespace RecipeBot.TestUtils;
 
 /// <summary>
 /// Generator that generates <see cref="string"/> being empty or consisting of whitespace only.

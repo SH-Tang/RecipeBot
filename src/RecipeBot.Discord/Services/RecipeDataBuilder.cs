@@ -18,10 +18,10 @@
 using System;
 using Discord;
 using Discord.Common.Utils;
-using WeekendBot.Domain.Data;
-using WeekendBot.Utils;
+using RecipeBot.Domain.Data;
+using RecipeBot.Utils;
 
-namespace WeekendBot.Discord.Services;
+namespace RecipeBot.Discord.Services;
 
 /// <summary>
 /// Builder to create instances of <see cref="RecipeData"/>.
@@ -38,7 +38,7 @@ public class RecipeDataBuilder
     /// <param name="recipeIngredients">The ingredients of the recipe.</param>
     /// <param name="cookingSteps">The cooking steps of the recipe.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="authorData"/> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="recipeTitle"/>, <see cref="recipeIngredients"/>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="recipeTitle"/>, <paramref name="recipeIngredients"/>
     /// or <paramref name="cookingSteps"/> is <c>null</c> or consists of whitespaces.</exception>
     public RecipeDataBuilder(AuthorData authorData, string recipeTitle, string recipeIngredients, string cookingSteps)
     {

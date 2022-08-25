@@ -18,12 +18,12 @@
 using System;
 using System.Collections.Generic;
 using Discord;
-using WeekendBot.Discord.Exceptions;
-using WeekendBot.Discord.Properties;
-using WeekendBot.Domain.Entities;
-using WeekendBot.Utils;
+using RecipeBot.Discord.Exceptions;
+using RecipeBot.Discord.Properties;
+using RecipeBot.Domain.Entities;
+using RecipeBot.Utils;
 
-namespace WeekendBot.Discord.Services;
+namespace RecipeBot.Discord.Services;
 
 /// <summary>
 /// Factory to create instances of <see cref="Embed"/> for recipes.

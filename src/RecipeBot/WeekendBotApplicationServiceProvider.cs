@@ -25,13 +25,13 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using WeekendBot.Discord.Providers;
-using WeekendBot.Discord.Services;
-using WeekendBot.Domain.Factories;
-using WeekendBot.Services;
-using WeekendBot.Utils;
+using RecipeBot.Discord.Providers;
+using RecipeBot.Discord.Services;
+using RecipeBot.Domain.Factories;
+using RecipeBot.Services;
+using RecipeBot.Utils;
 
-namespace WeekendBot;
+namespace RecipeBot;
 
 /// <summary>
 /// Provides all the necessary services for the <see cref="WeekendBotApplication"/>.

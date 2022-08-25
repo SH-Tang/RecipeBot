@@ -16,10 +16,10 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using WeekendBot.Domain.Utils;
+using RecipeBot.Domain.Utils;
 using Xunit;
 
-namespace WeekendBot.Domain.Test.Utils;
+namespace RecipeBot.Domain.Test.Utils;
 
 public class UrlValidationHelperTest
 {

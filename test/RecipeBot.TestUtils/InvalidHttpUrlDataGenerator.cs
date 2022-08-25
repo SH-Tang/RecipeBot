@@ -18,7 +18,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace WeekendBot.TestUtils;
+namespace RecipeBot.TestUtils;
 
 /// <summary>
 /// Generator that generates invalid non-empty, non-whitespace, non-<c>null</c> urls with http(s) protocol.

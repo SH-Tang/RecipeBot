@@ -27,10 +27,10 @@ using Discord.Common.InfoModule;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using WeekendBot.Discord;
-using WeekendBot.Utils;
+using RecipeBot.Discord;
+using RecipeBot.Utils;
 
-namespace WeekendBot;
+namespace RecipeBot;
 
 /// <summary>
 /// The WeekendBot application.

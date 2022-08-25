@@ -16,9 +16,9 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using WeekendBot.Utils;
+using RecipeBot.Utils;
 
-namespace WeekendBot.Domain.Data;
+namespace RecipeBot.Domain.Data;
 
 /// <summary>
 /// Class containing information about a recipe.

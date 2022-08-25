@@ -7,7 +7,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\WeekendBot.Utils\WeekendBot.Utils.csproj" />
+    <ProjectReference Include="..\..\src\RecipeBot.Utils\RecipeBot.Utils.csproj" />
   </ItemGroup>
 
 </Project>

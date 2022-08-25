@@ -16,11 +16,11 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using WeekendBot.Domain.Entities;
-using WeekendBot.TestUtils;
+using RecipeBot.Domain.Entities;
+using RecipeBot.TestUtils;
 using Xunit;
 
-namespace WeekendBot.Domain.Test.Entities;
+namespace RecipeBot.Domain.Test.Entities;
 
 public class AuthorDomainEntityTest
 {
@@ -32,7 +32,7 @@ public class AuthorDomainEntityTest
         const string imageUrl = "http://wwww.google.com";
 
         // Call
-        Func<AuthorDomainEntity> call = () => new AuthorDomainEntity(invalidAuthorName, imageUrl);
+        Action call = () => new AuthorDomainEntity(invalidAuthorName, imageUrl);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
@@ -49,7 +49,7 @@ public class AuthorDomainEntityTest
         const string authorName = "Author";
 
         // Call
-        Func<AuthorDomainEntity> call = () => new AuthorDomainEntity(authorName, invalidImageUrl);
+        Action call = () => new AuthorDomainEntity(authorName, invalidImageUrl);
 
         // Assert
         Assert.Throws<ArgumentException>(call);

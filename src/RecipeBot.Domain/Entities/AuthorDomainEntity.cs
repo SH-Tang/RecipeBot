@@ -16,10 +16,10 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using WeekendBot.Domain.Utils;
-using WeekendBot.Utils;
+using RecipeBot.Domain.Utils;
+using RecipeBot.Utils;
 
-namespace WeekendBot.Domain.Entities;
+namespace RecipeBot.Domain.Entities;
 
 /// <summary>
 /// Entity containing author data.
