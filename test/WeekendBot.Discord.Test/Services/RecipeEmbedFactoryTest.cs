@@ -53,10 +53,7 @@ public class RecipeEmbedFactoryTest
         Assert.Equal(recipeDomainEntity.Title, embed.Title);
         Assert.Null(embed.Image);
 
-        EmbedAuthor? embedAuthor = embed.Author;
-        Assert.NotNull(embedAuthor);
-        AssertAuthor(recipeDomainEntity.AuthorEntity, embedAuthor!.Value);
-
+        AssertAuthor(recipeDomainEntity.AuthorEntity, embed.Author);
         AssertFields(recipeDomainEntity.RecipeFieldEntities, embed.Fields);
     }
 
@@ -76,10 +73,7 @@ public class RecipeEmbedFactoryTest
         Assert.NotNull(embedImage);
         Assert.Equal(recipeDomainEntity.RecipeImageUrl, embedImage!.Value.Url);
 
-        EmbedAuthor? embedAuthor = embed.Author;
-        Assert.NotNull(embedAuthor);
-        AssertAuthor(recipeDomainEntity.AuthorEntity, embedAuthor!.Value);
-
+        AssertAuthor(recipeDomainEntity.AuthorEntity, embed.Author);
         AssertFields(recipeDomainEntity.RecipeFieldEntities, embed.Fields);
     }
 
@@ -99,10 +93,7 @@ public class RecipeEmbedFactoryTest
         Assert.NotNull(embedImage);
         Assert.Equal(recipeDomainEntity.RecipeImageUrl, embedImage!.Value.Url);
 
-        EmbedAuthor? embedAuthor = embed.Author;
-        Assert.NotNull(embedAuthor);
-        AssertAuthor(recipeDomainEntity.AuthorEntity, embedAuthor!.Value);
-
+        AssertAuthor(recipeDomainEntity.AuthorEntity, embed.Author);
         AssertFields(recipeDomainEntity.RecipeFieldEntities, embed.Fields);
     }
 
@@ -121,17 +112,15 @@ public class RecipeEmbedFactoryTest
         EmbedImage? embedImage = embed.Image;
         Assert.Null(embedImage);
 
-        EmbedAuthor? embedAuthor = embed.Author;
-        Assert.NotNull(embedAuthor);
-        AssertAuthor(recipeDomainEntity.AuthorEntity, embedAuthor!.Value);
-
+        AssertAuthor(recipeDomainEntity.AuthorEntity, embed.Author);
         AssertFields(recipeDomainEntity.RecipeFieldEntities, embed.Fields);
     }
 
-    private static void AssertAuthor(AuthorDomainEntity authorData, EmbedAuthor actualAuthor)
+    private static void AssertAuthor(AuthorDomainEntity authorData, EmbedAuthor? actualAuthor)
     {
-        Assert.Equal(authorData.AuthorName, actualAuthor.Name);
-        Assert.Equal(authorData.AuthorImageUrl, actualAuthor.IconUrl);
+        Assert.NotNull(actualAuthor);
+        Assert.Equal(authorData.AuthorName, actualAuthor!.Value.Name);
+        Assert.Equal(authorData.AuthorImageUrl, actualAuthor.Value.IconUrl);
     }
 
     private static void AssertFields(IEnumerable<RecipeFieldDomainEntity> fieldDomainEntities, IEnumerable<EmbedField> embedFields)

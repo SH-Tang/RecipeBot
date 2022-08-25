@@ -28,7 +28,7 @@ public interface IRecipeFieldDomainEntityCharacterLimitProvider
     int MaximumFieldNameLength { get; }
 
     /// <summary>
-    /// Gets the maximum allowed character length for a field description.
+    /// Gets the maximum allowed character length for field data.
     /// </summary>
     int MaximumFieldDataLength { get; }
 }

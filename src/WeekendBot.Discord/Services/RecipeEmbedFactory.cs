@@ -26,7 +26,7 @@ using WeekendBot.Utils;
 namespace WeekendBot.Discord.Services;
 
 /// <summary>
-/// Factory to create instances of <see cref="Embed"/>.
+/// Factory to create instances of <see cref="Embed"/> for recipes.
 /// </summary>
 public static class RecipeEmbedFactory
 {

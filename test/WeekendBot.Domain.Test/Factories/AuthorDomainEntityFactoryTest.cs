@@ -76,7 +76,7 @@ public class AuthorDomainEntityFactoryTest
     [InlineData(8)]
     [InlineData(0)]
     [InlineData(1)]
-    public void Creating_entity_with_valid_author_data(int authorNameCharacterOffset)
+    public void Creating_entity_with_valid_data_returns_entity(int authorNameCharacterOffset)
     {
         // Setup
         const int maximumAuthorNameLength = 10;

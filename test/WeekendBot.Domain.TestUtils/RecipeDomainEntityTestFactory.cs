@@ -59,7 +59,7 @@ public class RecipeDomainEntityTestFactory
     }
 
     /// <summary>
-    /// Creates a default <see cref="RecipeDomainEntity"/> without fields and image.
+    /// Creates a default <see cref="RecipeDomainEntity"/> without fields and an image.
     /// </summary>
     /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
     public RecipeDomainEntity Create()
@@ -68,7 +68,7 @@ public class RecipeDomainEntityTestFactory
     }
 
     /// <summary>
-    /// Creates a default <see cref="RecipeDomainEntity"/> with fields and without image.
+    /// Creates a default <see cref="RecipeDomainEntity"/> with fields and without an image.
     /// </summary>
     /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
     public RecipeDomainEntity CreateWithFields()
@@ -82,7 +82,7 @@ public class RecipeDomainEntityTestFactory
     }
 
     /// <summary>
-    /// Creates a default <see cref="RecipeDomainEntity"/> with image, but without fields.
+    /// Creates a default <see cref="RecipeDomainEntity"/> with an image and without fields.
     /// </summary>
     /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
     public RecipeDomainEntity CreateWithImage()
@@ -130,16 +130,16 @@ public class RecipeDomainEntityTestFactory
         return new RecipeFieldDomainEntity(fieldName, fieldData);
     }
 
+    private static string GetStringWithRandomLength(char character, int maximumStringLength)
+    {
+        return GetStringWithRandomLength(21, character, maximumStringLength);
+    }
+
     private static string GetStringWithRandomLength(int seed, char character, int maximumStringLength)
     {
         var random = new Random(seed);
         int stringLength = maximumStringLength - random.Next(0, maximumStringLength);
         return new string(character, stringLength);
-    }
-
-    private static string GetStringWithRandomLength(char character, int maximumStringLength)
-    {
-        return GetStringWithRandomLength(21, character, maximumStringLength);
     }
 
     /// <summary>

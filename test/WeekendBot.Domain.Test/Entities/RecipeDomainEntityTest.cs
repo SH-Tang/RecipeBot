@@ -86,7 +86,7 @@ public class RecipeDomainEntityTest
 
     [Theory]
     [ClassData(typeof(InvalidHttpUrlDataGenerator))]
-    public void Entity_with_invalid_image_url_sets_image_url(string invalidImageUrl)
+    public void Entity_with_invalid_image_url_throws_exception(string invalidImageUrl)
     {
         // Setup
         AuthorDomainEntity authorEntity = CreateAuthorEntity();

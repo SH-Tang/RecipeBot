@@ -28,7 +28,7 @@ using WeekendBot.Utils;
 namespace WeekendBot.Discord.Services;
 
 /// <summary>
-/// Service to determine the response  based on a <see cref="RecipeModal"/>.
+/// Service to determine the response based on a <see cref="RecipeModal"/>.
 /// </summary>
 public class RecipeModalResponseService
 {
@@ -37,7 +37,8 @@ public class RecipeModalResponseService
     /// <summary>
     /// Creates a new instance of <see cref="RecipeModalResponseService"/>.
     /// </summary>
-    /// <param name="limitProvider"></param>
+    /// <param name="limitProvider">The limit provider to retrieve the character limits from.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="limitProvider"/> is <c>null</c>.</exception>
     public RecipeModalResponseService(IRecipeDomainEntityCharacterLimitProvider limitProvider)
     {
         limitProvider.IsNotNull(nameof(limitProvider));

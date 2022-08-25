@@ -28,7 +28,7 @@ namespace WeekendBot.Domain.Test.Factories;
 public class RecipeFieldDomainEntityFactoryTest
 {
     [Fact]
-    public void Creating_entity_with_field_name_with_invalid_nr_of_characters_throws_exception()
+    public void Creating_entity_with_field_name_with_invalid_character_length_throws_exception()
     {
         // Setup
         const int maximumFieldNameLength = 10;
@@ -74,7 +74,7 @@ public class RecipeFieldDomainEntityFactoryTest
     }
 
     [Fact]
-    public void Creating_entity_with_field_data_with_invalid_nr_of_characters_throws_exception()
+    public void Creating_entity_with_field_data_with_invalid_character_length_throws_exception()
     {
         // Setup
         const int maximumFieldNameLength = 10;

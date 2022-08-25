@@ -34,6 +34,13 @@ public class RecipeDomainEntityFactory
     private readonly AuthorDomainEntityFactory authorDomainEntityFactory;
     private readonly RecipeFieldDomainEntityFactory recipeFieldDomainEntityFactory;
 
+    /// <summary>
+    /// Creates a new instance of <see cref="RecipeDomainEntityFactory"/>.
+    /// </summary>
+    /// <param name="recipeDomainEntityCharacterLimitProvider">The <see cref="IRecipeDomainEntityCharacterLimitProvider"/>
+    /// to retrieve the character limits from.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="recipeDomainEntityCharacterLimitProvider"/>
+    /// is <c>null</c>.</exception>
     public RecipeDomainEntityFactory(IRecipeDomainEntityCharacterLimitProvider recipeDomainEntityCharacterLimitProvider)
     {
         recipeDomainEntityCharacterLimitProvider.IsNotNull(nameof(recipeDomainEntityCharacterLimitProvider));
@@ -45,7 +52,7 @@ public class RecipeDomainEntityFactory
     }
 
     /// <summary>
-    /// Creates an <see cref="RecipeDomainEntity"/> based on its input arguments.
+    /// Creates a <see cref="RecipeDomainEntity"/> based on its input arguments.
     /// </summary>
     /// <param name="recipeData">The <see cref="RecipeData"/> to create the <see cref="RecipeDomainEntity"/> with.</param>
     /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
