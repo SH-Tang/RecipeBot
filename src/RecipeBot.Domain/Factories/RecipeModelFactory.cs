@@ -28,20 +28,20 @@ namespace RecipeBot.Domain.Factories;
 /// <summary>
 /// Factory to create instances of <see cref="RecipeModel"/>.
 /// </summary>
-public class RecipeDomainEntityFactory
+public class RecipeModelFactory
 {
     private readonly IRecipeModelCharacterLimitProvider recipeModelCharacterLimitProvider;
     private readonly AuthorModelFactory authorModelFactory;
     private readonly RecipeFieldModelFactory recipeFieldModelFactory;
 
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeDomainEntityFactory"/>.
+    /// Creates a new instance of <see cref="RecipeModelFactory"/>.
     /// </summary>
     /// <param name="recipeModelCharacterLimitProvider">The <see cref="IRecipeModelCharacterLimitProvider"/>
     /// to retrieve the character limits from.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="recipeModelCharacterLimitProvider"/>
     /// is <c>null</c>.</exception>
-    public RecipeDomainEntityFactory(IRecipeModelCharacterLimitProvider recipeModelCharacterLimitProvider)
+    public RecipeModelFactory(IRecipeModelCharacterLimitProvider recipeModelCharacterLimitProvider)
     {
         recipeModelCharacterLimitProvider.IsNotNull(nameof(recipeModelCharacterLimitProvider));
 
@@ -57,7 +57,7 @@ public class RecipeDomainEntityFactory
     /// <param name="recipeData">The <see cref="RecipeData"/> to create the <see cref="RecipeModel"/> with.</param>
     /// <returns>A <see cref="RecipeModel"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="recipeData"/> is <c>null</c>.</exception>
-    /// <exception cref="ModelCreateException">Thrown when the domain entity could not be successfully created.</exception>
+    /// <exception cref="ModelCreateException">Thrown when the model could not be successfully created.</exception>
     public RecipeModel Create(RecipeData recipeData)
     {
         recipeData.IsNotNull(nameof(recipeData));

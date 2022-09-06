@@ -48,7 +48,7 @@ public class RecipeFieldModelFactory
     /// <param name="fieldName">The name of the field.</param>
     /// <param name="fieldData">The data of the field.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    /// <exception cref="ModelCreateException">Thrown when the entity could not be successfully created.</exception>
+    /// <exception cref="ModelCreateException">Thrown when the model could not be successfully created.</exception>
     public RecipeFieldModel Create(string fieldName, string fieldData)
     {
         fieldName.IsNotNull(nameof(fieldName));

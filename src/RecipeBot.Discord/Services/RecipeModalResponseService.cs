@@ -32,7 +32,7 @@ namespace RecipeBot.Discord.Services;
 /// </summary>
 public class RecipeModalResponseService
 {
-    private readonly RecipeDomainEntityFactory recipeModelFactory;
+    private readonly RecipeModelFactory recipeModelFactory;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeModalResponseService"/>.
@@ -42,7 +42,7 @@ public class RecipeModalResponseService
     public RecipeModalResponseService(IRecipeModelCharacterLimitProvider limitProvider)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
-        recipeModelFactory = new RecipeDomainEntityFactory(limitProvider);
+        recipeModelFactory = new RecipeModelFactory(limitProvider);
     }
 
     /// <summary>

@@ -28,11 +28,11 @@ using Xunit;
 
 namespace RecipeBot.Domain.Test.Factories;
 
-public class RecipeDomainEntityFactoryTest
+public class RecipeModelFactoryTest
 {
     [Theory]
     [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
-    public void Recipe_without_image_and_notes_returns_entity_without_image_and_notes(string notes)
+    public void Recipe_without_image_and_notes_returns_model_without_image_and_notes(string notes)
     {
         // Setup
         var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
@@ -45,7 +45,7 @@ public class RecipeDomainEntityFactoryTest
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
         recipeData.AdditionalNotes = notes;
 
-        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
+        var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
 
         // Call
         RecipeModel entity = factory.Create(recipeData);
@@ -53,13 +53,13 @@ public class RecipeDomainEntityFactoryTest
         // Assert
         Assert.Null(entity.RecipeImageUrl);
 
-        AssertAuthorEntity(recipeData.AuthorData, entity.Author);
+        AssertAuthor(recipeData.AuthorData, entity.Author);
         Assert.Equal(2, entity.RecipeFields.Count());
         AssertMandatoryFields(recipeData, entity.RecipeFields);
     }
 
     [Fact]
-    public void Recipe_with_image_returns_entity_with_image()
+    public void Recipe_with_image_returns_model_with_image()
     {
         // Setup
         var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
@@ -73,21 +73,21 @@ public class RecipeDomainEntityFactoryTest
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
         recipeData.ImageUrl = imageUrl;
 
-        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
+        var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
 
         // Call
-        RecipeModel entity = factory.Create(recipeData);
+        RecipeModel model = factory.Create(recipeData);
 
         // Assert
-        Assert.Equal(imageUrl, entity.RecipeImageUrl);
+        Assert.Equal(imageUrl, model.RecipeImageUrl);
 
-        AssertAuthorEntity(recipeData.AuthorData, entity.Author);
-        Assert.Equal(2, entity.RecipeFields.Count());
-        AssertMandatoryFields(recipeData, entity.RecipeFields);
+        AssertAuthor(recipeData.AuthorData, model.Author);
+        Assert.Equal(2, model.RecipeFields.Count());
+        AssertMandatoryFields(recipeData, model.RecipeFields);
     }
 
     [Fact]
-    public void Recipe_with_notes_returns_entity_with_notes()
+    public void Recipe_with_notes_returns_model_with_notes()
     {
         // Setup
         var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
@@ -100,17 +100,17 @@ public class RecipeDomainEntityFactoryTest
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
         recipeData.AdditionalNotes = new string('%', recipeCharacterLimitProvider.MaximumFieldDataLength);
 
-        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
+        var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
 
         // Call
-        RecipeModel entity = factory.Create(recipeData);
+        RecipeModel model = factory.Create(recipeData);
 
         // Assert
-        Assert.Null(entity.RecipeImageUrl);
+        Assert.Null(model.RecipeImageUrl);
 
-        AssertAuthorEntity(recipeData.AuthorData, entity.Author);
+        AssertAuthor(recipeData.AuthorData, model.Author);
 
-        IEnumerable<RecipeFieldModel> recipeFieldEntities = entity.RecipeFields;
+        IEnumerable<RecipeFieldModel> recipeFieldEntities = model.RecipeFields;
         Assert.Equal(3, recipeFieldEntities.Count());
         AssertMandatoryFields(recipeData, recipeFieldEntities);
         RecipeFieldModel cookingStepsDomainFieldEntity = recipeFieldEntities.ElementAt(2);
@@ -119,7 +119,7 @@ public class RecipeDomainEntityFactoryTest
     }
 
     [Fact]
-    public void Recipe_with_image_and_notes_returns_entity_with_image_and_notes()
+    public void Recipe_with_image_and_notes_returns_model_with_image_and_notes()
     {
         // Setup
         var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
@@ -134,16 +134,16 @@ public class RecipeDomainEntityFactoryTest
         recipeData.ImageUrl = imageUrl;
         recipeData.AdditionalNotes = new string('%', recipeCharacterLimitProvider.MaximumFieldDataLength);
 
-        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
+        var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
 
         // Call
-        RecipeModel entity = factory.Create(recipeData);
+        RecipeModel model = factory.Create(recipeData);
 
         // Assert
-        Assert.Equal(recipeData.RecipeTitle, entity.Title);
-        Assert.Equal(recipeData.ImageUrl, entity.RecipeImageUrl);
+        Assert.Equal(recipeData.RecipeTitle, model.Title);
+        Assert.Equal(recipeData.ImageUrl, model.RecipeImageUrl);
 
-        IEnumerable<RecipeFieldModel> recipeFieldEntities = entity.RecipeFields;
+        IEnumerable<RecipeFieldModel> recipeFieldEntities = model.RecipeFields;
         Assert.Equal(3, recipeFieldEntities.Count());
         AssertMandatoryFields(recipeData, recipeFieldEntities);
         RecipeFieldModel cookingStepsDomainFieldEntity = recipeFieldEntities.ElementAt(2);
@@ -164,7 +164,7 @@ public class RecipeDomainEntityFactoryTest
 
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider, 1);
 
-        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
+        var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
 
         // Call
         Action call = () => factory.Create(recipeData);
@@ -179,7 +179,7 @@ public class RecipeDomainEntityFactoryTest
     [InlineData(8)]
     [InlineData(0)]
     [InlineData(1)]
-    public void Recipe_with_valid_title_returns_entity_with_title(int characterOffset)
+    public void Recipe_with_valid_title_returns_model_with_title(int characterOffset)
     {
         // Setup
         var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
@@ -191,13 +191,13 @@ public class RecipeDomainEntityFactoryTest
 
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider, -characterOffset);
 
-        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
+        var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
 
         // Call
-        RecipeModel entity = factory.Create(recipeData);
+        RecipeModel model = factory.Create(recipeData);
 
         // Assert
-        Assert.Equal(recipeData.RecipeTitle, entity.Title);
+        Assert.Equal(recipeData.RecipeTitle, model.Title);
     }
 
     [Fact]
@@ -213,7 +213,7 @@ public class RecipeDomainEntityFactoryTest
 
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
 
-        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
+        var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
 
         // Precondition
         int totalCharacterLength = recipeCharacterLimitProvider.MaximumAuthorNameLength +
@@ -244,7 +244,7 @@ public class RecipeDomainEntityFactoryTest
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
         recipeData.ImageUrl = "invalid image url";
 
-        var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
+        var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
 
         // Call                    
         Action call = () => factory.Create(recipeData);
@@ -253,7 +253,7 @@ public class RecipeDomainEntityFactoryTest
         Assert.Throws<ModelCreateException>(call);
     }
 
-    private static void AssertAuthorEntity(AuthorData data, AuthorModel model)
+    private static void AssertAuthor(AuthorData data, AuthorModel model)
     {
         Assert.Equal(data.AuthorName, model.AuthorName);
         Assert.Equal(data.AuthorImageUrl, model.AuthorImageUrl);
