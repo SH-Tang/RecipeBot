@@ -32,7 +32,7 @@ namespace RecipeBot.Discord.Services;
 /// </summary>
 public class RecipeModalResponseService
 {
-    private readonly RecipeDomainEntityFactory recipeDomainEntityFactory;
+    private readonly RecipeDomainEntityFactory recipeModelFactory;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeModalResponseService"/>.
@@ -42,7 +42,7 @@ public class RecipeModalResponseService
     public RecipeModalResponseService(IRecipeModelCharacterLimitProvider limitProvider)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
-        recipeDomainEntityFactory = new RecipeDomainEntityFactory(limitProvider);
+        recipeModelFactory = new RecipeDomainEntityFactory(limitProvider);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class RecipeModalResponseService
                                 .AddNotes(modal.Notes)
                                 .Build();
 
-        return RecipeEmbedFactory.Create(GetRecipeDomainEntity(recipeData));
+        return RecipeEmbedFactory.Create(GetRecipeModel(recipeData));
     }
 
     /// <summary>
@@ -87,7 +87,7 @@ public class RecipeModalResponseService
                                 .AddImage(attachment)
                                 .Build();
 
-        return RecipeEmbedFactory.Create(GetRecipeDomainEntity(recipeData));
+        return RecipeEmbedFactory.Create(GetRecipeModel(recipeData));
     }
 
     /// <summary>
@@ -96,11 +96,11 @@ public class RecipeModalResponseService
     /// <param name="recipeData">The <see cref="RecipeData"/> to get the <see cref="RecipeModel"/> with.</param>
     /// <returns>A <see cref="RecipeModel"/>.</returns>
     /// <exception cref="ModalResponseException">Thrown when the entity could not be successfully retrieved.</exception>
-    private RecipeModel GetRecipeDomainEntity(RecipeData recipeData)
+    private RecipeModel GetRecipeModel(RecipeData recipeData)
     {
         try
         {
-            return recipeDomainEntityFactory.Create(recipeData);
+            return recipeModelFactory.Create(recipeData);
         }
         catch (DomainEntityCreateException e)
         {
