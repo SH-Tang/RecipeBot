@@ -95,7 +95,7 @@ public class RecipeModalResponseService
     /// </summary>
     /// <param name="recipeData">The <see cref="RecipeData"/> to get the <see cref="RecipeModel"/> with.</param>
     /// <returns>A <see cref="RecipeModel"/>.</returns>
-    /// <exception cref="ModalResponseException">Thrown when the entity could not be successfully retrieved.</exception>
+    /// <exception cref="ModalResponseException">Thrown when the model could not be successfully retrieved.</exception>
     private RecipeModel GetRecipeModel(RecipeData recipeData)
     {
         try

@@ -67,13 +67,13 @@ public static class RecipeEmbedFactory
         return embedBuilder;
     }
 
-    private static void ConfigureFields(EmbedBuilder embedBuilder, IEnumerable<RecipeFieldModel> fieldDomainEntities)
+    private static void ConfigureFields(EmbedBuilder embedBuilder, IEnumerable<RecipeFieldModel> recipeFields)
     {
         try
         {
-            foreach (RecipeFieldModel fieldDomainEntity in fieldDomainEntities)
+            foreach (RecipeFieldModel recipeField in recipeFields)
             {
-                embedBuilder.AddField(fieldDomainEntity.FieldName, fieldDomainEntity.FieldData);
+                embedBuilder.AddField(recipeField.FieldName, recipeField.FieldData);
             }
         }
         catch (ArgumentException e)

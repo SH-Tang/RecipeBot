@@ -9,6 +9,9 @@
 //------------------------------------------------------------------------------
 
 namespace RecipeBot.Domain.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -69,27 +72,27 @@ namespace RecipeBot.Domain.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Additional notes.
         /// </summary>
-        internal static string RecipeDomainEntity_FieldName_AdditionalNotes {
+        internal static string Recipe_FieldName_AdditionalNotes {
             get {
-                return ResourceManager.GetString("RecipeDomainEntity_FieldName_AdditionalNotes", resourceCulture);
+                return ResourceManager.GetString("Recipe_FieldName_AdditionalNotes", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Cooking steps.
         /// </summary>
-        internal static string RecipeDomainEntity_FieldName_CookingSteps {
+        internal static string Recipe_FieldName_CookingSteps {
             get {
-                return ResourceManager.GetString("RecipeDomainEntity_FieldName_CookingSteps", resourceCulture);
+                return ResourceManager.GetString("Recipe_FieldName_CookingSteps", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Ingredients.
         /// </summary>
-        internal static string RecipeDomainEntity_FieldName_Ingredients {
+        internal static string Recipe_FieldName_Ingredients {
             get {
-                return ResourceManager.GetString("RecipeDomainEntity_FieldName_Ingredients", resourceCulture);
+                return ResourceManager.GetString("Recipe_FieldName_Ingredients", resourceCulture);
             }
         }
     }

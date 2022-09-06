@@ -85,7 +85,7 @@ public class RecipeModalResponseServiceTest
             Notes = recipeNotes
         };
 
-        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordRecipeDomainEntityCharacterLimitProvider();
+        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
         var service = new RecipeModalResponseService(limitProvider);
 
         // Call
@@ -162,7 +162,7 @@ public class RecipeModalResponseServiceTest
             Notes = recipeNotes
         };
 
-        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordRecipeDomainEntityCharacterLimitProvider();
+        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
         var service = new RecipeModalResponseService(limitProvider);
 
         // Call
@@ -177,7 +177,7 @@ public class RecipeModalResponseServiceTest
         Assert.Equal(recipeImageUrl, resultImage.Url);
     }
 
-    private static IRecipeModelCharacterLimitProvider CreateDiscordRecipeDomainEntityCharacterLimitProvider()
+    private static IRecipeModelCharacterLimitProvider CreateDiscordCharacterLimitProvider()
     {
         var limitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
         limitProvider.MaximumTitleLength.Returns(EmbedBuilder.MaxTitleLength);

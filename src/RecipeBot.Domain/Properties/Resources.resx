@@ -120,13 +120,13 @@
   <data name="Argument_0_must_be_less_or_equal_to_number_of_1_characters" xml:space="preserve">
     <value>{0} must be less or equal to {1} characters.</value>
   </data>
-  <data name="RecipeDomainEntity_FieldName_Ingredients" xml:space="preserve">
+  <data name="Recipe_FieldName_Ingredients" xml:space="preserve">
     <value>Ingredients</value>
   </data>
-  <data name="RecipeDomainEntity_FieldName_CookingSteps" xml:space="preserve">
+  <data name="Recipe_FieldName_CookingSteps" xml:space="preserve">
     <value>Cooking steps</value>
   </data>
-  <data name="RecipeDomainEntity_FieldName_AdditionalNotes" xml:space="preserve">
+  <data name="Recipe_FieldName_AdditionalNotes" xml:space="preserve">
     <value>Additional notes</value>
   </data>
 </root>

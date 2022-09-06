@@ -125,7 +125,7 @@ public class RecipeFieldModelFactoryTest
     [InlineData(1, 0)]
     [InlineData(0, 1)]
     [InlineData(0, 0)]
-    public void Creating_model_with_valid_field_name_and_description_returns_entity(
+    public void Creating_model_with_valid_field_name_and_description_returns_model(
         int fieldNameCharacterOffset, int fieldDataCharacterOffset)
     {
         // Setup

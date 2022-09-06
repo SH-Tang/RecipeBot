@@ -71,7 +71,7 @@ public class RecipeModelFactory
 
         try
         {
-            return CreateRecipeDomainEntity(recipeData);
+            return CreateRecipe(recipeData);
         }
         catch (ArgumentException e)
         {
@@ -79,44 +79,44 @@ public class RecipeModelFactory
         }
     }
 
-    private RecipeModel CreateRecipeDomainEntity(RecipeData recipeData)
+    private RecipeModel CreateRecipe(RecipeData recipeData)
     {
-        AuthorModel authorModel = CreateAuthorDomainEntity(recipeData.AuthorData);
-        IEnumerable<RecipeFieldModel> fieldEntities = CreateRecipeFieldDomainEntities(recipeData);
+        AuthorModel authorModel = CreateAuthor(recipeData.AuthorData);
+        IEnumerable<RecipeFieldModel> recipeFields = CreateRecipeFields(recipeData);
 
         string recipeTitle = recipeData.RecipeTitle;
-        RecipeModel entity = recipeData.ImageUrl == null
-                                        ? new RecipeModel(authorModel, fieldEntities, recipeTitle)
-                                        : new RecipeModel(authorModel, fieldEntities, recipeTitle, recipeData.ImageUrl);
+        RecipeModel recipe = recipeData.ImageUrl == null
+                                        ? new RecipeModel(authorModel, recipeFields, recipeTitle)
+                                        : new RecipeModel(authorModel, recipeFields, recipeTitle, recipeData.ImageUrl);
 
         int maximumRecipeLength = recipeModelCharacterLimitProvider.MaximumRecipeLength;
-        if (entity.TotalLength > maximumRecipeLength)
+        if (recipe.TotalLength > maximumRecipeLength)
         {
             throw new ModelCreateException(string.Format(Resources.Argument_0_must_be_less_or_equal_to_number_of_1_characters,
                                                                 nameof(recipeData), maximumRecipeLength));
         }
 
-        return entity;
+        return recipe;
     }
 
-    private AuthorModel CreateAuthorDomainEntity(AuthorData authorData)
+    private AuthorModel CreateAuthor(AuthorData authorData)
     {
         return authorModelFactory.Create(authorData);
     }
 
-    private IEnumerable<RecipeFieldModel> CreateRecipeFieldDomainEntities(RecipeData recipeData)
+    private IEnumerable<RecipeFieldModel> CreateRecipeFields(RecipeData recipeData)
     {
-        var domainEntities = new List<RecipeFieldModel>
+        var recipeFields = new List<RecipeFieldModel>
         {
-            recipeFieldModelFactory.Create(Resources.RecipeDomainEntity_FieldName_Ingredients, recipeData.RecipeIngredients),
-            recipeFieldModelFactory.Create(Resources.RecipeDomainEntity_FieldName_CookingSteps, recipeData.CookingSteps)
+            recipeFieldModelFactory.Create(Resources.Recipe_FieldName_Ingredients, recipeData.RecipeIngredients),
+            recipeFieldModelFactory.Create(Resources.Recipe_FieldName_CookingSteps, recipeData.CookingSteps)
         };
 
         if (!string.IsNullOrWhiteSpace(recipeData.AdditionalNotes))
         {
-            domainEntities.Add(recipeFieldModelFactory.Create(Resources.RecipeDomainEntity_FieldName_AdditionalNotes, recipeData.AdditionalNotes));
+            recipeFields.Add(recipeFieldModelFactory.Create(Resources.Recipe_FieldName_AdditionalNotes, recipeData.AdditionalNotes));
         }
 
-        return domainEntities;
+        return recipeFields;
     }
 }

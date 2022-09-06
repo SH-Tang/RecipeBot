@@ -48,14 +48,14 @@ public class RecipeModelFactoryTest
         var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
 
         // Call
-        RecipeModel entity = factory.Create(recipeData);
+        RecipeModel model = factory.Create(recipeData);
 
         // Assert
-        Assert.Null(entity.RecipeImageUrl);
+        Assert.Null(model.RecipeImageUrl);
 
-        AssertAuthor(recipeData.AuthorData, entity.Author);
-        Assert.Equal(2, entity.RecipeFields.Count());
-        AssertMandatoryFields(recipeData, entity.RecipeFields);
+        AssertAuthor(recipeData.AuthorData, model.Author);
+        Assert.Equal(2, model.RecipeFields.Count());
+        AssertMandatoryFields(recipeData, model.RecipeFields);
     }
 
     [Fact]
@@ -110,12 +110,12 @@ public class RecipeModelFactoryTest
 
         AssertAuthor(recipeData.AuthorData, model.Author);
 
-        IEnumerable<RecipeFieldModel> recipeFieldEntities = model.RecipeFields;
-        Assert.Equal(3, recipeFieldEntities.Count());
-        AssertMandatoryFields(recipeData, recipeFieldEntities);
-        RecipeFieldModel cookingStepsDomainFieldEntity = recipeFieldEntities.ElementAt(2);
-        Assert.Equal("Additional notes", cookingStepsDomainFieldEntity.FieldName);
-        Assert.Equal(recipeData.AdditionalNotes, cookingStepsDomainFieldEntity.FieldData);
+        IEnumerable<RecipeFieldModel> recipeFields = model.RecipeFields;
+        Assert.Equal(3, recipeFields.Count());
+        AssertMandatoryFields(recipeData, recipeFields);
+        RecipeFieldModel additionalNotesField = recipeFields.ElementAt(2);
+        Assert.Equal("Additional notes", additionalNotesField.FieldName);
+        Assert.Equal(recipeData.AdditionalNotes, additionalNotesField.FieldData);
     }
 
     [Fact]
@@ -143,12 +143,12 @@ public class RecipeModelFactoryTest
         Assert.Equal(recipeData.RecipeTitle, model.Title);
         Assert.Equal(recipeData.ImageUrl, model.RecipeImageUrl);
 
-        IEnumerable<RecipeFieldModel> recipeFieldEntities = model.RecipeFields;
-        Assert.Equal(3, recipeFieldEntities.Count());
-        AssertMandatoryFields(recipeData, recipeFieldEntities);
-        RecipeFieldModel cookingStepsDomainFieldEntity = recipeFieldEntities.ElementAt(2);
-        Assert.Equal("Additional notes", cookingStepsDomainFieldEntity.FieldName);
-        Assert.Equal(recipeData.AdditionalNotes, cookingStepsDomainFieldEntity.FieldData);
+        IEnumerable<RecipeFieldModel> recipeFields = model.RecipeFields;
+        Assert.Equal(3, recipeFields.Count());
+        AssertMandatoryFields(recipeData, recipeFields);
+        RecipeFieldModel additionalNotesField = recipeFields.ElementAt(2);
+        Assert.Equal("Additional notes", additionalNotesField.FieldName);
+        Assert.Equal(recipeData.AdditionalNotes, additionalNotesField.FieldData);
     }
 
     [Fact]
@@ -259,15 +259,15 @@ public class RecipeModelFactoryTest
         Assert.Equal(data.AuthorImageUrl, model.AuthorImageUrl);
     }
 
-    private static void AssertMandatoryFields(RecipeData data, IEnumerable<RecipeFieldModel> domainEntities)
+    private static void AssertMandatoryFields(RecipeData data, IEnumerable<RecipeFieldModel> recipeFields)
     {
-        RecipeFieldModel ingredientsDomainFieldEntity = domainEntities.First();
-        Assert.Equal("Ingredients", ingredientsDomainFieldEntity.FieldName);
-        Assert.Equal(data.RecipeIngredients, ingredientsDomainFieldEntity.FieldData);
+        RecipeFieldModel ingredientField = recipeFields.First();
+        Assert.Equal("Ingredients", ingredientField.FieldName);
+        Assert.Equal(data.RecipeIngredients, ingredientField.FieldData);
 
-        RecipeFieldModel cookingStepsDomainFieldEntity = domainEntities.ElementAt(1);
-        Assert.Equal("Cooking steps", cookingStepsDomainFieldEntity.FieldName);
-        Assert.Equal(data.CookingSteps, cookingStepsDomainFieldEntity.FieldData);
+        RecipeFieldModel cookingStepsField = recipeFields.ElementAt(1);
+        Assert.Equal("Cooking steps", cookingStepsField.FieldName);
+        Assert.Equal(data.CookingSteps, cookingStepsField.FieldData);
     }
 
     private static RecipeData CreateRecipeData(IRecipeModelCharacterLimitProvider limitProvider,

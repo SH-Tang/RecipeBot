@@ -45,7 +45,7 @@ public class AuthorModelFactory
     /// <summary>
     /// Creates am <see cref="AuthorModel"/> based on its input arguments.
     /// </summary>
-    /// <param name="authorData">The <see cref="AuthorData"/> to create the entity with.</param>
+    /// <param name="authorData">The <see cref="AuthorData"/> to create the model with.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="authorData"/> is <c>null</c>.</exception>
     /// <exception cref="ModelCreateException">Thrown when the model could not be successfully created.</exception>
     public AuthorModel Create(AuthorData authorData)

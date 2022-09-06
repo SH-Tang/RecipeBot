@@ -76,7 +76,7 @@ public class AuthorModelFactoryTest
     [InlineData(8)]
     [InlineData(0)]
     [InlineData(1)]
-    public void Creating_model_with_valid_data_returns_entity(int authorNameCharacterOffset)
+    public void Creating_model_with_valid_data_returns_model(int authorNameCharacterOffset)
     {
         // Setup
         const int maximumAuthorNameLength = 10;
