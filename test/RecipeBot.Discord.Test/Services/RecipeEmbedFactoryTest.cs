@@ -27,11 +27,11 @@ namespace RecipeBot.Discord.Test.Services;
 
 public class RecipeEmbedFactoryTest
 {
-    private readonly RecipeDomainEntityTestFactory domainTestFactory;
+    private readonly RecipeDomainModelTestFactory domainTestFactory;
 
     public RecipeEmbedFactoryTest()
     {
-        domainTestFactory = new RecipeDomainEntityTestFactory(new RecipeDomainEntityTestFactory.ConstructionProperties
+        domainTestFactory = new RecipeDomainModelTestFactory(new RecipeDomainModelTestFactory.ConstructionProperties
         {
             MaxAuthorNameLength = EmbedAuthorBuilder.MaxAuthorNameLength,
             MaxTitleLength = EmbedBuilder.MaxTitleLength,

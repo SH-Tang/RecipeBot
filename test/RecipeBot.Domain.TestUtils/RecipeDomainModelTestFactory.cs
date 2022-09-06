@@ -26,7 +26,7 @@ namespace RecipeBot.Domain.TestUtils;
 /// <summary>
 /// Class which creates instances of <see cref="RecipeDomainEntity"/> that can be used for testing.
 /// </summary>
-public class RecipeDomainEntityTestFactory
+public class RecipeDomainModelTestFactory
 {
     private readonly int maxTitleLength;
     private readonly int maxAuthorNameLength;
@@ -34,12 +34,12 @@ public class RecipeDomainEntityTestFactory
     private readonly int maxFieldDataLength;
 
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeDomainEntityTestFactory"/>.
+    /// Creates a new instance of <see cref="RecipeDomainModelTestFactory"/>.
     /// </summary>
     /// <param name="constructionProperties">The <see cref="ConstructionProperties"/> to construct the factory with.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="constructionProperties"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="constructionProperties"/> contains invalid values.</exception>
-    public RecipeDomainEntityTestFactory(ConstructionProperties constructionProperties)
+    public RecipeDomainModelTestFactory(ConstructionProperties constructionProperties)
     {
         constructionProperties.IsNotNull(nameof(constructionProperties));
 
@@ -64,7 +64,7 @@ public class RecipeDomainEntityTestFactory
     /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
     public RecipeDomainEntity Create()
     {
-        return CreateRecipeDomainEntity(Enumerable.Empty<RecipeFieldDomainEntity>());
+        return CreateRecipeModel(Enumerable.Empty<RecipeFieldDomainEntity>());
     }
 
     /// <summary>
@@ -73,11 +73,11 @@ public class RecipeDomainEntityTestFactory
     /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
     public RecipeDomainEntity CreateWithFields()
     {
-        return CreateRecipeDomainEntity(new[]
+        return CreateRecipeModel(new[]
         {
-            CreateFieldDomainEntity(1),
-            CreateFieldDomainEntity(2),
-            CreateFieldDomainEntity(3)
+            CreateRecipeFiledModel(1),
+            CreateRecipeFiledModel(2),
+            CreateRecipeFiledModel(3)
         });
     }
 
@@ -87,7 +87,7 @@ public class RecipeDomainEntityTestFactory
     /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
     public RecipeDomainEntity CreateWithImage()
     {
-        return CreateRecipeDomainEntity(Enumerable.Empty<RecipeFieldDomainEntity>(), "https://recipeBot.recipe.image");
+        return CreateRecipeModel(Enumerable.Empty<RecipeFieldDomainEntity>(), "https://recipeBot.recipe.image");
     }
 
     /// <summary>
@@ -96,33 +96,33 @@ public class RecipeDomainEntityTestFactory
     /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
     public RecipeDomainEntity CreateWithImageAndFields()
     {
-        return CreateRecipeDomainEntity(new[]
+        return CreateRecipeModel(new[]
         {
-            CreateFieldDomainEntity(1),
-            CreateFieldDomainEntity(2),
-            CreateFieldDomainEntity(3)
+            CreateRecipeFiledModel(1),
+            CreateRecipeFiledModel(2),
+            CreateRecipeFiledModel(3)
         }, "https://recipeBot.recipe.image");
     }
 
-    private RecipeDomainEntity CreateRecipeDomainEntity(IEnumerable<RecipeFieldDomainEntity> fieldDomainEntities)
+    private RecipeDomainEntity CreateRecipeModel(IEnumerable<RecipeFieldDomainEntity> fieldDomainEntities)
     {
         string title = GetStringWithRandomLength('x', maxTitleLength);
-        return new RecipeDomainEntity(CreateAuthorDomainEntity(), fieldDomainEntities, title);
+        return new RecipeDomainEntity(CreateAuthorModel(), fieldDomainEntities, title);
     }
 
-    private RecipeDomainEntity CreateRecipeDomainEntity(IEnumerable<RecipeFieldDomainEntity> fieldDomainEntities, string imageUrl)
+    private RecipeDomainEntity CreateRecipeModel(IEnumerable<RecipeFieldDomainEntity> fieldDomainEntities, string imageUrl)
     {
         string title = GetStringWithRandomLength('x', maxTitleLength);
-        return new RecipeDomainEntity(CreateAuthorDomainEntity(), fieldDomainEntities, title, imageUrl);
+        return new RecipeDomainEntity(CreateAuthorModel(), fieldDomainEntities, title, imageUrl);
     }
 
-    private AuthorDomainEntity CreateAuthorDomainEntity()
+    private AuthorDomainEntity CreateAuthorModel()
     {
         string authorName = GetStringWithRandomLength('+', maxAuthorNameLength);
         return new AuthorDomainEntity(authorName, "https://recipebot.author.image");
     }
 
-    private RecipeFieldDomainEntity CreateFieldDomainEntity(int seed)
+    private RecipeFieldDomainEntity CreateRecipeFiledModel(int seed)
     {
         string fieldName = GetStringWithRandomLength(seed, '-', maxFieldNameLength);
         string fieldData = GetStringWithRandomLength(seed, '=', maxFieldDataLength);
@@ -143,7 +143,7 @@ public class RecipeDomainEntityTestFactory
     }
 
     /// <summary>
-    /// Class holding construction variables for <see cref="RecipeDomainEntityTestFactory"/>.
+    /// Class holding construction variables for <see cref="RecipeDomainModelTestFactory"/>.
     /// </summary>
     public class ConstructionProperties
     {
