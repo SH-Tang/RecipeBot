@@ -29,14 +29,14 @@ namespace RecipeBot.Domain.Factories;
 /// </summary>
 public class AuthorDomainEntityFactory
 {
-    private readonly IAuthorDomainEntityCharacterLimitProvider limitProvider;
+    private readonly IAuthorModelCharacterLimitProvider limitProvider;
 
     /// <summary>
     /// Creates a new instance of <see cref="AuthorDomainEntityFactory"/>.
     /// </summary>
     /// <param name="limitProvider">The provider to retrieve the character limits from.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="limitProvider"/> is <c>null</c>.</exception>
-    public AuthorDomainEntityFactory(IAuthorDomainEntityCharacterLimitProvider limitProvider)
+    public AuthorDomainEntityFactory(IAuthorModelCharacterLimitProvider limitProvider)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
         this.limitProvider = limitProvider;

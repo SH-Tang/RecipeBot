@@ -34,7 +34,7 @@ public class AuthorDomainEntityFactoryTest
         // Setup
         const int maximumAuthorNameLength = 10;
 
-        var limitProvider = Substitute.For<IAuthorDomainEntityCharacterLimitProvider>();
+        var limitProvider = Substitute.For<IAuthorModelCharacterLimitProvider>();
         limitProvider.MaximumAuthorNameLength.Returns(maximumAuthorNameLength);
         var factory = new AuthorDomainEntityFactory(limitProvider);
 
@@ -57,7 +57,7 @@ public class AuthorDomainEntityFactoryTest
         // Setup
         const int maximumAuthorNameLength = 10;
 
-        var limitProvider = Substitute.For<IAuthorDomainEntityCharacterLimitProvider>();
+        var limitProvider = Substitute.For<IAuthorModelCharacterLimitProvider>();
         limitProvider.MaximumAuthorNameLength.Returns(maximumAuthorNameLength);
         var factory = new AuthorDomainEntityFactory(limitProvider);
 
@@ -81,7 +81,7 @@ public class AuthorDomainEntityFactoryTest
         // Setup
         const int maximumAuthorNameLength = 10;
 
-        var limitProvider = Substitute.For<IAuthorDomainEntityCharacterLimitProvider>();
+        var limitProvider = Substitute.For<IAuthorModelCharacterLimitProvider>();
         limitProvider.MaximumAuthorNameLength.Returns(maximumAuthorNameLength);
         var factory = new AuthorDomainEntityFactory(limitProvider);
 

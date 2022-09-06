@@ -34,7 +34,7 @@ public class RecipeFieldDomainEntityFactoryTest
         const int maximumFieldNameLength = 10;
         const int maximumFieldDataLength = 20;
 
-        var limitProvider = Substitute.For<IRecipeFieldDomainEntityCharacterLimitProvider>();
+        var limitProvider = Substitute.For<IRecipeFieldModelCharacterLimitProvider>();
         limitProvider.MaximumFieldNameLength.Returns(maximumFieldNameLength);
         limitProvider.MaximumFieldDataLength.Returns(maximumFieldDataLength);
 
@@ -57,7 +57,7 @@ public class RecipeFieldDomainEntityFactoryTest
     public void Creating_entity_with_invalid_field_name_throws_exception(string invalidFieldName)
     {
         // Setup
-        var limitProvider = Substitute.For<IRecipeFieldDomainEntityCharacterLimitProvider>();
+        var limitProvider = Substitute.For<IRecipeFieldModelCharacterLimitProvider>();
         limitProvider.MaximumFieldNameLength.Returns(10);
         limitProvider.MaximumFieldDataLength.Returns(10);
 
@@ -80,7 +80,7 @@ public class RecipeFieldDomainEntityFactoryTest
         const int maximumFieldNameLength = 10;
         const int maximumFieldDataLength = 20;
 
-        var limitProvider = Substitute.For<IRecipeFieldDomainEntityCharacterLimitProvider>();
+        var limitProvider = Substitute.For<IRecipeFieldModelCharacterLimitProvider>();
         limitProvider.MaximumFieldNameLength.Returns(maximumFieldNameLength);
         limitProvider.MaximumFieldDataLength.Returns(maximumFieldDataLength);
 
@@ -103,7 +103,7 @@ public class RecipeFieldDomainEntityFactoryTest
     public void Creating_entity_with_invalid_field_data_throws_exception(string invalidFieldData)
     {
         // Setup
-        var limitProvider = Substitute.For<IRecipeFieldDomainEntityCharacterLimitProvider>();
+        var limitProvider = Substitute.For<IRecipeFieldModelCharacterLimitProvider>();
         limitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
         limitProvider.MaximumFieldDataLength.Returns(int.MaxValue);
 
@@ -132,7 +132,7 @@ public class RecipeFieldDomainEntityFactoryTest
         const int maximumFieldNameLength = 10;
         const int maximumFieldDataLength = 20;
 
-        var limitProvider = Substitute.For<IRecipeFieldDomainEntityCharacterLimitProvider>();
+        var limitProvider = Substitute.For<IRecipeFieldModelCharacterLimitProvider>();
         limitProvider.MaximumFieldNameLength.Returns(maximumFieldNameLength);
         limitProvider.MaximumFieldDataLength.Returns(maximumFieldDataLength);
         var factory = new RecipeFieldDomainEntityFactory(limitProvider);

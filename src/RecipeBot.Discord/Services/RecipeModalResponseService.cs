@@ -39,7 +39,7 @@ public class RecipeModalResponseService
     /// </summary>
     /// <param name="limitProvider">The limit provider to retrieve the character limits from.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="limitProvider"/> is <c>null</c>.</exception>
-    public RecipeModalResponseService(IRecipeDomainEntityCharacterLimitProvider limitProvider)
+    public RecipeModalResponseService(IRecipeModelCharacterLimitProvider limitProvider)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
         recipeDomainEntityFactory = new RecipeDomainEntityFactory(limitProvider);

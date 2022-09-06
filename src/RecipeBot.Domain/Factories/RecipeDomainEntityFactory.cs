@@ -30,25 +30,25 @@ namespace RecipeBot.Domain.Factories;
 /// </summary>
 public class RecipeDomainEntityFactory
 {
-    private readonly IRecipeDomainEntityCharacterLimitProvider recipeDomainEntityCharacterLimitProvider;
+    private readonly IRecipeModelCharacterLimitProvider recipeModelCharacterLimitProvider;
     private readonly AuthorDomainEntityFactory authorDomainEntityFactory;
     private readonly RecipeFieldDomainEntityFactory recipeFieldDomainEntityFactory;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeDomainEntityFactory"/>.
     /// </summary>
-    /// <param name="recipeDomainEntityCharacterLimitProvider">The <see cref="IRecipeDomainEntityCharacterLimitProvider"/>
+    /// <param name="recipeModelCharacterLimitProvider">The <see cref="IRecipeModelCharacterLimitProvider"/>
     /// to retrieve the character limits from.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="recipeDomainEntityCharacterLimitProvider"/>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="recipeModelCharacterLimitProvider"/>
     /// is <c>null</c>.</exception>
-    public RecipeDomainEntityFactory(IRecipeDomainEntityCharacterLimitProvider recipeDomainEntityCharacterLimitProvider)
+    public RecipeDomainEntityFactory(IRecipeModelCharacterLimitProvider recipeModelCharacterLimitProvider)
     {
-        recipeDomainEntityCharacterLimitProvider.IsNotNull(nameof(recipeDomainEntityCharacterLimitProvider));
+        recipeModelCharacterLimitProvider.IsNotNull(nameof(recipeModelCharacterLimitProvider));
 
-        this.recipeDomainEntityCharacterLimitProvider = recipeDomainEntityCharacterLimitProvider;
+        this.recipeModelCharacterLimitProvider = recipeModelCharacterLimitProvider;
 
-        authorDomainEntityFactory = new AuthorDomainEntityFactory(recipeDomainEntityCharacterLimitProvider);
-        recipeFieldDomainEntityFactory = new RecipeFieldDomainEntityFactory(recipeDomainEntityCharacterLimitProvider);
+        authorDomainEntityFactory = new AuthorDomainEntityFactory(recipeModelCharacterLimitProvider);
+        recipeFieldDomainEntityFactory = new RecipeFieldDomainEntityFactory(recipeModelCharacterLimitProvider);
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ public class RecipeDomainEntityFactory
     {
         recipeData.IsNotNull(nameof(recipeData));
 
-        int maximumTitleLength = recipeDomainEntityCharacterLimitProvider.MaximumTitleLength;
+        int maximumTitleLength = recipeModelCharacterLimitProvider.MaximumTitleLength;
         if (recipeData.RecipeTitle.Length > maximumTitleLength)
         {
             throw new DomainEntityCreateException(string.Format(Resources.Argument_0_must_be_less_or_equal_to_number_of_1_characters,
@@ -89,7 +89,7 @@ public class RecipeDomainEntityFactory
                                         ? new RecipeModel(authorModel, fieldEntities, recipeTitle)
                                         : new RecipeModel(authorModel, fieldEntities, recipeTitle, recipeData.ImageUrl);
 
-        int maximumRecipeLength = recipeDomainEntityCharacterLimitProvider.MaximumRecipeLength;
+        int maximumRecipeLength = recipeModelCharacterLimitProvider.MaximumRecipeLength;
         if (entity.TotalLength > maximumRecipeLength)
         {
             throw new DomainEntityCreateException(string.Format(Resources.Argument_0_must_be_less_or_equal_to_number_of_1_characters,
