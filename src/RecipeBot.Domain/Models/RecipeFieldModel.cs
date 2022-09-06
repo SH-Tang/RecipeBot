@@ -21,7 +21,7 @@ using Common.Utils;
 namespace RecipeBot.Domain.Models;
 
 /// <summary>
-/// Entity containing information for a recipe field.
+/// Model containing information for a recipe field.
 /// </summary>
 public class RecipeFieldModel
 {
@@ -51,7 +51,7 @@ public class RecipeFieldModel
     public string FieldData { get; }
 
     /// <summary>
-    /// Gets the total character length of the entity.
+    /// Gets the total character length of the model.
     /// </summary>
     public int TotalLength => FieldName.Length + FieldData.Length;
 }

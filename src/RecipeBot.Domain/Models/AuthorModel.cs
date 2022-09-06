@@ -21,7 +21,7 @@ using Common.Utils;
 namespace RecipeBot.Domain.Models;
 
 /// <summary>
-/// Entity containing author data.
+/// Model containing author data.
 /// </summary>
 public class AuthorModel
 {
@@ -55,7 +55,7 @@ public class AuthorModel
     public string AuthorImageUrl { get; }
 
     /// <summary>
-    /// Gets the total character length of the entity.
+    /// Gets the total character length of the model.
     /// </summary>
     public int TotalLength => AuthorName.Length;
 }
