@@ -18,7 +18,7 @@
 using System;
 using Common.Utils;
 
-namespace RecipeBot.Domain.Entities;
+namespace RecipeBot.Domain.Models;
 
 /// <summary>
 /// Entity containing information for a recipe field.

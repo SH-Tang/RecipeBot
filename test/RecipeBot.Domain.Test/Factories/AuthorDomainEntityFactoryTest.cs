@@ -18,9 +18,9 @@
 using System;
 using NSubstitute;
 using RecipeBot.Domain.Data;
-using RecipeBot.Domain.Entities;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
+using RecipeBot.Domain.Models;
 using RecipeBot.TestUtils;
 using Xunit;
 

@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Common.Utils;
 
-namespace RecipeBot.Domain.Entities;
+namespace RecipeBot.Domain.Models;
 
 /// <summary>
 /// Entity containing data for a recipe.

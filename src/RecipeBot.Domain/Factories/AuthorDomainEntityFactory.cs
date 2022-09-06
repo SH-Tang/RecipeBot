@@ -18,8 +18,8 @@
 using System;
 using Common.Utils;
 using RecipeBot.Domain.Data;
-using RecipeBot.Domain.Entities;
 using RecipeBot.Domain.Exceptions;
+using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Properties;
 
 namespace RecipeBot.Domain.Factories;

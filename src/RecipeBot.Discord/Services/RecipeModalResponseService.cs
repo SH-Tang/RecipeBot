@@ -21,9 +21,9 @@ using Discord;
 using RecipeBot.Discord.Exceptions;
 using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Data;
-using RecipeBot.Domain.Entities;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
+using RecipeBot.Domain.Models;
 
 namespace RecipeBot.Discord.Services;
 

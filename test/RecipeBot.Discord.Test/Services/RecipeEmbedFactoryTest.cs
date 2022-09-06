@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Discord;
 using RecipeBot.Discord.Services;
-using RecipeBot.Domain.Entities;
+using RecipeBot.Domain.Models;
 using RecipeBot.Domain.TestUtils;
 using Xunit;
 

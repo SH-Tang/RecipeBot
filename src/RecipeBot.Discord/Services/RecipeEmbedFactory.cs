@@ -21,7 +21,7 @@ using Common.Utils;
 using Discord;
 using RecipeBot.Discord.Exceptions;
 using RecipeBot.Discord.Properties;
-using RecipeBot.Domain.Entities;
+using RecipeBot.Domain.Models;
 
 namespace RecipeBot.Discord.Services;
 
