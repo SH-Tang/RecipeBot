@@ -22,17 +22,17 @@ using Xunit;
 
 namespace RecipeBot.Domain.Test.Models;
 
-public class RecipeFieldDomainEntityTest
+public class RecipeFieldModelTest
 {
     [Theory]
     [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
-    public void Entity_with_invalid_field_name_throws_exception(string invalidFieldName)
+    public void Model_with_invalid_field_name_throws_exception(string invalidFieldName)
     {
         // Setup
         const string fieldData = "fieldData";
 
         // Call
-        Action call = () => new RecipeFieldDomainEntity(invalidFieldName, fieldData);
+        Action call = () => new RecipeFieldModel(invalidFieldName, fieldData);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
@@ -40,13 +40,13 @@ public class RecipeFieldDomainEntityTest
 
     [Theory]
     [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
-    public void Entity_with_invalid_field_data_throws_exception(string invalidFieldData)
+    public void Model_with_invalid_field_data_throws_exception(string invalidFieldData)
     {
         // Setup
         const string fieldName = "fieldName";
 
         // Call
-        Action call = () => new RecipeFieldDomainEntity(fieldName, invalidFieldData);
+        Action call = () => new RecipeFieldModel(fieldName, invalidFieldData);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
@@ -58,10 +58,10 @@ public class RecipeFieldDomainEntityTest
     [InlineData("field    name", "field data")]
     [InlineData("     name", "     data")]
     [InlineData("name     ", "data     ")]
-    public void Entity_with_valid_data_returns_total_length_of_properties(string fieldName, string fieldData)
+    public void Model_with_valid_data_returns_total_length_of_properties(string fieldName, string fieldData)
     {
         // Setup
-        var recipeField = new RecipeFieldDomainEntity(fieldName, fieldData);
+        var recipeField = new RecipeFieldModel(fieldName, fieldData);
 
         // Call
         int totalLength = recipeField.TotalLength;

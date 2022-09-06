@@ -24,14 +24,14 @@ using RecipeBot.Domain.Properties;
 namespace RecipeBot.Domain.Factories;
 
 /// <summary>
-/// Factory to create instances of <see cref="RecipeFieldDomainEntity"/>.
+/// Factory to create instances of <see cref="RecipeFieldModel"/>.
 /// </summary>
 public class RecipeFieldDomainEntityFactory
 {
     private readonly IRecipeFieldDomainEntityCharacterLimitProvider limitProvider;
 
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeFieldDomainEntity"/>.
+    /// Creates a new instance of <see cref="RecipeFieldModel"/>.
     /// </summary>
     /// <param name="limitProvider">The provider to retrieve the character limits from.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="limitProvider"/> is <c>null</c>.</exception>         
@@ -43,13 +43,13 @@ public class RecipeFieldDomainEntityFactory
     }
 
     /// <summary>
-    /// Creates a <see cref="RecipeFieldDomainEntity"/> based on its input arguments.
+    /// Creates a <see cref="RecipeFieldModel"/> based on its input arguments.
     /// </summary>
     /// <param name="fieldName">The name of the field.</param>
     /// <param name="fieldData">The data of the field.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     /// <exception cref="DomainEntityCreateException">Thrown when the entity could not be successfully created.</exception>
-    public RecipeFieldDomainEntity Create(string fieldName, string fieldData)
+    public RecipeFieldModel Create(string fieldName, string fieldData)
     {
         fieldName.IsNotNull(nameof(fieldName));
         fieldData.IsNotNull(nameof(fieldData));
@@ -68,7 +68,7 @@ public class RecipeFieldDomainEntityFactory
 
         try
         {
-            return new RecipeFieldDomainEntity(fieldName, fieldData);
+            return new RecipeFieldModel(fieldName, fieldData);
         }
         catch (ArgumentException e)
         {

@@ -82,7 +82,7 @@ public class RecipeDomainEntityFactory
     private RecipeDomainEntity CreateRecipeDomainEntity(RecipeData recipeData)
     {
         AuthorModel authorModel = CreateAuthorDomainEntity(recipeData.AuthorData);
-        IEnumerable<RecipeFieldDomainEntity> fieldEntities = CreateRecipeFieldDomainEntities(recipeData);
+        IEnumerable<RecipeFieldModel> fieldEntities = CreateRecipeFieldDomainEntities(recipeData);
 
         string recipeTitle = recipeData.RecipeTitle;
         RecipeDomainEntity entity = recipeData.ImageUrl == null
@@ -104,9 +104,9 @@ public class RecipeDomainEntityFactory
         return authorDomainEntityFactory.Create(authorData);
     }
 
-    private IEnumerable<RecipeFieldDomainEntity> CreateRecipeFieldDomainEntities(RecipeData recipeData)
+    private IEnumerable<RecipeFieldModel> CreateRecipeFieldDomainEntities(RecipeData recipeData)
     {
-        var domainEntities = new List<RecipeFieldDomainEntity>
+        var domainEntities = new List<RecipeFieldModel>
         {
             recipeFieldDomainEntityFactory.Create(Resources.RecipeDomainEntity_FieldName_Ingredients, recipeData.RecipeIngredients),
             recipeFieldDomainEntityFactory.Create(Resources.RecipeDomainEntity_FieldName_CookingSteps, recipeData.CookingSteps)

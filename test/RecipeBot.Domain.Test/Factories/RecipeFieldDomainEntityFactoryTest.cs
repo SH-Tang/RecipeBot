@@ -141,7 +141,7 @@ public class RecipeFieldDomainEntityFactoryTest
         var fieldData = new string('+', maximumFieldDataLength - fieldDataCharacterOffset);
 
         // Call
-        RecipeFieldDomainEntity entity = factory.Create(fieldName, fieldData);
+        RecipeFieldModel entity = factory.Create(fieldName, fieldData);
 
         // Assert
         Assert.Equal(fieldName, entity.FieldName);

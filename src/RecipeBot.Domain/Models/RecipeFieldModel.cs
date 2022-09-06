@@ -23,15 +23,15 @@ namespace RecipeBot.Domain.Models;
 /// <summary>
 /// Entity containing information for a recipe field.
 /// </summary>
-public class RecipeFieldDomainEntity
+public class RecipeFieldModel
 {
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeFieldDomainEntity"/>.
+    /// Creates a new instance of <see cref="RecipeFieldModel"/>.
     /// </summary>
     /// <param name="fieldName">The name of the recipe field.</param>
     /// <param name="fieldData">The data contained by the field.</param>
     /// <exception cref="ArgumentException">Thrown when any parameter is <c>null</c>, empty or consists of whitespaces only.</exception>
-    internal RecipeFieldDomainEntity(string fieldName, string fieldData)
+    internal RecipeFieldModel(string fieldName, string fieldData)
     {
         fieldName.IsNotNullOrWhiteSpaces(nameof(fieldName));
         fieldData.IsNotNullOrWhiteSpaces(nameof(fieldData));

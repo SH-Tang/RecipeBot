@@ -64,7 +64,7 @@ public class RecipeDomainModelTestFactory
     /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
     public RecipeDomainEntity Create()
     {
-        return CreateRecipeModel(Enumerable.Empty<RecipeFieldDomainEntity>());
+        return CreateRecipeModel(Enumerable.Empty<RecipeFieldModel>());
     }
 
     /// <summary>
@@ -87,7 +87,7 @@ public class RecipeDomainModelTestFactory
     /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
     public RecipeDomainEntity CreateWithImage()
     {
-        return CreateRecipeModel(Enumerable.Empty<RecipeFieldDomainEntity>(), "https://recipeBot.recipe.image");
+        return CreateRecipeModel(Enumerable.Empty<RecipeFieldModel>(), "https://recipeBot.recipe.image");
     }
 
     /// <summary>
@@ -104,13 +104,13 @@ public class RecipeDomainModelTestFactory
         }, "https://recipeBot.recipe.image");
     }
 
-    private RecipeDomainEntity CreateRecipeModel(IEnumerable<RecipeFieldDomainEntity> fieldDomainEntities)
+    private RecipeDomainEntity CreateRecipeModel(IEnumerable<RecipeFieldModel> fieldDomainEntities)
     {
         string title = GetStringWithRandomLength('x', maxTitleLength);
         return new RecipeDomainEntity(CreateAuthorModel(), fieldDomainEntities, title);
     }
 
-    private RecipeDomainEntity CreateRecipeModel(IEnumerable<RecipeFieldDomainEntity> fieldDomainEntities, string imageUrl)
+    private RecipeDomainEntity CreateRecipeModel(IEnumerable<RecipeFieldModel> fieldDomainEntities, string imageUrl)
     {
         string title = GetStringWithRandomLength('x', maxTitleLength);
         return new RecipeDomainEntity(CreateAuthorModel(), fieldDomainEntities, title, imageUrl);
@@ -122,12 +122,12 @@ public class RecipeDomainModelTestFactory
         return new AuthorModel(authorName, "https://recipebot.author.image");
     }
 
-    private RecipeFieldDomainEntity CreateRecipeFiledModel(int seed)
+    private RecipeFieldModel CreateRecipeFiledModel(int seed)
     {
         string fieldName = GetStringWithRandomLength(seed, '-', maxFieldNameLength);
         string fieldData = GetStringWithRandomLength(seed, '=', maxFieldDataLength);
 
-        return new RecipeFieldDomainEntity(fieldName, fieldData);
+        return new RecipeFieldModel(fieldName, fieldData);
     }
 
     private static string GetStringWithRandomLength(char character, int maximumStringLength)

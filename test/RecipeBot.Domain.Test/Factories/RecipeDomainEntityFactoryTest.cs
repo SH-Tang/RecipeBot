@@ -110,10 +110,10 @@ public class RecipeDomainEntityFactoryTest
 
         AssertAuthorEntity(recipeData.AuthorData, entity.AuthorEntity);
 
-        IEnumerable<RecipeFieldDomainEntity> recipeFieldEntities = entity.RecipeFieldEntities;
+        IEnumerable<RecipeFieldModel> recipeFieldEntities = entity.RecipeFieldEntities;
         Assert.Equal(3, recipeFieldEntities.Count());
         AssertMandatoryFields(recipeData, recipeFieldEntities);
-        RecipeFieldDomainEntity cookingStepsDomainFieldEntity = recipeFieldEntities.ElementAt(2);
+        RecipeFieldModel cookingStepsDomainFieldEntity = recipeFieldEntities.ElementAt(2);
         Assert.Equal("Additional notes", cookingStepsDomainFieldEntity.FieldName);
         Assert.Equal(recipeData.AdditionalNotes, cookingStepsDomainFieldEntity.FieldData);
     }
@@ -143,10 +143,10 @@ public class RecipeDomainEntityFactoryTest
         Assert.Equal(recipeData.RecipeTitle, entity.Title);
         Assert.Equal(recipeData.ImageUrl, entity.RecipeImageUrl);
 
-        IEnumerable<RecipeFieldDomainEntity> recipeFieldEntities = entity.RecipeFieldEntities;
+        IEnumerable<RecipeFieldModel> recipeFieldEntities = entity.RecipeFieldEntities;
         Assert.Equal(3, recipeFieldEntities.Count());
         AssertMandatoryFields(recipeData, recipeFieldEntities);
-        RecipeFieldDomainEntity cookingStepsDomainFieldEntity = recipeFieldEntities.ElementAt(2);
+        RecipeFieldModel cookingStepsDomainFieldEntity = recipeFieldEntities.ElementAt(2);
         Assert.Equal("Additional notes", cookingStepsDomainFieldEntity.FieldName);
         Assert.Equal(recipeData.AdditionalNotes, cookingStepsDomainFieldEntity.FieldData);
     }
@@ -259,13 +259,13 @@ public class RecipeDomainEntityFactoryTest
         Assert.Equal(data.AuthorImageUrl, model.AuthorImageUrl);
     }
 
-    private static void AssertMandatoryFields(RecipeData data, IEnumerable<RecipeFieldDomainEntity> domainEntities)
+    private static void AssertMandatoryFields(RecipeData data, IEnumerable<RecipeFieldModel> domainEntities)
     {
-        RecipeFieldDomainEntity ingredientsDomainFieldEntity = domainEntities.First();
+        RecipeFieldModel ingredientsDomainFieldEntity = domainEntities.First();
         Assert.Equal("Ingredients", ingredientsDomainFieldEntity.FieldName);
         Assert.Equal(data.RecipeIngredients, ingredientsDomainFieldEntity.FieldData);
 
-        RecipeFieldDomainEntity cookingStepsDomainFieldEntity = domainEntities.ElementAt(1);
+        RecipeFieldModel cookingStepsDomainFieldEntity = domainEntities.ElementAt(1);
         Assert.Equal("Cooking steps", cookingStepsDomainFieldEntity.FieldName);
         Assert.Equal(data.CookingSteps, cookingStepsDomainFieldEntity.FieldData);
     }
