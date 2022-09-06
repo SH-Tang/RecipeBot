@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Common.Utils\Common.Utils.csproj" />
-    <ProjectReference Include="..\..\src\RecipeBot.Utils\Common.Utils.csproj" />
   </ItemGroup>
 
 </Project>
