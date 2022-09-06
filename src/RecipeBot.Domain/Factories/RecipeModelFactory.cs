@@ -30,9 +30,9 @@ namespace RecipeBot.Domain.Factories;
 /// </summary>
 public class RecipeModelFactory
 {
-    private readonly IRecipeModelCharacterLimitProvider recipeModelCharacterLimitProvider;
     private readonly AuthorModelFactory authorModelFactory;
     private readonly RecipeFieldModelFactory recipeFieldModelFactory;
+    private readonly IRecipeModelCharacterLimitProvider recipeModelCharacterLimitProvider;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeModelFactory"/>.
@@ -66,7 +66,7 @@ public class RecipeModelFactory
         if (recipeData.RecipeTitle.Length > maximumTitleLength)
         {
             throw new ModelCreateException(string.Format(Resources.Argument_0_must_be_less_or_equal_to_number_of_1_characters,
-                                                                nameof(RecipeData.RecipeTitle), maximumTitleLength));
+                                                         nameof(RecipeData.RecipeTitle), maximumTitleLength));
         }
 
         try
@@ -86,14 +86,14 @@ public class RecipeModelFactory
 
         string recipeTitle = recipeData.RecipeTitle;
         RecipeModel recipe = recipeData.ImageUrl == null
-                                        ? new RecipeModel(authorModel, recipeFields, recipeTitle)
-                                        : new RecipeModel(authorModel, recipeFields, recipeTitle, recipeData.ImageUrl);
+                                 ? new RecipeModel(authorModel, recipeFields, recipeTitle)
+                                 : new RecipeModel(authorModel, recipeFields, recipeTitle, recipeData.ImageUrl);
 
         int maximumRecipeLength = recipeModelCharacterLimitProvider.MaximumRecipeLength;
         if (recipe.TotalLength > maximumRecipeLength)
         {
             throw new ModelCreateException(string.Format(Resources.Argument_0_must_be_less_or_equal_to_number_of_1_characters,
-                                                                nameof(recipeData), maximumRecipeLength));
+                                                         nameof(recipeData), maximumRecipeLength));
         }
 
         return recipe;

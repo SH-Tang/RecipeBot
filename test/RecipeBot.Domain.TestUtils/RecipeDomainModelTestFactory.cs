@@ -28,10 +28,10 @@ namespace RecipeBot.Domain.TestUtils;
 /// </summary>
 public class RecipeDomainModelTestFactory
 {
-    private readonly int maxTitleLength;
     private readonly int maxAuthorNameLength;
-    private readonly int maxFieldNameLength;
     private readonly int maxFieldDataLength;
+    private readonly int maxFieldNameLength;
+    private readonly int maxTitleLength;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeDomainModelTestFactory"/>.

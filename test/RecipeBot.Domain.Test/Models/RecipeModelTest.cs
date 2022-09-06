@@ -36,8 +36,7 @@ public class RecipeModelTest
         AuthorModel authorModel = CreateAuthor();
 
         // Call
-        Action call = () => new RecipeModel(authorModel, Enumerable.Empty<RecipeFieldModel>(),
-                                                   invalidRecipeTitle);
+        Action call = () => new RecipeModel(authorModel, Enumerable.Empty<RecipeFieldModel>(), invalidRecipeTitle);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
@@ -51,8 +50,7 @@ public class RecipeModelTest
         AuthorModel authorModel = CreateAuthor();
 
         // Call
-        Action call = () => new RecipeModel(authorModel, Enumerable.Empty<RecipeFieldModel>(),
-                                                   invalidRecipeTitle, imageUrl);
+        Action call = () => new RecipeModel(authorModel, Enumerable.Empty<RecipeFieldModel>(), invalidRecipeTitle, imageUrl);
 
         // Assert
         Assert.Throws<ArgumentException>(call);

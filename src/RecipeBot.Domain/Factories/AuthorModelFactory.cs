@@ -56,7 +56,7 @@ public class AuthorModelFactory
         if (authorData.AuthorName.Length > maximumAuthorNameLength)
         {
             throw new ModelCreateException(string.Format(Resources.Argument_0_must_be_less_or_equal_to_number_of_1_characters,
-                                                                nameof(AuthorData.AuthorName), maximumAuthorNameLength));
+                                                         nameof(AuthorData.AuthorName), maximumAuthorNameLength));
         }
 
         try

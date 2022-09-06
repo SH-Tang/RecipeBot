@@ -64,6 +64,12 @@ public abstract class DiscordCommandHandlerBase
     }
 
     /// <summary>
+    /// The function that describes how a module type should be added to the handler.
+    /// </summary>
+    /// <returns>A <see cref="Func{TResult}"/> that describes how module types are added.</returns>
+    protected abstract Func<Type, IServiceProvider, Task> AddModuleFunc { get; }
+
+    /// <summary>
     /// Initializes the handler with a collection of modules.
     /// </summary>
     /// <param name="moduleTypes">The collection of <see cref="Type"/> of modules to add.</param>
@@ -90,12 +96,6 @@ public abstract class DiscordCommandHandlerBase
             throw new InvalidOperationException("Handler is already initialized.");
         }
     }
-
-    /// <summary>
-    /// The function that describes how a module type should be added to the handler.
-    /// </summary>
-    /// <returns>A <see cref="Func{TResult}"/> that describes how module types are added.</returns>
-    protected abstract Func<Type, IServiceProvider, Task> AddModuleFunc { get; }
 
     protected async Task LogEventHandler(LogMessage arg)
     {
