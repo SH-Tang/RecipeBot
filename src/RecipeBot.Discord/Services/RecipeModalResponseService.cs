@@ -91,12 +91,12 @@ public class RecipeModalResponseService
     }
 
     /// <summary>
-    /// Gets the <see cref="RecipeDomainEntity"/> based on the input arguments.
+    /// Gets the <see cref="RecipeModel"/> based on the input arguments.
     /// </summary>
-    /// <param name="recipeData">The <see cref="RecipeData"/> to get the <see cref="RecipeDomainEntity"/> with.</param>
-    /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
+    /// <param name="recipeData">The <see cref="RecipeData"/> to get the <see cref="RecipeModel"/> with.</param>
+    /// <returns>A <see cref="RecipeModel"/>.</returns>
     /// <exception cref="ModalResponseException">Thrown when the entity could not be successfully retrieved.</exception>
-    private RecipeDomainEntity GetRecipeDomainEntity(RecipeData recipeData)
+    private RecipeModel GetRecipeDomainEntity(RecipeData recipeData)
     {
         try
         {

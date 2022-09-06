@@ -24,7 +24,7 @@ using RecipeBot.Domain.Models;
 namespace RecipeBot.Domain.TestUtils;
 
 /// <summary>
-/// Class which creates instances of <see cref="RecipeDomainEntity"/> that can be used for testing.
+/// Class which creates instances of <see cref="RecipeModel"/> that can be used for testing.
 /// </summary>
 public class RecipeDomainModelTestFactory
 {
@@ -59,19 +59,19 @@ public class RecipeDomainModelTestFactory
     }
 
     /// <summary>
-    /// Creates a default <see cref="RecipeDomainEntity"/> without fields and an image.
+    /// Creates a default <see cref="RecipeModel"/> without fields and an image.
     /// </summary>
-    /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
-    public RecipeDomainEntity Create()
+    /// <returns>A <see cref="RecipeModel"/>.</returns>
+    public RecipeModel Create()
     {
         return CreateRecipeModel(Enumerable.Empty<RecipeFieldModel>());
     }
 
     /// <summary>
-    /// Creates a default <see cref="RecipeDomainEntity"/> with fields and without an image.
+    /// Creates a default <see cref="RecipeModel"/> with fields and without an image.
     /// </summary>
-    /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
-    public RecipeDomainEntity CreateWithFields()
+    /// <returns>A <see cref="RecipeModel"/>.</returns>
+    public RecipeModel CreateWithFields()
     {
         return CreateRecipeModel(new[]
         {
@@ -82,19 +82,19 @@ public class RecipeDomainModelTestFactory
     }
 
     /// <summary>
-    /// Creates a default <see cref="RecipeDomainEntity"/> with an image and without fields.
+    /// Creates a default <see cref="RecipeModel"/> with an image and without fields.
     /// </summary>
-    /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
-    public RecipeDomainEntity CreateWithImage()
+    /// <returns>A <see cref="RecipeModel"/>.</returns>
+    public RecipeModel CreateWithImage()
     {
         return CreateRecipeModel(Enumerable.Empty<RecipeFieldModel>(), "https://recipeBot.recipe.image");
     }
 
     /// <summary>
-    /// Creates a default <see cref="RecipeDomainEntity"/> with image and fields.
+    /// Creates a default <see cref="RecipeModel"/> with image and fields.
     /// </summary>
-    /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
-    public RecipeDomainEntity CreateWithImageAndFields()
+    /// <returns>A <see cref="RecipeModel"/>.</returns>
+    public RecipeModel CreateWithImageAndFields()
     {
         return CreateRecipeModel(new[]
         {
@@ -104,16 +104,16 @@ public class RecipeDomainModelTestFactory
         }, "https://recipeBot.recipe.image");
     }
 
-    private RecipeDomainEntity CreateRecipeModel(IEnumerable<RecipeFieldModel> fieldDomainEntities)
+    private RecipeModel CreateRecipeModel(IEnumerable<RecipeFieldModel> fieldDomainEntities)
     {
         string title = GetStringWithRandomLength('x', maxTitleLength);
-        return new RecipeDomainEntity(CreateAuthorModel(), fieldDomainEntities, title);
+        return new RecipeModel(CreateAuthorModel(), fieldDomainEntities, title);
     }
 
-    private RecipeDomainEntity CreateRecipeModel(IEnumerable<RecipeFieldModel> fieldDomainEntities, string imageUrl)
+    private RecipeModel CreateRecipeModel(IEnumerable<RecipeFieldModel> fieldDomainEntities, string imageUrl)
     {
         string title = GetStringWithRandomLength('x', maxTitleLength);
-        return new RecipeDomainEntity(CreateAuthorModel(), fieldDomainEntities, title, imageUrl);
+        return new RecipeModel(CreateAuthorModel(), fieldDomainEntities, title, imageUrl);
     }
 
     private AuthorModel CreateAuthorModel()

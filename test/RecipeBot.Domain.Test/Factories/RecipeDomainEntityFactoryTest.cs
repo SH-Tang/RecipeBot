@@ -48,14 +48,14 @@ public class RecipeDomainEntityFactoryTest
         var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
 
         // Call
-        RecipeDomainEntity entity = factory.Create(recipeData);
+        RecipeModel entity = factory.Create(recipeData);
 
         // Assert
         Assert.Null(entity.RecipeImageUrl);
 
-        AssertAuthorEntity(recipeData.AuthorData, entity.AuthorEntity);
-        Assert.Equal(2, entity.RecipeFieldEntities.Count());
-        AssertMandatoryFields(recipeData, entity.RecipeFieldEntities);
+        AssertAuthorEntity(recipeData.AuthorData, entity.Author);
+        Assert.Equal(2, entity.RecipeFields.Count());
+        AssertMandatoryFields(recipeData, entity.RecipeFields);
     }
 
     [Fact]
@@ -76,14 +76,14 @@ public class RecipeDomainEntityFactoryTest
         var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
 
         // Call
-        RecipeDomainEntity entity = factory.Create(recipeData);
+        RecipeModel entity = factory.Create(recipeData);
 
         // Assert
         Assert.Equal(imageUrl, entity.RecipeImageUrl);
 
-        AssertAuthorEntity(recipeData.AuthorData, entity.AuthorEntity);
-        Assert.Equal(2, entity.RecipeFieldEntities.Count());
-        AssertMandatoryFields(recipeData, entity.RecipeFieldEntities);
+        AssertAuthorEntity(recipeData.AuthorData, entity.Author);
+        Assert.Equal(2, entity.RecipeFields.Count());
+        AssertMandatoryFields(recipeData, entity.RecipeFields);
     }
 
     [Fact]
@@ -103,14 +103,14 @@ public class RecipeDomainEntityFactoryTest
         var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
 
         // Call
-        RecipeDomainEntity entity = factory.Create(recipeData);
+        RecipeModel entity = factory.Create(recipeData);
 
         // Assert
         Assert.Null(entity.RecipeImageUrl);
 
-        AssertAuthorEntity(recipeData.AuthorData, entity.AuthorEntity);
+        AssertAuthorEntity(recipeData.AuthorData, entity.Author);
 
-        IEnumerable<RecipeFieldModel> recipeFieldEntities = entity.RecipeFieldEntities;
+        IEnumerable<RecipeFieldModel> recipeFieldEntities = entity.RecipeFields;
         Assert.Equal(3, recipeFieldEntities.Count());
         AssertMandatoryFields(recipeData, recipeFieldEntities);
         RecipeFieldModel cookingStepsDomainFieldEntity = recipeFieldEntities.ElementAt(2);
@@ -137,13 +137,13 @@ public class RecipeDomainEntityFactoryTest
         var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
 
         // Call
-        RecipeDomainEntity entity = factory.Create(recipeData);
+        RecipeModel entity = factory.Create(recipeData);
 
         // Assert
         Assert.Equal(recipeData.RecipeTitle, entity.Title);
         Assert.Equal(recipeData.ImageUrl, entity.RecipeImageUrl);
 
-        IEnumerable<RecipeFieldModel> recipeFieldEntities = entity.RecipeFieldEntities;
+        IEnumerable<RecipeFieldModel> recipeFieldEntities = entity.RecipeFields;
         Assert.Equal(3, recipeFieldEntities.Count());
         AssertMandatoryFields(recipeData, recipeFieldEntities);
         RecipeFieldModel cookingStepsDomainFieldEntity = recipeFieldEntities.ElementAt(2);
@@ -194,7 +194,7 @@ public class RecipeDomainEntityFactoryTest
         var factory = new RecipeDomainEntityFactory(recipeCharacterLimitProvider);
 
         // Call
-        RecipeDomainEntity entity = factory.Create(recipeData);
+        RecipeModel entity = factory.Create(recipeData);
 
         // Assert
         Assert.Equal(recipeData.RecipeTitle, entity.Title);

@@ -44,76 +44,76 @@ public class RecipeEmbedFactoryTest
     public void Basic_recipe_should_return_embed_without_image_and_fields()
     {
         // Setup
-        RecipeDomainEntity recipeDomainEntity = domainTestFactory.Create();
+        RecipeModel recipeModel = domainTestFactory.Create();
 
         // Call
-        Embed embed = RecipeEmbedFactory.Create(recipeDomainEntity);
+        Embed embed = RecipeEmbedFactory.Create(recipeModel);
 
         // Assert
-        Assert.Equal(recipeDomainEntity.Title, embed.Title);
+        Assert.Equal(recipeModel.Title, embed.Title);
         Assert.Null(embed.Image);
 
-        AssertAuthor(recipeDomainEntity.AuthorEntity, embed.Author);
-        AssertFields(recipeDomainEntity.RecipeFieldEntities, embed.Fields);
+        AssertAuthor(recipeModel.Author, embed.Author);
+        AssertFields(recipeModel.RecipeFields, embed.Fields);
     }
 
     [Fact]
     public void Recipe_with_fields_and_image_should_return_embed_with_fields_and_image()
     {
         // Setup
-        RecipeDomainEntity recipeDomainEntity = domainTestFactory.CreateWithImageAndFields();
+        RecipeModel recipeModel = domainTestFactory.CreateWithImageAndFields();
 
         // Call
-        Embed embed = RecipeEmbedFactory.Create(recipeDomainEntity);
+        Embed embed = RecipeEmbedFactory.Create(recipeModel);
 
         // Assert
-        Assert.Equal(recipeDomainEntity.Title, embed.Title);
+        Assert.Equal(recipeModel.Title, embed.Title);
 
         EmbedImage? embedImage = embed.Image;
         Assert.NotNull(embedImage);
-        Assert.Equal(recipeDomainEntity.RecipeImageUrl, embedImage!.Value.Url);
+        Assert.Equal(recipeModel.RecipeImageUrl, embedImage!.Value.Url);
 
-        AssertAuthor(recipeDomainEntity.AuthorEntity, embed.Author);
-        AssertFields(recipeDomainEntity.RecipeFieldEntities, embed.Fields);
+        AssertAuthor(recipeModel.Author, embed.Author);
+        AssertFields(recipeModel.RecipeFields, embed.Fields);
     }
 
     [Fact]
     public void Recipe_with_image_should_return_embed_with_image()
     {
         // Setup
-        RecipeDomainEntity recipeDomainEntity = domainTestFactory.CreateWithImage();
+        RecipeModel recipeModel = domainTestFactory.CreateWithImage();
 
         // Call
-        Embed embed = RecipeEmbedFactory.Create(recipeDomainEntity);
+        Embed embed = RecipeEmbedFactory.Create(recipeModel);
 
         // Assert
-        Assert.Equal(recipeDomainEntity.Title, embed.Title);
+        Assert.Equal(recipeModel.Title, embed.Title);
 
         EmbedImage? embedImage = embed.Image;
         Assert.NotNull(embedImage);
-        Assert.Equal(recipeDomainEntity.RecipeImageUrl, embedImage!.Value.Url);
+        Assert.Equal(recipeModel.RecipeImageUrl, embedImage!.Value.Url);
 
-        AssertAuthor(recipeDomainEntity.AuthorEntity, embed.Author);
-        AssertFields(recipeDomainEntity.RecipeFieldEntities, embed.Fields);
+        AssertAuthor(recipeModel.Author, embed.Author);
+        AssertFields(recipeModel.RecipeFields, embed.Fields);
     }
 
     [Fact]
     public void Recipe_with_fields_should_return_embed_with_fields()
     {
         // Setup
-        RecipeDomainEntity recipeDomainEntity = domainTestFactory.CreateWithFields();
+        RecipeModel recipeModel = domainTestFactory.CreateWithFields();
 
         // Call
-        Embed embed = RecipeEmbedFactory.Create(recipeDomainEntity);
+        Embed embed = RecipeEmbedFactory.Create(recipeModel);
 
         // Assert
-        Assert.Equal(recipeDomainEntity.Title, embed.Title);
+        Assert.Equal(recipeModel.Title, embed.Title);
 
         EmbedImage? embedImage = embed.Image;
         Assert.Null(embedImage);
 
-        AssertAuthor(recipeDomainEntity.AuthorEntity, embed.Author);
-        AssertFields(recipeDomainEntity.RecipeFieldEntities, embed.Fields);
+        AssertAuthor(recipeModel.Author, embed.Author);
+        AssertFields(recipeModel.RecipeFields, embed.Fields);
     }
 
     private static void AssertAuthor(AuthorModel authorData, EmbedAuthor? actualAuthor)

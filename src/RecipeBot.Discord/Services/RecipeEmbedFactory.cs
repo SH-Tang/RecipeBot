@@ -33,11 +33,11 @@ public static class RecipeEmbedFactory
     /// <summary>
     /// Creates an <see cref="Embed"/> based on its input arguments.
     /// </summary>
-    /// <param name="recipe">The <see cref="RecipeDomainEntity"/> to create the <see cref="Embed"/> with.</param>
+    /// <param name="recipe">The <see cref="RecipeModel"/> to create the <see cref="Embed"/> with.</param>
     /// <returns>An <see cref="Embed"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="recipe"/> is <c>null</c>.</exception>
     /// <exception cref="ModalResponseException">Thrown when the response could not be successfully determined.</exception>
-    public static Embed Create(RecipeDomainEntity recipe)
+    public static Embed Create(RecipeModel recipe)
     {
         recipe.IsNotNull(nameof(recipe));
 
@@ -52,9 +52,9 @@ public static class RecipeEmbedFactory
         }
     }
 
-    private static EmbedBuilder CreateConfiguredEmbedBuilder(RecipeDomainEntity recipeData)
+    private static EmbedBuilder CreateConfiguredEmbedBuilder(RecipeModel recipeData)
     {
-        AuthorModel authorData = recipeData.AuthorEntity;
+        AuthorModel authorData = recipeData.Author;
         EmbedBuilder embedBuilder = new EmbedBuilder().WithAuthor(authorData.AuthorName, authorData.AuthorImageUrl)
                                                       .WithTitle(recipeData.Title);
         if (!string.IsNullOrWhiteSpace(recipeData.RecipeImageUrl))
@@ -62,7 +62,7 @@ public static class RecipeEmbedFactory
             embedBuilder.WithImageUrl(recipeData.RecipeImageUrl);
         }
 
-        ConfigureFields(embedBuilder, recipeData.RecipeFieldEntities);
+        ConfigureFields(embedBuilder, recipeData.RecipeFields);
 
         return embedBuilder;
     }

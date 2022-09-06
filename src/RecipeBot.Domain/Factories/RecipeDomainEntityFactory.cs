@@ -26,7 +26,7 @@ using RecipeBot.Domain.Properties;
 namespace RecipeBot.Domain.Factories;
 
 /// <summary>
-/// Factory to create instances of <see cref="RecipeDomainEntity"/>.
+/// Factory to create instances of <see cref="RecipeModel"/>.
 /// </summary>
 public class RecipeDomainEntityFactory
 {
@@ -52,13 +52,13 @@ public class RecipeDomainEntityFactory
     }
 
     /// <summary>
-    /// Creates a <see cref="RecipeDomainEntity"/> based on its input arguments.
+    /// Creates a <see cref="RecipeModel"/> based on its input arguments.
     /// </summary>
-    /// <param name="recipeData">The <see cref="RecipeData"/> to create the <see cref="RecipeDomainEntity"/> with.</param>
-    /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
+    /// <param name="recipeData">The <see cref="RecipeData"/> to create the <see cref="RecipeModel"/> with.</param>
+    /// <returns>A <see cref="RecipeModel"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="recipeData"/> is <c>null</c>.</exception>
     /// <exception cref="DomainEntityCreateException">Thrown when the domain entity could not be successfully created.</exception>
-    public RecipeDomainEntity Create(RecipeData recipeData)
+    public RecipeModel Create(RecipeData recipeData)
     {
         recipeData.IsNotNull(nameof(recipeData));
 
@@ -79,15 +79,15 @@ public class RecipeDomainEntityFactory
         }
     }
 
-    private RecipeDomainEntity CreateRecipeDomainEntity(RecipeData recipeData)
+    private RecipeModel CreateRecipeDomainEntity(RecipeData recipeData)
     {
         AuthorModel authorModel = CreateAuthorDomainEntity(recipeData.AuthorData);
         IEnumerable<RecipeFieldModel> fieldEntities = CreateRecipeFieldDomainEntities(recipeData);
 
         string recipeTitle = recipeData.RecipeTitle;
-        RecipeDomainEntity entity = recipeData.ImageUrl == null
-                                        ? new RecipeDomainEntity(authorModel, fieldEntities, recipeTitle)
-                                        : new RecipeDomainEntity(authorModel, fieldEntities, recipeTitle, recipeData.ImageUrl);
+        RecipeModel entity = recipeData.ImageUrl == null
+                                        ? new RecipeModel(authorModel, fieldEntities, recipeTitle)
+                                        : new RecipeModel(authorModel, fieldEntities, recipeTitle, recipeData.ImageUrl);
 
         int maximumRecipeLength = recipeDomainEntityCharacterLimitProvider.MaximumRecipeLength;
         if (entity.TotalLength > maximumRecipeLength)
