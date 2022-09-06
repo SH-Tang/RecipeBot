@@ -27,16 +27,16 @@ namespace RecipeBot.Domain.Factories;
 /// <summary>
 /// Factory to create instances of <see cref="AuthorModel"/>.
 /// </summary>
-public class AuthorDomainEntityFactory
+public class AuthorModelFactory
 {
     private readonly IAuthorModelCharacterLimitProvider limitProvider;
 
     /// <summary>
-    /// Creates a new instance of <see cref="AuthorDomainEntityFactory"/>.
+    /// Creates a new instance of <see cref="AuthorModelFactory"/>.
     /// </summary>
     /// <param name="limitProvider">The provider to retrieve the character limits from.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="limitProvider"/> is <c>null</c>.</exception>
-    public AuthorDomainEntityFactory(IAuthorModelCharacterLimitProvider limitProvider)
+    public AuthorModelFactory(IAuthorModelCharacterLimitProvider limitProvider)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
         this.limitProvider = limitProvider;
@@ -47,7 +47,7 @@ public class AuthorDomainEntityFactory
     /// </summary>
     /// <param name="authorData">The <see cref="AuthorData"/> to create the entity with.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="authorData"/> is <c>null</c>.</exception>
-    /// <exception cref="ModelCreateException">Thrown when the entity could not be successfully created.</exception>
+    /// <exception cref="ModelCreateException">Thrown when the model could not be successfully created.</exception>
     public AuthorModel Create(AuthorData authorData)
     {
         authorData.IsNotNull(nameof(authorData));

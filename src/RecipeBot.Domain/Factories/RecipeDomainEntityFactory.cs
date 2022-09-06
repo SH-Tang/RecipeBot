@@ -31,7 +31,7 @@ namespace RecipeBot.Domain.Factories;
 public class RecipeDomainEntityFactory
 {
     private readonly IRecipeModelCharacterLimitProvider recipeModelCharacterLimitProvider;
-    private readonly AuthorDomainEntityFactory authorDomainEntityFactory;
+    private readonly AuthorModelFactory authorModelFactory;
     private readonly RecipeFieldDomainEntityFactory recipeFieldDomainEntityFactory;
 
     /// <summary>
@@ -47,7 +47,7 @@ public class RecipeDomainEntityFactory
 
         this.recipeModelCharacterLimitProvider = recipeModelCharacterLimitProvider;
 
-        authorDomainEntityFactory = new AuthorDomainEntityFactory(recipeModelCharacterLimitProvider);
+        authorModelFactory = new AuthorModelFactory(recipeModelCharacterLimitProvider);
         recipeFieldDomainEntityFactory = new RecipeFieldDomainEntityFactory(recipeModelCharacterLimitProvider);
     }
 
@@ -101,7 +101,7 @@ public class RecipeDomainEntityFactory
 
     private AuthorModel CreateAuthorDomainEntity(AuthorData authorData)
     {
-        return authorDomainEntityFactory.Create(authorData);
+        return authorModelFactory.Create(authorData);
     }
 
     private IEnumerable<RecipeFieldModel> CreateRecipeFieldDomainEntities(RecipeData recipeData)
