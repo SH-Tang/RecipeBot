@@ -170,7 +170,7 @@ public class RecipeDomainEntityFactoryTest
         Action call = () => factory.Create(recipeData);
 
         // Assert
-        var exception = Assert.Throws<DomainEntityCreateException>(call);
+        var exception = Assert.Throws<ModelCreateException>(call);
         string expectedMessage = $"RecipeTitle must be less or equal to {recipeCharacterLimitProvider.MaximumTitleLength} characters.";
         Assert.Equal(expectedMessage, exception.Message);
     }
@@ -225,7 +225,7 @@ public class RecipeDomainEntityFactoryTest
         Action call = () => factory.Create(recipeData);
 
         // Assert
-        var exception = Assert.Throws<DomainEntityCreateException>(call);
+        var exception = Assert.Throws<ModelCreateException>(call);
         string expectedMessage = $"recipeData must be less or equal to {recipeCharacterLimitProvider.MaximumRecipeLength} characters.";
         Assert.Equal(expectedMessage, exception.Message);
     }
@@ -250,7 +250,7 @@ public class RecipeDomainEntityFactoryTest
         Action call = () => factory.Create(recipeData);
 
         // Assert
-        Assert.Throws<DomainEntityCreateException>(call);
+        Assert.Throws<ModelCreateException>(call);
     }
 
     private static void AssertAuthorEntity(AuthorData data, AuthorModel model)

@@ -47,7 +47,7 @@ public class AuthorDomainEntityFactory
     /// </summary>
     /// <param name="authorData">The <see cref="AuthorData"/> to create the entity with.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="authorData"/> is <c>null</c>.</exception>
-    /// <exception cref="DomainEntityCreateException">Thrown when the entity could not be successfully created.</exception>
+    /// <exception cref="ModelCreateException">Thrown when the entity could not be successfully created.</exception>
     public AuthorModel Create(AuthorData authorData)
     {
         authorData.IsNotNull(nameof(authorData));
@@ -55,7 +55,7 @@ public class AuthorDomainEntityFactory
         int maximumAuthorNameLength = limitProvider.MaximumAuthorNameLength;
         if (authorData.AuthorName.Length > maximumAuthorNameLength)
         {
-            throw new DomainEntityCreateException(string.Format(Resources.Argument_0_must_be_less_or_equal_to_number_of_1_characters,
+            throw new ModelCreateException(string.Format(Resources.Argument_0_must_be_less_or_equal_to_number_of_1_characters,
                                                                 nameof(AuthorData.AuthorName), maximumAuthorNameLength));
         }
 
@@ -65,7 +65,7 @@ public class AuthorDomainEntityFactory
         }
         catch (ArgumentException e)
         {
-            throw new DomainEntityCreateException(e.Message, e);
+            throw new ModelCreateException(e.Message, e);
         }
     }
 }

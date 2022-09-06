@@ -102,7 +102,7 @@ public class RecipeModalResponseService
         {
             return recipeModelFactory.Create(recipeData);
         }
-        catch (DomainEntityCreateException e)
+        catch (ModelCreateException e)
         {
             throw new ModalResponseException(e.Message, e);
         }

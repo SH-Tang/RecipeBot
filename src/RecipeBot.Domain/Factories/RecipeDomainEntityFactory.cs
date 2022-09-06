@@ -57,7 +57,7 @@ public class RecipeDomainEntityFactory
     /// <param name="recipeData">The <see cref="RecipeData"/> to create the <see cref="RecipeModel"/> with.</param>
     /// <returns>A <see cref="RecipeModel"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="recipeData"/> is <c>null</c>.</exception>
-    /// <exception cref="DomainEntityCreateException">Thrown when the domain entity could not be successfully created.</exception>
+    /// <exception cref="ModelCreateException">Thrown when the domain entity could not be successfully created.</exception>
     public RecipeModel Create(RecipeData recipeData)
     {
         recipeData.IsNotNull(nameof(recipeData));
@@ -65,7 +65,7 @@ public class RecipeDomainEntityFactory
         int maximumTitleLength = recipeModelCharacterLimitProvider.MaximumTitleLength;
         if (recipeData.RecipeTitle.Length > maximumTitleLength)
         {
-            throw new DomainEntityCreateException(string.Format(Resources.Argument_0_must_be_less_or_equal_to_number_of_1_characters,
+            throw new ModelCreateException(string.Format(Resources.Argument_0_must_be_less_or_equal_to_number_of_1_characters,
                                                                 nameof(RecipeData.RecipeTitle), maximumTitleLength));
         }
 
@@ -75,7 +75,7 @@ public class RecipeDomainEntityFactory
         }
         catch (ArgumentException e)
         {
-            throw new DomainEntityCreateException(e.Message, e);
+            throw new ModelCreateException(e.Message, e);
         }
     }
 
@@ -92,7 +92,7 @@ public class RecipeDomainEntityFactory
         int maximumRecipeLength = recipeModelCharacterLimitProvider.MaximumRecipeLength;
         if (entity.TotalLength > maximumRecipeLength)
         {
-            throw new DomainEntityCreateException(string.Format(Resources.Argument_0_must_be_less_or_equal_to_number_of_1_characters,
+            throw new ModelCreateException(string.Format(Resources.Argument_0_must_be_less_or_equal_to_number_of_1_characters,
                                                                 nameof(recipeData), maximumRecipeLength));
         }
 

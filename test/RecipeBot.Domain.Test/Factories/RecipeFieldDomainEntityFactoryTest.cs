@@ -47,7 +47,7 @@ public class RecipeFieldDomainEntityFactoryTest
         Action call = () => factory.Create(fieldName, fieldData);
 
         // Assert
-        var exception = Assert.Throws<DomainEntityCreateException>(call);
+        var exception = Assert.Throws<ModelCreateException>(call);
         string expectedMessage = $"fieldName must be less or equal to {maximumFieldNameLength} characters.";
         Assert.Equal(expectedMessage, exception.Message);
     }
@@ -67,7 +67,7 @@ public class RecipeFieldDomainEntityFactoryTest
         Action call = () => factory.Create(invalidFieldName, "fieldData");
 
         // Assert
-        var exception = Assert.Throws<DomainEntityCreateException>(call);
+        var exception = Assert.Throws<ModelCreateException>(call);
         string exceptionMessage = exception.Message;
         Assert.False(exceptionMessage.StartsWith("fieldName must be less or equal to"));
         Assert.False(exceptionMessage.StartsWith("fieldData must be less or equal to"));
@@ -93,7 +93,7 @@ public class RecipeFieldDomainEntityFactoryTest
         Action call = () => factory.Create(fieldName, fieldData);
 
         // Assert
-        var exception = Assert.Throws<DomainEntityCreateException>(call);
+        var exception = Assert.Throws<ModelCreateException>(call);
         string expectedMessage = $"fieldData must be less or equal to {maximumFieldDataLength} characters.";
         Assert.Equal(expectedMessage, exception.Message);
     }
@@ -113,7 +113,7 @@ public class RecipeFieldDomainEntityFactoryTest
         Action call = () => factory.Create("fieldName", invalidFieldData);
 
         // Assert
-        var exception = Assert.Throws<DomainEntityCreateException>(call);
+        var exception = Assert.Throws<ModelCreateException>(call);
         string exceptionMessage = exception.Message;
         Assert.False(exceptionMessage.StartsWith("fieldName must be less or equal to"));
         Assert.False(exceptionMessage.StartsWith("fieldData must be less or equal to"));

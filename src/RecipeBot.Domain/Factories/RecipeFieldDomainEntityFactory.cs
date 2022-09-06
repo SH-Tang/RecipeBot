@@ -48,7 +48,7 @@ public class RecipeFieldDomainEntityFactory
     /// <param name="fieldName">The name of the field.</param>
     /// <param name="fieldData">The data of the field.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    /// <exception cref="DomainEntityCreateException">Thrown when the entity could not be successfully created.</exception>
+    /// <exception cref="ModelCreateException">Thrown when the entity could not be successfully created.</exception>
     public RecipeFieldModel Create(string fieldName, string fieldData)
     {
         fieldName.IsNotNull(nameof(fieldName));
@@ -57,13 +57,13 @@ public class RecipeFieldDomainEntityFactory
         int maximumFieldNameLength = limitProvider.MaximumFieldNameLength;
         if (fieldName.Length > maximumFieldNameLength)
         {
-            throw new DomainEntityCreateException(CreateInvalidCharacterLengthExceptionMessage(nameof(fieldName), maximumFieldNameLength));
+            throw new ModelCreateException(CreateInvalidCharacterLengthExceptionMessage(nameof(fieldName), maximumFieldNameLength));
         }
 
         int maximumFieldDataLength = limitProvider.MaximumFieldDataLength;
         if (fieldData.Length > maximumFieldDataLength)
         {
-            throw new DomainEntityCreateException(CreateInvalidCharacterLengthExceptionMessage(nameof(fieldData), maximumFieldDataLength));
+            throw new ModelCreateException(CreateInvalidCharacterLengthExceptionMessage(nameof(fieldData), maximumFieldDataLength));
         }
 
         try
@@ -72,7 +72,7 @@ public class RecipeFieldDomainEntityFactory
         }
         catch (ArgumentException e)
         {
-            throw new DomainEntityCreateException(e.Message);
+            throw new ModelCreateException(e.Message);
         }
     }
 

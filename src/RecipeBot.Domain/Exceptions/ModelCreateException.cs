@@ -21,13 +21,13 @@ using System.Runtime.Serialization;
 namespace RecipeBot.Domain.Exceptions;
 
 /// <summary>
-/// Exception thrown when the domain entity could not successfully be created.
+/// Exception thrown when the model could not successfully be created.
 /// </summary>
 [Serializable]
-public class DomainEntityCreateException : Exception
+public class ModelCreateException : Exception
 {
     /// <summary>
-    /// Initializes a new instance of <see cref="DomainEntityCreateException"/> with
+    /// Initializes a new instance of <see cref="ModelCreateException"/> with
     /// serialized data.</summary>
     /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized
     /// object data about the exception being thrown.</param>
@@ -37,27 +37,27 @@ public class DomainEntityCreateException : Exception
     /// <c>null</c>.</exception>
     /// <exception cref="SerializationException">The class name is <c>null</c> or
     /// <see cref="Exception.HResult" /> is zero (0).</exception>
-    protected DomainEntityCreateException(SerializationInfo info, StreamingContext context) : base(info, context) {}
+    protected ModelCreateException(SerializationInfo info, StreamingContext context) : base(info, context) {}
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DomainEntityCreateException"/> class.
+    /// Initializes a new instance of the <see cref="ModelCreateException"/> class.
     /// </summary>
-    internal DomainEntityCreateException() {}
+    internal ModelCreateException() {}
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DomainEntityCreateException"/> class 
+    /// Initializes a new instance of the <see cref="ModelCreateException"/> class 
     /// with a specified error message.
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
-    internal DomainEntityCreateException(string message)
+    internal ModelCreateException(string message)
         : base(message) {}
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DomainEntityCreateException"/> class with a specified error message 
+    /// Initializes a new instance of the <see cref="ModelCreateException"/> class with a specified error message 
     /// and a reference to the inner exception that is the cause of this exception.
     /// </summary>
     /// <param name="message">The error message that explains the reason for the exception.</param>
     /// <param name="innerException">The exception that is the cause of the current exception,
     /// or <c>null</c> if no inner exception is specified.</param>
-    internal DomainEntityCreateException(string message, Exception innerException) : base(message, innerException) {}
+    internal ModelCreateException(string message, Exception innerException) : base(message, innerException) {}
 }

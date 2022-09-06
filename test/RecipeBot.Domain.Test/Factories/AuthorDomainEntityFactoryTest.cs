@@ -45,7 +45,7 @@ public class AuthorDomainEntityFactoryTest
         Action call = () => factory.Create(authorData);
 
         // Assert
-        var exception = Assert.Throws<DomainEntityCreateException>(call);
+        var exception = Assert.Throws<ModelCreateException>(call);
         string expectedMessage = $"AuthorName must be less or equal to {maximumAuthorNameLength} characters.";
         Assert.Equal(expectedMessage, exception.Message);
     }
@@ -68,7 +68,7 @@ public class AuthorDomainEntityFactoryTest
         Action call = () => factory.Create(authorData);
 
         // Assert
-        string exceptionMessage = Assert.Throws<DomainEntityCreateException>(call).Message;
+        string exceptionMessage = Assert.Throws<ModelCreateException>(call).Message;
         Assert.False(exceptionMessage.StartsWith("AuthorName must be less or equal to"));
     }
 
