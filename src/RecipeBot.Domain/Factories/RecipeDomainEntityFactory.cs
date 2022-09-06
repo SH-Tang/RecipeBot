@@ -32,7 +32,7 @@ public class RecipeDomainEntityFactory
 {
     private readonly IRecipeModelCharacterLimitProvider recipeModelCharacterLimitProvider;
     private readonly AuthorModelFactory authorModelFactory;
-    private readonly RecipeFieldDomainEntityFactory recipeFieldDomainEntityFactory;
+    private readonly RecipeFieldModelFactory recipeFieldModelFactory;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeDomainEntityFactory"/>.
@@ -48,7 +48,7 @@ public class RecipeDomainEntityFactory
         this.recipeModelCharacterLimitProvider = recipeModelCharacterLimitProvider;
 
         authorModelFactory = new AuthorModelFactory(recipeModelCharacterLimitProvider);
-        recipeFieldDomainEntityFactory = new RecipeFieldDomainEntityFactory(recipeModelCharacterLimitProvider);
+        recipeFieldModelFactory = new RecipeFieldModelFactory(recipeModelCharacterLimitProvider);
     }
 
     /// <summary>
@@ -108,13 +108,13 @@ public class RecipeDomainEntityFactory
     {
         var domainEntities = new List<RecipeFieldModel>
         {
-            recipeFieldDomainEntityFactory.Create(Resources.RecipeDomainEntity_FieldName_Ingredients, recipeData.RecipeIngredients),
-            recipeFieldDomainEntityFactory.Create(Resources.RecipeDomainEntity_FieldName_CookingSteps, recipeData.CookingSteps)
+            recipeFieldModelFactory.Create(Resources.RecipeDomainEntity_FieldName_Ingredients, recipeData.RecipeIngredients),
+            recipeFieldModelFactory.Create(Resources.RecipeDomainEntity_FieldName_CookingSteps, recipeData.CookingSteps)
         };
 
         if (!string.IsNullOrWhiteSpace(recipeData.AdditionalNotes))
         {
-            domainEntities.Add(recipeFieldDomainEntityFactory.Create(Resources.RecipeDomainEntity_FieldName_AdditionalNotes, recipeData.AdditionalNotes));
+            domainEntities.Add(recipeFieldModelFactory.Create(Resources.RecipeDomainEntity_FieldName_AdditionalNotes, recipeData.AdditionalNotes));
         }
 
         return domainEntities;

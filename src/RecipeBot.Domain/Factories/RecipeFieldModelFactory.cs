@@ -26,7 +26,7 @@ namespace RecipeBot.Domain.Factories;
 /// <summary>
 /// Factory to create instances of <see cref="RecipeFieldModel"/>.
 /// </summary>
-public class RecipeFieldDomainEntityFactory
+public class RecipeFieldModelFactory
 {
     private readonly IRecipeFieldModelCharacterLimitProvider limitProvider;
 
@@ -35,7 +35,7 @@ public class RecipeFieldDomainEntityFactory
     /// </summary>
     /// <param name="limitProvider">The provider to retrieve the character limits from.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="limitProvider"/> is <c>null</c>.</exception>         
-    public RecipeFieldDomainEntityFactory(IRecipeFieldModelCharacterLimitProvider limitProvider)
+    public RecipeFieldModelFactory(IRecipeFieldModelCharacterLimitProvider limitProvider)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
 

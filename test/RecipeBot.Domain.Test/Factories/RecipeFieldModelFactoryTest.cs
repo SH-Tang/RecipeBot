@@ -25,10 +25,10 @@ using Xunit;
 
 namespace RecipeBot.Domain.Test.Factories;
 
-public class RecipeFieldDomainEntityFactoryTest
+public class RecipeFieldModelFactoryTest
 {
     [Fact]
-    public void Creating_entity_with_field_name_with_invalid_character_length_throws_exception()
+    public void Creating_model_with_field_name_with_invalid_character_length_throws_exception()
     {
         // Setup
         const int maximumFieldNameLength = 10;
@@ -38,7 +38,7 @@ public class RecipeFieldDomainEntityFactoryTest
         limitProvider.MaximumFieldNameLength.Returns(maximumFieldNameLength);
         limitProvider.MaximumFieldDataLength.Returns(maximumFieldDataLength);
 
-        var factory = new RecipeFieldDomainEntityFactory(limitProvider);
+        var factory = new RecipeFieldModelFactory(limitProvider);
 
         var fieldName = new string('x', maximumFieldNameLength + 1);
         var fieldData = new string('+', maximumFieldDataLength);
@@ -54,14 +54,14 @@ public class RecipeFieldDomainEntityFactoryTest
 
     [Theory]
     [ClassData(typeof(EmptyOrWhiteSpaceStringValueGenerator))]
-    public void Creating_entity_with_invalid_field_name_throws_exception(string invalidFieldName)
+    public void Creating_model_with_invalid_field_name_throws_exception(string invalidFieldName)
     {
         // Setup
         var limitProvider = Substitute.For<IRecipeFieldModelCharacterLimitProvider>();
         limitProvider.MaximumFieldNameLength.Returns(10);
         limitProvider.MaximumFieldDataLength.Returns(10);
 
-        var factory = new RecipeFieldDomainEntityFactory(limitProvider);
+        var factory = new RecipeFieldModelFactory(limitProvider);
 
         // Call
         Action call = () => factory.Create(invalidFieldName, "fieldData");
@@ -74,7 +74,7 @@ public class RecipeFieldDomainEntityFactoryTest
     }
 
     [Fact]
-    public void Creating_entity_with_field_data_with_invalid_character_length_throws_exception()
+    public void Creating_model_with_field_data_with_invalid_character_length_throws_exception()
     {
         // Setup
         const int maximumFieldNameLength = 10;
@@ -84,7 +84,7 @@ public class RecipeFieldDomainEntityFactoryTest
         limitProvider.MaximumFieldNameLength.Returns(maximumFieldNameLength);
         limitProvider.MaximumFieldDataLength.Returns(maximumFieldDataLength);
 
-        var factory = new RecipeFieldDomainEntityFactory(limitProvider);
+        var factory = new RecipeFieldModelFactory(limitProvider);
 
         var fieldName = new string('x', maximumFieldNameLength);
         var fieldData = new string('+', maximumFieldDataLength + 1);
@@ -100,14 +100,14 @@ public class RecipeFieldDomainEntityFactoryTest
 
     [Theory]
     [ClassData(typeof(EmptyOrWhiteSpaceStringValueGenerator))]
-    public void Creating_entity_with_invalid_field_data_throws_exception(string invalidFieldData)
+    public void Creating_model_with_invalid_field_data_throws_exception(string invalidFieldData)
     {
         // Setup
         var limitProvider = Substitute.For<IRecipeFieldModelCharacterLimitProvider>();
         limitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
         limitProvider.MaximumFieldDataLength.Returns(int.MaxValue);
 
-        var factory = new RecipeFieldDomainEntityFactory(limitProvider);
+        var factory = new RecipeFieldModelFactory(limitProvider);
 
         // Call
         Action call = () => factory.Create("fieldName", invalidFieldData);
@@ -125,7 +125,7 @@ public class RecipeFieldDomainEntityFactoryTest
     [InlineData(1, 0)]
     [InlineData(0, 1)]
     [InlineData(0, 0)]
-    public void Creating_entity_with_valid_field_name_and_description_returns_entity(
+    public void Creating_model_with_valid_field_name_and_description_returns_entity(
         int fieldNameCharacterOffset, int fieldDataCharacterOffset)
     {
         // Setup
@@ -135,16 +135,16 @@ public class RecipeFieldDomainEntityFactoryTest
         var limitProvider = Substitute.For<IRecipeFieldModelCharacterLimitProvider>();
         limitProvider.MaximumFieldNameLength.Returns(maximumFieldNameLength);
         limitProvider.MaximumFieldDataLength.Returns(maximumFieldDataLength);
-        var factory = new RecipeFieldDomainEntityFactory(limitProvider);
+        var factory = new RecipeFieldModelFactory(limitProvider);
 
         var fieldName = new string('x', maximumFieldNameLength - fieldNameCharacterOffset);
         var fieldData = new string('+', maximumFieldDataLength - fieldDataCharacterOffset);
 
         // Call
-        RecipeFieldModel entity = factory.Create(fieldName, fieldData);
+        RecipeFieldModel model = factory.Create(fieldName, fieldData);
 
         // Assert
-        Assert.Equal(fieldName, entity.FieldName);
-        Assert.Equal(fieldData, entity.FieldData);
+        Assert.Equal(fieldName, model.FieldName);
+        Assert.Equal(fieldData, model.FieldData);
     }
 }
