@@ -116,7 +116,7 @@ public class RecipeEmbedFactoryTest
         AssertFields(recipeDomainEntity.RecipeFieldEntities, embed.Fields);
     }
 
-    private static void AssertAuthor(AuthorDomainEntity authorData, EmbedAuthor? actualAuthor)
+    private static void AssertAuthor(AuthorModel authorData, EmbedAuthor? actualAuthor)
     {
         Assert.NotNull(actualAuthor);
         Assert.Equal(authorData.AuthorName, actualAuthor!.Value.Name);

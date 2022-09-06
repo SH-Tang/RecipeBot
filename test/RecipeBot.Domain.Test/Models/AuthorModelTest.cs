@@ -22,17 +22,17 @@ using Xunit;
 
 namespace RecipeBot.Domain.Test.Models;
 
-public class AuthorDomainEntityTest
+public class AuthorModelTest
 {
     [Theory]
     [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
-    public void Entity_with_invalid_name_throws_exception(string invalidAuthorName)
+    public void Model_with_invalid_name_throws_exception(string invalidAuthorName)
     {
         // Setup
         const string imageUrl = "http://wwww.google.com";
 
         // Call
-        Action call = () => new AuthorDomainEntity(invalidAuthorName, imageUrl);
+        Action call = () => new AuthorModel(invalidAuthorName, imageUrl);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
@@ -43,13 +43,13 @@ public class AuthorDomainEntityTest
     [InlineData(null)]
     [InlineData("")]
     [InlineData("     ")]
-    public void Entity_with_invalid_image_url_throws_exception(string invalidImageUrl)
+    public void Model_with_invalid_image_url_throws_exception(string invalidImageUrl)
     {
         // Setup
         const string authorName = "Author";
 
         // Call
-        Action call = () => new AuthorDomainEntity(authorName, invalidImageUrl);
+        Action call = () => new AuthorModel(authorName, invalidImageUrl);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
@@ -61,11 +61,11 @@ public class AuthorDomainEntityTest
     [InlineData("author    name")]
     [InlineData("     authorName")]
     [InlineData("authorName     ")]
-    public void Entity_with_valid_data_returns_total_length_of_author_name(string authorName)
+    public void Model_with_valid_data_returns_total_length_of_author_name(string authorName)
     {
         // Setup
         const string imageUrl = "http://wwww.google.com";
-        var recipeField = new AuthorDomainEntity(authorName, imageUrl);
+        var recipeField = new AuthorModel(authorName, imageUrl);
 
         // Call
         int totalLength = recipeField.TotalLength;

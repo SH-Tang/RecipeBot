@@ -36,7 +36,7 @@ public class RecipeDomainEntity
     /// <exception cref="ArgumentNullException">Thrown when any parameter, except <paramref name="title"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="title"/> is <c>null</c>, empty or consists
     /// of whitespaces.</exception>
-    internal RecipeDomainEntity(AuthorDomainEntity authorEntity, IEnumerable<RecipeFieldDomainEntity> recipeFieldEntities, string title)
+    internal RecipeDomainEntity(AuthorModel authorEntity, IEnumerable<RecipeFieldDomainEntity> recipeFieldEntities, string title)
     {
         authorEntity.IsNotNull(nameof(authorEntity));
         recipeFieldEntities.IsNotNull(nameof(recipeFieldEntities));
@@ -61,7 +61,7 @@ public class RecipeDomainEntity
     /// <item><paramref name="recipeImageUrl"/> is an invalid url.</item>
     /// </list>
     /// </exception>
-    internal RecipeDomainEntity(AuthorDomainEntity authorEntity, IEnumerable<RecipeFieldDomainEntity> recipeFieldEntities,
+    internal RecipeDomainEntity(AuthorModel authorEntity, IEnumerable<RecipeFieldDomainEntity> recipeFieldEntities,
                                 string title, string recipeImageUrl)
         : this(authorEntity, recipeFieldEntities, title)
     {
@@ -82,7 +82,7 @@ public class RecipeDomainEntity
     /// <summary>
     /// Gets the author information.
     /// </summary>
-    public AuthorDomainEntity AuthorEntity { get; }
+    public AuthorModel AuthorEntity { get; }
 
     /// <summary>
     /// Gets the fields the recipe consists of.

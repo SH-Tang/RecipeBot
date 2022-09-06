@@ -90,7 +90,7 @@ public class AuthorDomainEntityFactoryTest
         var authorData = new AuthorData(authorName, authorImageUrl);
 
         // Call
-        AuthorDomainEntity entity = factory.Create(authorData);
+        AuthorModel entity = factory.Create(authorData);
 
         // Assert
         Assert.Equal(authorName, entity.AuthorName);

@@ -33,7 +33,7 @@ public class RecipeDomainEntityTest
     public void Entity_with_invalid_recipe_title_throws_exception(string invalidRecipeTitle)
     {
         // Setup
-        AuthorDomainEntity authorEntity = CreateAuthorEntity();
+        AuthorModel authorEntity = CreateAuthorEntity();
 
         // Call
         Action call = () => new RecipeDomainEntity(authorEntity, Enumerable.Empty<RecipeFieldDomainEntity>(),
@@ -48,7 +48,7 @@ public class RecipeDomainEntityTest
     public void Entity_with_image_url_and_invalid_title_throws_exception(string invalidRecipeTitle)
     {
         // Setup
-        AuthorDomainEntity authorEntity = CreateAuthorEntity();
+        AuthorModel authorEntity = CreateAuthorEntity();
 
         // Call
         Action call = () => new RecipeDomainEntity(authorEntity, Enumerable.Empty<RecipeFieldDomainEntity>(),
@@ -62,7 +62,7 @@ public class RecipeDomainEntityTest
     public void Entity_without_image_url_sets_image_url_null()
     {
         // Setup
-        AuthorDomainEntity authorEntity = CreateAuthorEntity();
+        AuthorModel authorEntity = CreateAuthorEntity();
 
         // Call
         var recipe = new RecipeDomainEntity(authorEntity, Enumerable.Empty<RecipeFieldDomainEntity>(), "recipeTitle");
@@ -75,7 +75,7 @@ public class RecipeDomainEntityTest
     public void Entity_with_valid_image_url_sets_image_url()
     {
         // Setup
-        AuthorDomainEntity authorEntity = CreateAuthorEntity();
+        AuthorModel authorEntity = CreateAuthorEntity();
 
         // Call
         var recipe = new RecipeDomainEntity(authorEntity, Enumerable.Empty<RecipeFieldDomainEntity>(), "recipeTitle", imageUrl);
@@ -89,7 +89,7 @@ public class RecipeDomainEntityTest
     public void Entity_with_invalid_image_url_throws_exception(string invalidImageUrl)
     {
         // Setup
-        AuthorDomainEntity authorEntity = CreateAuthorEntity();
+        AuthorModel authorEntity = CreateAuthorEntity();
 
         // Call
         Action call = () => new RecipeDomainEntity(authorEntity, Enumerable.Empty<RecipeFieldDomainEntity>(), "recipeTitle", invalidImageUrl);
@@ -109,7 +109,7 @@ public class RecipeDomainEntityTest
         // Setup
         var random = new Random(21);
 
-        AuthorDomainEntity authorEntity = CreateAuthorEntity();
+        AuthorModel authorEntity = CreateAuthorEntity();
         IEnumerable<RecipeFieldDomainEntity> recipeFieldEntities = new[]
         {
             CreateFieldEntity(random.Next()),
@@ -138,7 +138,7 @@ public class RecipeDomainEntityTest
         // Setup
         var random = new Random(21);
 
-        AuthorDomainEntity authorEntity = CreateAuthorEntity();
+        AuthorModel authorEntity = CreateAuthorEntity();
         IEnumerable<RecipeFieldDomainEntity> recipeFieldEntities = new[]
         {
             CreateFieldEntity(random.Next()),
@@ -162,7 +162,7 @@ public class RecipeDomainEntityTest
         // Setup
         const string recipeTitle = "recipeTitle";
 
-        AuthorDomainEntity authorEntity = CreateAuthorEntity();
+        AuthorModel authorEntity = CreateAuthorEntity();
         var recipe = new RecipeDomainEntity(authorEntity, Enumerable.Empty<RecipeFieldDomainEntity>(), recipeTitle);
 
         // Call
@@ -179,7 +179,7 @@ public class RecipeDomainEntityTest
         // Setup
         const string recipeTitle = "recipeTitle";
 
-        AuthorDomainEntity authorEntity = CreateAuthorEntity();
+        AuthorModel authorEntity = CreateAuthorEntity();
         var recipe = new RecipeDomainEntity(authorEntity, Enumerable.Empty<RecipeFieldDomainEntity>(), recipeTitle, imageUrl);
 
         // Call
@@ -190,14 +190,14 @@ public class RecipeDomainEntityTest
         Assert.Equal(expectedLength, totalLength);
     }
 
-    private static AuthorDomainEntity CreateAuthorEntity()
+    private static AuthorModel CreateAuthorEntity()
     {
         const string authorImageUrl = "http://www.google.com";
 
         var random = new Random(21);
         var authorName = new string('o', random.Next(100));
 
-        return new AuthorDomainEntity(authorName, authorImageUrl);
+        return new AuthorModel(authorName, authorImageUrl);
     }
 
     private static RecipeFieldDomainEntity CreateFieldEntity(int seed)

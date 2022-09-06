@@ -81,13 +81,13 @@ public class RecipeDomainEntityFactory
 
     private RecipeDomainEntity CreateRecipeDomainEntity(RecipeData recipeData)
     {
-        AuthorDomainEntity authorDomainEntity = CreateAuthorDomainEntity(recipeData.AuthorData);
+        AuthorModel authorModel = CreateAuthorDomainEntity(recipeData.AuthorData);
         IEnumerable<RecipeFieldDomainEntity> fieldEntities = CreateRecipeFieldDomainEntities(recipeData);
 
         string recipeTitle = recipeData.RecipeTitle;
         RecipeDomainEntity entity = recipeData.ImageUrl == null
-                                        ? new RecipeDomainEntity(authorDomainEntity, fieldEntities, recipeTitle)
-                                        : new RecipeDomainEntity(authorDomainEntity, fieldEntities, recipeTitle, recipeData.ImageUrl);
+                                        ? new RecipeDomainEntity(authorModel, fieldEntities, recipeTitle)
+                                        : new RecipeDomainEntity(authorModel, fieldEntities, recipeTitle, recipeData.ImageUrl);
 
         int maximumRecipeLength = recipeDomainEntityCharacterLimitProvider.MaximumRecipeLength;
         if (entity.TotalLength > maximumRecipeLength)
@@ -99,7 +99,7 @@ public class RecipeDomainEntityFactory
         return entity;
     }
 
-    private AuthorDomainEntity CreateAuthorDomainEntity(AuthorData authorData)
+    private AuthorModel CreateAuthorDomainEntity(AuthorData authorData)
     {
         return authorDomainEntityFactory.Create(authorData);
     }

@@ -25,7 +25,7 @@ using RecipeBot.Domain.Properties;
 namespace RecipeBot.Domain.Factories;
 
 /// <summary>
-/// Factory to create instances of <see cref="AuthorDomainEntity"/>.
+/// Factory to create instances of <see cref="AuthorModel"/>.
 /// </summary>
 public class AuthorDomainEntityFactory
 {
@@ -43,12 +43,12 @@ public class AuthorDomainEntityFactory
     }
 
     /// <summary>
-    /// Creates am <see cref="AuthorDomainEntity"/> based on its input arguments.
+    /// Creates am <see cref="AuthorModel"/> based on its input arguments.
     /// </summary>
     /// <param name="authorData">The <see cref="AuthorData"/> to create the entity with.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="authorData"/> is <c>null</c>.</exception>
     /// <exception cref="DomainEntityCreateException">Thrown when the entity could not be successfully created.</exception>
-    public AuthorDomainEntity Create(AuthorData authorData)
+    public AuthorModel Create(AuthorData authorData)
     {
         authorData.IsNotNull(nameof(authorData));
 
@@ -61,7 +61,7 @@ public class AuthorDomainEntityFactory
 
         try
         {
-            return new AuthorDomainEntity(authorData.AuthorName, authorData.AuthorImageUrl);
+            return new AuthorModel(authorData.AuthorName, authorData.AuthorImageUrl);
         }
         catch (ArgumentException e)
         {

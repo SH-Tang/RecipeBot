@@ -54,7 +54,7 @@ public static class RecipeEmbedFactory
 
     private static EmbedBuilder CreateConfiguredEmbedBuilder(RecipeDomainEntity recipeData)
     {
-        AuthorDomainEntity authorData = recipeData.AuthorEntity;
+        AuthorModel authorData = recipeData.AuthorEntity;
         EmbedBuilder embedBuilder = new EmbedBuilder().WithAuthor(authorData.AuthorName, authorData.AuthorImageUrl)
                                                       .WithTitle(recipeData.Title);
         if (!string.IsNullOrWhiteSpace(recipeData.RecipeImageUrl))

@@ -116,10 +116,10 @@ public class RecipeDomainModelTestFactory
         return new RecipeDomainEntity(CreateAuthorModel(), fieldDomainEntities, title, imageUrl);
     }
 
-    private AuthorDomainEntity CreateAuthorModel()
+    private AuthorModel CreateAuthorModel()
     {
         string authorName = GetStringWithRandomLength('+', maxAuthorNameLength);
-        return new AuthorDomainEntity(authorName, "https://recipebot.author.image");
+        return new AuthorModel(authorName, "https://recipebot.author.image");
     }
 
     private RecipeFieldDomainEntity CreateRecipeFiledModel(int seed)

@@ -253,10 +253,10 @@ public class RecipeDomainEntityFactoryTest
         Assert.Throws<DomainEntityCreateException>(call);
     }
 
-    private static void AssertAuthorEntity(AuthorData data, AuthorDomainEntity domainEntity)
+    private static void AssertAuthorEntity(AuthorData data, AuthorModel model)
     {
-        Assert.Equal(data.AuthorName, domainEntity.AuthorName);
-        Assert.Equal(data.AuthorImageUrl, domainEntity.AuthorImageUrl);
+        Assert.Equal(data.AuthorName, model.AuthorName);
+        Assert.Equal(data.AuthorImageUrl, model.AuthorImageUrl);
     }
 
     private static void AssertMandatoryFields(RecipeData data, IEnumerable<RecipeFieldDomainEntity> domainEntities)
