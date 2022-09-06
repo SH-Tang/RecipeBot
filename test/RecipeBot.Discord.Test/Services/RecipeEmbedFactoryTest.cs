@@ -123,13 +123,13 @@ public class RecipeEmbedFactoryTest
         Assert.Equal(authorData.AuthorImageUrl, actualAuthor.Value.IconUrl);
     }
 
-    private static void AssertFields(IEnumerable<RecipeFieldModel> fieldDomainEntities, IEnumerable<EmbedField> embedFields)
+    private static void AssertFields(IEnumerable<RecipeFieldModel> recipeFields, IEnumerable<EmbedField> embedFields)
     {
-        int nrOfFieldDomainEntities = fieldDomainEntities.Count();
-        Assert.Equal(nrOfFieldDomainEntities, embedFields.Count());
-        for (var i = 0; i < nrOfFieldDomainEntities; i++)
+        int nrOfRecipeFields = recipeFields.Count();
+        Assert.Equal(nrOfRecipeFields, embedFields.Count());
+        for (var i = 0; i < nrOfRecipeFields; i++)
         {
-            AssertField(fieldDomainEntities.ElementAt(i), embedFields.ElementAt(i));
+            AssertField(recipeFields.ElementAt(i), embedFields.ElementAt(i));
         }
     }
 

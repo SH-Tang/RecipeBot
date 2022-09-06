@@ -104,16 +104,16 @@ public class RecipeDomainModelTestFactory
         }, "https://recipeBot.recipe.image");
     }
 
-    private RecipeModel CreateRecipeModel(IEnumerable<RecipeFieldModel> fieldDomainEntities)
+    private RecipeModel CreateRecipeModel(IEnumerable<RecipeFieldModel> recipeFields)
     {
         string title = GetStringWithRandomLength('x', maxTitleLength);
-        return new RecipeModel(CreateAuthorModel(), fieldDomainEntities, title);
+        return new RecipeModel(CreateAuthorModel(), recipeFields, title);
     }
 
-    private RecipeModel CreateRecipeModel(IEnumerable<RecipeFieldModel> fieldDomainEntities, string imageUrl)
+    private RecipeModel CreateRecipeModel(IEnumerable<RecipeFieldModel> recipeFields, string imageUrl)
     {
         string title = GetStringWithRandomLength('x', maxTitleLength);
-        return new RecipeModel(CreateAuthorModel(), fieldDomainEntities, title, imageUrl);
+        return new RecipeModel(CreateAuthorModel(), recipeFields, title, imageUrl);
     }
 
     private AuthorModel CreateAuthorModel()
