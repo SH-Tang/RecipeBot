@@ -16,61 +16,58 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using RecipeBot.Domain.Entities;
+using RecipeBot.Domain.Models;
 using RecipeBot.TestUtils;
 using Xunit;
 
-namespace RecipeBot.Domain.Test.Entities;
+namespace RecipeBot.Domain.Test.Models;
 
-public class AuthorDomainEntityTest
+public class RecipeFieldModelTest
 {
     [Theory]
     [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
-    public void Entity_with_invalid_name_throws_exception(string invalidAuthorName)
+    public void Model_with_invalid_field_name_throws_exception(string invalidFieldName)
     {
         // Setup
-        const string imageUrl = "http://wwww.google.com";
+        const string fieldData = "fieldData";
 
         // Call
-        Action call = () => new AuthorDomainEntity(invalidAuthorName, imageUrl);
+        Action call = () => new RecipeFieldModel(invalidFieldName, fieldData);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
     }
 
     [Theory]
-    [ClassData(typeof(InvalidHttpUrlDataGenerator))]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("     ")]
-    public void Entity_with_invalid_image_url_throws_exception(string invalidImageUrl)
+    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
+    public void Model_with_invalid_field_data_throws_exception(string invalidFieldData)
     {
         // Setup
-        const string authorName = "Author";
+        const string fieldName = "fieldName";
 
         // Call
-        Action call = () => new AuthorDomainEntity(authorName, invalidImageUrl);
+        Action call = () => new RecipeFieldModel(fieldName, invalidFieldData);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
     }
 
     [Theory]
-    [InlineData("authorName")]
-    [InlineData("author name")]
-    [InlineData("author    name")]
-    [InlineData("     authorName")]
-    [InlineData("authorName     ")]
-    public void Entity_with_valid_data_returns_total_length_of_author_name(string authorName)
+    [InlineData("field name", "field data")]
+    [InlineData("field name", "field    data")]
+    [InlineData("field    name", "field data")]
+    [InlineData("     name", "     data")]
+    [InlineData("name     ", "data     ")]
+    public void Model_with_valid_data_returns_total_length_of_properties(string fieldName, string fieldData)
     {
         // Setup
-        const string imageUrl = "http://wwww.google.com";
-        var recipeField = new AuthorDomainEntity(authorName, imageUrl);
+        var recipeField = new RecipeFieldModel(fieldName, fieldData);
 
         // Call
         int totalLength = recipeField.TotalLength;
 
         // Assert
-        Assert.Equal(authorName.Length, totalLength);
+        int expectedLength = fieldName.Length + fieldData.Length;
+        Assert.Equal(expectedLength, totalLength);
     }
 }

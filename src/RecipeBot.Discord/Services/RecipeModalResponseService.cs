@@ -21,9 +21,9 @@ using Discord;
 using RecipeBot.Discord.Exceptions;
 using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Data;
-using RecipeBot.Domain.Entities;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
+using RecipeBot.Domain.Models;
 
 namespace RecipeBot.Discord.Services;
 
@@ -32,17 +32,17 @@ namespace RecipeBot.Discord.Services;
 /// </summary>
 public class RecipeModalResponseService
 {
-    private readonly RecipeDomainEntityFactory recipeDomainEntityFactory;
+    private readonly RecipeModelFactory recipeModelFactory;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeModalResponseService"/>.
     /// </summary>
     /// <param name="limitProvider">The limit provider to retrieve the character limits from.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="limitProvider"/> is <c>null</c>.</exception>
-    public RecipeModalResponseService(IRecipeDomainEntityCharacterLimitProvider limitProvider)
+    public RecipeModalResponseService(IRecipeModelCharacterLimitProvider limitProvider)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
-        recipeDomainEntityFactory = new RecipeDomainEntityFactory(limitProvider);
+        recipeModelFactory = new RecipeModelFactory(limitProvider);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class RecipeModalResponseService
                                 .AddNotes(modal.Notes)
                                 .Build();
 
-        return RecipeEmbedFactory.Create(GetRecipeDomainEntity(recipeData));
+        return RecipeEmbedFactory.Create(GetRecipeModel(recipeData));
     }
 
     /// <summary>
@@ -87,22 +87,22 @@ public class RecipeModalResponseService
                                 .AddImage(attachment)
                                 .Build();
 
-        return RecipeEmbedFactory.Create(GetRecipeDomainEntity(recipeData));
+        return RecipeEmbedFactory.Create(GetRecipeModel(recipeData));
     }
 
     /// <summary>
-    /// Gets the <see cref="RecipeDomainEntity"/> based on the input arguments.
+    /// Gets the <see cref="RecipeModel"/> based on the input arguments.
     /// </summary>
-    /// <param name="recipeData">The <see cref="RecipeData"/> to get the <see cref="RecipeDomainEntity"/> with.</param>
-    /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
-    /// <exception cref="ModalResponseException">Thrown when the entity could not be successfully retrieved.</exception>
-    private RecipeDomainEntity GetRecipeDomainEntity(RecipeData recipeData)
+    /// <param name="recipeData">The <see cref="RecipeData"/> to get the <see cref="RecipeModel"/> with.</param>
+    /// <returns>A <see cref="RecipeModel"/>.</returns>
+    /// <exception cref="ModalResponseException">Thrown when the model could not be successfully retrieved.</exception>
+    private RecipeModel GetRecipeModel(RecipeData recipeData)
     {
         try
         {
-            return recipeDomainEntityFactory.Create(recipeData);
+            return recipeModelFactory.Create(recipeData);
         }
-        catch (DomainEntityCreateException e)
+        catch (ModelCreateException e)
         {
             throw new ModalResponseException(e.Message, e);
         }

@@ -18,15 +18,15 @@
 using System;
 using Common.Utils;
 
-namespace RecipeBot.Domain.Entities;
+namespace RecipeBot.Domain.Models;
 
 /// <summary>
-/// Entity containing author data.
+/// Model containing author data.
 /// </summary>
-public class AuthorDomainEntity
+public class AuthorModel
 {
     /// <summary>
-    /// Creates a new instance of <see cref="AuthorDomainEntity"/>.
+    /// Creates a new instance of <see cref="AuthorModel"/>.
     /// </summary>
     /// <param name="authorName">The name of the author.</param>
     /// <param name="authorImageUrl">The image url of the author.</param>
@@ -35,7 +35,7 @@ public class AuthorDomainEntity
     /// <item>The <paramref name="authorName"/> is <c>null</c>, empty or consists of whitespace only.</item>
     /// <item>The <paramref name="authorImageUrl"/> is an invalid url.</item>
     /// </list></exception>
-    internal AuthorDomainEntity(string authorName, string authorImageUrl)
+    internal AuthorModel(string authorName, string authorImageUrl)
     {
         authorName.IsNotNullOrWhiteSpaces(nameof(authorName));
         UrlValidationHelper.ValidateHttpUrl(authorImageUrl);
@@ -55,7 +55,7 @@ public class AuthorDomainEntity
     public string AuthorImageUrl { get; }
 
     /// <summary>
-    /// Gets the total character length of the entity.
+    /// Gets the total character length of the model.
     /// </summary>
     public int TotalLength => AuthorName.Length;
 }

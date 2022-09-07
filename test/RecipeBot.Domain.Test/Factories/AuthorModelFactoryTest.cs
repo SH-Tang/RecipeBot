@@ -18,25 +18,25 @@
 using System;
 using NSubstitute;
 using RecipeBot.Domain.Data;
-using RecipeBot.Domain.Entities;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
+using RecipeBot.Domain.Models;
 using RecipeBot.TestUtils;
 using Xunit;
 
 namespace RecipeBot.Domain.Test.Factories;
 
-public class AuthorDomainEntityFactoryTest
+public class AuthorModelFactoryTest
 {
     [Fact]
-    public void Creating_entity_with_author_name_with_invalid_character_length_throws_exception()
+    public void Creating_model_with_author_name_with_invalid_character_length_throws_exception()
     {
         // Setup
         const int maximumAuthorNameLength = 10;
 
-        var limitProvider = Substitute.For<IAuthorDomainEntityCharacterLimitProvider>();
+        var limitProvider = Substitute.For<IAuthorModelCharacterLimitProvider>();
         limitProvider.MaximumAuthorNameLength.Returns(maximumAuthorNameLength);
-        var factory = new AuthorDomainEntityFactory(limitProvider);
+        var factory = new AuthorModelFactory(limitProvider);
 
         var authorName = new string('x', maximumAuthorNameLength + 1);
         var authorData = new AuthorData(authorName, "http://www.google.com");
@@ -45,21 +45,21 @@ public class AuthorDomainEntityFactoryTest
         Action call = () => factory.Create(authorData);
 
         // Assert
-        var exception = Assert.Throws<DomainEntityCreateException>(call);
+        var exception = Assert.Throws<ModelCreateException>(call);
         string expectedMessage = $"AuthorName must be less or equal to {maximumAuthorNameLength} characters.";
         Assert.Equal(expectedMessage, exception.Message);
     }
 
     [Theory]
     [ClassData(typeof(InvalidHttpUrlDataGenerator))]
-    public void Creating_entity_with_invalid_author_image_url_throws_exception(string invalidUrl)
+    public void Creating_model_with_invalid_author_image_url_throws_exception(string invalidUrl)
     {
         // Setup
         const int maximumAuthorNameLength = 10;
 
-        var limitProvider = Substitute.For<IAuthorDomainEntityCharacterLimitProvider>();
+        var limitProvider = Substitute.For<IAuthorModelCharacterLimitProvider>();
         limitProvider.MaximumAuthorNameLength.Returns(maximumAuthorNameLength);
-        var factory = new AuthorDomainEntityFactory(limitProvider);
+        var factory = new AuthorModelFactory(limitProvider);
 
         var authorName = new string('x', maximumAuthorNameLength);
         var authorData = new AuthorData(authorName, invalidUrl);
@@ -68,7 +68,7 @@ public class AuthorDomainEntityFactoryTest
         Action call = () => factory.Create(authorData);
 
         // Assert
-        string exceptionMessage = Assert.Throws<DomainEntityCreateException>(call).Message;
+        string exceptionMessage = Assert.Throws<ModelCreateException>(call).Message;
         Assert.False(exceptionMessage.StartsWith("AuthorName must be less or equal to"));
     }
 
@@ -76,24 +76,24 @@ public class AuthorDomainEntityFactoryTest
     [InlineData(8)]
     [InlineData(0)]
     [InlineData(1)]
-    public void Creating_entity_with_valid_data_returns_entity(int authorNameCharacterOffset)
+    public void Creating_model_with_valid_data_returns_model(int authorNameCharacterOffset)
     {
         // Setup
         const int maximumAuthorNameLength = 10;
 
-        var limitProvider = Substitute.For<IAuthorDomainEntityCharacterLimitProvider>();
+        var limitProvider = Substitute.For<IAuthorModelCharacterLimitProvider>();
         limitProvider.MaximumAuthorNameLength.Returns(maximumAuthorNameLength);
-        var factory = new AuthorDomainEntityFactory(limitProvider);
+        var factory = new AuthorModelFactory(limitProvider);
 
         var authorName = new string('x', maximumAuthorNameLength - authorNameCharacterOffset);
         const string authorImageUrl = "http://www.google.com";
         var authorData = new AuthorData(authorName, authorImageUrl);
 
         // Call
-        AuthorDomainEntity entity = factory.Create(authorData);
+        AuthorModel model = factory.Create(authorData);
 
         // Assert
-        Assert.Equal(authorName, entity.AuthorName);
-        Assert.Equal(authorImageUrl, entity.AuthorImageUrl);
+        Assert.Equal(authorName, model.AuthorName);
+        Assert.Equal(authorImageUrl, model.AuthorImageUrl);
     }
 }

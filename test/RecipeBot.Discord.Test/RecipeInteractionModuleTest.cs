@@ -34,7 +34,7 @@ public class RecipeInteractionModuleTest
     {
         // Setup
         var loggingService = Substitute.For<ILoggingService>();
-        var limitProvider = Substitute.For<IRecipeDomainEntityCharacterLimitProvider>();
+        var limitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
         var responseService = new RecipeModalResponseService(limitProvider);
 
         // Call

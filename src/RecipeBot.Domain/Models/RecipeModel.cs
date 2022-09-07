@@ -20,38 +20,38 @@ using System.Collections.Generic;
 using System.Linq;
 using Common.Utils;
 
-namespace RecipeBot.Domain.Entities;
+namespace RecipeBot.Domain.Models;
 
 /// <summary>
-/// Entity containing data for a recipe.
+/// Model containing data for a recipe.
 /// </summary>
-public class RecipeDomainEntity
+public class RecipeModel
 {
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeDomainEntity"/>.
+    /// Creates a new instance of <see cref="RecipeModel"/>.
     /// </summary>
-    /// <param name="authorEntity">The author entity.</param>
-    /// <param name="recipeFieldEntities">The collection of recipe field entities.</param>
+    /// <param name="author">The author.</param>
+    /// <param name="recipeFields">The collection of recipe fields.</param>
     /// <param name="title">The title of the recipe.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter, except <paramref name="title"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="title"/> is <c>null</c>, empty or consists
     /// of whitespaces.</exception>
-    internal RecipeDomainEntity(AuthorDomainEntity authorEntity, IEnumerable<RecipeFieldDomainEntity> recipeFieldEntities, string title)
+    internal RecipeModel(AuthorModel author, IEnumerable<RecipeFieldModel> recipeFields, string title)
     {
-        authorEntity.IsNotNull(nameof(authorEntity));
-        recipeFieldEntities.IsNotNull(nameof(recipeFieldEntities));
+        author.IsNotNull(nameof(author));
+        recipeFields.IsNotNull(nameof(recipeFields));
         title.IsNotNullOrWhiteSpaces(nameof(title));
 
-        AuthorEntity = authorEntity;
-        RecipeFieldEntities = recipeFieldEntities;
+        Author = author;
+        RecipeFields = recipeFields;
         Title = title;
     }
 
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeDomainEntity"/>.
+    /// Creates a new instance of <see cref="RecipeModel"/>.
     /// </summary>
-    /// <param name="authorEntity">The author entity.</param>
-    /// <param name="recipeFieldEntities">The collection of recipe field entities.</param>
+    /// <param name="author">The author.</param>
+    /// <param name="recipeFields">The collection of recipe fields.</param>
     /// <param name="title">The title of the recipe.</param>
     /// <param name="recipeImageUrl">The image url of the recipe.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter except <paramref name="title"/> is <c>null</c>.</exception>
@@ -61,9 +61,8 @@ public class RecipeDomainEntity
     /// <item><paramref name="recipeImageUrl"/> is an invalid url.</item>
     /// </list>
     /// </exception>
-    internal RecipeDomainEntity(AuthorDomainEntity authorEntity, IEnumerable<RecipeFieldDomainEntity> recipeFieldEntities,
-                                string title, string recipeImageUrl)
-        : this(authorEntity, recipeFieldEntities, title)
+    internal RecipeModel(AuthorModel author, IEnumerable<RecipeFieldModel> recipeFields, string title, string recipeImageUrl)
+        : this(author, recipeFields, title)
     {
         UrlValidationHelper.ValidateHttpUrl(recipeImageUrl);
         RecipeImageUrl = recipeImageUrl;
@@ -82,21 +81,21 @@ public class RecipeDomainEntity
     /// <summary>
     /// Gets the author information.
     /// </summary>
-    public AuthorDomainEntity AuthorEntity { get; }
+    public AuthorModel Author { get; }
 
     /// <summary>
     /// Gets the fields the recipe consists of.
     /// </summary>
-    public IEnumerable<RecipeFieldDomainEntity> RecipeFieldEntities { get; }
+    public IEnumerable<RecipeFieldModel> RecipeFields { get; }
 
     /// <summary>
-    /// Gets the total character length of the entity.
+    /// Gets the total character length of the model.
     /// </summary>
     public int TotalLength
     {
         get
         {
-            return Title.Length + AuthorEntity.TotalLength + RecipeFieldEntities.Sum(f => f.TotalLength);
+            return Title.Length + Author.TotalLength + RecipeFields.Sum(f => f.TotalLength);
         }
     }
 }

@@ -29,10 +29,10 @@ namespace Discord.Common.InfoModule;
 /// </summary>
 public class InfoInteractionModule : InteractionModuleBase<SocketInteractionContext>
 {
+    private readonly BotInformationService botInformationService;
+    private readonly DiscordCommandInfoFactory commandInfoFactory;
     private readonly CommandService commandService;
     private readonly InteractionService interactionService;
-    private readonly DiscordCommandInfoFactory commandInfoFactory;
-    private readonly BotInformationService botInformationService;
 
     /// <summary>
     /// Creates a new instance of <see cref="InfoInteractionModule"/>.

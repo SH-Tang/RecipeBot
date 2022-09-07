@@ -18,54 +18,54 @@
 using System;
 using Common.Utils;
 using RecipeBot.Domain.Data;
-using RecipeBot.Domain.Entities;
 using RecipeBot.Domain.Exceptions;
+using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Properties;
 
 namespace RecipeBot.Domain.Factories;
 
 /// <summary>
-/// Factory to create instances of <see cref="AuthorDomainEntity"/>.
+/// Factory to create instances of <see cref="AuthorModel"/>.
 /// </summary>
-public class AuthorDomainEntityFactory
+public class AuthorModelFactory
 {
-    private readonly IAuthorDomainEntityCharacterLimitProvider limitProvider;
+    private readonly IAuthorModelCharacterLimitProvider limitProvider;
 
     /// <summary>
-    /// Creates a new instance of <see cref="AuthorDomainEntityFactory"/>.
+    /// Creates a new instance of <see cref="AuthorModelFactory"/>.
     /// </summary>
     /// <param name="limitProvider">The provider to retrieve the character limits from.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="limitProvider"/> is <c>null</c>.</exception>
-    public AuthorDomainEntityFactory(IAuthorDomainEntityCharacterLimitProvider limitProvider)
+    public AuthorModelFactory(IAuthorModelCharacterLimitProvider limitProvider)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
         this.limitProvider = limitProvider;
     }
 
     /// <summary>
-    /// Creates am <see cref="AuthorDomainEntity"/> based on its input arguments.
+    /// Creates am <see cref="AuthorModel"/> based on its input arguments.
     /// </summary>
-    /// <param name="authorData">The <see cref="AuthorData"/> to create the entity with.</param>
+    /// <param name="authorData">The <see cref="AuthorData"/> to create the model with.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="authorData"/> is <c>null</c>.</exception>
-    /// <exception cref="DomainEntityCreateException">Thrown when the entity could not be successfully created.</exception>
-    public AuthorDomainEntity Create(AuthorData authorData)
+    /// <exception cref="ModelCreateException">Thrown when the model could not be successfully created.</exception>
+    public AuthorModel Create(AuthorData authorData)
     {
         authorData.IsNotNull(nameof(authorData));
 
         int maximumAuthorNameLength = limitProvider.MaximumAuthorNameLength;
         if (authorData.AuthorName.Length > maximumAuthorNameLength)
         {
-            throw new DomainEntityCreateException(string.Format(Resources.Argument_0_must_be_less_or_equal_to_number_of_1_characters,
-                                                                nameof(AuthorData.AuthorName), maximumAuthorNameLength));
+            throw new ModelCreateException(string.Format(Resources.Argument_0_must_be_less_or_equal_to_number_of_1_characters,
+                                                         nameof(AuthorData.AuthorName), maximumAuthorNameLength));
         }
 
         try
         {
-            return new AuthorDomainEntity(authorData.AuthorName, authorData.AuthorImageUrl);
+            return new AuthorModel(authorData.AuthorName, authorData.AuthorImageUrl);
         }
         catch (ArgumentException e)
         {
-            throw new DomainEntityCreateException(e.Message, e);
+            throw new ModelCreateException(e.Message, e);
         }
     }
 }

@@ -29,8 +29,8 @@ namespace RecipeBot.Services;
 /// </summary>
 public class ConsoleLoggingService : ILoggingService
 {
-    private readonly ITimeProvider timeProvider;
     private readonly StringFormatOptions formatOptions;
+    private readonly ITimeProvider timeProvider;
 
     /// <summary>
     /// Creates a new instance of <see cref="ConsoleLoggingService"/>.

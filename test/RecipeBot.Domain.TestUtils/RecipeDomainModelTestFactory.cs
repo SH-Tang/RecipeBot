@@ -19,27 +19,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Common.Utils;
-using RecipeBot.Domain.Entities;
+using RecipeBot.Domain.Models;
 
 namespace RecipeBot.Domain.TestUtils;
 
 /// <summary>
-/// Class which creates instances of <see cref="RecipeDomainEntity"/> that can be used for testing.
+/// Class which creates instances of <see cref="RecipeModel"/> that can be used for testing.
 /// </summary>
-public class RecipeDomainEntityTestFactory
+public class RecipeDomainModelTestFactory
 {
-    private readonly int maxTitleLength;
     private readonly int maxAuthorNameLength;
-    private readonly int maxFieldNameLength;
     private readonly int maxFieldDataLength;
+    private readonly int maxFieldNameLength;
+    private readonly int maxTitleLength;
 
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeDomainEntityTestFactory"/>.
+    /// Creates a new instance of <see cref="RecipeDomainModelTestFactory"/>.
     /// </summary>
     /// <param name="constructionProperties">The <see cref="ConstructionProperties"/> to construct the factory with.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="constructionProperties"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="constructionProperties"/> contains invalid values.</exception>
-    public RecipeDomainEntityTestFactory(ConstructionProperties constructionProperties)
+    public RecipeDomainModelTestFactory(ConstructionProperties constructionProperties)
     {
         constructionProperties.IsNotNull(nameof(constructionProperties));
 
@@ -59,75 +59,75 @@ public class RecipeDomainEntityTestFactory
     }
 
     /// <summary>
-    /// Creates a default <see cref="RecipeDomainEntity"/> without fields and an image.
+    /// Creates a default <see cref="RecipeModel"/> without fields and an image.
     /// </summary>
-    /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
-    public RecipeDomainEntity Create()
+    /// <returns>A <see cref="RecipeModel"/>.</returns>
+    public RecipeModel Create()
     {
-        return CreateRecipeDomainEntity(Enumerable.Empty<RecipeFieldDomainEntity>());
+        return CreateRecipeModel(Enumerable.Empty<RecipeFieldModel>());
     }
 
     /// <summary>
-    /// Creates a default <see cref="RecipeDomainEntity"/> with fields and without an image.
+    /// Creates a default <see cref="RecipeModel"/> with fields and without an image.
     /// </summary>
-    /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
-    public RecipeDomainEntity CreateWithFields()
+    /// <returns>A <see cref="RecipeModel"/>.</returns>
+    public RecipeModel CreateWithFields()
     {
-        return CreateRecipeDomainEntity(new[]
+        return CreateRecipeModel(new[]
         {
-            CreateFieldDomainEntity(1),
-            CreateFieldDomainEntity(2),
-            CreateFieldDomainEntity(3)
+            CreateRecipeFiledModel(1),
+            CreateRecipeFiledModel(2),
+            CreateRecipeFiledModel(3)
         });
     }
 
     /// <summary>
-    /// Creates a default <see cref="RecipeDomainEntity"/> with an image and without fields.
+    /// Creates a default <see cref="RecipeModel"/> with an image and without fields.
     /// </summary>
-    /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
-    public RecipeDomainEntity CreateWithImage()
+    /// <returns>A <see cref="RecipeModel"/>.</returns>
+    public RecipeModel CreateWithImage()
     {
-        return CreateRecipeDomainEntity(Enumerable.Empty<RecipeFieldDomainEntity>(), "https://recipeBot.recipe.image");
+        return CreateRecipeModel(Enumerable.Empty<RecipeFieldModel>(), "https://recipeBot.recipe.image");
     }
 
     /// <summary>
-    /// Creates a default <see cref="RecipeDomainEntity"/> with image and fields.
+    /// Creates a default <see cref="RecipeModel"/> with image and fields.
     /// </summary>
-    /// <returns>A <see cref="RecipeDomainEntity"/>.</returns>
-    public RecipeDomainEntity CreateWithImageAndFields()
+    /// <returns>A <see cref="RecipeModel"/>.</returns>
+    public RecipeModel CreateWithImageAndFields()
     {
-        return CreateRecipeDomainEntity(new[]
+        return CreateRecipeModel(new[]
         {
-            CreateFieldDomainEntity(1),
-            CreateFieldDomainEntity(2),
-            CreateFieldDomainEntity(3)
+            CreateRecipeFiledModel(1),
+            CreateRecipeFiledModel(2),
+            CreateRecipeFiledModel(3)
         }, "https://recipeBot.recipe.image");
     }
 
-    private RecipeDomainEntity CreateRecipeDomainEntity(IEnumerable<RecipeFieldDomainEntity> fieldDomainEntities)
+    private RecipeModel CreateRecipeModel(IEnumerable<RecipeFieldModel> recipeFields)
     {
         string title = GetStringWithRandomLength('x', maxTitleLength);
-        return new RecipeDomainEntity(CreateAuthorDomainEntity(), fieldDomainEntities, title);
+        return new RecipeModel(CreateAuthorModel(), recipeFields, title);
     }
 
-    private RecipeDomainEntity CreateRecipeDomainEntity(IEnumerable<RecipeFieldDomainEntity> fieldDomainEntities, string imageUrl)
+    private RecipeModel CreateRecipeModel(IEnumerable<RecipeFieldModel> recipeFields, string imageUrl)
     {
         string title = GetStringWithRandomLength('x', maxTitleLength);
-        return new RecipeDomainEntity(CreateAuthorDomainEntity(), fieldDomainEntities, title, imageUrl);
+        return new RecipeModel(CreateAuthorModel(), recipeFields, title, imageUrl);
     }
 
-    private AuthorDomainEntity CreateAuthorDomainEntity()
+    private AuthorModel CreateAuthorModel()
     {
         string authorName = GetStringWithRandomLength('+', maxAuthorNameLength);
-        return new AuthorDomainEntity(authorName, "https://recipebot.author.image");
+        return new AuthorModel(authorName, "https://recipebot.author.image");
     }
 
-    private RecipeFieldDomainEntity CreateFieldDomainEntity(int seed)
+    private RecipeFieldModel CreateRecipeFiledModel(int seed)
     {
         string fieldName = GetStringWithRandomLength(seed, '-', maxFieldNameLength);
         string fieldData = GetStringWithRandomLength(seed, '=', maxFieldDataLength);
 
-        return new RecipeFieldDomainEntity(fieldName, fieldData);
+        return new RecipeFieldModel(fieldName, fieldData);
     }
 
     private static string GetStringWithRandomLength(char character, int maximumStringLength)
@@ -143,7 +143,7 @@ public class RecipeDomainEntityTestFactory
     }
 
     /// <summary>
-    /// Class holding construction variables for <see cref="RecipeDomainEntityTestFactory"/>.
+    /// Class holding construction variables for <see cref="RecipeDomainModelTestFactory"/>.
     /// </summary>
     public class ConstructionProperties
     {

@@ -17,25 +17,25 @@
 
 using System;
 using Common.Utils;
-using RecipeBot.Domain.Entities;
 using RecipeBot.Domain.Exceptions;
+using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Properties;
 
 namespace RecipeBot.Domain.Factories;
 
 /// <summary>
-/// Factory to create instances of <see cref="RecipeFieldDomainEntity"/>.
+/// Factory to create instances of <see cref="RecipeFieldModel"/>.
 /// </summary>
-public class RecipeFieldDomainEntityFactory
+public class RecipeFieldModelFactory
 {
-    private readonly IRecipeFieldDomainEntityCharacterLimitProvider limitProvider;
+    private readonly IRecipeFieldModelCharacterLimitProvider limitProvider;
 
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeFieldDomainEntity"/>.
+    /// Creates a new instance of <see cref="RecipeFieldModel"/>.
     /// </summary>
     /// <param name="limitProvider">The provider to retrieve the character limits from.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="limitProvider"/> is <c>null</c>.</exception>         
-    public RecipeFieldDomainEntityFactory(IRecipeFieldDomainEntityCharacterLimitProvider limitProvider)
+    public RecipeFieldModelFactory(IRecipeFieldModelCharacterLimitProvider limitProvider)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
 
@@ -43,13 +43,13 @@ public class RecipeFieldDomainEntityFactory
     }
 
     /// <summary>
-    /// Creates a <see cref="RecipeFieldDomainEntity"/> based on its input arguments.
+    /// Creates a <see cref="RecipeFieldModel"/> based on its input arguments.
     /// </summary>
     /// <param name="fieldName">The name of the field.</param>
     /// <param name="fieldData">The data of the field.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    /// <exception cref="DomainEntityCreateException">Thrown when the entity could not be successfully created.</exception>
-    public RecipeFieldDomainEntity Create(string fieldName, string fieldData)
+    /// <exception cref="ModelCreateException">Thrown when the model could not be successfully created.</exception>
+    public RecipeFieldModel Create(string fieldName, string fieldData)
     {
         fieldName.IsNotNull(nameof(fieldName));
         fieldData.IsNotNull(nameof(fieldData));
@@ -57,22 +57,22 @@ public class RecipeFieldDomainEntityFactory
         int maximumFieldNameLength = limitProvider.MaximumFieldNameLength;
         if (fieldName.Length > maximumFieldNameLength)
         {
-            throw new DomainEntityCreateException(CreateInvalidCharacterLengthExceptionMessage(nameof(fieldName), maximumFieldNameLength));
+            throw new ModelCreateException(CreateInvalidCharacterLengthExceptionMessage(nameof(fieldName), maximumFieldNameLength));
         }
 
         int maximumFieldDataLength = limitProvider.MaximumFieldDataLength;
         if (fieldData.Length > maximumFieldDataLength)
         {
-            throw new DomainEntityCreateException(CreateInvalidCharacterLengthExceptionMessage(nameof(fieldData), maximumFieldDataLength));
+            throw new ModelCreateException(CreateInvalidCharacterLengthExceptionMessage(nameof(fieldData), maximumFieldDataLength));
         }
 
         try
         {
-            return new RecipeFieldDomainEntity(fieldName, fieldData);
+            return new RecipeFieldModel(fieldName, fieldData);
         }
         catch (ArgumentException e)
         {
-            throw new DomainEntityCreateException(e.Message);
+            throw new ModelCreateException(e.Message);
         }
     }
 
