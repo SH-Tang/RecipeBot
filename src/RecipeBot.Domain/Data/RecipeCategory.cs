@@ -25,7 +25,7 @@ public enum RecipeCategory
     /// <summary>
     /// Represents an appetizer.
     /// </summary>
-    Appetizer = 1, 
+    Appetizer = 1,
 
     /// <summary>
     /// Represents a main dish.
@@ -45,5 +45,5 @@ public enum RecipeCategory
     /// <summary>
     /// Represents a dish that does not belong to any category.
     /// </summary>
-    Miscellaneous =5
+    Miscellaneous = 5
 }

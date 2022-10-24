@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoFixture;
 using NSubstitute;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Exceptions;
@@ -171,7 +172,7 @@ public class RecipeModelFactoryTest
 
         // Assert
         var exception = Assert.Throws<ModelCreateException>(call);
-        string expectedMessage = $"RecipeTitle must be less or equal to {recipeCharacterLimitProvider.MaximumTitleLength} characters.";
+        var expectedMessage = $"RecipeTitle must be less or equal to {recipeCharacterLimitProvider.MaximumTitleLength} characters.";
         Assert.Equal(expectedMessage, exception.Message);
     }
 
@@ -216,7 +217,7 @@ public class RecipeModelFactoryTest
         var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
 
         // Precondition
-        int totalCharacterLength = recipeCharacterLimitProvider.MaximumAuthorNameLength +
+        var totalCharacterLength = recipeCharacterLimitProvider.MaximumAuthorNameLength +
                                    recipeCharacterLimitProvider.MaximumTitleLength +
                                    recipeCharacterLimitProvider.MaximumFieldDataLength;
         Assert.True(totalCharacterLength > recipeCharacterLimitProvider.MaximumRecipeLength);
@@ -226,7 +227,7 @@ public class RecipeModelFactoryTest
 
         // Assert
         var exception = Assert.Throws<ModelCreateException>(call);
-        string expectedMessage = $"recipeData must be less or equal to {recipeCharacterLimitProvider.MaximumRecipeLength} characters.";
+        var expectedMessage = $"recipeData must be less or equal to {recipeCharacterLimitProvider.MaximumRecipeLength} characters.";
         Assert.Equal(expectedMessage, exception.Message);
     }
 
@@ -273,15 +274,32 @@ public class RecipeModelFactoryTest
     private static RecipeData CreateRecipeData(IRecipeModelCharacterLimitProvider limitProvider,
                                                int nrOfTitleCharactersOffSet)
     {
-        var authorData = new AuthorData(new string('x', limitProvider.MaximumAuthorNameLength), "http://www.recipeBotImage.com");
-        return new RecipeData(authorData, new string('+', limitProvider.MaximumTitleLength + nrOfTitleCharactersOffSet),
-                              new string('o', limitProvider.MaximumFieldDataLength), new string('#', limitProvider.MaximumFieldDataLength));
+        var fixture = new Fixture();
+        fixture.Register(() => new string('o', limitProvider.MaximumFieldDataLength));
+
+        AuthorData? authorData = fixture.Build<AuthorData>()
+                                        .FromFactory(() => new AuthorData(new string('x', limitProvider.MaximumAuthorNameLength), "http://www.recipeBotImage.com"))
+                                        .Create();
+        return fixture.Build<RecipeData>()
+                      .FromFactory<RecipeCategory, string>((category, field) => new RecipeData(authorData, category, new string('+', limitProvider.MaximumTitleLength + nrOfTitleCharactersOffSet),
+                                                                                               field, field))
+                      .Without(d => d.ImageUrl)
+                      .Without(d => d.AdditionalNotes)
+                      .Create();
     }
 
     private static RecipeData CreateRecipeData(IRecipeModelCharacterLimitProvider limitProvider)
     {
-        var authorData = new AuthorData(new string('x', limitProvider.MaximumAuthorNameLength), "http://www.recipeBotImage.com");
-        return new RecipeData(authorData, new string('+', limitProvider.MaximumTitleLength),
-                              new string('o', limitProvider.MaximumFieldDataLength), new string('#', limitProvider.MaximumFieldDataLength));
+        var fixture = new Fixture();
+        fixture.Register(() => new string('o', limitProvider.MaximumFieldDataLength));
+
+        AuthorData? authorData = fixture.Build<AuthorData>()
+                                        .FromFactory(() => new AuthorData(new string('x', limitProvider.MaximumAuthorNameLength), "http://www.recipeBotImage.com"))
+                                        .Create();
+        return fixture.Build<RecipeData>()
+                      .FromFactory<RecipeCategory, string>((category, field) => new RecipeData(authorData, category, new string('+', limitProvider.MaximumTitleLength), field, field))
+                      .Without(d => d.ImageUrl)
+                      .Without(d => d.AdditionalNotes)
+                      .Create();
     }
 }

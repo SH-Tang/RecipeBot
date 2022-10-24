@@ -16,6 +16,8 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.ComponentModel;
+using AutoFixture;
 using RecipeBot.Domain.Data;
 using RecipeBot.TestUtils;
 using Xunit;
@@ -24,6 +26,25 @@ namespace RecipeBot.Domain.Test.Data;
 
 public class RecipeDataTest
 {
+    [Fact]
+    public void Given_recipe_data_with_invalid_recipe_category_throws_exception()
+    {
+        // Setup
+        const string recipeTitle = "Recipe title";
+        const string recipeIngredients = "My ingredients";
+        const string cookingSteps = "My recipe steps";
+        const RecipeCategory category = (RecipeCategory) (-1);
+
+        var fixture = new Fixture();
+        AuthorData authorData = CreateValidAuthorData(fixture);
+
+        // Call
+        Action call = () => new RecipeData(authorData, category, recipeTitle, recipeIngredients, cookingSteps);
+
+        // Assert
+        Assert.Throws<InvalidEnumArgumentException>(call);
+    }
+
     [Theory]
     [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
     public void Given_recipe_data_with_invalid_recipe_title_throws_exception(string invalidRecipeTitle)
@@ -32,8 +53,12 @@ public class RecipeDataTest
         const string recipeIngredients = "My ingredients";
         const string cookingSteps = "My recipe steps";
 
+        var fixture = new Fixture();
+        var category = fixture.Create<RecipeCategory>();
+        AuthorData authorData = CreateValidAuthorData(fixture);
+
         // Call
-        Action call = () => new RecipeData(CreateValidAuthorData(), invalidRecipeTitle, recipeIngredients, cookingSteps);
+        Action call = () => new RecipeData(authorData, category, invalidRecipeTitle, recipeIngredients, cookingSteps);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
@@ -47,8 +72,12 @@ public class RecipeDataTest
         const string recipeTitle = "Recipe title";
         const string cookingSteps = "My recipe steps";
 
+        var fixture = new Fixture();
+        var category = fixture.Create<RecipeCategory>();
+        AuthorData authorData = CreateValidAuthorData(fixture);
+
         // Call
-        Action call = () => new RecipeData(CreateValidAuthorData(), recipeTitle, invalidRecipeIngredients, cookingSteps);
+        Action call = () => new RecipeData(authorData, category, recipeTitle, invalidRecipeIngredients, cookingSteps);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
@@ -62,17 +91,21 @@ public class RecipeDataTest
         const string recipeTitle = "Recipe title";
         const string recipeIngredients = "My ingredients";
 
+        var fixture = new Fixture();
+        var category = fixture.Create<RecipeCategory>();
+        AuthorData authorData = CreateValidAuthorData(fixture);
+
         // Call
-        Action call = () => new RecipeData(CreateValidAuthorData(), recipeTitle, recipeIngredients, invalidCookingSteps);
+        Action call = () => new RecipeData(authorData, category, recipeTitle, recipeIngredients, invalidCookingSteps);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
     }
 
-    private static AuthorData CreateValidAuthorData()
+    private static AuthorData CreateValidAuthorData(Fixture fixture)
     {
-        const string authorName = "Recipe author";
-        const string authorImageUrl = "https://AuthorImage.url";
-        return new AuthorData(authorName, authorImageUrl);
+        return fixture.Build<AuthorData>()
+                      .FromFactory<string>(name => new AuthorData(name, "http://www.recipeBotImage.com"))
+                      .Create();
     }
 }

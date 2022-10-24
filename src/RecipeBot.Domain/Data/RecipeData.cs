@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.ComponentModel;
 using Common.Utils;
 
 namespace RecipeBot.Domain.Data;
@@ -29,20 +30,25 @@ public class RecipeData
     /// Creates a new instance of <see cref="RecipeData"/>.
     /// </summary>
     /// <param name="authorData">The <see cref="Data.AuthorData"/>.</param>
+    /// <param name="category">The <see cref="RecipeCategory"/> the recipe belongs to.</param>
     /// <param name="recipeTitle">The title of the recipe.</param>
     /// <param name="recipeIngredients">The ingredients of the recipe.</param>
     /// <param name="cookingSteps">The cooking steps of the recipe.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="authorData"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="recipeTitle"/>, <paramref name="recipeIngredients"/>
     /// or <paramref name="cookingSteps"/> is <c>null</c> or consists of whitespaces.</exception>
-    public RecipeData(AuthorData authorData, string recipeTitle, string recipeIngredients, string cookingSteps)
+    /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid <see cref="RecipeCategory"/>.</exception>
+    public RecipeData(AuthorData authorData, RecipeCategory category, string recipeTitle, string recipeIngredients,
+                      string cookingSteps)
     {
         authorData.IsNotNull(nameof(authorData));
+        category.IsValidEnum(nameof(category));
         recipeTitle.IsNotNullOrWhiteSpaces(nameof(recipeTitle));
         recipeIngredients.IsNotNullOrWhiteSpaces(nameof(recipeIngredients));
         cookingSteps.IsNotNullOrWhiteSpaces(nameof(cookingSteps));
 
         AuthorData = authorData;
+        Category = category;
         RecipeTitle = recipeTitle;
         RecipeIngredients = recipeIngredients;
         CookingSteps = cookingSteps;
@@ -52,6 +58,11 @@ public class RecipeData
     /// Gets the <see cref="Data.AuthorData"/>.
     /// </summary>
     public AuthorData AuthorData { get; }
+
+    /// <summary>
+    /// Gets the <see cref="RecipeCategory"/>.
+    /// </summary>
+    public RecipeCategory Category { get; }
 
     /// <summary>
     /// Gets the title of the recipe.
