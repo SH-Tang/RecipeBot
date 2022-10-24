@@ -23,6 +23,7 @@ using Discord.Common;
 using Discord.Common.Utils;
 using Discord.Interactions;
 using Discord.WebSocket;
+using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Exceptions;
 using RecipeBot.Discord.Properties;
 using RecipeBot.Discord.Services;
@@ -56,7 +57,8 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
     }
 
     [SlashCommand("recipe", "Tell us about your recipe")]
-    public async Task FormatRecipe([Summary("image", "The image of the recipe result (optional)")] IAttachment? attachment = null)
+    public async Task FormatRecipe([Summary("category", "The category the recipe belongs to")] RecipeCategory category, 
+                                   [Summary("image", "The image of the recipe result (optional)")] IAttachment? attachment = null)
     {
         if (attachment != null && !attachment.IsImage())
         {
