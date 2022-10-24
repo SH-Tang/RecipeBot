@@ -42,7 +42,7 @@ public class RecipeDataBuilder
     /// or <paramref name="cookingSteps"/> is <c>null</c> or consists of whitespaces.</exception>
     public RecipeDataBuilder(AuthorData authorData, string recipeTitle, string recipeIngredients, string cookingSteps)
     {
-        data = new RecipeData(authorData, recipeTitle, recipeIngredients, cookingSteps);
+        data = new RecipeData(authorData, RecipeCategory.Other, recipeTitle, recipeIngredients, cookingSteps);
     }
 
     /// <summary>
