@@ -31,10 +31,10 @@ public enum RecipeCategory
     Appetizer,
 
     /// <summary>
-    /// Represents a main dish.
+    /// Represents a main course.
     /// </summary>
-    [ChoiceDisplay("Main dish")]
-    MainDish,
+    [ChoiceDisplay("Main course")]
+    MainCourse,
 
     /// <summary>
     /// Represents a dessert.
@@ -45,12 +45,12 @@ public enum RecipeCategory
     /// <summary>
     /// Represents a side dish.
     /// </summary>
-    [ChoiceDisplay("Side dish")]
+    [ChoiceDisplay("Side")]
     Side,
 
     /// <summary>
     /// Represents a dish that does not belong to any category.
     /// </summary>
-    [ChoiceDisplay("Miscellaneous")]
-    Miscellaneous
+    [ChoiceDisplay("Other")]
+    Other
 }
