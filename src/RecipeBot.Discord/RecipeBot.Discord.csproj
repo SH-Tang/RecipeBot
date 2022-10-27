@@ -11,6 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>$(AssemblyName).Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Common.Utils\Common.Utils.csproj" />
     <ProjectReference Include="..\Discord.Common\Discord.Common.csproj" />
     <ProjectReference Include="..\RecipeBot.Domain\RecipeBot.Domain.csproj" />

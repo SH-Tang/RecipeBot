@@ -29,14 +29,14 @@ public class ModalResponseException : Exception
     /// <summary>
     /// Initializes a new instance of the <see cref="ModalResponseException"/> class.
     /// </summary>
-    public ModalResponseException() {}
+    internal ModalResponseException() {}
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ModalResponseException"/> class 
     /// with a specified error message.
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
-    public ModalResponseException(string message)
+    internal ModalResponseException(string message)
         : base(message) {}
 
     /// <summary>
@@ -46,7 +46,7 @@ public class ModalResponseException : Exception
     /// <param name="message">The error message that explains the reason for the exception.</param>
     /// <param name="innerException">The exception that is the cause of the current exception,
     /// or <c>null</c> if no inner exception is specified.</param>
-    public ModalResponseException(string message, Exception innerException) : base(message, innerException) {}
+    internal ModalResponseException(string message, Exception innerException) : base(message, innerException) {}
 
     /// <summary>
     /// Initializes a new instance of <see cref="ModalResponseException"/> with

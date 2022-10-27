@@ -26,7 +26,7 @@ namespace RecipeBot.Discord.Services;
 /// <summary>
 /// Builder to create instances of <see cref="RecipeData"/>.
 /// </summary>
-public class RecipeDataBuilder
+internal class RecipeDataBuilder
 {
     private readonly RecipeData data;
 

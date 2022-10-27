@@ -28,7 +28,7 @@ namespace RecipeBot.Discord.Services;
 /// <summary>
 /// Factory to create instances of <see cref="Embed"/> for recipes.
 /// </summary>
-public static class RecipeEmbedFactory
+internal static class RecipeEmbedFactory
 {
     /// <summary>
     /// Creates an <see cref="Embed"/> based on its input arguments.
