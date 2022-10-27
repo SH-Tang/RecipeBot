@@ -16,10 +16,13 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.ComponentModel;
 using Common.Utils;
 using Discord;
 using Discord.Common.Utils;
+using RecipeBot.Discord.Converter;
 using RecipeBot.Domain.Data;
+using DiscordRecipeCategory = RecipeBot.Discord.Data.RecipeCategory;
 
 namespace RecipeBot.Discord.Services;
 
@@ -34,15 +37,18 @@ internal class RecipeDataBuilder
     /// Creates a new instance of <see cref="RecipeDataBuilder"/>.
     /// </summary>
     /// <param name="authorData">The <see cref="AuthorData"/>.</param>
+    /// <param name="category">The <see cref="DiscordRecipeCategory"/>.</param>
     /// <param name="recipeTitle">The title of the recipe.</param>
     /// <param name="recipeIngredients">The ingredients of the recipe.</param>
     /// <param name="cookingSteps">The cooking steps of the recipe.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="authorData"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="recipeTitle"/>, <paramref name="recipeIngredients"/>
     /// or <paramref name="cookingSteps"/> is <c>null</c> or consists of whitespaces.</exception>
-    public RecipeDataBuilder(AuthorData authorData, string recipeTitle, string recipeIngredients, string cookingSteps)
+    /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is invalid.</exception>
+    public RecipeDataBuilder(AuthorData authorData, DiscordRecipeCategory category, 
+                             string recipeTitle, string recipeIngredients, string cookingSteps)
     {
-        data = new RecipeData(authorData, RecipeCategory.Other, recipeTitle, recipeIngredients, cookingSteps);
+        data = new RecipeData(authorData, RecipeCategoryConverter.ConvertFrom(category), recipeTitle, recipeIngredients, cookingSteps);
     }
 
     /// <summary>

@@ -17,6 +17,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using AutoFixture;
 using Discord;
 using Discord.Common.Utils;
 using NSubstitute;
@@ -24,22 +26,77 @@ using RecipeBot.Discord.Services;
 using RecipeBot.Domain.Data;
 using RecipeBot.TestUtils;
 using Xunit;
+using DiscordRecipeCategory = RecipeBot.Discord.Data.RecipeCategory;
 
 namespace RecipeBot.Discord.Test.Services;
 
 public class RecipeDataBuilderTest
 {
+    [Theory]
+    [InlineData(DiscordRecipeCategory.Dessert, RecipeCategory.Dessert)]
+    [InlineData(DiscordRecipeCategory.Fish, RecipeCategory.Fish)]
+    [InlineData(DiscordRecipeCategory.Meat, RecipeCategory.Meat)]
+    [InlineData(DiscordRecipeCategory.Pastry, RecipeCategory.Pastry)]
+    [InlineData(DiscordRecipeCategory.Snack, RecipeCategory.Snack)]
+    [InlineData(DiscordRecipeCategory.Vegan, RecipeCategory.Vegan)]
+    [InlineData(DiscordRecipeCategory.Vegetarian, RecipeCategory.Vegetarian)]
+    [InlineData(DiscordRecipeCategory.Drinks, RecipeCategory.Drinks)]
+    [InlineData(DiscordRecipeCategory.Other, RecipeCategory.Other)]
+    public void Builder_with_recipe_category_builds_recipe_data_with_expected_category(
+        DiscordRecipeCategory discordCategory, RecipeCategory expectedCategory)
+    {
+        // Setup
+        var fixture = new Fixture();
+
+        var authorData = fixture.Create<AuthorData>();
+        var recipeTitle = fixture.Create<string>();
+        var recipeIngredients = fixture.Create<string>();
+        var cookingSteps = fixture.Create<string>();
+
+        var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
+
+        // Call
+        RecipeData result = builder.Build();
+
+        // Assert
+        Assert.Equal(expectedCategory, result.Category);
+    }
+
+    [Fact]
+    public void Builder_with_invalid_recipe_category_throws_exception()
+    {
+        // Setup
+        var fixture = new Fixture();
+
+        var authorData = fixture.Create<AuthorData>();
+        var recipeTitle = fixture.Create<string>();
+        var recipeIngredients = fixture.Create<string>();
+        var cookingSteps = fixture.Create<string>();
+
+        const DiscordRecipeCategory discordCategory = (DiscordRecipeCategory) (-1);
+
+
+        // Call
+        Action call = () => new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
+
+
+        // Assert
+        Assert.Throws<InvalidEnumArgumentException>(call);
+    }
+
     [Fact]
     public void Builder_without_adding_notes_and_attachment_then_build_recipe_data_without_notes_and_image_url()
     {
         // Setup
-        AuthorData authorData = CreateValidAuthorData();
+        var fixture = new Fixture();
 
-        const string recipeTitle = "Recipe title";
-        const string recipeIngredients = "My ingredients";
-        const string cookingSteps = "My recipe steps";
+        var authorData = fixture.Create<AuthorData>();
+        var discordCategory = fixture.Create<DiscordRecipeCategory>();
+        var recipeTitle = fixture.Create<string>();
+        var recipeIngredients = fixture.Create<string>();
+        var cookingSteps = fixture.Create<string>();
 
-        var builder = new RecipeDataBuilder(authorData, recipeTitle, recipeIngredients, cookingSteps);
+        var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
 
         // Call
         RecipeData result = builder.Build();
@@ -58,13 +115,15 @@ public class RecipeDataBuilderTest
     public void Builder_when_adding_notes_then_build_recipe_data_with_notes(string notes)
     {
         // Setup
-        AuthorData authorData = CreateValidAuthorData();
+        var fixture = new Fixture();
 
-        const string recipeTitle = "Recipe title";
-        const string recipeIngredients = "My ingredients";
-        const string cookingSteps = "My recipe steps";
+        var authorData = fixture.Create<AuthorData>();
+        var discordCategory = fixture.Create<DiscordRecipeCategory>();
+        var recipeTitle = fixture.Create<string>();
+        var recipeIngredients = fixture.Create<string>();
+        var cookingSteps = fixture.Create<string>();
 
-        var builder = new RecipeDataBuilder(authorData, recipeTitle, recipeIngredients, cookingSteps);
+        var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
 
         // Call
         RecipeData result = builder.AddNotes(notes)
@@ -81,12 +140,15 @@ public class RecipeDataBuilderTest
         (IAttachment attachment, string expectedRecipeImageUrl)
     {
         // Setup
-        AuthorData authorData = CreateValidAuthorData();
+        var fixture = new Fixture();
 
-        const string recipeTitle = "Recipe title";
-        const string recipeIngredients = "My ingredients";
-        const string cookingSteps = "My recipe steps";
-        var builder = new RecipeDataBuilder(authorData, recipeTitle, recipeIngredients, cookingSteps);
+        var authorData = fixture.Create<AuthorData>();
+        var discordCategory = fixture.Create<DiscordRecipeCategory>();
+        var recipeTitle = fixture.Create<string>();
+        var recipeIngredients = fixture.Create<string>();
+        var cookingSteps = fixture.Create<string>();
+
+        var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
 
         // Call
         RecipeData result = builder.AddImage(attachment)
@@ -106,18 +168,21 @@ public class RecipeDataBuilderTest
         var attachment = Substitute.For<IAttachment>();
         attachment.ContentType.Returns(invalidContentType);
 
-        AuthorData authorData = CreateValidAuthorData();
+        var fixture = new Fixture();
 
-        const string recipeTitle = "Recipe title";
-        const string recipeIngredients = "My ingredients";
-        const string cookingSteps = "My recipe steps";
-        var builder = new RecipeDataBuilder(authorData, recipeTitle, recipeIngredients, cookingSteps);
+        var authorData = fixture.Create<AuthorData>();
+        var discordCategory = fixture.Create<DiscordRecipeCategory>();
+        var recipeTitle = fixture.Create<string>();
+        var recipeIngredients = fixture.Create<string>();
+        var cookingSteps = fixture.Create<string>();
+
+        var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
 
         // Precondition
         Assert.False(attachment.IsImage());
 
         // Call
-        Func<RecipeDataBuilder> call = () => builder.AddImage(attachment);
+        Action call = () => builder.AddImage(attachment);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
@@ -141,14 +206,6 @@ public class RecipeDataBuilderTest
             attachment,
             recipeImageUrl
         };
-    }
-
-    private static AuthorData CreateValidAuthorData()
-    {
-        const string authorName = "Recipe author";
-        const string authorImageUrl = "https://AuthorImage.url";
-        var authorData = new AuthorData(authorName, authorImageUrl);
-        return authorData;
     }
 
     private static void AssertRecipeCommonProperties(
