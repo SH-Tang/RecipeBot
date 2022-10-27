@@ -25,32 +25,47 @@ namespace RecipeBot.Discord.Data;
 public enum RecipeCategory
 {
     /// <summary>
-    /// Represents an appetizer.
+    /// Represents a recipe based on meat.
     /// </summary>
-    [ChoiceDisplay("Appetizer")]
-    Appetizer,
+    [ChoiceDisplay("Meat")] Meat,
 
     /// <summary>
-    /// Represents a main course.
+    /// Represents a recipe based on fish.
     /// </summary>
-    [ChoiceDisplay("Main course")]
-    MainCourse,
+    [ChoiceDisplay("Fish")] Fish,
 
     /// <summary>
-    /// Represents a dessert.
+    /// Represents a recipe for a vegetarian dish.
     /// </summary>
-    [ChoiceDisplay("Dessert")]
-    Dessert,
+    [ChoiceDisplay("Vegetarian")] Vegetarian,
 
     /// <summary>
-    /// Represents a side dish.
+    /// Represents a recipe for a vegan dish.
     /// </summary>
-    [ChoiceDisplay("Side")]
-    Side,
+    [ChoiceDisplay("Vegan")] Vegan,
+
+    /// <summary>
+    /// Represents a recipe for a drink.
+    /// </summary>
+    [ChoiceDisplay("Drinks")] Drinks,
+
+    /// <summary>
+    /// Represents a recipe for a pastry dish.
+    /// </summary>
+    [ChoiceDisplay("Pasty")] Pastry,
+
+    /// <summary>
+    /// Represents a recipe for a dessert.
+    /// </summary>
+    [ChoiceDisplay("Dessert")] Dessert,
+
+    /// <summary>
+    /// Represents a recipe for a snack.
+    /// </summary>
+    [ChoiceDisplay("Snack")] Snack,
 
     /// <summary>
     /// Represents a dish that does not belong to any category.
     /// </summary>
-    [ChoiceDisplay("Other")]
-    Other
+    [ChoiceDisplay("Other")] Other
 }

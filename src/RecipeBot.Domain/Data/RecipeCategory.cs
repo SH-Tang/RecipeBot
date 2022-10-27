@@ -18,32 +18,52 @@
 namespace RecipeBot.Domain.Data;
 
 /// <summary>
-/// Enum to indicate which category the recipe belongs to.
+/// Enum to indicate which category the recipe is based for.
 /// </summary>
 public enum RecipeCategory
 {
     /// <summary>
-    /// Represents an appetizer.
-    /// </summary>
-    Appetizer = 1,
-
-    /// <summary>
-    /// Represents a main course.
-    /// </summary>
-    MainCourse = 2,
-
-    /// <summary>
-    /// Represents a dessert.
-    /// </summary>
-    Dessert = 3,
-
-    /// <summary>
-    /// Represents a side dish.
-    /// </summary>
-    Side = 4,
-
-    /// <summary>
     /// Represents a dish that does not belong to any category.
     /// </summary>
-    Other = 5
+    Other = 1,
+
+    /// <summary>
+    /// Represents a recipe based on fish.
+    /// </summary>
+    Fish = 2,
+
+    /// <summary>
+    /// Represents a recipe based on meat.
+    /// </summary>
+    Meat = 3,
+
+    /// <summary>
+    /// Represents a recipe for a drink.
+    /// </summary>
+    Drinks = 4,
+
+    /// <summary>
+    /// Represents a recipe for a pastry dish.
+    /// </summary>
+    Pastry = 5,
+
+    /// <summary>
+    /// Represents a recipe for a dessert.
+    /// </summary>
+    Dessert = 6,
+
+    /// <summary>
+    /// Represents a recipe for a snack.
+    /// </summary>
+    Snack = 7,
+
+    /// <summary>
+    /// Represents a recipe for a vegetarian dish.
+    /// </summary>
+    Vegetarian = 8,
+
+    /// <summary>
+    /// Represents a recipe for a vegan dish.
+    /// </summary>
+    Vegan = 9
 }
