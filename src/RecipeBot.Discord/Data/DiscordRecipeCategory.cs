@@ -22,7 +22,7 @@ namespace RecipeBot.Discord.Data;
 /// <summary>
 /// Enum to indicate which category the recipe belongs to.
 /// </summary>
-public enum RecipeCategory
+public enum DiscordRecipeCategory
 {
     /// <summary>
     /// Represents a recipe based on meat.

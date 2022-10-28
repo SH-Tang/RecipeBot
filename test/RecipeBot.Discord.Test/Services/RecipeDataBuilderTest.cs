@@ -22,11 +22,11 @@ using AutoFixture;
 using Discord;
 using Discord.Common.Utils;
 using NSubstitute;
+using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Services;
 using RecipeBot.Domain.Data;
 using RecipeBot.TestUtils;
 using Xunit;
-using DiscordRecipeCategory = RecipeBot.Discord.Data.RecipeCategory;
 
 namespace RecipeBot.Discord.Test.Services;
 

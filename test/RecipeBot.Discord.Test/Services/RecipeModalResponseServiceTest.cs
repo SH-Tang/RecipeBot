@@ -36,7 +36,7 @@ public class RecipeModalResponseServiceTest
     public void Recipe_with_valid_data_and_invalid_category_throws_exception()
     {
         // Setup
-        const RecipeCategory category = (RecipeCategory) (-1);
+        const DiscordRecipeCategory category = (DiscordRecipeCategory) (-1);
 
         var user = Substitute.For<IUser>();
         user.Username.Returns("Recipe author");
@@ -69,7 +69,7 @@ public class RecipeModalResponseServiceTest
     {
         // Setup
         var fixture = new Fixture();
-        var category = fixture.Create<RecipeCategory>();
+        var category = fixture.Create<DiscordRecipeCategory>();
 
         var user = Substitute.For<IUser>();
         user.Username.Returns("Recipe author");
@@ -104,7 +104,7 @@ public class RecipeModalResponseServiceTest
     [Theory]
     [MemberData(nameof(GetRecipeCategoriesAndColor))]
     public void Recipe_with_valid_data_returns_expected_response(
-        RecipeCategory category, Color expectedColor)
+        DiscordRecipeCategory category, Color expectedColor)
     {
         // Setup
         const string authorName = "Recipe author";
@@ -142,7 +142,7 @@ public class RecipeModalResponseServiceTest
     {
         // Setup
         var fixture = new Fixture();
-        var category = fixture.Create<RecipeCategory>();
+        var category = fixture.Create<DiscordRecipeCategory>();
 
         var user = Substitute.For<IUser>();
         user.Username.Returns("Recipe author");
@@ -183,7 +183,7 @@ public class RecipeModalResponseServiceTest
     public void Recipe_with_valid_attachment_and_valid_data_and_invalid_category_throws_exception()
     {
         // Setup
-        const RecipeCategory category = (RecipeCategory) (-1);
+        const DiscordRecipeCategory category = (DiscordRecipeCategory) (-1);
 
         var user = Substitute.For<IUser>();
         user.Username.Returns("Recipe author");
@@ -218,7 +218,7 @@ public class RecipeModalResponseServiceTest
     [Theory]
     [MemberData(nameof(GetRecipeCategoriesAndColor))]
     public void Recipe_with_valid_data_and_attachment_returns_expected_response(
-        RecipeCategory category, Color expectedColor)
+        DiscordRecipeCategory category, Color expectedColor)
     {
         // Setup
         const string authorName = "Recipe author";
@@ -304,49 +304,49 @@ public class RecipeModalResponseServiceTest
     {
         yield return new object[]
         {
-            RecipeCategory.Meat,
+            DiscordRecipeCategory.Meat,
             new Color(250, 85, 87)
         };
         
         yield return new object[]
         {
-            RecipeCategory.Fish,
+            DiscordRecipeCategory.Fish,
             new Color(141, 223, 220)
         };
         
         yield return new object[]
         {
-            RecipeCategory.Vegetarian,
+            DiscordRecipeCategory.Vegetarian,
             new Color(206, 221, 85)
         };
         yield return new object[]
         {
-            RecipeCategory.Vegan,
+            DiscordRecipeCategory.Vegan,
             new Color(104, 115, 57)
         };
         yield return new object[]
         {
-            RecipeCategory.Drinks,
+            DiscordRecipeCategory.Drinks,
             new Color(175, 234, 224)
         };
         yield return new object[]
         {
-            RecipeCategory.Pastry,
+            DiscordRecipeCategory.Pastry,
             new Color(250, 207, 113)
         };
         yield return new object[]
         {
-            RecipeCategory.Dessert,
+            DiscordRecipeCategory.Dessert,
             new Color(252, 238, 190)
         };
         yield return new object[]
         {
-            RecipeCategory.Snack,
+            DiscordRecipeCategory.Snack,
             new Color(249, 162, 114)
         };
         yield return new object[]
         {
-            RecipeCategory.Other,
+            DiscordRecipeCategory.Other,
             new Color(204, 204, 203)
         };
     }

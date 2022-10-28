@@ -19,13 +19,13 @@ using System;
 using System.ComponentModel;
 using Common.Utils;
 using Discord;
+using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Exceptions;
 using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Models;
-using DiscordRecipeCategory = RecipeBot.Discord.Data.RecipeCategory;
 
 namespace RecipeBot.Discord.Services;
 

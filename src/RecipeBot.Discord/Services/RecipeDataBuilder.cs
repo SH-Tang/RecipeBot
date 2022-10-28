@@ -21,8 +21,8 @@ using Common.Utils;
 using Discord;
 using Discord.Common.Utils;
 using RecipeBot.Discord.Converters;
+using RecipeBot.Discord.Data;
 using RecipeBot.Domain.Data;
-using DiscordRecipeCategory = RecipeBot.Discord.Data.RecipeCategory;
 
 namespace RecipeBot.Discord.Services;
 

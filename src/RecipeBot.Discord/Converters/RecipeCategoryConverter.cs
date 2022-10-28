@@ -19,8 +19,8 @@ using System;
 using System.ComponentModel;
 using Common.Utils;
 using Discord;
+using RecipeBot.Discord.Data;
 using RecipeBot.Domain.Data;
-using DiscordRecipeCategory = RecipeBot.Discord.Data.RecipeCategory;
 
 namespace RecipeBot.Discord.Converters;
 
