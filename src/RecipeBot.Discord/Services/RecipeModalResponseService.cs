@@ -62,9 +62,10 @@ public class RecipeModalResponseService
         user.IsNotNull(nameof(user));
 
         var authorData = new AuthorData(user.Username, user.GetAvatarUrl());
-        Func<RecipeData> getRecipeDataFunc = () => new RecipeDataBuilder(authorData, recipeCategory, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
-                                                   .AddNotes(modal.Notes)
-                                                   .Build();
+        Func<RecipeData> getRecipeDataFunc =
+            () => new RecipeDataBuilder(authorData, recipeCategory, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
+                  .AddNotes(modal.Notes)
+                  .Build();
 
         return RecipeEmbedFactory.Create(GetRecipeModel(getRecipeDataFunc));
     }
@@ -86,10 +87,11 @@ public class RecipeModalResponseService
         user.IsNotNull(nameof(user));
 
         var authorData = new AuthorData(user.Username, user.GetAvatarUrl());
-        Func<RecipeData> getRecipeDataFunc = () => new RecipeDataBuilder(authorData, recipeCategory, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
-                                                   .AddNotes(modal.Notes)
-                                                   .AddImage(attachment)
-                                                   .Build();
+        Func<RecipeData> getRecipeDataFunc =
+            () => new RecipeDataBuilder(authorData, recipeCategory, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
+                  .AddNotes(modal.Notes)
+                  .AddImage(attachment)
+                  .Build();
 
         return RecipeEmbedFactory.Create(GetRecipeModel(getRecipeDataFunc));
     }

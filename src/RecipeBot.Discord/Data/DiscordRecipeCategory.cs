@@ -27,45 +27,54 @@ public enum DiscordRecipeCategory
     /// <summary>
     /// Represents a recipe based on meat.
     /// </summary>
-    [ChoiceDisplay("Meat")] Meat,
+    [ChoiceDisplay("Meat")]
+    Meat,
 
     /// <summary>
     /// Represents a recipe based on fish.
     /// </summary>
-    [ChoiceDisplay("Fish")] Fish,
+    [ChoiceDisplay("Fish")]
+    Fish,
 
     /// <summary>
     /// Represents a recipe for a vegetarian dish.
     /// </summary>
-    [ChoiceDisplay("Vegetarian")] Vegetarian,
+    [ChoiceDisplay("Vegetarian")]
+    Vegetarian,
 
     /// <summary>
     /// Represents a recipe for a vegan dish.
     /// </summary>
-    [ChoiceDisplay("Vegan")] Vegan,
+    [ChoiceDisplay("Vegan")]
+    Vegan,
 
     /// <summary>
     /// Represents a recipe for a drink.
     /// </summary>
-    [ChoiceDisplay("Drinks")] Drinks,
+    [ChoiceDisplay("Drinks")]
+    Drinks,
 
     /// <summary>
     /// Represents a recipe for a pastry dish.
     /// </summary>
-    [ChoiceDisplay("Pasty")] Pastry,
+    [ChoiceDisplay("Pastry")]
+    Pastry,
 
     /// <summary>
     /// Represents a recipe for a dessert.
     /// </summary>
-    [ChoiceDisplay("Dessert")] Dessert,
+    [ChoiceDisplay("Dessert")]
+    Dessert,
 
     /// <summary>
     /// Represents a recipe for a snack.
     /// </summary>
-    [ChoiceDisplay("Snack")] Snack,
+    [ChoiceDisplay("Snack")]
+    Snack,
 
     /// <summary>
     /// Represents a dish that does not belong to any category.
     /// </summary>
-    [ChoiceDisplay("Other")] Other
+    [ChoiceDisplay("Other")]
+    Other
 }
