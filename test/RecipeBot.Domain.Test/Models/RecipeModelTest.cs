@@ -18,6 +18,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoFixture;
+using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
 using RecipeBot.TestUtils;
 using Xunit;
@@ -33,10 +35,12 @@ public class RecipeModelTest
     public void Model_with_invalid_recipe_title_throws_exception(string invalidRecipeTitle)
     {
         // Setup
-        AuthorModel authorModel = CreateAuthor();
+        var fixture = new Fixture();
+        AuthorModel authorModel = CreateAuthor(fixture);
+        var category = fixture.Create<RecipeCategory>();
 
         // Call
-        Action call = () => new RecipeModel(authorModel, Enumerable.Empty<RecipeFieldModel>(), invalidRecipeTitle);
+        Action call = () => new RecipeModel(authorModel, category, Enumerable.Empty<RecipeFieldModel>(), invalidRecipeTitle);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
@@ -47,10 +51,12 @@ public class RecipeModelTest
     public void Model_with_image_url_and_invalid_title_throws_exception(string invalidRecipeTitle)
     {
         // Setup
-        AuthorModel authorModel = CreateAuthor();
+        var fixture = new Fixture();
+        AuthorModel authorModel = CreateAuthor(fixture);
+        var category = fixture.Create<RecipeCategory>();
 
         // Call
-        Action call = () => new RecipeModel(authorModel, Enumerable.Empty<RecipeFieldModel>(), invalidRecipeTitle, imageUrl);
+        Action call = () => new RecipeModel(authorModel, category, Enumerable.Empty<RecipeFieldModel>(), invalidRecipeTitle, imageUrl);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
@@ -60,10 +66,13 @@ public class RecipeModelTest
     public void Model_without_image_url_sets_image_url_null()
     {
         // Setup
-        AuthorModel authorModel = CreateAuthor();
+        var fixture = new Fixture();
+        var recipeTitle = fixture.Create<string>();
+        AuthorModel authorModel = CreateAuthor(fixture);
+        var category = fixture.Create<RecipeCategory>();
 
         // Call
-        var recipe = new RecipeModel(authorModel, Enumerable.Empty<RecipeFieldModel>(), "recipeTitle");
+        var recipe = new RecipeModel(authorModel, category, Enumerable.Empty<RecipeFieldModel>(), recipeTitle);
 
         // Assert
         Assert.Null(recipe.RecipeImageUrl);
@@ -73,10 +82,13 @@ public class RecipeModelTest
     public void Model_with_valid_image_url_sets_image_url()
     {
         // Setup
-        AuthorModel authorModel = CreateAuthor();
+        var fixture = new Fixture();
+        var recipeTitle = fixture.Create<string>();
+        AuthorModel authorModel = CreateAuthor(fixture);
+        var category = fixture.Create<RecipeCategory>();
 
         // Call
-        var recipe = new RecipeModel(authorModel, Enumerable.Empty<RecipeFieldModel>(), "recipeTitle", imageUrl);
+        var recipe = new RecipeModel(authorModel, category, Enumerable.Empty<RecipeFieldModel>(), recipeTitle, imageUrl);
 
         // Assert
         Assert.Equal(imageUrl, recipe.RecipeImageUrl);
@@ -87,10 +99,13 @@ public class RecipeModelTest
     public void Model_with_invalid_image_url_throws_exception(string invalidImageUrl)
     {
         // Setup
-        AuthorModel authorModel = CreateAuthor();
+        var fixture = new Fixture();
+        var recipeTitle = fixture.Create<string>();
+        AuthorModel authorModel = CreateAuthor(fixture);
+        var category = fixture.Create<RecipeCategory>();
 
         // Call
-        Action call = () => new RecipeModel(authorModel, Enumerable.Empty<RecipeFieldModel>(), "recipeTitle", invalidImageUrl);
+        Action call = () => new RecipeModel(authorModel, category, Enumerable.Empty<RecipeFieldModel>(), recipeTitle, invalidImageUrl);
 
         // Assert
         Assert.Throws<ArgumentException>(call);
@@ -105,23 +120,24 @@ public class RecipeModelTest
     public void Model_with_valid_title_returns_total_length_of_properties(string recipeTitle)
     {
         // Setup
-        var random = new Random(21);
-
-        AuthorModel authorModel = CreateAuthor();
-        IEnumerable<RecipeFieldModel> recipeFieldModels = new[]
+        var fixture = new Fixture();
+        AuthorModel authorModel = CreateAuthor(fixture);
+        IEnumerable<RecipeFieldModel> recipeFields = new[]
         {
-            CreateFields(random.Next()),
-            CreateFields(random.Next()),
-            CreateFields(random.Next())
+            CreateFields(fixture),
+            CreateFields(fixture),
+            CreateFields(fixture)
         };
 
-        var recipe = new RecipeModel(authorModel, recipeFieldModels, recipeTitle);
+        RecipeModel recipe = fixture.Build<RecipeModel>()
+                                    .FromFactory<RecipeCategory>(category => new RecipeModel(authorModel, category, recipeFields, recipeTitle))
+                                    .Create();
 
         // Call
         int totalLength = recipe.TotalLength;
 
         // Assert
-        int expectedLength = recipeTitle.Length + authorModel.TotalLength + recipeFieldModels.Sum(f => f.TotalLength);
+        int expectedLength = recipeTitle.Length + authorModel.TotalLength + recipeFields.Sum(f => f.TotalLength);
         Assert.Equal(expectedLength, totalLength);
     }
 
@@ -134,23 +150,24 @@ public class RecipeModelTest
     public void Model_with_valid_title_and_image_url_returns_total_length_of_properties(string recipeTitle)
     {
         // Setup
-        var random = new Random(21);
-
-        AuthorModel authorModel = CreateAuthor();
-        IEnumerable<RecipeFieldModel> recipeFieldModels = new[]
+        var fixture = new Fixture();
+        AuthorModel authorModel = CreateAuthor(fixture);
+        IEnumerable<RecipeFieldModel> recipeFields = new[]
         {
-            CreateFields(random.Next()),
-            CreateFields(random.Next()),
-            CreateFields(random.Next())
+            CreateFields(fixture),
+            CreateFields(fixture),
+            CreateFields(fixture)
         };
 
-        var recipe = new RecipeModel(authorModel, recipeFieldModels, recipeTitle, imageUrl);
+        RecipeModel recipe = fixture.Build<RecipeModel>()
+                                    .FromFactory<RecipeCategory>(category => new RecipeModel(authorModel, category, recipeFields, recipeTitle, imageUrl))
+                                    .Create();
 
         // Call
         int totalLength = recipe.TotalLength;
 
         // Assert
-        int expectedLength = recipeTitle.Length + authorModel.TotalLength + recipeFieldModels.Sum(f => f.TotalLength);
+        int expectedLength = recipeTitle.Length + authorModel.TotalLength + recipeFields.Sum(f => f.TotalLength);
         Assert.Equal(expectedLength, totalLength);
     }
 
@@ -158,10 +175,13 @@ public class RecipeModelTest
     public void Model_with_empty_recipe_fields_returns_total_length_of_properties()
     {
         // Setup
-        const string recipeTitle = "recipeTitle";
+        var fixture = new Fixture();
+        var recipeTitle = fixture.Create<string>();
 
-        AuthorModel authorModel = CreateAuthor();
-        var recipe = new RecipeModel(authorModel, Enumerable.Empty<RecipeFieldModel>(), recipeTitle);
+        AuthorModel authorModel = CreateAuthor(fixture);
+        RecipeModel recipe = fixture.Build<RecipeModel>()
+                                    .FromFactory<RecipeCategory>(category => new RecipeModel(authorModel, category, Enumerable.Empty<RecipeFieldModel>(), recipeTitle))
+                                    .Create();
 
         // Call
         int totalLength = recipe.TotalLength;
@@ -175,10 +195,13 @@ public class RecipeModelTest
     public void Model_with_image_url_and_empty_recipe_fields_returns_total_length_of_properties()
     {
         // Setup
-        const string recipeTitle = "recipeTitle";
+        var fixture = new Fixture();
+        var recipeTitle = fixture.Create<string>();
 
-        AuthorModel authorModel = CreateAuthor();
-        var recipe = new RecipeModel(authorModel, Enumerable.Empty<RecipeFieldModel>(), recipeTitle, imageUrl);
+        AuthorModel authorModel = CreateAuthor(fixture);
+        RecipeModel? recipe = fixture.Build<RecipeModel>()
+                                     .FromFactory<RecipeCategory>(category => new RecipeModel(authorModel, category, Enumerable.Empty<RecipeFieldModel>(), recipeTitle, imageUrl))
+                                     .Create();
 
         // Call
         int totalLength = recipe.TotalLength;
@@ -188,21 +211,17 @@ public class RecipeModelTest
         Assert.Equal(expectedLength, totalLength);
     }
 
-    private static AuthorModel CreateAuthor()
+    private static AuthorModel CreateAuthor(Fixture fixture)
     {
-        const string authorImageUrl = "http://www.google.com";
-
-        var random = new Random(21);
-        var authorName = new string('o', random.Next(100));
-
-        return new AuthorModel(authorName, authorImageUrl);
+        return fixture.Build<AuthorModel>()
+                      .FromFactory<string>(author => new AuthorModel(author, imageUrl))
+                      .Create(); ;
     }
 
-    private static RecipeFieldModel CreateFields(int seed)
+    private static RecipeFieldModel CreateFields(Fixture fixture)
     {
-        var random = new Random(seed);
-        var fieldName = new string('+', random.Next(100));
-        var fieldData = new string('x', random.Next(100));
+        var fieldName = fixture.Create<string>();
+        var fieldData = fixture.Create<string>();
 
         return new RecipeFieldModel(fieldName, fieldData);
     }
