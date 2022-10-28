@@ -52,7 +52,7 @@ public class RecipeInteractionModuleTest
         SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeInteractionModule, SlashCommandAttribute>(
             nameof(RecipeInteractionModule.FormatRecipe), new[]
             {
-                typeof(RecipeCategory),
+                typeof(DiscordRecipeCategory),
                 typeof(IAttachment)
             });
 

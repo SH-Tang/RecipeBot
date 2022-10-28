@@ -36,8 +36,6 @@ namespace RecipeBot.Discord;
 /// </summary>
 public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionContext>
 {
-    // The OnModalResponse instantiates another object to respond, so the state is not preserved between FormatRecipe and the OnModalResponse
-    private static IAttachment? attachmentArgument;
     private readonly ILoggingService logger;
     private readonly RecipeModalResponseService responseService;
 
@@ -57,8 +55,9 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
     }
 
     [SlashCommand("recipe", "Tell us about your recipe")]
-    public async Task FormatRecipe([Summary("category", "The category the recipe belongs to")] RecipeCategory category, 
-                                   [Summary("image", "The image of the recipe result (optional)")] IAttachment? attachment = null)
+    public async Task FormatRecipe([Summary("category", "The category the recipe belongs to")] DiscordRecipeCategory category,
+                                   [Summary("image", "The image of the recipe result (optional)")]
+                                   IAttachment? attachment = null)
     {
         if (attachment != null && !attachment.IsImage())
         {
@@ -66,27 +65,38 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
             return;
         }
 
+        var arguments = CommandArguments.Instance;
+
         try
         {
-            attachmentArgument = attachment;
+            arguments.AttachmentArgument = attachment;
+            arguments.CategoryArgument = category;
+
             await Context.Interaction.RespondWithModalAsync<RecipeModal>(RecipeModal.ModalId);
         }
         catch (Exception e)
         {
             await logger.LogErrorAsync(e);
-            attachmentArgument = null;
+            arguments.ResetArguments();
         }
     }
 
     [ModalInteraction(RecipeModal.ModalId)]
     public async Task OnModalResponse(RecipeModal modal)
     {
+        var arguments = CommandArguments.Instance;
+
         try
         {
+            IAttachment? attachment = arguments.AttachmentArgument;
+            DiscordRecipeCategory category = arguments.CategoryArgument;
+
             SocketUser? user = Context.User;
-            Embed response = attachmentArgument != null && attachmentArgument.IsImage()
-                                 ? responseService.GetRecipeModalResponse(modal, user, attachmentArgument)
-                                 : responseService.GetRecipeModalResponse(modal, user);
+            Embed response = attachment != null && attachment.IsImage()
+                                 ? responseService.GetRecipeModalResponse(modal, user, category, attachment)
+                                 : responseService.GetRecipeModalResponse(modal, user, category);
+
+
             await RespondAsync(embed: response);
         }
         catch (ModalResponseException e)
@@ -105,7 +115,44 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
         }
         finally
         {
-            attachmentArgument = null;
+            arguments.ResetArguments();
+        }
+    }
+
+    /// <summary>
+    /// Class representing the arguments that have been passed.
+    /// </summary>
+    /// <remarks>Because the OnModalResponse instantiates another object to respond,
+    /// the state is not preserved between FormatRecipe and the OnModalResponse. Therefore this singleton is necessary to pass
+    /// the arguments between the different instances.</remarks>
+    private class CommandArguments
+    {
+        private static CommandArguments? instance;
+
+        private CommandArguments() {}
+
+        /// <summary>
+        /// Gets an instance of <see cref="CommandArguments"/>.
+        /// </summary>
+        public static CommandArguments Instance => instance ?? (instance = new CommandArguments());
+
+        /// <summary>
+        /// Gets or sets the <see cref="DiscordRecipeCategory"/>.
+        /// </summary>
+        public DiscordRecipeCategory CategoryArgument { get; set; }
+
+        /// <summary>
+        /// Gets ors sets the <see cref="IAttachment"/>.
+        /// </summary>
+        public IAttachment? AttachmentArgument { get; set; }
+
+        /// <summary>
+        /// Resets the arguments to default arguments.
+        /// </summary>
+        public void ResetArguments()
+        {
+            AttachmentArgument = null;
+            CategoryArgument = (DiscordRecipeCategory) (-1);
         }
     }
 }
