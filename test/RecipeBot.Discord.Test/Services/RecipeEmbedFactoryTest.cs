@@ -18,6 +18,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Discord;
+using RecipeBot.Domain.Data;
 using RecipeBot.Discord.Services;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.TestUtils;
@@ -38,6 +39,21 @@ public class RecipeEmbedFactoryTest
             MaxFieldNameLength = EmbedFieldBuilder.MaxFieldNameLength,
             MaxFieldDataLength = EmbedFieldBuilder.MaxFieldValueLength
         });
+    }
+
+    [Theory]
+    [MemberData(nameof(GetRecipeCategoriesAndColor))]
+    public void Basic_recipe_with_category_returns_embed_with_color(
+        RecipeCategory category, Color expectedColor)
+    {
+        // Setup
+        RecipeModel recipeModel = domainTestFactory.Create(category);
+
+        // Call
+        Embed embed = RecipeEmbedFactory.Create(recipeModel);
+
+        // Assert
+        Assert.Equal(expectedColor, embed.Color);
     }
 
     [Fact]
@@ -138,5 +154,56 @@ public class RecipeEmbedFactoryTest
         Assert.Equal(model.FieldName, actualField.Name);
         Assert.Equal(model.FieldData, actualField.Value);
         Assert.False(actualField.Inline);
+    }
+
+    private static IEnumerable<object[]> GetRecipeCategoriesAndColor()
+    {
+        yield return new object[]
+        {
+            RecipeCategory.Meat,
+            new Color(250, 85, 87)
+        };
+
+        yield return new object[]
+        {
+            RecipeCategory.Fish,
+            new Color(141, 223, 220)
+        };
+
+        yield return new object[]
+        {
+            RecipeCategory.Vegetarian,
+            new Color(206, 221, 85)
+        };
+        yield return new object[]
+        {
+            RecipeCategory.Vegan,
+            new Color(104, 115, 57)
+        };
+        yield return new object[]
+        {
+            RecipeCategory.Drinks,
+            new Color(175, 234, 224)
+        };
+        yield return new object[]
+        {
+            RecipeCategory.Pastry,
+            new Color(250, 207, 113)
+        };
+        yield return new object[]
+        {
+            RecipeCategory.Dessert,
+            new Color(252, 238, 190)
+        };
+        yield return new object[]
+        {
+            RecipeCategory.Snack,
+            new Color(249, 162, 114)
+        };
+        yield return new object[]
+        {
+            RecipeCategory.Other,
+            new Color(204, 204, 203)
+        };
     }
 }
