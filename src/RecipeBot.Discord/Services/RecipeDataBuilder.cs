@@ -20,7 +20,7 @@ using System.ComponentModel;
 using Common.Utils;
 using Discord;
 using Discord.Common.Utils;
-using RecipeBot.Discord.Converter;
+using RecipeBot.Discord.Converters;
 using RecipeBot.Domain.Data;
 using DiscordRecipeCategory = RecipeBot.Discord.Data.RecipeCategory;
 
