@@ -166,21 +166,21 @@ public class RecipeDomainModelTestFactory
         /// <summary>
         /// Gets or sets the maximum title length.
         /// </summary>
-        public int MaxTitleLength { get; set; }
+        public int MaxTitleLength { get; init; }
 
         /// <summary>
         /// Gets or sets the maximum author name length.
         /// </summary>
-        public int MaxAuthorNameLength { get; set; }
+        public int MaxAuthorNameLength { get; init; }
 
         /// <summary>
         /// Gets or sets the maximum field name length.
         /// </summary>
-        public int MaxFieldNameLength { get; set; }
+        public int MaxFieldNameLength { get; init; }
 
         /// <summary>
         /// Gets or sets the maximum field data length.
         /// </summary>
-        public int MaxFieldDataLength { get; set; }
+        public int MaxFieldDataLength { get; init; }
     }
 }
