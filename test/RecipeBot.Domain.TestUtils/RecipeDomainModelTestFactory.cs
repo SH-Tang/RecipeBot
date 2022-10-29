@@ -74,7 +74,8 @@ public class RecipeDomainModelTestFactory
     /// <returns>A <see cref="RecipeModel"/>.</returns>
     public RecipeModel Create(RecipeCategory category)
     {
-        return CreateRecipeModel(category);
+        string title = GetStringWithRandomLength('x', maxTitleLength);
+        return new RecipeModel(CreateAuthorModel(), category, Enumerable.Empty<RecipeFieldModel>(), title);
     }
 
     /// <summary>
@@ -112,12 +113,6 @@ public class RecipeDomainModelTestFactory
             CreateRecipeFieldModel(2),
             CreateRecipeFieldModel(3)
         }, "https://recipeBot.recipe.image");
-    }
-
-    private RecipeModel CreateRecipeModel(RecipeCategory recipeCategory)
-    {
-        string title = GetStringWithRandomLength('x', maxTitleLength);
-        return new RecipeModel(CreateAuthorModel(), recipeCategory, Enumerable.Empty<RecipeFieldModel>(), title);
     }
 
     private RecipeModel CreateRecipeModel(IEnumerable<RecipeFieldModel> recipeFields)

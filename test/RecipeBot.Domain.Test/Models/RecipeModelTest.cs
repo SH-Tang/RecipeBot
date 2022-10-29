@@ -122,12 +122,9 @@ public class RecipeModelTest
         // Setup
         var fixture = new Fixture();
         AuthorModel authorModel = CreateAuthor(fixture);
-        IEnumerable<RecipeFieldModel> recipeFields = new[]
-        {
-            CreateFields(fixture),
-            CreateFields(fixture),
-            CreateFields(fixture)
-        };
+        fixture.Register<string, RecipeFieldModel>(x => new RecipeFieldModel(x, x));
+
+        IEnumerable<RecipeFieldModel>? recipeFields = fixture.CreateMany<RecipeFieldModel>();
 
         RecipeModel recipe = fixture.Build<RecipeModel>()
                                     .FromFactory<RecipeCategory>(category => new RecipeModel(authorModel, category, recipeFields, recipeTitle))
@@ -152,12 +149,9 @@ public class RecipeModelTest
         // Setup
         var fixture = new Fixture();
         AuthorModel authorModel = CreateAuthor(fixture);
-        IEnumerable<RecipeFieldModel> recipeFields = new[]
-        {
-            CreateFields(fixture),
-            CreateFields(fixture),
-            CreateFields(fixture)
-        };
+        fixture.Register<string, RecipeFieldModel>(x => new RecipeFieldModel(x, x));
+
+        IEnumerable<RecipeFieldModel>? recipeFields = fixture.CreateMany<RecipeFieldModel>();
 
         RecipeModel recipe = fixture.Build<RecipeModel>()
                                     .FromFactory<RecipeCategory>(category => new RecipeModel(authorModel, category, recipeFields, recipeTitle, imageUrl))
@@ -216,13 +210,5 @@ public class RecipeModelTest
         return fixture.Build<AuthorModel>()
                       .FromFactory<string>(author => new AuthorModel(author, imageUrl))
                       .Create(); ;
-    }
-
-    private static RecipeFieldModel CreateFields(Fixture fixture)
-    {
-        var fieldName = fixture.Create<string>();
-        var fieldData = fixture.Create<string>();
-
-        return new RecipeFieldModel(fieldName, fieldData);
     }
 }

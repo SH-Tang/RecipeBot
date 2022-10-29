@@ -52,7 +52,7 @@ public class RecipeModalResponseService
     /// </summary>
     /// <param name="modal">The <see cref="RecipeModal"/> to get the response for.</param>
     /// <param name="user">The <see cref="IUser"/> to get the response for.</param>
-    /// <param name="recipeCategory">The <see cref="RecipeCategory"/> the recipe is based on.</param>
+    /// <param name="recipeCategory">The <see cref="DiscordRecipeCategory"/> the recipe is based on.</param>
     /// <returns>A response.</returns>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     /// <exception cref="ModalResponseException">Thrown when the response could not be successfully determined.</exception>
@@ -75,7 +75,7 @@ public class RecipeModalResponseService
     /// </summary>
     /// <param name="modal">The <see cref="RecipeModal"/> to get the response for.</param>
     /// <param name="user">The <see cref="IUser"/> to get the response for.</param>
-    /// <param name="recipeCategory">The <see cref="RecipeCategory"/> the recipe is based on.</param>
+    /// <param name="recipeCategory">The <see cref="DiscordRecipeCategory"/> the recipe is based on.</param>
     /// <param name="attachment">The <see cref="IAttachment"/> to get the response with.</param>
     /// <returns>A response.</returns>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>

@@ -276,10 +276,8 @@ public class RecipeModelFactoryTest
     {
         var fixture = new Fixture();
         fixture.Register(() => new string('o', limitProvider.MaximumFieldDataLength));
+        AuthorData authorData = CreateAuthorData(limitProvider, fixture);
 
-        AuthorData? authorData = fixture.Build<AuthorData>()
-                                        .FromFactory(() => new AuthorData(new string('x', limitProvider.MaximumAuthorNameLength), "http://www.recipeBotImage.com"))
-                                        .Create();
         return fixture.Build<RecipeData>()
                       .FromFactory<RecipeCategory, string>((category, field) => new RecipeData(authorData, category, new string('+', limitProvider.MaximumTitleLength + nrOfTitleCharactersOffSet),
                                                                                                field, field))
@@ -293,13 +291,18 @@ public class RecipeModelFactoryTest
         var fixture = new Fixture();
         fixture.Register(() => new string('o', limitProvider.MaximumFieldDataLength));
 
-        AuthorData? authorData = fixture.Build<AuthorData>()
-                                        .FromFactory(() => new AuthorData(new string('x', limitProvider.MaximumAuthorNameLength), "http://www.recipeBotImage.com"))
-                                        .Create();
+        AuthorData authorData = CreateAuthorData(limitProvider, fixture);
         return fixture.Build<RecipeData>()
                       .FromFactory<RecipeCategory, string>((category, field) => new RecipeData(authorData, category, new string('+', limitProvider.MaximumTitleLength), field, field))
                       .Without(d => d.ImageUrl)
                       .Without(d => d.AdditionalNotes)
+                      .Create();
+    }
+
+    private static AuthorData CreateAuthorData(IRecipeModelCharacterLimitProvider limitProvider, Fixture fixture)
+    {
+        return fixture.Build<AuthorData>()
+                      .FromFactory(() => new AuthorData(new string('x', limitProvider.MaximumAuthorNameLength), "http://www.recipeBotImage.com"))
                       .Create();
     }
 }
