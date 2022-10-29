@@ -46,14 +46,22 @@ In order to run the RecipeBot, a `config.json` file must be created next to the 
 |---|---|
 | TestGuildId | Set this to a Discord channel to immediately test the bot and its slash commands. Global commands take an hour to register |
 
-
-
 # Used libraries
 
-* [Discord.Net](https://github.com/discord-net/Discord.Net)
+## Functionality
+* Discord.Net
+* ReHackt.Extensions.Options.Validations
+* Microsoft.Extensions.Configuration
+* Microsoft.Extensions.Options
+
+## Testing purposes
 * xUnit 
+* xUnit.runner.visualstudio
 * NSubstitute
+* Microsoft.NET.Test.Sdk
+* AutoFixture
+* coverlet.collector
 
 # License
 
-This project was released under the GPLv3 license. A copy of this license can be found [here](/licenses).
+This project was released under the GPLv3 license. A copy of this license can be found [here](https://www.gnu.org/licenses/gpl-3.0.html).
