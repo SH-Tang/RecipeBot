@@ -83,7 +83,7 @@ public class StringFormatOptionsExtensionsTest
         Assert.Equal(expectedValue, formattedValue);
     }
 
-    private static IEnumerable<object[]> GetDateTimeTestCaseData()
+    public static IEnumerable<object[]> GetDateTimeTestCaseData()
     {
         var dateTime = new DateTime(2022, 2, 14, 14, 20, 30);
         yield return new object[]
@@ -108,7 +108,7 @@ public class StringFormatOptionsExtensionsTest
         };
     }
 
-    private static IEnumerable<object[]> GetTimeSpanTestCaseData()
+    public static IEnumerable<object[]> GetTimeSpanTestCaseData()
     {
         var timeSpan = new TimeSpan(20, 2, 30, 59, 121);
         yield return new object[]

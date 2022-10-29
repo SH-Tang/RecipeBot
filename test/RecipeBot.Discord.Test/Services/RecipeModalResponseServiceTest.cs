@@ -301,7 +301,7 @@ public class RecipeModalResponseServiceTest
         Assert.False(actualField.Inline);
     }
 
-    private static IEnumerable<object[]> GetRecipeCategoriesAndColor()
+    public static IEnumerable<object[]> GetRecipeCategoriesAndColor()
     {
         yield return new object[]
         {
