@@ -188,7 +188,7 @@ public class RecipeDataBuilderTest
         Assert.Throws<ArgumentException>(call);
     }
 
-    private static IEnumerable<object?[]> GetValidImageAttachments()
+    public static IEnumerable<object?[]> GetValidImageAttachments()
     {
         yield return new object?[]
         {

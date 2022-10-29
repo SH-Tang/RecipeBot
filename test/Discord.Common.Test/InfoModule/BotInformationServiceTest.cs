@@ -102,7 +102,7 @@ public class BotInformationServiceTest
         Assert.Equal(expectedSummary, field.Value);
     }
 
-    private static IEnumerable<object[]> GetInfoOptions()
+    public static IEnumerable<object[]> GetInfoOptions()
     {
         yield return new object[]
         {

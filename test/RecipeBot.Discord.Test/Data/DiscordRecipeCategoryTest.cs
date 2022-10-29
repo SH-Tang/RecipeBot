@@ -51,7 +51,7 @@ public class DiscordRecipeCategoryTest
         Assert.Equal(expectedOrder, order);
     }
 
-    private static IEnumerable<object[]> GetRecipeCategoryDisplayValues()
+    public static IEnumerable<object[]> GetRecipeCategoryDisplayValues()
     {
         yield return new object[]
         {
@@ -102,7 +102,7 @@ public class DiscordRecipeCategoryTest
         };
     }
 
-    private static IEnumerable<object[]> GetRecipeCategoryOrder()
+    public static IEnumerable<object[]> GetRecipeCategoryOrder()
     {
         yield return new object[]
         {
