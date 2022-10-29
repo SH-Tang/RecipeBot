@@ -6,7 +6,7 @@
   <Import Project="$(SolutionDir)\build\RecipeBot.targets" />
 
   <ItemGroup>
-    <None Include="..\..\licenses\Copying.licenseheader" Link="Copying.licenseheader" />
+    <None Include="..\..\build\Copying.licenseheader" Link="Copying.licenseheader" />
   </ItemGroup>
 
   <ItemGroup>
