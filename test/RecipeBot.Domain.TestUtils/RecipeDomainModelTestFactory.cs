@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Common.Utils;
+using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
 
 namespace RecipeBot.Domain.TestUtils;
@@ -68,6 +69,16 @@ public class RecipeDomainModelTestFactory
     }
 
     /// <summary>
+    /// Creates a default <see cref="RecipeModel"/> without fields and an image.
+    /// </summary>
+    /// <returns>A <see cref="RecipeModel"/>.</returns>
+    public RecipeModel Create(RecipeCategory category)
+    {
+        string title = GetStringWithRandomLength('x', maxTitleLength);
+        return new RecipeModel(CreateAuthorModel(), category, Enumerable.Empty<RecipeFieldModel>(), title);
+    }
+
+    /// <summary>
     /// Creates a default <see cref="RecipeModel"/> with fields and without an image.
     /// </summary>
     /// <returns>A <see cref="RecipeModel"/>.</returns>
@@ -75,9 +86,9 @@ public class RecipeDomainModelTestFactory
     {
         return CreateRecipeModel(new[]
         {
-            CreateRecipeFiledModel(1),
-            CreateRecipeFiledModel(2),
-            CreateRecipeFiledModel(3)
+            CreateRecipeFieldModel(1),
+            CreateRecipeFieldModel(2),
+            CreateRecipeFieldModel(3)
         });
     }
 
@@ -98,22 +109,22 @@ public class RecipeDomainModelTestFactory
     {
         return CreateRecipeModel(new[]
         {
-            CreateRecipeFiledModel(1),
-            CreateRecipeFiledModel(2),
-            CreateRecipeFiledModel(3)
+            CreateRecipeFieldModel(1),
+            CreateRecipeFieldModel(2),
+            CreateRecipeFieldModel(3)
         }, "https://recipeBot.recipe.image");
     }
 
     private RecipeModel CreateRecipeModel(IEnumerable<RecipeFieldModel> recipeFields)
     {
         string title = GetStringWithRandomLength('x', maxTitleLength);
-        return new RecipeModel(CreateAuthorModel(), recipeFields, title);
+        return new RecipeModel(CreateAuthorModel(), RecipeCategory.Other, recipeFields, title);
     }
 
     private RecipeModel CreateRecipeModel(IEnumerable<RecipeFieldModel> recipeFields, string imageUrl)
     {
         string title = GetStringWithRandomLength('x', maxTitleLength);
-        return new RecipeModel(CreateAuthorModel(), recipeFields, title, imageUrl);
+        return new RecipeModel(CreateAuthorModel(), RecipeCategory.Other, recipeFields, title, imageUrl);
     }
 
     private AuthorModel CreateAuthorModel()
@@ -122,7 +133,7 @@ public class RecipeDomainModelTestFactory
         return new AuthorModel(authorName, "https://recipebot.author.image");
     }
 
-    private RecipeFieldModel CreateRecipeFiledModel(int seed)
+    private RecipeFieldModel CreateRecipeFieldModel(int seed)
     {
         string fieldName = GetStringWithRandomLength(seed, '-', maxFieldNameLength);
         string fieldData = GetStringWithRandomLength(seed, '=', maxFieldDataLength);
@@ -150,21 +161,21 @@ public class RecipeDomainModelTestFactory
         /// <summary>
         /// Gets or sets the maximum title length.
         /// </summary>
-        public int MaxTitleLength { get; set; }
+        public int MaxTitleLength { get; init; }
 
         /// <summary>
         /// Gets or sets the maximum author name length.
         /// </summary>
-        public int MaxAuthorNameLength { get; set; }
+        public int MaxAuthorNameLength { get; init; }
 
         /// <summary>
         /// Gets or sets the maximum field name length.
         /// </summary>
-        public int MaxFieldNameLength { get; set; }
+        public int MaxFieldNameLength { get; init; }
 
         /// <summary>
         /// Gets or sets the maximum field data length.
         /// </summary>
-        public int MaxFieldDataLength { get; set; }
+        public int MaxFieldDataLength { get; init; }
     }
 }

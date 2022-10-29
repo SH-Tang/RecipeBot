@@ -16,8 +16,10 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.ComponentModel;
 using Common.Utils;
 using Discord;
+using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Exceptions;
 using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Data;
@@ -50,20 +52,22 @@ public class RecipeModalResponseService
     /// </summary>
     /// <param name="modal">The <see cref="RecipeModal"/> to get the response for.</param>
     /// <param name="user">The <see cref="IUser"/> to get the response for.</param>
+    /// <param name="recipeCategory">The <see cref="DiscordRecipeCategory"/> the recipe is based on.</param>
     /// <returns>A response.</returns>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     /// <exception cref="ModalResponseException">Thrown when the response could not be successfully determined.</exception>
-    public Embed GetRecipeModalResponse(RecipeModal modal, IUser user)
+    public Embed GetRecipeModalResponse(RecipeModal modal, IUser user, DiscordRecipeCategory recipeCategory)
     {
         modal.IsNotNull(nameof(modal));
         user.IsNotNull(nameof(user));
 
         var authorData = new AuthorData(user.Username, user.GetAvatarUrl());
-        RecipeData recipeData = new RecipeDataBuilder(authorData, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
-                                .AddNotes(modal.Notes)
-                                .Build();
+        Func<RecipeData> getRecipeDataFunc =
+            () => new RecipeDataBuilder(authorData, recipeCategory, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
+                  .AddNotes(modal.Notes)
+                  .Build();
 
-        return RecipeEmbedFactory.Create(GetRecipeModel(recipeData));
+        return RecipeEmbedFactory.Create(GetRecipeModel(getRecipeDataFunc));
     }
 
     /// <summary>
@@ -71,36 +75,42 @@ public class RecipeModalResponseService
     /// </summary>
     /// <param name="modal">The <see cref="RecipeModal"/> to get the response for.</param>
     /// <param name="user">The <see cref="IUser"/> to get the response for.</param>
+    /// <param name="recipeCategory">The <see cref="DiscordRecipeCategory"/> the recipe is based on.</param>
     /// <param name="attachment">The <see cref="IAttachment"/> to get the response with.</param>
     /// <returns>A response.</returns>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     /// <exception cref="ArgumentException">Thrown when the <paramref name="attachment"/> is invalid.</exception>
     /// <exception cref="ModalResponseException">Thrown when the response could not be successfully determined.</exception>
-    public Embed GetRecipeModalResponse(RecipeModal modal, IUser user, IAttachment attachment)
+    public Embed GetRecipeModalResponse(RecipeModal modal, IUser user, DiscordRecipeCategory recipeCategory, IAttachment attachment)
     {
         modal.IsNotNull(nameof(modal));
         user.IsNotNull(nameof(user));
 
         var authorData = new AuthorData(user.Username, user.GetAvatarUrl());
-        RecipeData recipeData = new RecipeDataBuilder(authorData, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
-                                .AddNotes(modal.Notes)
-                                .AddImage(attachment)
-                                .Build();
+        Func<RecipeData> getRecipeDataFunc =
+            () => new RecipeDataBuilder(authorData, recipeCategory, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
+                  .AddNotes(modal.Notes)
+                  .AddImage(attachment)
+                  .Build();
 
-        return RecipeEmbedFactory.Create(GetRecipeModel(recipeData));
+        return RecipeEmbedFactory.Create(GetRecipeModel(getRecipeDataFunc));
     }
 
     /// <summary>
     /// Gets the <see cref="RecipeModel"/> based on the input arguments.
     /// </summary>
-    /// <param name="recipeData">The <see cref="RecipeData"/> to get the <see cref="RecipeModel"/> with.</param>
+    /// <param name="getRecipeDataFunc">The function to get a <see cref="RecipeData"/> with.</param>
     /// <returns>A <see cref="RecipeModel"/>.</returns>
     /// <exception cref="ModalResponseException">Thrown when the model could not be successfully retrieved.</exception>
-    private RecipeModel GetRecipeModel(RecipeData recipeData)
+    private RecipeModel GetRecipeModel(Func<RecipeData> getRecipeDataFunc)
     {
         try
         {
-            return recipeModelFactory.Create(recipeData);
+            return recipeModelFactory.Create(getRecipeDataFunc());
+        }
+        catch (InvalidEnumArgumentException e)
+        {
+            throw new ModalResponseException(e.Message, e);
         }
         catch (ModelCreateException e)
         {

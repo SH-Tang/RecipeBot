@@ -19,6 +19,7 @@ using Discord;
 using Discord.Common;
 using Discord.Interactions;
 using NSubstitute;
+using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Services;
 using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Factories;
@@ -51,6 +52,7 @@ public class RecipeInteractionModuleTest
         SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeInteractionModule, SlashCommandAttribute>(
             nameof(RecipeInteractionModule.FormatRecipe), new[]
             {
+                typeof(DiscordRecipeCategory),
                 typeof(IAttachment)
             });
 

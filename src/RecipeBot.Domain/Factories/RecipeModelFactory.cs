@@ -85,9 +85,10 @@ public class RecipeModelFactory
         IEnumerable<RecipeFieldModel> recipeFields = CreateRecipeFields(recipeData);
 
         string recipeTitle = recipeData.RecipeTitle;
+        RecipeCategory recipeCategory = recipeData.Category;
         RecipeModel recipe = recipeData.ImageUrl == null
-                                 ? new RecipeModel(authorModel, recipeFields, recipeTitle)
-                                 : new RecipeModel(authorModel, recipeFields, recipeTitle, recipeData.ImageUrl);
+                                 ? new RecipeModel(authorModel, recipeCategory, recipeFields, recipeTitle)
+                                 : new RecipeModel(authorModel, recipeCategory, recipeFields, recipeTitle, recipeData.ImageUrl);
 
         int maximumRecipeLength = recipeModelCharacterLimitProvider.MaximumRecipeLength;
         if (recipe.TotalLength > maximumRecipeLength)

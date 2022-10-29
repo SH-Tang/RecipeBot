@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Linq;
 using System.Reflection;
 using Common.Utils;
 
@@ -26,6 +27,26 @@ namespace RecipeBot.TestUtils
     /// </summary>
     public static class ReflectionHelper
     {
+        /// <summary>
+        /// Gets a custom attribute from an <see cref="Enum"/>.
+        /// </summary>
+        /// <typeparam name="TEnum">The type of <see cref="Enum"/> to retrieve the attributes from.</typeparam>
+        /// <typeparam name="TAttribute">The type of attribute to retrieve.</typeparam>
+        /// <param name="enumValue">A value of <typeparamref name="TEnum"/> to
+        ///  retrieve the attribute for.</param>
+        /// <returns>The <typeparamref name="TAttribute"/>, <c>null</c> if the attribute was not found.</returns>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="enumValue"/> is <c>null</c>, empty
+        /// or consists of whitespace.</exception>
+        public static TAttribute? GetCustomAttributeFromEnum<TEnum, TAttribute>(TEnum enumValue)
+            where TEnum : Enum
+            where TAttribute : Attribute
+        {
+            enumValue.IsValidEnum(nameof(enumValue));
+
+            return typeof(TEnum).GetMember(enumValue.ToString()).SingleOrDefault()?.GetCustomAttribute<TAttribute>();
+        }
+
+
         /// <summary>
         /// Gets a custom attribute from a property.
         /// </summary>

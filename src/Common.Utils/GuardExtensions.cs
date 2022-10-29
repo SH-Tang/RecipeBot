@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.ComponentModel;
 using System.IO;
 
 namespace Common.Utils
@@ -70,6 +71,21 @@ namespace Common.Utils
             if (!File.Exists(argument))
             {
                 throw new ArgumentException($"{argumentName} must be an existing and accessible file path.", argumentName);
+            }
+        }
+
+        /// <summary>
+        /// Guards that the <paramref name="argument"/> is a valid enum.
+        /// </summary>
+        /// <typeparam name="TEnum">The type of enum.</typeparam>
+        /// <param name="argument">The argument to guard.</param>
+        /// <param name="argumentName">The name of the argument.</param>
+        /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="argument"/> is an invalid enum.</exception>
+        public static void IsValidEnum<TEnum>(this TEnum argument, string argumentName) where TEnum : Enum
+        {
+            if (!Enum.IsDefined(typeof(TEnum), argument))
+            {
+                throw new InvalidEnumArgumentException(argumentName, Convert.ToInt32(argument), typeof(TEnum));
             }
         }
 

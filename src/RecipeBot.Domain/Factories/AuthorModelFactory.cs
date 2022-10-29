@@ -27,7 +27,7 @@ namespace RecipeBot.Domain.Factories;
 /// <summary>
 /// Factory to create instances of <see cref="AuthorModel"/>.
 /// </summary>
-public class AuthorModelFactory
+internal class AuthorModelFactory
 {
     private readonly IAuthorModelCharacterLimitProvider limitProvider;
 
