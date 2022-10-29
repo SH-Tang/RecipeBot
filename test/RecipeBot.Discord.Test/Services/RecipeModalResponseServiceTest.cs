@@ -24,6 +24,7 @@ using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Exceptions;
 using RecipeBot.Discord.Services;
 using RecipeBot.Discord.Views;
+using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Factories;
 using Xunit;
 
@@ -307,13 +308,13 @@ public class RecipeModalResponseServiceTest
             DiscordRecipeCategory.Meat,
             new Color(250, 85, 87)
         };
-        
+
         yield return new object[]
         {
             DiscordRecipeCategory.Fish,
-            new Color(141, 223, 220)
+            new Color(86, 153, 220)
         };
-        
+
         yield return new object[]
         {
             DiscordRecipeCategory.Vegetarian,
@@ -322,7 +323,7 @@ public class RecipeModalResponseServiceTest
         yield return new object[]
         {
             DiscordRecipeCategory.Vegan,
-            new Color(104, 115, 57)
+            new Color(6, 167, 125)
         };
         yield return new object[]
         {
@@ -332,12 +333,12 @@ public class RecipeModalResponseServiceTest
         yield return new object[]
         {
             DiscordRecipeCategory.Pastry,
-            new Color(250, 207, 113)
+            new Color(206, 132, 173)
         };
         yield return new object[]
         {
             DiscordRecipeCategory.Dessert,
-            new Color(252, 238, 190)
+            new Color(176, 69, 162)
         };
         yield return new object[]
         {
@@ -347,7 +348,7 @@ public class RecipeModalResponseServiceTest
         yield return new object[]
         {
             DiscordRecipeCategory.Other,
-            new Color(204, 204, 203)
+            new Color(165, 161, 164)
         };
     }
 }

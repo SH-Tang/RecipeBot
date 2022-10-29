@@ -85,21 +85,21 @@ internal static class RecipeCategoryConverter
             case RecipeCategory.Meat:
                 return new Color(250, 85, 87);
             case RecipeCategory.Fish:
-                return new Color(141, 223, 220);
+                return new Color(86, 153, 220);
             case RecipeCategory.Vegetarian:
                 return new Color(206, 221, 85);
             case RecipeCategory.Vegan:
-                return new Color(104, 115, 57);
+                return new Color(6, 167, 125);
             case RecipeCategory.Drinks:
                 return new Color(175, 234, 224);
             case RecipeCategory.Pastry:
-                return new Color(250, 207, 113);
+                return new Color(206, 132, 173);
             case RecipeCategory.Dessert:
-                return new Color(252, 238, 190);
+                return new Color(176, 69, 162);
             case RecipeCategory.Snack:
                 return new Color(249, 162, 114);
             case RecipeCategory.Other:
-                return new Color(204, 204, 203);
+                return new Color(165, 161, 164);
             default:
                 throw new NotSupportedException();
         }

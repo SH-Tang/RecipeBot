@@ -167,7 +167,7 @@ public class RecipeEmbedFactoryTest
         yield return new object[]
         {
             RecipeCategory.Fish,
-            new Color(141, 223, 220)
+            new Color(86, 153, 220)
         };
 
         yield return new object[]
@@ -178,7 +178,7 @@ public class RecipeEmbedFactoryTest
         yield return new object[]
         {
             RecipeCategory.Vegan,
-            new Color(104, 115, 57)
+            new Color(6, 167, 125)
         };
         yield return new object[]
         {
@@ -188,12 +188,12 @@ public class RecipeEmbedFactoryTest
         yield return new object[]
         {
             RecipeCategory.Pastry,
-            new Color(250, 207, 113)
+            new Color(206, 132, 173)
         };
         yield return new object[]
         {
             RecipeCategory.Dessert,
-            new Color(252, 238, 190)
+            new Color(176, 69, 162)
         };
         yield return new object[]
         {
@@ -203,7 +203,7 @@ public class RecipeEmbedFactoryTest
         yield return new object[]
         {
             RecipeCategory.Other,
-            new Color(204, 204, 203)
+            new Color(165, 161, 164)
         };
     }
 }
