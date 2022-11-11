@@ -64,9 +64,16 @@ public class RecipeModalTest
         RequiredInputAttribute? notesRequiredInput = ReflectionHelper.GetCustomAttributeFromProperty<RecipeModal, RequiredInputAttribute>(
             nameof(RecipeModal.Notes));
 
+        InputLabelAttribute? tagsInputLabel = ReflectionHelper.GetCustomAttributeFromProperty<RecipeModal, InputLabelAttribute>(
+            nameof(RecipeModal.Tags));
+        ModalTextInputAttribute? tagsModalInput = ReflectionHelper.GetCustomAttributeFromProperty<RecipeModal, ModalTextInputAttribute>(
+            nameof(RecipeModal.Tags));
+        RequiredInputAttribute? tagsRequiredInput = ReflectionHelper.GetCustomAttributeFromProperty<RecipeModal, RequiredInputAttribute>(
+            nameof(RecipeModal.Tags));
+
         // Assert
         AssertInputLabel("Title", titleInputLabel);
-        AssertModalSingleLineInput("My recipe", titleModalInput);
+        AssertModalSingleLineInput("My recipe", EmbedBuilder.MaxTitleLength, titleModalInput);
 
         AssertInputLabel("Ingredients", ingredientsInputLabel);
         AssertModalParagraphInput("The ingredients of your recipe", ingredientsModalInput);
@@ -77,27 +84,32 @@ public class RecipeModalTest
         AssertInputLabel("Notes", notesInputLabel);
         AssertModalParagraphInput("Additional notes for your recipe", notesModalInput);
         Assert.NotNull(notesRequiredInput);
-        Assert.False(notesRequiredInput!.IsRequired);
+        Assert.False(notesRequiredInput.IsRequired);
+
+        AssertInputLabel("Tags", tagsInputLabel);
+        AssertModalSingleLineInput("Optional Tag1, Optional Tag2, Optional Tag3, etc", EmbedFooterBuilder.MaxFooterTextLength, tagsModalInput);
+        Assert.NotNull(tagsRequiredInput);
+        Assert.False(tagsRequiredInput.IsRequired);
     }
 
     private static void AssertInputLabel(string expectedLabel, InputLabelAttribute? actual)
     {
         Assert.NotNull(actual);
-        Assert.Equal(expectedLabel, actual!.Label);
+        Assert.Equal(expectedLabel, actual.Label);
     }
 
-    private static void AssertModalSingleLineInput(string expectedPlaceholder, ModalTextInputAttribute? actual)
+    private static void AssertModalSingleLineInput(string expectedPlaceholder, int expectedMaxLength, ModalTextInputAttribute? actual)
     {
         Assert.NotNull(actual);
-        Assert.Equal(TextInputStyle.Short, actual!.Style);
-        Assert.Equal(EmbedBuilder.MaxTitleLength, actual.MaxLength);
+        Assert.Equal(TextInputStyle.Short, actual.Style);
+        Assert.Equal(expectedMaxLength, actual.MaxLength);
         Assert.Equal(expectedPlaceholder, actual.Placeholder);
     }
 
     private static void AssertModalParagraphInput(string expectedPlaceholder, ModalTextInputAttribute? actual)
     {
         Assert.NotNull(actual);
-        Assert.Equal(TextInputStyle.Paragraph, actual!.Style);
+        Assert.Equal(TextInputStyle.Paragraph, actual.Style);
         Assert.Equal(EmbedFieldBuilder.MaxFieldValueLength, actual.MaxLength);
         Assert.Equal(expectedPlaceholder, actual.Placeholder);
     }

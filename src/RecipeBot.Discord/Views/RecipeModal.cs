@@ -56,5 +56,13 @@ public class RecipeModal : IModal
     [RequiredInput(false)]
     public string? Notes { get; set; }
 
+    /// <summary>
+    /// Gets or sets additional tags of the recipe.
+    /// </summary>
+    [InputLabel("Tags")]
+    [ModalTextInput("tags", TextInputStyle.Short, maxLength: EmbedFooterBuilder.MaxFooterTextLength, placeholder: "Optional Tag1, Optional Tag2, Optional Tag3, etc")]
+    [RequiredInput(false)]
+    public string? Tags { get; set; }
+
     public string Title => "Recipe";
 }
