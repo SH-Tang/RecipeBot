@@ -21,14 +21,30 @@ using System.ComponentModel;
 using System.Linq;
 using Common.Utils;
 using RecipeBot.Domain.Data;
+using RecipeBot.Domain.Exceptions;
+using RecipeBot.Domain.Models;
+using RecipeBot.Domain.Properties;
 
 namespace RecipeBot.Domain.Factories;
 
 /// <summary>
-/// Factory to create tags.
+/// Factory to create instances of <see cref="RecipeTagsModel"/>.
 /// </summary>
-public static class TagFactory
+public class RecipeTagsModelFactory
 {
+    private readonly ITagModelCharacterLimitProvider limitProvider;
+
+    /// <summary>
+    /// Creates a new instance of <see cref="RecipeTagsModelFactory"/>.
+    /// </summary>
+    /// <param name="limitProvider">The <see cref="ITagModelCharacterLimitProvider"/> to retrieve the character limits from.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="limitProvider"/> is <c>null</c>.</exception>
+    public RecipeTagsModelFactory(ITagModelCharacterLimitProvider limitProvider)
+    {
+        limitProvider.IsNotNull(nameof(limitProvider));
+        this.limitProvider = limitProvider;
+    }
+
     /// <summary>
     /// Creates a collection of tags based on the input arguments.
     /// </summary>
@@ -38,7 +54,7 @@ public static class TagFactory
     /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid category.</exception>
     /// <exception cref="NotSupportedException">Thrown when <paramref name="category"/> is a valid category,
     /// but not supported.</exception>
-    public static IEnumerable<string> Create(RecipeCategory category, string tags)
+    public RecipeTagsModel Create(RecipeCategory category, string tags)
     {
         category.IsValidEnum(nameof(category));
 
@@ -47,13 +63,21 @@ public static class TagFactory
             GetValue(category)
         };
 
-        if (string.IsNullOrWhiteSpace(tags))
+        if (!string.IsNullOrWhiteSpace(tags))
         {
-            return createdTags;
+            createdTags.AddRange(CreateTagCollection(tags));
         }
 
-        createdTags.AddRange(CreateTagCollection(tags));
-        return createdTags;
+        var model = new RecipeTagsModel(createdTags);
+        int maximumRecipeTagsLength = limitProvider.MaximumRecipeTagsLength;
+        if (model.TotalLength > maximumRecipeTagsLength)
+        {
+            string exceptionMessage = string.Format(Resources.RecipeTagsModelFactory_RecipeTagsModelTotalLength_must_be_less_or_equal_to_number_of_0_characters,
+                                                    maximumRecipeTagsLength);
+            throw new ModelCreateException(exceptionMessage);
+        }
+
+        return new RecipeTagsModel(createdTags);
     }
 
     private static IEnumerable<string> CreateTagCollection(string tags)

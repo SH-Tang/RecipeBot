@@ -112,5 +112,15 @@ namespace RecipeBot.Domain.Properties {
                 return ResourceManager.GetString("Recipe_FieldName_Ingredients", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The total tag character length must be less or equal to {0} characters..
+        /// </summary>
+        internal static string RecipeTagsModelFactory_RecipeTagsModelTotalLength_must_be_less_or_equal_to_number_of_0_characters {
+            get {
+                return ResourceManager.GetString("RecipeTagsModelFactory_RecipeTagsModelTotalLength_must_be_less_or_equal_to_number" +
+                        "_of_0_characters", resourceCulture);
+            }
+        }
     }
 }
