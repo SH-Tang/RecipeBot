@@ -73,19 +73,17 @@ public class RecipeDataBuilderTest
         var recipeIngredients = fixture.Create<string>();
         var cookingSteps = fixture.Create<string>();
 
-        const DiscordRecipeCategory discordCategory = (DiscordRecipeCategory) (-1);
-
+        const DiscordRecipeCategory discordCategory = (DiscordRecipeCategory)(-1);
 
         // Call
         Action call = () => new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
-
 
         // Assert
         Assert.Throws<InvalidEnumArgumentException>(call);
     }
 
     [Fact]
-    public void Builder_without_adding_notes_and_attachment_then_build_recipe_data_without_notes_and_image_url()
+    public void Builder_without_adding_notes_and_attachment_and_tags_then_build_recipe_data_without_notes_and_image_url_and_tags()
     {
         // Setup
         var fixture = new Fixture();
@@ -105,6 +103,7 @@ public class RecipeDataBuilderTest
         AssertRecipeCommonProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
         Assert.Null(result.AdditionalNotes);
         Assert.Null(result.ImageUrl);
+        Assert.Null(result.Tags);
     }
 
     [Theory]
@@ -157,6 +156,33 @@ public class RecipeDataBuilderTest
         // Assert
         AssertRecipeCommonProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
         Assert.Equal(expectedRecipeImageUrl, result.ImageUrl);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("    ")]
+    [InlineData("")]
+    [InlineData("tags")]
+    public void Builder_when_adding_tags_then_build_recipe_data_with_tags(string tags)
+    {
+        // Setup
+        var fixture = new Fixture();
+
+        var authorData = fixture.Create<AuthorData>();
+        var discordCategory = fixture.Create<DiscordRecipeCategory>();
+        var recipeTitle = fixture.Create<string>();
+        var recipeIngredients = fixture.Create<string>();
+        var cookingSteps = fixture.Create<string>();
+
+        var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
+
+        // Call
+        RecipeData result = builder.AddTags(tags)
+                                   .Build();
+
+        // Assert
+        AssertRecipeCommonProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
+        Assert.Equal(tags, result.Tags);
     }
 
     [Theory]

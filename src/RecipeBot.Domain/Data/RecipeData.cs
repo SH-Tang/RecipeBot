@@ -88,4 +88,9 @@ public class RecipeData
     /// Gets or sets the image url of the recipe.
     /// </summary>
     public string? ImageUrl { get; set; }
+
+    /// <summary>
+    /// Gets or sets the tags of the recipe. 
+    /// </summary>
+    public string? Tags { get; set; }
 }

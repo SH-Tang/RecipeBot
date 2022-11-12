@@ -45,7 +45,7 @@ internal class RecipeDataBuilder
     /// <exception cref="ArgumentException">Thrown when <paramref name="recipeTitle"/>, <paramref name="recipeIngredients"/>
     /// or <paramref name="cookingSteps"/> is <c>null</c> or consists of whitespaces.</exception>
     /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is invalid.</exception>
-    public RecipeDataBuilder(AuthorData authorData, DiscordRecipeCategory category, 
+    public RecipeDataBuilder(AuthorData authorData, DiscordRecipeCategory category,
                              string recipeTitle, string recipeIngredients, string cookingSteps)
     {
         data = new RecipeData(authorData, RecipeCategoryConverter.ConvertFrom(category), recipeTitle, recipeIngredients, cookingSteps);
@@ -76,6 +76,17 @@ internal class RecipeDataBuilder
     public RecipeDataBuilder AddNotes(string? notes)
     {
         data.AdditionalNotes = notes;
+        return this;
+    }
+
+    /// <summary>
+    /// Adds tags to the <see cref="RecipeData"/>.
+    /// </summary>
+    /// <param name="tags">The tags to add.</param>
+    /// <returns>The <see cref="RecipeDataBuilder"/>.</returns>
+    public RecipeDataBuilder AddTags(string? tags)
+    {
+        data.Tags = tags;
         return this;
     }
 
