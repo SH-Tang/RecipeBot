@@ -132,4 +132,31 @@
   <data name="RecipeTagsModelFactory_RecipeTagsModelTotalLength_must_be_less_or_equal_to_number_of_0_characters" xml:space="preserve">
     <value>The total tag character length must be less or equal to {0} characters.</value>
   </data>
+  <data name="RecipeCategoryMeat_DisplayName" xml:space="preserve">
+    <value>Meat</value>
+  </data>
+  <data name="RecipeCategoryFish_DisplayName" xml:space="preserve">
+    <value>Fish</value>
+  </data>
+  <data name="RecipeCategoryVegetarian_DisplayName" xml:space="preserve">
+    <value>Vegetarian</value>
+  </data>
+  <data name="RecipeCategoryVegan_DisplayName" xml:space="preserve">
+    <value>Vegan</value>
+  </data>
+  <data name="RecipeCategoryDrinks_DisplayName" xml:space="preserve">
+    <value>Drinks</value>
+  </data>
+  <data name="RecipeCategoryPastry_DisplayName" xml:space="preserve">
+    <value>Pastry</value>
+  </data>
+  <data name="RecipeCategoryDessert_DisplayName" xml:space="preserve">
+    <value>Dessert</value>
+  </data>
+  <data name="RecipeCategorySnack_DisplayName" xml:space="preserve">
+    <value>Snack</value>
+  </data>
+  <data name="RecipeCategoryOther_DisplayName" xml:space="preserve">
+    <value>Other</value>
+  </data>
 </root>

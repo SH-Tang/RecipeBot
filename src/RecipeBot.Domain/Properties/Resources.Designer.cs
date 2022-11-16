@@ -114,6 +114,87 @@ namespace RecipeBot.Domain.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dessert.
+        /// </summary>
+        internal static string RecipeCategoryDessert_DisplayName {
+            get {
+                return ResourceManager.GetString("RecipeCategoryDessert_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drinks.
+        /// </summary>
+        internal static string RecipeCategoryDrinks_DisplayName {
+            get {
+                return ResourceManager.GetString("RecipeCategoryDrinks_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fish.
+        /// </summary>
+        internal static string RecipeCategoryFish_DisplayName {
+            get {
+                return ResourceManager.GetString("RecipeCategoryFish_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Meat.
+        /// </summary>
+        internal static string RecipeCategoryMeat_DisplayName {
+            get {
+                return ResourceManager.GetString("RecipeCategoryMeat_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other.
+        /// </summary>
+        internal static string RecipeCategoryOther_DisplayName {
+            get {
+                return ResourceManager.GetString("RecipeCategoryOther_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pastry.
+        /// </summary>
+        internal static string RecipeCategoryPastry_DisplayName {
+            get {
+                return ResourceManager.GetString("RecipeCategoryPastry_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Snack.
+        /// </summary>
+        internal static string RecipeCategorySnack_DisplayName {
+            get {
+                return ResourceManager.GetString("RecipeCategorySnack_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vegan.
+        /// </summary>
+        internal static string RecipeCategoryVegan_DisplayName {
+            get {
+                return ResourceManager.GetString("RecipeCategoryVegan_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vegetarian.
+        /// </summary>
+        internal static string RecipeCategoryVegetarian_DisplayName {
+            get {
+                return ResourceManager.GetString("RecipeCategoryVegetarian_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The total tag character length must be less or equal to {0} characters..
         /// </summary>
         internal static string RecipeTagsModelFactory_RecipeTagsModelTotalLength_must_be_less_or_equal_to_number_of_0_characters {

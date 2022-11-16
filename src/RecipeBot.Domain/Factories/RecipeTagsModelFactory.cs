@@ -92,23 +92,23 @@ public class RecipeTagsModelFactory
         switch (category)
         {
             case RecipeCategory.Meat:
-                return "Meat";
+                return Resources.RecipeCategoryMeat_DisplayName;
             case RecipeCategory.Fish:
-                return "Fish";
+                return Resources.RecipeCategoryFish_DisplayName;
             case RecipeCategory.Vegetarian:
-                return "Vegetarian";
+                return Resources.RecipeCategoryVegetarian_DisplayName;
             case RecipeCategory.Vegan:
-                return "Vegan";
+                return Resources.RecipeCategoryVegan_DisplayName;
             case RecipeCategory.Drinks:
-                return "Drinks";
+                return Resources.RecipeCategoryDrinks_DisplayName;
             case RecipeCategory.Pastry:
-                return "Pastry";
+                return Resources.RecipeCategoryPastry_DisplayName;
             case RecipeCategory.Dessert:
-                return "Dessert";
+                return Resources.RecipeCategoryDessert_DisplayName;
             case RecipeCategory.Snack:
-                return "Snack";
+                return Resources.RecipeCategorySnack_DisplayName;
             case RecipeCategory.Other:
-                return "Other";
+                return Resources.RecipeCategoryOther_DisplayName;
             default:
                 throw new NotSupportedException();
         }
