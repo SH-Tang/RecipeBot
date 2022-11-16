@@ -20,7 +20,9 @@ namespace RecipeBot.Domain.Factories;
 /// <summary>
 /// Interface for describing providers of character limits for recipe models
 /// </summary>
-public interface IRecipeModelCharacterLimitProvider : IAuthorModelCharacterLimitProvider, IRecipeFieldModelCharacterLimitProvider
+public interface IRecipeModelCharacterLimitProvider : IAuthorModelCharacterLimitProvider,
+                                                      IRecipeFieldModelCharacterLimitProvider,
+                                                      ITagModelCharacterLimitProvider
 {
     /// <summary>
     /// Gets the maximum length of the title.

@@ -37,5 +37,7 @@ public class DiscordCharacterLimitProviderTest
 
         Assert.Equal(EmbedFieldBuilder.MaxFieldNameLength, limitProvider.MaximumFieldNameLength);
         Assert.Equal(EmbedFieldBuilder.MaxFieldValueLength, limitProvider.MaximumFieldDataLength);
+
+        Assert.Equal(EmbedFooterBuilder.MaxFooterTextLength, limitProvider.MaximumRecipeTagsLength);
     }
 }

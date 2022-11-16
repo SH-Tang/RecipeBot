@@ -30,4 +30,5 @@ public class DiscordCharacterLimitProvider : IRecipeModelCharacterLimitProvider
     public int MaximumFieldDataLength => EmbedFieldBuilder.MaxFieldValueLength;
     public int MaximumTitleLength => EmbedBuilder.MaxTitleLength;
     public int MaximumRecipeLength => EmbedBuilder.MaxEmbedLength;
+    public int MaximumRecipeTagsLength => EmbedFooterBuilder.MaxFooterTextLength;
 }
