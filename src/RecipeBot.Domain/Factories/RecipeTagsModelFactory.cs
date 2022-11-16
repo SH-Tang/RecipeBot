@@ -54,7 +54,7 @@ public class RecipeTagsModelFactory
     /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid category.</exception>
     /// <exception cref="NotSupportedException">Thrown when <paramref name="category"/> is a valid category,
     /// but not supported.</exception>
-    public RecipeTagsModel Create(RecipeCategory category, string tags)
+    public RecipeTagsModel Create(RecipeCategory category, string? tags)
     {
         category.IsValidEnum(nameof(category));
 
