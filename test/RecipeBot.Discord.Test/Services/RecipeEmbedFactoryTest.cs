@@ -18,8 +18,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Discord;
-using RecipeBot.Domain.Data;
 using RecipeBot.Discord.Services;
+using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.TestUtils;
 using Xunit;
@@ -28,16 +28,16 @@ namespace RecipeBot.Discord.Test.Services;
 
 public class RecipeEmbedFactoryTest
 {
-    private readonly RecipeDomainModelTestFactory domainTestFactory;
+    private readonly RecipeDomainModelTestBuilder domainModelBuilder;
 
     public RecipeEmbedFactoryTest()
     {
-        domainTestFactory = new RecipeDomainModelTestFactory(new RecipeDomainModelTestFactory.ConstructionProperties
+        domainModelBuilder = new RecipeDomainModelTestBuilder(new RecipeDomainModelTestBuilder.ConstructionProperties
         {
             MaxAuthorNameLength = EmbedAuthorBuilder.MaxAuthorNameLength,
             MaxTitleLength = EmbedBuilder.MaxTitleLength,
             MaxFieldNameLength = EmbedFieldBuilder.MaxFieldNameLength,
-            MaxFieldDataLength = EmbedFieldBuilder.MaxFieldValueLength
+            MaxFieldDataLength = EmbedFieldBuilder.MaxFieldValueLength,
         });
     }
 
@@ -47,7 +47,8 @@ public class RecipeEmbedFactoryTest
         RecipeCategory category, Color expectedColor)
     {
         // Setup
-        RecipeModel recipeModel = domainTestFactory.Create(category);
+        RecipeModel recipeModel = domainModelBuilder.SetCategory(category)
+                                                   .Build();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel);
@@ -60,7 +61,7 @@ public class RecipeEmbedFactoryTest
     public void Basic_recipe_should_return_embed_without_image_and_fields()
     {
         // Setup
-        RecipeModel recipeModel = domainTestFactory.Create();
+        RecipeModel recipeModel = domainModelBuilder.Build();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel);
@@ -71,13 +72,22 @@ public class RecipeEmbedFactoryTest
 
         AssertAuthor(recipeModel.Author, embed.Author);
         AssertFields(recipeModel.RecipeFields, embed.Fields);
+
+        Assert.Null(embed.Footer);
     }
 
     [Fact]
-    public void Recipe_with_fields_and_image_should_return_embed_with_fields_and_image()
+    public void Recipe_with_all_data_should_return_embed_with_fields_image_and_footer()
     {
         // Setup
-        RecipeModel recipeModel = domainTestFactory.CreateWithImageAndFields();
+        RecipeModel recipeModel = domainModelBuilder.AddImage()
+                                                   .AddTags(new[]
+                                                   {
+                                                       "Tag1",
+                                                       "Tag2"
+                                                   })
+                                                   .AddFields(3)
+                                                   .Build();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel);
@@ -87,17 +97,23 @@ public class RecipeEmbedFactoryTest
 
         EmbedImage? embedImage = embed.Image;
         Assert.NotNull(embedImage);
-        Assert.Equal(recipeModel.RecipeImageUrl, embedImage!.Value.Url);
+        Assert.Equal(recipeModel.RecipeImageUrl, embedImage.Value.Url);
 
         AssertAuthor(recipeModel.Author, embed.Author);
         AssertFields(recipeModel.RecipeFields, embed.Fields);
+
+        EmbedFooter? footer = embed.Footer;
+        Assert.NotNull(embed.Footer);
+        const string expectedFooterText = "Tag1, Tag2";
+        Assert.Equal(expectedFooterText, footer!.Value.Text);
     }
 
     [Fact]
     public void Recipe_with_image_should_return_embed_with_image()
     {
         // Setup
-        RecipeModel recipeModel = domainTestFactory.CreateWithImage();
+        RecipeModel recipeModel = domainModelBuilder.AddImage()
+                                                   .Build();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel);
@@ -111,13 +127,16 @@ public class RecipeEmbedFactoryTest
 
         AssertAuthor(recipeModel.Author, embed.Author);
         AssertFields(recipeModel.RecipeFields, embed.Fields);
+
+        Assert.Null(embed.Footer);
     }
 
     [Fact]
     public void Recipe_with_fields_should_return_embed_with_fields()
     {
         // Setup
-        RecipeModel recipeModel = domainTestFactory.CreateWithFields();
+        RecipeModel recipeModel = domainModelBuilder.AddFields(3)
+                                                   .Build();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel);
@@ -130,30 +149,37 @@ public class RecipeEmbedFactoryTest
 
         AssertAuthor(recipeModel.Author, embed.Author);
         AssertFields(recipeModel.RecipeFields, embed.Fields);
+
+        Assert.Null(embed.Footer);
     }
 
-    private static void AssertAuthor(AuthorModel authorData, EmbedAuthor? actualAuthor)
+    [Fact]
+    public void Recipe_with_tags_should_return_embed_with_tags()
     {
-        Assert.NotNull(actualAuthor);
-        Assert.Equal(authorData.AuthorName, actualAuthor!.Value.Name);
-        Assert.Equal(authorData.AuthorImageUrl, actualAuthor.Value.IconUrl);
-    }
+        // Setup
+        RecipeModel recipeModel = domainModelBuilder.AddTags(new[]
+                                                   {
+                                                       "Tag1",
+                                                       "Tag2"
+                                                   })
+                                                   .Build();
 
-    private static void AssertFields(IEnumerable<RecipeFieldModel> recipeFields, IEnumerable<EmbedField> embedFields)
-    {
-        int nrOfRecipeFields = recipeFields.Count();
-        Assert.Equal(nrOfRecipeFields, embedFields.Count());
-        for (var i = 0; i < nrOfRecipeFields; i++)
-        {
-            AssertField(recipeFields.ElementAt(i), embedFields.ElementAt(i));
-        }
-    }
+        // Call
+        Embed embed = RecipeEmbedFactory.Create(recipeModel);
 
-    private static void AssertField(RecipeFieldModel model, EmbedField actualField)
-    {
-        Assert.Equal(model.FieldName, actualField.Name);
-        Assert.Equal(model.FieldData, actualField.Value);
-        Assert.False(actualField.Inline);
+        // Assert
+        Assert.Equal(recipeModel.Title, embed.Title);
+
+        EmbedImage? embedImage = embed.Image;
+        Assert.Null(embedImage);
+
+        AssertAuthor(recipeModel.Author, embed.Author);
+        AssertFields(recipeModel.RecipeFields, embed.Fields);
+
+        EmbedFooter? footer = embed.Footer;
+        Assert.NotNull(embed.Footer);
+        const string expectedFooterText = "Tag1, Tag2";
+        Assert.Equal(expectedFooterText, footer!.Value.Text);
     }
 
     public static IEnumerable<object[]> GetRecipeCategoriesAndColor()
@@ -205,5 +231,29 @@ public class RecipeEmbedFactoryTest
             RecipeCategory.Other,
             new Color(165, 161, 164)
         };
+    }
+
+    private static void AssertAuthor(AuthorModel authorData, EmbedAuthor? actualAuthor)
+    {
+        Assert.NotNull(actualAuthor);
+        Assert.Equal(authorData.AuthorName, actualAuthor!.Value.Name);
+        Assert.Equal(authorData.AuthorImageUrl, actualAuthor.Value.IconUrl);
+    }
+
+    private static void AssertFields(IEnumerable<RecipeFieldModel> recipeFields, IEnumerable<EmbedField> embedFields)
+    {
+        int nrOfRecipeFields = recipeFields.Count();
+        Assert.Equal(nrOfRecipeFields, embedFields.Count());
+        for (var i = 0; i < nrOfRecipeFields; i++)
+        {
+            AssertField(recipeFields.ElementAt(i), embedFields.ElementAt(i));
+        }
+    }
+
+    private static void AssertField(RecipeFieldModel model, EmbedField actualField)
+    {
+        Assert.Equal(model.FieldName, actualField.Name);
+        Assert.Equal(model.FieldData, actualField.Value);
+        Assert.False(actualField.Inline);
     }
 }
