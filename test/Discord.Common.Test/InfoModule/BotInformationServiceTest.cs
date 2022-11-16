@@ -94,14 +94,6 @@ public class BotInformationServiceTest
         }
     }
 
-    private static void AssertEmbedField(EmbedField field, DiscordCommandInfo info)
-    {
-        Assert.Equal(field.Name, info.Name);
-
-        string expectedSummary = info.Summary ?? $"No description available.{Environment.NewLine}";
-        Assert.Equal(expectedSummary, field.Value);
-    }
-
     public static IEnumerable<object[]> GetInfoOptions()
     {
         yield return new object[]
@@ -123,5 +115,13 @@ public class BotInformationServiceTest
                 BotInformationUrl = @"https://github.com/"
             }
         };
+    }
+
+    private static void AssertEmbedField(EmbedField field, DiscordCommandInfo info)
+    {
+        Assert.Equal(field.Name, info.Name);
+
+        string expectedSummary = info.Summary ?? $"No description available.{Environment.NewLine}";
+        Assert.Equal(expectedSummary, field.Value);
     }
 }

@@ -123,7 +123,7 @@ public class RecipeModelTest
         int totalLength = recipe.TotalLength;
 
         // Assert
-        int expectedLength = recipeTitle.Length + metaData.Author.TotalLength + recipeFields.Sum(f => f.TotalLength) 
+        int expectedLength = recipeTitle.Length + metaData.Author.TotalLength + recipeFields.Sum(f => f.TotalLength)
                              + metaData.Tags.TotalLength;
         Assert.Equal(expectedLength, totalLength);
     }
@@ -143,7 +143,7 @@ public class RecipeModelTest
         IEnumerable<RecipeFieldModel> recipeFields = fixture.CreateMany<RecipeFieldModel>();
         RecipeModelMetaData metaData = CreateMetaData(fixture);
         RecipeModel recipe = fixture.Build<RecipeModel>()
-                                    .FromFactory(()=> new RecipeModel(metaData, recipeFields, recipeTitle, imageUrl))
+                                    .FromFactory(() => new RecipeModel(metaData, recipeFields, recipeTitle, imageUrl))
                                     .Create();
 
         // Call
@@ -184,8 +184,8 @@ public class RecipeModelTest
 
         RecipeModelMetaData metaData = CreateMetaData(fixture);
         RecipeModel recipe = fixture.Build<RecipeModel>()
-                                     .FromFactory(()=> new RecipeModel(metaData, Enumerable.Empty<RecipeFieldModel>(), recipeTitle, imageUrl))
-                                     .Create();
+                                    .FromFactory(() => new RecipeModel(metaData, Enumerable.Empty<RecipeFieldModel>(), recipeTitle, imageUrl))
+                                    .Create();
 
         // Call
         int totalLength = recipe.TotalLength;
@@ -198,9 +198,9 @@ public class RecipeModelTest
     private static RecipeModelMetaData CreateMetaData(Fixture fixture)
     {
         AuthorModel authorModel = fixture.Build<AuthorModel>()
-                                     .FromFactory<string>(author => new AuthorModel(author, imageUrl))
-                                     .Create();
-        
+                                         .FromFactory<string>(author => new AuthorModel(author, imageUrl))
+                                         .Create();
+
         IEnumerable<string> tags = fixture.CreateMany<string>();
         RecipeTagsModel tagsModel = fixture.Build<RecipeTagsModel>()
                                            .FromFactory(() => new RecipeTagsModel(tags))
@@ -208,7 +208,5 @@ public class RecipeModelTest
         var category = fixture.Create<RecipeCategory>();
 
         return new RecipeModelMetaData(authorModel, tagsModel, category);
-
     }
-
 }
