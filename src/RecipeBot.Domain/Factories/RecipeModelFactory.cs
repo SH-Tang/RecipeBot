@@ -32,6 +32,7 @@ public class RecipeModelFactory
 {
     private readonly AuthorModelFactory authorModelFactory;
     private readonly RecipeFieldModelFactory recipeFieldModelFactory;
+    private readonly RecipeTagsModelFactory recipeTagsModelFactory;
     private readonly IRecipeModelCharacterLimitProvider recipeModelCharacterLimitProvider;
 
     /// <summary>
@@ -49,6 +50,7 @@ public class RecipeModelFactory
 
         authorModelFactory = new AuthorModelFactory(recipeModelCharacterLimitProvider);
         recipeFieldModelFactory = new RecipeFieldModelFactory(recipeModelCharacterLimitProvider);
+        recipeTagsModelFactory = new RecipeTagsModelFactory(recipeModelCharacterLimitProvider);
     }
 
     /// <summary>
@@ -85,10 +87,10 @@ public class RecipeModelFactory
         IEnumerable<RecipeFieldModel> recipeFields = CreateRecipeFields(recipeData);
 
         string recipeTitle = recipeData.RecipeTitle;
-        RecipeCategory recipeCategory = recipeData.Category;
+        RecipeModelMetaData modelMetaData = CreateMetaData(recipeData);
         RecipeModel recipe = recipeData.ImageUrl == null
-                                 ? new RecipeModel(authorModel, recipeCategory, recipeFields, recipeTitle)
-                                 : new RecipeModel(authorModel, recipeCategory, recipeFields, recipeTitle, recipeData.ImageUrl);
+                                 ? new RecipeModel(modelMetaData, recipeFields, recipeTitle)
+                                 : new RecipeModel(modelMetaData, recipeFields, recipeTitle, recipeData.ImageUrl);
 
         int maximumRecipeLength = recipeModelCharacterLimitProvider.MaximumRecipeLength;
         if (recipe.TotalLength > maximumRecipeLength)
@@ -100,9 +102,21 @@ public class RecipeModelFactory
         return recipe;
     }
 
+    private RecipeModelMetaData CreateMetaData(RecipeData recipeData)
+    {
+        return new RecipeModelMetaData(CreateAuthor(recipeData.AuthorData),
+                                       CreateTags(recipeData),
+                                       recipeData.Category);
+    }
+
     private AuthorModel CreateAuthor(AuthorData authorData)
     {
         return authorModelFactory.Create(authorData);
+    }
+
+    private RecipeTagsModel CreateTags(RecipeData recipeData)
+    {
+        return recipeTagsModelFactory.Create(recipeData.Category, recipeData.Tags);
     }
 
     private IEnumerable<RecipeFieldModel> CreateRecipeFields(RecipeData recipeData)

@@ -31,20 +31,47 @@ namespace RecipeBot.Domain.Test.Factories;
 
 public class RecipeModelFactoryTest
 {
+    private static readonly Dictionary<RecipeCategory, string> categoryMapping = new()
+    {
+        {
+            RecipeCategory.Meat, "Meat"
+        },
+        {
+            RecipeCategory.Fish, "Fish"
+        },
+        {
+            RecipeCategory.Vegetarian, "Vegetarian"
+        },
+        {
+            RecipeCategory.Vegan, "Vegan"
+        },
+        {
+            RecipeCategory.Drinks, "Drinks"
+        },
+        {
+            RecipeCategory.Pastry, "Pastry"
+        },
+        {
+            RecipeCategory.Dessert, "Dessert"
+        },
+        {
+            RecipeCategory.Snack, "Snack"
+        },
+        {
+            RecipeCategory.Other, "Other"
+        }
+    };
+
     [Theory]
     [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
-    public void Recipe_without_image_and_notes_returns_model_without_image_and_notes(string notes)
+    public void Recipe_without_optional_data_returns_model_without_optional_data(string emptyValueString)
     {
         // Setup
-        var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
-        recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
-        recipeCharacterLimitProvider.MaximumRecipeLength.Returns(int.MaxValue);
-        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
-        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
-        recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
+        IRecipeModelCharacterLimitProvider recipeCharacterLimitProvider = CreateDefaultRecipeCharacterLimitProvider();
 
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
-        recipeData.AdditionalNotes = notes;
+        recipeData.AdditionalNotes = emptyValueString;
+        recipeData.Tags = emptyValueString;
 
         var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
 
@@ -57,18 +84,14 @@ public class RecipeModelFactoryTest
         AssertAuthor(recipeData.AuthorData, model.Author);
         Assert.Equal(2, model.RecipeFields.Count());
         AssertMandatoryFields(recipeData, model.RecipeFields);
+        AssertTags(recipeData, model.RecipeTags);
     }
 
     [Fact]
     public void Recipe_with_image_returns_model_with_image()
     {
         // Setup
-        var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
-        recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
-        recipeCharacterLimitProvider.MaximumRecipeLength.Returns(int.MaxValue);
-        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
-        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
-        recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
+        IRecipeModelCharacterLimitProvider recipeCharacterLimitProvider = CreateDefaultRecipeCharacterLimitProvider();
 
         const string imageUrl = "http://www.recipeBotImage.com";
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
@@ -85,18 +108,39 @@ public class RecipeModelFactoryTest
         AssertAuthor(recipeData.AuthorData, model.Author);
         Assert.Equal(2, model.RecipeFields.Count());
         AssertMandatoryFields(recipeData, model.RecipeFields);
+        AssertTags(recipeData, model.RecipeTags);
+    }
+
+    [Fact]
+    public void Recipe_with_tags_returns_model_with_tags()
+    {
+        // Setup
+        IRecipeModelCharacterLimitProvider recipeCharacterLimitProvider = CreateDefaultRecipeCharacterLimitProvider();
+
+        RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
+        recipeData.Tags = "Tag1, tag2";
+
+        var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
+
+        // Call
+        RecipeModel model = factory.Create(recipeData);
+
+        // Assert
+        Assert.Equal(recipeData.RecipeTitle, model.Title);
+        Assert.Null(model.RecipeImageUrl);
+
+        IEnumerable<RecipeFieldModel> recipeFields = model.RecipeFields;
+        Assert.Equal(2, recipeFields.Count());
+        AssertMandatoryFields(recipeData, recipeFields);
+
+        AssertTags(recipeData, model.RecipeTags);
     }
 
     [Fact]
     public void Recipe_with_notes_returns_model_with_notes()
     {
         // Setup
-        var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
-        recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
-        recipeCharacterLimitProvider.MaximumRecipeLength.Returns(int.MaxValue);
-        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
-        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
-        recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
+        IRecipeModelCharacterLimitProvider recipeCharacterLimitProvider = CreateDefaultRecipeCharacterLimitProvider();
 
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
         recipeData.AdditionalNotes = new string('%', recipeCharacterLimitProvider.MaximumFieldDataLength);
@@ -117,23 +161,21 @@ public class RecipeModelFactoryTest
         RecipeFieldModel additionalNotesField = recipeFields.ElementAt(2);
         Assert.Equal("Additional notes", additionalNotesField.FieldName);
         Assert.Equal(recipeData.AdditionalNotes, additionalNotesField.FieldData);
+
+        AssertTags(recipeData, model.RecipeTags);
     }
 
     [Fact]
-    public void Recipe_with_image_and_notes_returns_model_with_image_and_notes()
+    public void Recipe_with_all_optional_data_returns_model_with_all_data()
     {
         // Setup
-        var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
-        recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
-        recipeCharacterLimitProvider.MaximumRecipeLength.Returns(int.MaxValue);
-        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
-        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
-        recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
+        IRecipeModelCharacterLimitProvider recipeCharacterLimitProvider = CreateDefaultRecipeCharacterLimitProvider();
 
         const string imageUrl = "http://www.recipeBotImage.com";
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
         recipeData.ImageUrl = imageUrl;
         recipeData.AdditionalNotes = new string('%', recipeCharacterLimitProvider.MaximumFieldDataLength);
+        recipeData.Tags = "Tag1, tag2";
 
         var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
 
@@ -150,6 +192,8 @@ public class RecipeModelFactoryTest
         RecipeFieldModel additionalNotesField = recipeFields.ElementAt(2);
         Assert.Equal("Additional notes", additionalNotesField.FieldName);
         Assert.Equal(recipeData.AdditionalNotes, additionalNotesField.FieldData);
+
+        AssertTags(recipeData, model.RecipeTags);
     }
 
     [Fact]
@@ -159,9 +203,10 @@ public class RecipeModelFactoryTest
         var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
         recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
         recipeCharacterLimitProvider.MaximumRecipeLength.Returns(int.MaxValue);
-        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
-        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
-        recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
+        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(50);
+        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(50);
+        recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(50);
+        recipeCharacterLimitProvider.MaximumRecipeTagsLength.Returns(50);
 
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider, 1);
 
@@ -172,7 +217,7 @@ public class RecipeModelFactoryTest
 
         // Assert
         var exception = Assert.Throws<ModelCreateException>(call);
-        var expectedMessage = $"RecipeTitle must be less or equal to {recipeCharacterLimitProvider.MaximumTitleLength} characters.";
+        string expectedMessage = $"RecipeTitle must be less or equal to {recipeCharacterLimitProvider.MaximumTitleLength} characters.";
         Assert.Equal(expectedMessage, exception.Message);
     }
 
@@ -185,10 +230,11 @@ public class RecipeModelFactoryTest
         // Setup
         var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
         recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
-        recipeCharacterLimitProvider.MaximumRecipeLength.Returns(int.MaxValue);
-        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
-        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
-        recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
+        recipeCharacterLimitProvider.MaximumRecipeLength.Returns(700);
+        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(50);
+        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(50);
+        recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(50);
+        recipeCharacterLimitProvider.MaximumRecipeTagsLength.Returns(500);
 
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider, -characterOffset);
 
@@ -211,15 +257,17 @@ public class RecipeModelFactoryTest
         recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
         recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(30);
         recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
+        recipeCharacterLimitProvider.MaximumRecipeTagsLength.Returns(50);
 
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
 
         var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
 
         // Precondition
-        var totalCharacterLength = recipeCharacterLimitProvider.MaximumAuthorNameLength +
+        int totalCharacterLength = recipeCharacterLimitProvider.MaximumAuthorNameLength +
                                    recipeCharacterLimitProvider.MaximumTitleLength +
-                                   recipeCharacterLimitProvider.MaximumFieldDataLength;
+                                   recipeCharacterLimitProvider.MaximumFieldDataLength +
+                                   recipeCharacterLimitProvider.MaximumRecipeTagsLength;
         Assert.True(totalCharacterLength > recipeCharacterLimitProvider.MaximumRecipeLength);
 
         // Call                    
@@ -227,7 +275,7 @@ public class RecipeModelFactoryTest
 
         // Assert
         var exception = Assert.Throws<ModelCreateException>(call);
-        var expectedMessage = $"recipeData must be less or equal to {recipeCharacterLimitProvider.MaximumRecipeLength} characters.";
+        string expectedMessage = $"recipeData must be less or equal to {recipeCharacterLimitProvider.MaximumRecipeLength} characters.";
         Assert.Equal(expectedMessage, exception.Message);
     }
 
@@ -254,6 +302,19 @@ public class RecipeModelFactoryTest
         Assert.Throws<ModelCreateException>(call);
     }
 
+    private static IRecipeModelCharacterLimitProvider CreateDefaultRecipeCharacterLimitProvider()
+    {
+        var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
+        recipeCharacterLimitProvider.MaximumTitleLength.Returns(50);
+        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(50);
+        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(50);
+        recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(50);
+        recipeCharacterLimitProvider.MaximumRecipeTagsLength.Returns(500);
+        recipeCharacterLimitProvider.MaximumRecipeLength.Returns(700);
+
+        return recipeCharacterLimitProvider;
+    }
+
     private static void AssertAuthor(AuthorData data, AuthorModel model)
     {
         Assert.Equal(data.AuthorName, model.AuthorName);
@@ -269,6 +330,24 @@ public class RecipeModelFactoryTest
         RecipeFieldModel cookingStepsField = recipeFields.ElementAt(1);
         Assert.Equal("Cooking steps", cookingStepsField.FieldName);
         Assert.Equal(data.CookingSteps, cookingStepsField.FieldData);
+    }
+
+    private static void AssertTags(RecipeData data, RecipeTagsModel model)
+    {
+        var expectedTags = new List<string>
+        {
+            categoryMapping[data.Category]
+        };
+
+        if (!string.IsNullOrWhiteSpace(data.Tags))
+        {
+            IEnumerable<string> parsedTags = data.Tags
+                                                 .Split(',').Select(t => t.Trim())
+                                                 .Distinct();
+            expectedTags.AddRange(parsedTags);
+        }
+
+        Assert.Equal(expectedTags, model.Tags);
     }
 
     private static RecipeData CreateRecipeData(IRecipeModelCharacterLimitProvider limitProvider,
