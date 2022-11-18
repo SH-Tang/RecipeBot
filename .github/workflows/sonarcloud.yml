@@ -19,6 +19,8 @@ on:
     - 'test/**'
     - 'build/**'
     - 'WeekendBot.sln'
+env:
+  build_directory: ./
 jobs:
   build:
     name: Build and analyze SonarCloud
