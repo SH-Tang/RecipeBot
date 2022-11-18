@@ -40,7 +40,7 @@ public class RecipeTagsModelFactoryTest
         var fixture = new Fixture();
         var tags = fixture.Create<string>();
 
-        var provider = Substitute.For<ITagModelCharacterLimitProvider>();
+        var provider = Substitute.For<IRecipeTagModelCharacterLimitProvider>();
         var factory = new RecipeTagsModelFactory(provider);
 
         // Call
@@ -59,7 +59,7 @@ public class RecipeTagsModelFactoryTest
         var tags = fixture.Create<string>();
 
         int maximumTagsLength = tags.Length - 1;
-        var provider = Substitute.For<ITagModelCharacterLimitProvider>();
+        var provider = Substitute.For<IRecipeTagModelCharacterLimitProvider>();
         provider.MaximumRecipeTagsLength.Returns(maximumTagsLength);
         var factory = new RecipeTagsModelFactory(provider);
 
@@ -89,7 +89,7 @@ public class RecipeTagsModelFactoryTest
         var fixture = new Fixture();
         var tags = fixture.Create<string>();
 
-        var provider = Substitute.For<ITagModelCharacterLimitProvider>();
+        var provider = Substitute.For<IRecipeTagModelCharacterLimitProvider>();
         provider.MaximumRecipeTagsLength.Returns(int.MaxValue);
         var factory = new RecipeTagsModelFactory(provider);
 
@@ -118,7 +118,7 @@ public class RecipeTagsModelFactoryTest
         // Setup
         const RecipeCategory category = RecipeCategory.Other;
 
-        var provider = Substitute.For<ITagModelCharacterLimitProvider>();
+        var provider = Substitute.For<IRecipeTagModelCharacterLimitProvider>();
         provider.MaximumRecipeTagsLength.Returns(int.MaxValue);
         var factory = new RecipeTagsModelFactory(provider);
 
@@ -143,7 +143,7 @@ public class RecipeTagsModelFactoryTest
         // Setup
         const RecipeCategory category = RecipeCategory.Other;
 
-        var provider = Substitute.For<ITagModelCharacterLimitProvider>();
+        var provider = Substitute.For<IRecipeTagModelCharacterLimitProvider>();
         provider.MaximumRecipeTagsLength.Returns(int.MaxValue);
         var factory = new RecipeTagsModelFactory(provider);
 

@@ -32,14 +32,14 @@ namespace RecipeBot.Domain.Factories;
 /// </summary>
 public class RecipeTagsModelFactory
 {
-    private readonly ITagModelCharacterLimitProvider limitProvider;
+    private readonly IRecipeTagModelCharacterLimitProvider limitProvider;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeTagsModelFactory"/>.
     /// </summary>
-    /// <param name="limitProvider">The <see cref="ITagModelCharacterLimitProvider"/> to retrieve the character limits from.</param>
+    /// <param name="limitProvider">The <see cref="IRecipeTagModelCharacterLimitProvider"/> to retrieve the character limits from.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="limitProvider"/> is <c>null</c>.</exception>
-    public RecipeTagsModelFactory(ITagModelCharacterLimitProvider limitProvider)
+    public RecipeTagsModelFactory(IRecipeTagModelCharacterLimitProvider limitProvider)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
         this.limitProvider = limitProvider;

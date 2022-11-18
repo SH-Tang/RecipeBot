@@ -18,9 +18,9 @@
 namespace RecipeBot.Domain.Factories;
 
 /// <summary>
-/// Interface for describing providers of character limits for recipe tags.
+/// Interface for describing providers of character limits for recipe tag models.
 /// </summary>
-public interface ITagModelCharacterLimitProvider
+public interface IRecipeTagModelCharacterLimitProvider
 {
     /// <summary>
     /// Gets the maximum allowable length of the recipe tags.
