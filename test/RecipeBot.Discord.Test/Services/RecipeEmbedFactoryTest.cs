@@ -102,10 +102,10 @@ public class RecipeEmbedFactoryTest
         AssertAuthor(recipeModel.Author, embed.Author);
         AssertFields(recipeModel.RecipeFields, embed.Fields);
 
-        EmbedFooter? footer = embed.Footer;
-        Assert.NotNull(embed.Footer);
+        EmbedFooter? embedFooter = embed.Footer;
+        Assert.NotNull(embedFooter);
         const string expectedFooterText = "Tag1, Tag2";
-        Assert.Equal(expectedFooterText, footer!.Value.Text);
+        Assert.Equal(expectedFooterText, embedFooter.Value.Text);
     }
 
     [Fact]
@@ -176,10 +176,10 @@ public class RecipeEmbedFactoryTest
         AssertAuthor(recipeModel.Author, embed.Author);
         AssertFields(recipeModel.RecipeFields, embed.Fields);
 
-        EmbedFooter? footer = embed.Footer;
-        Assert.NotNull(embed.Footer);
+        EmbedFooter? embedFooter = embed.Footer;
+        Assert.NotNull(embedFooter);
         const string expectedFooterText = "Tag1, Tag2";
-        Assert.Equal(expectedFooterText, footer!.Value.Text);
+        Assert.Equal(expectedFooterText, embedFooter.Value.Text);
     }
 
     public static IEnumerable<object[]> GetRecipeCategoriesAndColor()
