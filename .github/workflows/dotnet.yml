@@ -1,11 +1,13 @@
 name: .NET
 
 on:
+  workflow_dispatch:
   push:
     branches:
     - master
     - feature/**
     paths:
+    - '.github/**'
     - 'src/**'
     - 'test/**'
     - 'build/**'
@@ -13,6 +15,7 @@ on:
   pull_request:
     branches: [ master ]
     paths:
+    - '.github/**'
     - 'src/**'
     - 'test/**'
     - 'build/**'
@@ -38,7 +41,7 @@ jobs:
     - name: Build
       run: dotnet build $env:build_directory --no-restore
     - name: Test
-      run: dotnet test $env:build_directory --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage"
+      run: dotnet test $env:build_directory --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - name: Generate unit test Report
       uses: dorny/test-reporter@v1
       if: always()
