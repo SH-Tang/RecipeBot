@@ -15,20 +15,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using Discord;
-using RecipeBot.Domain.Factories;
-
-namespace RecipeBot.Discord.Providers;
+namespace RecipeBot.Domain.Factories;
 
 /// <summary>
-/// Class that holds the character limits of Discord.
+/// Interface for describing providers of character limits for recipe tag models.
 /// </summary>
-public class DiscordCharacterLimitProvider : IRecipeModelCharacterLimitProvider
+public interface IRecipeTagModelCharacterLimitProvider
 {
-    public int MaximumAuthorNameLength => EmbedAuthorBuilder.MaxAuthorNameLength;
-    public int MaximumFieldNameLength => EmbedFieldBuilder.MaxFieldNameLength;
-    public int MaximumFieldDataLength => EmbedFieldBuilder.MaxFieldValueLength;
-    public int MaximumTitleLength => EmbedBuilder.MaxTitleLength;
-    public int MaximumRecipeLength => EmbedBuilder.MaxEmbedLength;
-    public int MaximumRecipeTagsLength => EmbedFooterBuilder.MaxFooterTextLength;
+    /// <summary>
+    /// Gets the maximum allowable length of the recipe tags.
+    /// </summary>
+    int MaximumRecipeTagsLength { get; }
 }

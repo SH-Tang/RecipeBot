@@ -65,6 +65,7 @@ public class RecipeModalResponseService
         Func<RecipeData> getRecipeDataFunc =
             () => new RecipeDataBuilder(authorData, recipeCategory, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
                   .AddNotes(modal.Notes)
+                  .AddTags(modal.Tags)
                   .Build();
 
         return RecipeEmbedFactory.Create(GetRecipeModel(getRecipeDataFunc));
@@ -90,6 +91,7 @@ public class RecipeModalResponseService
         Func<RecipeData> getRecipeDataFunc =
             () => new RecipeDataBuilder(authorData, recipeCategory, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
                   .AddNotes(modal.Notes)
+                  .AddTags(modal.Tags)
                   .AddImage(attachment)
                   .Build();
 

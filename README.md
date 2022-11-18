@@ -1,4 +1,3 @@
-![License](https://img.shields.io/github/license/SH-Tang/RecipeBot)
 ![GitHub last commit](https://img.shields.io/github/last-commit/SH-Tang/RecipeBot)
 [![.NET](https://github.com/SH-Tang/RecipeBot/actions/workflows/dotnet.yml/badge.svg)](https://github.com/SH-Tang/RecipeBot/actions/workflows/dotnet.yml)
 [![codecov](https://codecov.io/gh/SH-Tang/RecipeBot/branch/master/graph/badge.svg?token=20HZTP4M1O)](https://codecov.io/gh/SH-Tang/RecipeBot)
@@ -17,6 +16,7 @@ The RecipeBot is intended to provide the following functionality in Discord as a
 # Realised features
 At the moment of writing the bot is capable of:
 * Formatting user recipes according to a standard format
+* Adding tags and category for a recipe
 
 # Supported bot commands
 

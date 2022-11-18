@@ -73,19 +73,17 @@ public class RecipeDataBuilderTest
         var recipeIngredients = fixture.Create<string>();
         var cookingSteps = fixture.Create<string>();
 
-        const DiscordRecipeCategory discordCategory = (DiscordRecipeCategory) (-1);
-
+        const DiscordRecipeCategory discordCategory = (DiscordRecipeCategory)(-1);
 
         // Call
         Action call = () => new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
-
 
         // Assert
         Assert.Throws<InvalidEnumArgumentException>(call);
     }
 
     [Fact]
-    public void Builder_without_adding_notes_and_attachment_then_build_recipe_data_without_notes_and_image_url()
+    public void Builder_without_optional_data_then_build_recipe_data_with_mandatory_fields()
     {
         // Setup
         var fixture = new Fixture();
@@ -102,9 +100,10 @@ public class RecipeDataBuilderTest
         RecipeData result = builder.Build();
 
         // Assert
-        AssertRecipeCommonProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
+        AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
         Assert.Null(result.AdditionalNotes);
         Assert.Null(result.ImageUrl);
+        Assert.Null(result.Tags);
     }
 
     [Theory]
@@ -130,7 +129,7 @@ public class RecipeDataBuilderTest
                                    .Build();
 
         // Assert
-        AssertRecipeCommonProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
+        AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
         Assert.Equal(notes, result.AdditionalNotes);
     }
 
@@ -155,8 +154,69 @@ public class RecipeDataBuilderTest
                                    .Build();
 
         // Assert
-        AssertRecipeCommonProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
+        AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
         Assert.Equal(expectedRecipeImageUrl, result.ImageUrl);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("    ")]
+    [InlineData("")]
+    [InlineData("tags")]
+    public void Builder_when_adding_tags_then_build_recipe_data_with_tags(string tags)
+    {
+        // Setup
+        var fixture = new Fixture();
+
+        var authorData = fixture.Create<AuthorData>();
+        var discordCategory = fixture.Create<DiscordRecipeCategory>();
+        var recipeTitle = fixture.Create<string>();
+        var recipeIngredients = fixture.Create<string>();
+        var cookingSteps = fixture.Create<string>();
+
+        var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
+
+        // Call
+        RecipeData result = builder.AddTags(tags)
+                                   .Build();
+
+        // Assert
+        AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
+        Assert.Equal(tags, result.Tags);
+    }
+
+    [Fact]
+    public void Builder_with_optional_data_then_build_recipe_data_with_all_properties()
+    {
+        // Setup
+        var fixture = new Fixture();
+
+        var authorData = fixture.Create<AuthorData>();
+        var discordCategory = fixture.Create<DiscordRecipeCategory>();
+        var recipeTitle = fixture.Create<string>();
+        var recipeIngredients = fixture.Create<string>();
+        var cookingSteps = fixture.Create<string>();
+        var notes = fixture.Create<string>();
+        var tags = fixture.Create<string>();
+
+        const string recipeImageUrl = "https://RecipeImage.url";
+        var attachment = Substitute.For<IAttachment>();
+        attachment.ContentType.Returns("image/");
+        attachment.Url.Returns(recipeImageUrl);
+
+        var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
+
+        // Call
+        RecipeData result = builder.AddNotes(notes)
+                                   .AddTags(tags)
+                                   .AddImage(attachment)
+                                   .Build();
+
+        // Assert
+        AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
+        Assert.Equal(notes, result.AdditionalNotes);
+        Assert.Equal(recipeImageUrl, result.ImageUrl);
+        Assert.Equal(tags, result.Tags);
     }
 
     [Theory]
@@ -208,7 +268,7 @@ public class RecipeDataBuilderTest
         };
     }
 
-    private static void AssertRecipeCommonProperties(
+    private static void AssertMandatoryRecipeProperties(
         string expectedRecipeTitle, string expectedRecipeIngredients, string expectedCookingSteps, AuthorData expectedAuthorData,
         RecipeData actualRecipeData)
     {

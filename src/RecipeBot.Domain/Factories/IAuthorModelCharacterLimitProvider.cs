@@ -18,12 +18,12 @@
 namespace RecipeBot.Domain.Factories;
 
 /// <summary>
-/// Interface for describing providers of character limits for author models
+/// Interface for describing providers of character limits for author models.
 /// </summary>
 public interface IAuthorModelCharacterLimitProvider
 {
     /// <summary>
-    /// Gets the maximum length of the author name.
+    /// Gets the maximum allowable length of the author name.
     /// </summary>
     int MaximumAuthorNameLength { get; }
 }

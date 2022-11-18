@@ -18,17 +18,19 @@
 namespace RecipeBot.Domain.Factories;
 
 /// <summary>
-/// Interface for describing providers of character limits for recipe models
+/// Interface for describing providers of character limits for recipe models.
 /// </summary>
-public interface IRecipeModelCharacterLimitProvider : IAuthorModelCharacterLimitProvider, IRecipeFieldModelCharacterLimitProvider
+public interface IRecipeModelCharacterLimitProvider : IAuthorModelCharacterLimitProvider,
+                                                      IRecipeFieldModelCharacterLimitProvider,
+                                                      IRecipeTagModelCharacterLimitProvider
 {
     /// <summary>
-    /// Gets the maximum length of the title.
+    /// Gets the maximum allowable length of the title.
     /// </summary>
     int MaximumTitleLength { get; }
 
     /// <summary>
-    /// Gets the maximum length of the entire recipe.
+    /// Gets the maximum allowable length of the entire recipe.
     /// </summary>
     int MaximumRecipeLength { get; }
 }

@@ -33,8 +33,7 @@ public class RecipeDataTest
         var fixture = new Fixture();
         AuthorData authorData = CreateValidAuthorData(fixture);
 
-        const RecipeCategory category = (RecipeCategory) (-1);
-
+        const RecipeCategory category = (RecipeCategory)(-1);
 
         // Call
         Action call = () => new RecipeData(authorData, category, fixture.Create<string>(), fixture.Create<string>(), fixture.Create<string>());

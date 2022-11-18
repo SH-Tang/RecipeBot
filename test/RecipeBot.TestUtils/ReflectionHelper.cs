@@ -46,7 +46,6 @@ namespace RecipeBot.TestUtils
             return typeof(TEnum).GetMember(enumValue.ToString()).SingleOrDefault()?.GetCustomAttribute<TAttribute>();
         }
 
-
         /// <summary>
         /// Gets a custom attribute from a property.
         /// </summary>

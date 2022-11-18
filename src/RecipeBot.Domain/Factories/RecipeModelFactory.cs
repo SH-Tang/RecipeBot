@@ -32,6 +32,7 @@ public class RecipeModelFactory
 {
     private readonly AuthorModelFactory authorModelFactory;
     private readonly RecipeFieldModelFactory recipeFieldModelFactory;
+    private readonly RecipeTagsModelFactory recipeTagsModelFactory;
     private readonly IRecipeModelCharacterLimitProvider recipeModelCharacterLimitProvider;
 
     /// <summary>
@@ -49,6 +50,7 @@ public class RecipeModelFactory
 
         authorModelFactory = new AuthorModelFactory(recipeModelCharacterLimitProvider);
         recipeFieldModelFactory = new RecipeFieldModelFactory(recipeModelCharacterLimitProvider);
+        recipeTagsModelFactory = new RecipeTagsModelFactory(recipeModelCharacterLimitProvider);
     }
 
     /// <summary>
@@ -79,16 +81,23 @@ public class RecipeModelFactory
         }
     }
 
+    /// <summary>
+    /// Creates an <see cref="RecipeModel"/> based on its input argument.
+    /// </summary>
+    /// <param name="recipeData">The <see cref="RecipeData"/> to create the <see cref="RecipeModel"/> with.</param>
+    /// <returns>A <see cref="RecipeModel"/>.</returns>
+    /// <exception cref="ModelCreateException">Thrown when the <see cref="RecipeModel"/>
+    /// could not be successfully created.</exception>
     private RecipeModel CreateRecipe(RecipeData recipeData)
     {
-        AuthorModel authorModel = CreateAuthor(recipeData.AuthorData);
         IEnumerable<RecipeFieldModel> recipeFields = CreateRecipeFields(recipeData);
 
+        RecipeModelMetaData metaData = CreateMetaData(recipeData.AuthorData, recipeData.Tags, recipeData.Category);
+
         string recipeTitle = recipeData.RecipeTitle;
-        RecipeCategory recipeCategory = recipeData.Category;
         RecipeModel recipe = recipeData.ImageUrl == null
-                                 ? new RecipeModel(authorModel, recipeCategory, recipeFields, recipeTitle)
-                                 : new RecipeModel(authorModel, recipeCategory, recipeFields, recipeTitle, recipeData.ImageUrl);
+                                 ? new RecipeModel(metaData, recipeFields, recipeTitle)
+                                 : new RecipeModel(metaData, recipeFields, recipeTitle, recipeData.ImageUrl);
 
         int maximumRecipeLength = recipeModelCharacterLimitProvider.MaximumRecipeLength;
         if (recipe.TotalLength > maximumRecipeLength)
@@ -100,11 +109,30 @@ public class RecipeModelFactory
         return recipe;
     }
 
-    private AuthorModel CreateAuthor(AuthorData authorData)
+    /// <summary>
+    /// Creates an <see cref="RecipeModelMetaData"/> based on its input arguments.
+    /// </summary>
+    /// <param name="authorData">The <see cref="AuthorData"/> to create the metadata with.</param>
+    /// <param name="tagData">The tags to create the metadata with.</param>
+    /// <param name="recipeCategory">The <see cref="RecipeCategory"/> to create the metadata with.</param>
+    /// <returns>A <see cref="RecipeModelMetaData"/>.</returns>
+    /// <exception cref="ModelCreateException">Thrown when the <see cref="RecipeModelMetaData"/>
+    /// could not be successfully created.</exception>
+    private RecipeModelMetaData CreateMetaData(AuthorData authorData, string? tagData, RecipeCategory recipeCategory)
     {
-        return authorModelFactory.Create(authorData);
-    }
+        AuthorModel authorModel = authorModelFactory.Create(authorData);
+        RecipeTagsModel tagModel= recipeTagsModelFactory.Create(recipeCategory, tagData);
 
+        return new RecipeModelMetaData(authorModel, tagModel, recipeCategory);
+    }
+    
+    /// <summary>
+    /// Creates a collection of <see cref="RecipeFieldModel"/> based on its input argument.
+    /// </summary>
+    /// <param name="recipeData">The <see cref="RecipeData"/> to create the collection with.</param>
+    /// <returns>A collection of <see cref="RecipeFieldModel"/>.</returns>
+    /// <exception cref="ModelCreateException">Thrown when the collection of <see cref="RecipeFieldModel"/>
+    /// could not be successfully created.</exception>
     private IEnumerable<RecipeFieldModel> CreateRecipeFields(RecipeData recipeData)
     {
         var recipeFields = new List<RecipeFieldModel>

@@ -27,20 +27,25 @@ namespace RecipeBot.Domain.TestUtils;
 /// <summary>
 /// Class which creates instances of <see cref="RecipeModel"/> that can be used for testing.
 /// </summary>
-public class RecipeDomainModelTestFactory
+public class RecipeDomainModelTestBuilder
 {
     private readonly int maxAuthorNameLength;
     private readonly int maxFieldDataLength;
     private readonly int maxFieldNameLength;
     private readonly int maxTitleLength;
 
+    private string? imageUrl;
+    private RecipeTagsModel tags = new RecipeTagsModel(Enumerable.Empty<string>());
+    private IEnumerable<RecipeFieldModel> recipeFields = Enumerable.Empty<RecipeFieldModel>();
+    private RecipeCategory category = RecipeCategory.Other;
+
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeDomainModelTestFactory"/>.
+    /// Creates a new instance of <see cref="RecipeDomainModelTestBuilder"/>.
     /// </summary>
     /// <param name="constructionProperties">The <see cref="ConstructionProperties"/> to construct the factory with.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="constructionProperties"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="constructionProperties"/> contains invalid values.</exception>
-    public RecipeDomainModelTestFactory(ConstructionProperties constructionProperties)
+    public RecipeDomainModelTestBuilder(ConstructionProperties constructionProperties)
     {
         constructionProperties.IsNotNull(nameof(constructionProperties));
 
@@ -60,73 +65,63 @@ public class RecipeDomainModelTestFactory
     }
 
     /// <summary>
-    /// Creates a default <see cref="RecipeModel"/> without fields and an image.
+    /// Sets the <see cref="RecipeCategory"/> to the <see cref="RecipeModel"/>.
     /// </summary>
-    /// <returns>A <see cref="RecipeModel"/>.</returns>
-    public RecipeModel Create()
+    /// <param name="category">The <see cref="RecipeCategory"/> to set.</param>
+    /// <returns>The <see cref="RecipeDomainModelTestBuilder"/>.</returns>
+    public RecipeDomainModelTestBuilder SetCategory(RecipeCategory category)
     {
-        return CreateRecipeModel(Enumerable.Empty<RecipeFieldModel>());
+        this.category = category;
+        return this;
     }
 
     /// <summary>
-    /// Creates a default <see cref="RecipeModel"/> without fields and an image.
+    /// Adds an image to the <see cref="RecipeModel"/>.
     /// </summary>
-    /// <returns>A <see cref="RecipeModel"/>.</returns>
-    public RecipeModel Create(RecipeCategory category)
+    /// <returns>The <see cref="RecipeDomainModelTestBuilder"/>.</returns>
+    public RecipeDomainModelTestBuilder AddImage()
+    {
+        this.imageUrl = "https://recipeBot.recipe.image";
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a collection of tags to the <see cref="RecipeModel"/>.
+    /// </summary>
+    /// <param name="tags">The collection of tags to add.</param>
+    /// <returns>The <see cref="RecipeDomainModelTestBuilder"/>.</returns>
+    public RecipeDomainModelTestBuilder AddTags(IEnumerable<string> tags)
+    {
+        this.tags = new RecipeTagsModel(tags);
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a number of recipe fields to the <see cref="RecipeModel"/>.
+    /// </summary>
+    /// <param name="nrOfFields">The number of fields to add.</param>
+    /// <returns>The <see cref="RecipeDomainModelTestBuilder"/>.</returns>
+    public RecipeDomainModelTestBuilder AddFields(int nrOfFields)
+    {
+        var random = new Random(21);
+        recipeFields = Enumerable.Repeat(CreateRecipeFieldModel(random.Next()), nrOfFields);
+        return this;
+    }
+
+    /// <summary>
+    /// Builds the <see cref="RecipeModel"/>.
+    /// </summary>
+    /// <returns>A configured <see cref="RecipeModel"/>.</returns>
+    public RecipeModel Build()
     {
         string title = GetStringWithRandomLength('x', maxTitleLength);
-        return new RecipeModel(CreateAuthorModel(), category, Enumerable.Empty<RecipeFieldModel>(), title);
-    }
+        var metaData = new RecipeModelMetaData(CreateAuthorModel(), tags, category);
 
-    /// <summary>
-    /// Creates a default <see cref="RecipeModel"/> with fields and without an image.
-    /// </summary>
-    /// <returns>A <see cref="RecipeModel"/>.</returns>
-    public RecipeModel CreateWithFields()
-    {
-        return CreateRecipeModel(new[]
-        {
-            CreateRecipeFieldModel(1),
-            CreateRecipeFieldModel(2),
-            CreateRecipeFieldModel(3)
-        });
+        return imageUrl == null
+                   ? new RecipeModel(metaData, recipeFields, title)
+                   : new RecipeModel(metaData, recipeFields, title, imageUrl);
     }
-
-    /// <summary>
-    /// Creates a default <see cref="RecipeModel"/> with an image and without fields.
-    /// </summary>
-    /// <returns>A <see cref="RecipeModel"/>.</returns>
-    public RecipeModel CreateWithImage()
-    {
-        return CreateRecipeModel(Enumerable.Empty<RecipeFieldModel>(), "https://recipeBot.recipe.image");
-    }
-
-    /// <summary>
-    /// Creates a default <see cref="RecipeModel"/> with image and fields.
-    /// </summary>
-    /// <returns>A <see cref="RecipeModel"/>.</returns>
-    public RecipeModel CreateWithImageAndFields()
-    {
-        return CreateRecipeModel(new[]
-        {
-            CreateRecipeFieldModel(1),
-            CreateRecipeFieldModel(2),
-            CreateRecipeFieldModel(3)
-        }, "https://recipeBot.recipe.image");
-    }
-
-    private RecipeModel CreateRecipeModel(IEnumerable<RecipeFieldModel> recipeFields)
-    {
-        string title = GetStringWithRandomLength('x', maxTitleLength);
-        return new RecipeModel(CreateAuthorModel(), RecipeCategory.Other, recipeFields, title);
-    }
-
-    private RecipeModel CreateRecipeModel(IEnumerable<RecipeFieldModel> recipeFields, string imageUrl)
-    {
-        string title = GetStringWithRandomLength('x', maxTitleLength);
-        return new RecipeModel(CreateAuthorModel(), RecipeCategory.Other, recipeFields, title, imageUrl);
-    }
-
+    
     private AuthorModel CreateAuthorModel()
     {
         string authorName = GetStringWithRandomLength('+', maxAuthorNameLength);
@@ -154,7 +149,7 @@ public class RecipeDomainModelTestFactory
     }
 
     /// <summary>
-    /// Class holding construction variables for <see cref="RecipeDomainModelTestFactory"/>.
+    /// Class holding construction variables for <see cref="RecipeDomainModelTestBuilder"/>.
     /// </summary>
     public class ConstructionProperties
     {

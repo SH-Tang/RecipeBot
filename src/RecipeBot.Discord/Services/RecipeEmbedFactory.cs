@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Common.Utils;
 using Discord;
 using RecipeBot.Discord.Converters;
@@ -59,6 +60,12 @@ internal static class RecipeEmbedFactory
         EmbedBuilder embedBuilder = new EmbedBuilder().WithAuthor(authorData.AuthorName, authorData.AuthorImageUrl)
                                                       .WithTitle(recipeData.Title)
                                                       .WithColor(RecipeCategoryConverter.ConvertTo(recipeData.RecipeCategory));
+        RecipeTagsModel tagData = recipeData.RecipeTags;
+        if (tagData.Tags.Any())
+        {
+            embedBuilder.WithFooter(tagData.ToString());
+        }
+
         if (!string.IsNullOrWhiteSpace(recipeData.RecipeImageUrl))
         {
             embedBuilder.WithImageUrl(recipeData.RecipeImageUrl);

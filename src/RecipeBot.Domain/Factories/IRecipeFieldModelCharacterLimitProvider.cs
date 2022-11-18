@@ -23,12 +23,12 @@ namespace RecipeBot.Domain.Factories;
 public interface IRecipeFieldModelCharacterLimitProvider
 {
     /// <summary>
-    /// Gets the maximum allowed character length for a field name.
+    /// Gets the maximum allowable length for a field name.
     /// </summary>
     int MaximumFieldNameLength { get; }
 
     /// <summary>
-    /// Gets the maximum allowed character length for field data.
+    /// Gets the maximum allowable length for field data.
     /// </summary>
     int MaximumFieldDataLength { get; }
 }
