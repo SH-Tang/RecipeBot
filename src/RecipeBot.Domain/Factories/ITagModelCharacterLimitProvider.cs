@@ -23,7 +23,7 @@ namespace RecipeBot.Domain.Factories;
 public interface ITagModelCharacterLimitProvider
 {
     /// <summary>
-    /// Gets the maximum allowed length of the recipe tags.
+    /// Gets the maximum allowable length of the recipe tags.
     /// </summary>
     int MaximumRecipeTagsLength { get; }
 }

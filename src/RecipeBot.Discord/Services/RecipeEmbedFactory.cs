@@ -60,10 +60,10 @@ internal static class RecipeEmbedFactory
         EmbedBuilder embedBuilder = new EmbedBuilder().WithAuthor(authorData.AuthorName, authorData.AuthorImageUrl)
                                                       .WithTitle(recipeData.Title)
                                                       .WithColor(RecipeCategoryConverter.ConvertTo(recipeData.RecipeCategory));
-        RecipeTagsModel tags = recipeData.RecipeTags;
-        if (tags.Tags.Any())
+        RecipeTagsModel tagData = recipeData.RecipeTags;
+        if (tagData.Tags.Any())
         {
-            embedBuilder.WithFooter(tags.ToString());
+            embedBuilder.WithFooter(tagData.ToString());
         }
 
         if (!string.IsNullOrWhiteSpace(recipeData.RecipeImageUrl))

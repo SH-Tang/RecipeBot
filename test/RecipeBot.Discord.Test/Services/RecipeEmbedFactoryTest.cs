@@ -37,7 +37,7 @@ public class RecipeEmbedFactoryTest
             MaxAuthorNameLength = EmbedAuthorBuilder.MaxAuthorNameLength,
             MaxTitleLength = EmbedBuilder.MaxTitleLength,
             MaxFieldNameLength = EmbedFieldBuilder.MaxFieldNameLength,
-            MaxFieldDataLength = EmbedFieldBuilder.MaxFieldValueLength,
+            MaxFieldDataLength = EmbedFieldBuilder.MaxFieldValueLength
         });
     }
 
@@ -48,7 +48,7 @@ public class RecipeEmbedFactoryTest
     {
         // Setup
         RecipeModel recipeModel = domainModelBuilder.SetCategory(category)
-                                                   .Build();
+                                                    .Build();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel);
@@ -81,13 +81,13 @@ public class RecipeEmbedFactoryTest
     {
         // Setup
         RecipeModel recipeModel = domainModelBuilder.AddImage()
-                                                   .AddTags(new[]
-                                                   {
-                                                       "Tag1",
-                                                       "Tag2"
-                                                   })
-                                                   .AddFields(3)
-                                                   .Build();
+                                                    .AddTags(new[]
+                                                    {
+                                                        "Tag1",
+                                                        "Tag2"
+                                                    })
+                                                    .AddFields(3)
+                                                    .Build();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel);
@@ -113,7 +113,7 @@ public class RecipeEmbedFactoryTest
     {
         // Setup
         RecipeModel recipeModel = domainModelBuilder.AddImage()
-                                                   .Build();
+                                                    .Build();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel);
@@ -136,7 +136,7 @@ public class RecipeEmbedFactoryTest
     {
         // Setup
         RecipeModel recipeModel = domainModelBuilder.AddFields(3)
-                                                   .Build();
+                                                    .Build();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel);
@@ -158,11 +158,11 @@ public class RecipeEmbedFactoryTest
     {
         // Setup
         RecipeModel recipeModel = domainModelBuilder.AddTags(new[]
-                                                   {
-                                                       "Tag1",
-                                                       "Tag2"
-                                                   })
-                                                   .Build();
+                                                    {
+                                                        "Tag1",
+                                                        "Tag2"
+                                                    })
+                                                    .Build();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel);

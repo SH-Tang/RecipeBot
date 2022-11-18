@@ -23,7 +23,7 @@ namespace RecipeBot.Domain.Factories;
 public interface IAuthorModelCharacterLimitProvider
 {
     /// <summary>
-    /// Gets the maximum length of the author name.
+    /// Gets the maximum allowable length of the author name.
     /// </summary>
     int MaximumAuthorNameLength { get; }
 }

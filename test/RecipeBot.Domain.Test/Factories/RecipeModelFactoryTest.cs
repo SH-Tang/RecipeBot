@@ -118,7 +118,7 @@ public class RecipeModelFactoryTest
         IRecipeModelCharacterLimitProvider recipeCharacterLimitProvider = CreateDefaultRecipeCharacterLimitProvider();
 
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
-        recipeData.Tags = "Tag1, tag2";
+        recipeData.Tags = "Tag1, tag2, Tag1";
 
         var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
 
@@ -175,7 +175,7 @@ public class RecipeModelFactoryTest
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
         recipeData.ImageUrl = imageUrl;
         recipeData.AdditionalNotes = new string('%', recipeCharacterLimitProvider.MaximumFieldDataLength);
-        recipeData.Tags = "Tag1, tag2";
+        recipeData.Tags = "Tag1, tag2, Tag1";
 
         var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
 

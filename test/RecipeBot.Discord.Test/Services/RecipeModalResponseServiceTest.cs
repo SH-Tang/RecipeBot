@@ -396,7 +396,7 @@ public class RecipeModalResponseServiceTest
         Assert.False(actualField.Inline);
     }
 
-    private static void AssertTags(DiscordRecipeCategory category, string tags, EmbedFooter actualFooter)
+    private static void AssertTags(DiscordRecipeCategory category, string? tags, EmbedFooter actualFooter)
     {
         var expectedTags = new List<string>
         {

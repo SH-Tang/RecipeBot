@@ -25,12 +25,12 @@ public interface IRecipeModelCharacterLimitProvider : IAuthorModelCharacterLimit
                                                       ITagModelCharacterLimitProvider
 {
     /// <summary>
-    /// Gets the maximum length of the title.
+    /// Gets the maximum allowable length of the title.
     /// </summary>
     int MaximumTitleLength { get; }
 
     /// <summary>
-    /// Gets the maximum length of the entire recipe.
+    /// Gets the maximum allowable length of the entire recipe.
     /// </summary>
     int MaximumRecipeLength { get; }
 }

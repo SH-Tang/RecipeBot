@@ -46,13 +46,13 @@ public class RecipeTagsModelFactory
     }
 
     /// <summary>
-    /// Creates a collection of tags based on the input arguments.
+    /// Creates a <see cref="RecipeTagsModel"/> based on the input arguments.
     /// </summary>
     /// <param name="category">The <see cref="RecipeCategory"/> to create the tags for.</param>
     /// <param name="tags">The string representing the unformatted tags.</param>
-    /// <returns>A collection of tags.</returns>
-    /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid category.</exception>
-    /// <exception cref="NotSupportedException">Thrown when <paramref name="category"/> is a valid category,
+    /// <returns>A <see cref="RecipeTagsModel"/>.</returns>
+    /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid <see cref="RecipeCategory"/>.</exception>
+    /// <exception cref="NotSupportedException">Thrown when <paramref name="category"/> is a valid <see cref="RecipeCategory"/>,
     /// but not supported.</exception>
     public RecipeTagsModel Create(RecipeCategory category, string? tags)
     {
@@ -77,7 +77,7 @@ public class RecipeTagsModelFactory
             throw new ModelCreateException(exceptionMessage);
         }
 
-        return new RecipeTagsModel(createdTags);
+        return model;
     }
 
     private static IEnumerable<string> CreateTagCollection(string tags)
