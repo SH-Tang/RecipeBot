@@ -81,12 +81,20 @@ public class RecipeModelFactory
         }
     }
 
+    /// <summary>
+    /// Creates an <see cref="RecipeModel"/> based on its input argument.
+    /// </summary>
+    /// <param name="recipeData">The <see cref="RecipeData"/> to create the <see cref="RecipeModel"/> with.</param>
+    /// <returns>A <see cref="RecipeModel"/>.</returns>
+    /// <exception cref="ModelCreateException">Thrown when the <see cref="RecipeModel"/>
+    /// could not be successfully created.</exception>
     private RecipeModel CreateRecipe(RecipeData recipeData)
     {
         IEnumerable<RecipeFieldModel> recipeFields = CreateRecipeFields(recipeData);
 
+        RecipeModelMetaData metaData = CreateMetaData(recipeData.AuthorData, recipeData.Tags, recipeData.Category);
+
         string recipeTitle = recipeData.RecipeTitle;
-        RecipeModelMetaData metaData = CreateMetaData(recipeData);
         RecipeModel recipe = recipeData.ImageUrl == null
                                  ? new RecipeModel(metaData, recipeFields, recipeTitle)
                                  : new RecipeModel(metaData, recipeFields, recipeTitle, recipeData.ImageUrl);
@@ -101,23 +109,30 @@ public class RecipeModelFactory
         return recipe;
     }
 
-    private RecipeModelMetaData CreateMetaData(RecipeData recipeData)
+    /// <summary>
+    /// Creates an <see cref="RecipeModelMetaData"/> based on its input arguments.
+    /// </summary>
+    /// <param name="authorData">The <see cref="AuthorData"/> to create the metadata with.</param>
+    /// <param name="tagData">The tags to create the metadata with.</param>
+    /// <param name="recipeCategory">The <see cref="RecipeCategory"/> to create the metadata with.</param>
+    /// <returns>A <see cref="RecipeModelMetaData"/>.</returns>
+    /// <exception cref="ModelCreateException">Thrown when the <see cref="RecipeModelMetaData"/>
+    /// could not be successfully created.</exception>
+    private RecipeModelMetaData CreateMetaData(AuthorData authorData, string? tagData, RecipeCategory recipeCategory)
     {
-        return new RecipeModelMetaData(CreateAuthor(recipeData.AuthorData),
-                                       CreateTags(recipeData),
-                                       recipeData.Category);
-    }
+        AuthorModel authorModel = authorModelFactory.Create(authorData);
+        RecipeTagsModel tagModel= recipeTagsModelFactory.Create(recipeCategory, tagData);
 
-    private AuthorModel CreateAuthor(AuthorData authorData)
-    {
-        return authorModelFactory.Create(authorData);
+        return new RecipeModelMetaData(authorModel, tagModel, recipeCategory);
     }
-
-    private RecipeTagsModel CreateTags(RecipeData recipeData)
-    {
-        return recipeTagsModelFactory.Create(recipeData.Category, recipeData.Tags);
-    }
-
+    
+    /// <summary>
+    /// Creates a collection of <see cref="RecipeFieldModel"/> based on its input argument.
+    /// </summary>
+    /// <param name="recipeData">The <see cref="RecipeData"/> to create the collection with.</param>
+    /// <returns>A collection of <see cref="RecipeFieldModel"/>.</returns>
+    /// <exception cref="ModelCreateException">Thrown when the collection of <see cref="RecipeFieldModel"/>
+    /// could not be successfully created.</exception>
     private IEnumerable<RecipeFieldModel> CreateRecipeFields(RecipeData recipeData)
     {
         var recipeFields = new List<RecipeFieldModel>
