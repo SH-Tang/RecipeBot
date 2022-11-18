@@ -1,3 +1,6 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=SH-Tang_RecipeBot&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=SH-Tang_RecipeBot)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=SH-Tang_RecipeBot&metric=coverage)](https://sonarcloud.io/summary/new_code?id=SH-Tang_RecipeBot)
+
 ![GitHub last commit](https://img.shields.io/github/last-commit/SH-Tang/RecipeBot)
 [![.NET](https://github.com/SH-Tang/RecipeBot/actions/workflows/dotnet.yml/badge.svg)](https://github.com/SH-Tang/RecipeBot/actions/workflows/dotnet.yml)
 [![codecov](https://codecov.io/gh/SH-Tang/RecipeBot/branch/master/graph/badge.svg?token=20HZTP4M1O)](https://codecov.io/gh/SH-Tang/RecipeBot)
