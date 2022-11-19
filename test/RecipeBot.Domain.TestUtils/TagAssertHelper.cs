@@ -33,8 +33,8 @@ public static class TagAssertHelper
     /// <returns>A collection of parsed tags.</returns>
     public static IEnumerable<string> GetParsedTags(string tagData)
     {
-        return tagData
-               .Split(',').Select(t => Regex.Replace(t, @"\s+", "").ToLower())
-               .Distinct();
+        return tagData.Split(',')
+                      .Select(t => Regex.Replace(t, @"\s+", "").ToLower())
+                      .Distinct();
     }
 }
