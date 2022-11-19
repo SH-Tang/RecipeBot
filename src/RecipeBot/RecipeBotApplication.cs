@@ -38,7 +38,6 @@ namespace RecipeBot;
 public class RecipeBotApplication
 {
     private readonly IConfiguration configurationRoot;
-    private DiscordSocketClient discordClient = null!;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeBotApplication"/>.
@@ -80,7 +79,7 @@ public class RecipeBotApplication
 
     private async Task ConfigureDiscordClient(IServiceProvider services)
     {
-        discordClient = services.GetRequiredService<DiscordSocketClient>();
+        var discordClient = services.GetRequiredService<DiscordSocketClient>();
         discordClient.Log += message => LogAsync(services, message);
 
         string token = configurationRoot["Token"];
