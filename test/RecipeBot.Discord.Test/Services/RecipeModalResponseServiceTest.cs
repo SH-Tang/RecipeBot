@@ -26,6 +26,7 @@ using RecipeBot.Discord.Exceptions;
 using RecipeBot.Discord.Services;
 using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Factories;
+using RecipeBot.Domain.TestUtils;
 using Xunit;
 
 namespace RecipeBot.Discord.Test.Services;
@@ -132,7 +133,7 @@ public class RecipeModalResponseServiceTest
         var exception = Assert.Throws<ModalResponseException>(call);
         Exception? innerException = exception.InnerException;
         Assert.NotNull(innerException);
-        Assert.Equal(innerException!.Message, exception.Message);
+        Assert.Equal(innerException.Message, exception.Message);
     }
 
     [Theory]
@@ -151,7 +152,7 @@ public class RecipeModalResponseServiceTest
         const string recipeIngredients = "My ingredients";
         const string recipeSteps = "My recipe steps";
         const string recipeNotes = "My notes";
-        const string tags = "Tag1, Tag2, Tag1";
+        const string tags = "Tag1, TAG1, tag1, tag    1,      tag1, tag1      , tag2";
         var modal = new RecipeModal
         {
             RecipeTitle = recipeTitle,
@@ -274,7 +275,7 @@ public class RecipeModalResponseServiceTest
         const string recipeIngredients = "My ingredients";
         const string recipeSteps = "My recipe steps";
         const string recipeNotes = "My notes";
-        const string tags = "Tag1, Tag2, Tag1";
+        const string tags = "Tag1, TAG1, tag1, tag    1,      tag1, tag1      , tag2";
         var modal = new RecipeModal
         {
             RecipeTitle = recipeTitle,
@@ -405,8 +406,7 @@ public class RecipeModalResponseServiceTest
 
         if (!string.IsNullOrWhiteSpace(tags))
         {
-            IEnumerable<string> parsedTags = tags.Split(",").Select(t => t.Trim()).Distinct();
-            expectedTags.AddRange(parsedTags);
+            expectedTags.AddRange(TagAssertHelper.GetParsedTags(tags));
         }
 
         string expectedFooterText = string.Join(", ", expectedTags);
