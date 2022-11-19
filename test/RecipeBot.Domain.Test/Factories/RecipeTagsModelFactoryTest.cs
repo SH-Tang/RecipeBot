@@ -164,9 +164,9 @@ public class RecipeTagsModelFactoryTest
     {
         var expectedTagCollection = new[]
         {
-            "Tag1",
-            "Tag2",
-            "Tag3"
+            "tag1",
+            "tag2",
+            "tag3"
         };
         yield return new object[]
         {
@@ -208,8 +208,8 @@ public class RecipeTagsModelFactoryTest
     {
         var expectedTagCollection = new[]
         {
-            "Tag1",
-            "Tag2"
+            "tag1",
+            "tag2"
         };
         yield return new object[]
         {
@@ -224,7 +224,7 @@ public class RecipeTagsModelFactoryTest
         };
         yield return new object[]
         {
-            "Tag1, Tag2     , Tag1",
+            "Tag1, Tag2,     Tag1",
             expectedTagCollection
         };
 
@@ -243,6 +243,24 @@ public class RecipeTagsModelFactoryTest
         yield return new object[]
         {
             "       Tag1, Tag2, Tag1",
+            expectedTagCollection
+        };
+
+        yield return new object[]
+        {
+            "Tag1, Tag2, tag1",
+            expectedTagCollection
+        };
+
+        yield return new object[]
+        {
+            "Tag1, Tag2, TAG1",
+            expectedTagCollection
+        };
+
+        yield return new object[]
+        {
+            "Tag1, Tag2, Tag     1",
             expectedTagCollection
         };
     }
