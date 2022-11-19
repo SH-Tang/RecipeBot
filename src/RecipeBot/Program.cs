@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace RecipeBot
 {
-    internal class Program
+    internal static class Program
     {
         public static async Task Main(string[] args)
         {
