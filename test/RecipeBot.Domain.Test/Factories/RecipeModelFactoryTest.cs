@@ -24,6 +24,7 @@ using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Models;
+using RecipeBot.Domain.TestUtils;
 using RecipeBot.TestUtils;
 using Xunit;
 
@@ -118,7 +119,7 @@ public class RecipeModelFactoryTest
         IRecipeModelCharacterLimitProvider recipeCharacterLimitProvider = CreateDefaultRecipeCharacterLimitProvider();
 
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
-        recipeData.Tags = "Tag1, tag2, Tag1";
+        recipeData.Tags = "Tag1, TAG1, tag1, tag    1,      tag1, tag1      , tag2";
 
         var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
 
@@ -175,7 +176,7 @@ public class RecipeModelFactoryTest
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
         recipeData.ImageUrl = imageUrl;
         recipeData.AdditionalNotes = new string('%', recipeCharacterLimitProvider.MaximumFieldDataLength);
-        recipeData.Tags = "Tag1, tag2, Tag1";
+        recipeData.Tags = "Tag1, TAG1, tag1, tag    1,      tag1, tag1      , tag2";
 
         var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
 
@@ -339,12 +340,10 @@ public class RecipeModelFactoryTest
             categoryMapping[data.Category]
         };
 
-        if (!string.IsNullOrWhiteSpace(data.Tags))
+        string? tagData = data.Tags;
+        if (!string.IsNullOrWhiteSpace(tagData))
         {
-            IEnumerable<string> parsedTags = data.Tags
-                                                 .Split(',').Select(t => t.Trim())
-                                                 .Distinct();
-            expectedTags.AddRange(parsedTags);
+            expectedTags.AddRange(TagAssertHelper.GetParsedTags(tagData));
         }
 
         Assert.Equal(expectedTags, model.Tags);

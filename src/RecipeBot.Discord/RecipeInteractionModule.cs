@@ -125,7 +125,7 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
     /// <remarks>Because the OnModalResponse instantiates another object to respond,
     /// the state is not preserved between FormatRecipe and the OnModalResponse. Therefore this singleton is necessary to pass
     /// the arguments between the different instances.</remarks>
-    private class CommandArguments
+    private sealed class CommandArguments
     {
         private static CommandArguments? instance;
 

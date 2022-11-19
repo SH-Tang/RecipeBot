@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Common.Utils;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Exceptions;
@@ -83,7 +84,7 @@ public class RecipeTagsModelFactory
     private static IEnumerable<string> CreateTagCollection(string tags)
     {
         string[] splitTags = tags.Split(',');
-        return splitTags.Select(t => t.Trim())
+        return splitTags.Select(t => Regex.Replace(t, @"\s+", "").ToLower())
                         .Distinct();
     }
 

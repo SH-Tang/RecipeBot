@@ -15,30 +15,26 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
-namespace RecipeBot
+namespace RecipeBot.Domain.TestUtils;
+
+/// <summary>
+/// Helper class which can be used for asserting tags in tests.
+/// </summary>
+public static class TagAssertHelper
 {
-    internal static class Program
+    /// <summary>
+    /// Gets the collection of parsed tags based on its input arguments.
+    /// </summary>
+    /// <param name="tagData">The string to parse the tags from.</param>
+    /// <returns>A collection of parsed tags.</returns>
+    public static IEnumerable<string> GetParsedTags(string tagData)
     {
-        public static async Task Main(string[] args)
-        {
-            try
-            {
-                string configurationFilePath = Path.Combine(AppContext.BaseDirectory, "config.json");
-                var application = new RecipeBotApplication(configurationFilePath);
-
-                await application.Run();
-            }
-            catch (Exception e)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine(e);
-                await Task.Delay(Timeout.Infinite);
-            }
-        }
+        return tagData.Split(',')
+                      .Select(t => Regex.Replace(t, @"\s+", "").ToLower())
+                      .Distinct();
     }
 }
