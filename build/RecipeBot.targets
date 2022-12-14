@@ -10,6 +10,6 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <Copyright>Copyright © Dennis Tang $([System.DateTime]::Today.ToString(yyyy))</Copyright>
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
   </PropertyGroup>
 </Project>
