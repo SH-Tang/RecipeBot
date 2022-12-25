@@ -19,6 +19,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
+using Discord;
 using Discord.Interactions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -98,6 +99,7 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
         }
     }
 
+    [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ManageGuild)] // Permissions to prevent entities other than entities with managing server roles and administrative permissions from using the command
     [SlashCommand("recipe-delete", "Delete the recipe data")]
     public async Task DeleteData([Summary("ID", "The id of the recipe to delete")] int id)
     {
