@@ -29,6 +29,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RecipeBot.Discord.Providers;
 using RecipeBot.Discord.Services;
 using RecipeBot.Domain.Factories;
+using RecipeBot.Persistence;
 using RecipeBot.Services;
 
 namespace RecipeBot;
@@ -82,7 +83,8 @@ public class RecipeBotApplicationServiceProvider
                 .AddTransient<ITimeProvider, TimeProvider>()
                 .AddTransient<DiscordCommandInfoFactory>()
                 .AddTransient<BotInformationService>()
-                .AddTransient<RecipeModalResponseService>();
+                .AddTransient<RecipeModalResponseService>()
+                .AddDbContext<RecipeBotDbContext>();
     }
 
     private void ConfigureOptions(IServiceCollection services)

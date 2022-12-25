@@ -26,6 +26,7 @@ using Discord.Common;
 using Discord.Common.Handlers;
 using Discord.Common.InfoModule;
 using Discord.WebSocket;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RecipeBot.Discord;
@@ -67,11 +68,10 @@ public class RecipeBotApplication
     /// <exception cref="Exception">Thrown when something went wrong while running.</exception>
     public async Task Run()
     {
-        CreateDatabase();
-
         var services = new RecipeBotApplicationServiceProvider(configurationRoot);
         using (ServiceProvider serviceProvider = services.GetServiceProvider())
         {
+            await ConfigureDatabase(serviceProvider);
             await ConfigureDiscordClient(serviceProvider);
             await ConfigureCommandService(serviceProvider);
             await ConfigureCommandHandlingService(serviceProvider);
@@ -123,12 +123,15 @@ public class RecipeBotApplication
         return Task.CompletedTask;
     }
 
-    private void CreateDatabase()
+    private static Task ConfigureDatabase(IServiceProvider services)
     {
         // Should check if DB exists before creating one...
-        using (var context = new RecipeBotDbContext())
+        using (IServiceScope scope = services.CreateScope())
         {
-            context.Database.EnsureCreated();
+            var context = scope.ServiceProvider.GetService<RecipeBotDbContext>();
+            context?.Database.EnsureCreated();
         }
+
+        return Task.CompletedTask;
     }
 }

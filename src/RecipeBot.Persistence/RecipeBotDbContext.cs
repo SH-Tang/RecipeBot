@@ -33,6 +33,6 @@ public class RecipeBotDbContext : DbContext
     {
         // Tempoarily hardcode the connection string of the DB
         // This is relative to the execution directory
-        optionsBuilder.UseSqlite("Data Source = RecipeBot.db;");
+        optionsBuilder.UseSqlite("Data Source = RecipeBot.sqlite;");
     }
 }
