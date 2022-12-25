@@ -29,6 +29,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RecipeBot.Discord;
+using RecipeBot.Persistence;
 
 namespace RecipeBot;
 
@@ -66,6 +67,8 @@ public class RecipeBotApplication
     /// <exception cref="Exception">Thrown when something went wrong while running.</exception>
     public async Task Run()
     {
+        CreateDatabase();
+
         var services = new RecipeBotApplicationServiceProvider(configurationRoot);
         using (ServiceProvider serviceProvider = services.GetServiceProvider())
         {
@@ -117,5 +120,14 @@ public class RecipeBotApplication
         logger.LogInfoAsync(msg.Message);
 
         return Task.CompletedTask;
+    }
+
+    private void CreateDatabase()
+    {
+        // Should check if DB exists before creating one...
+        using (var context = new RecipeBotDbContext())
+        {
+            context.Database.EnsureCreated();
+        }
     }
 }

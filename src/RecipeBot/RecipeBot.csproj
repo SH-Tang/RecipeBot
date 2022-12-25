@@ -24,6 +24,7 @@
     <ProjectReference Include="..\Discord.Common\Discord.Common.csproj" />
     <ProjectReference Include="..\RecipeBot.Discord\RecipeBot.Discord.csproj" />
     <ProjectReference Include="..\RecipeBot.Domain\RecipeBot.Domain.csproj" />
+    <ProjectReference Include="..\RecipeBot.Persistence\RecipeBot.Persistence.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
