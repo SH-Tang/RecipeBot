@@ -51,6 +51,7 @@ In order to run the RecipeBot, a `config.json` file must be created next to the 
 ## Functionality
 * Discord.Net
 * ReHackt.Extensions.Options.Validations
+* Microsoft.EntityFrameworkCore.Sqlite
 
 ## Testing purposes
 * xUnit 

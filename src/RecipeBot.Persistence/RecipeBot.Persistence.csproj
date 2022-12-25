@@ -6,4 +6,8 @@
     <None Include="..\..\build\Copying.licenseheader" Link="Copying.licenseheader" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.1" />
+  </ItemGroup>
+
 </Project>
