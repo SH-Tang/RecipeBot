@@ -16,32 +16,38 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
 using Discord.Interactions;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using RecipeBot.Persistence;
-using RecipeBot.Persistence.Entities;
+using RecipeBot.Discord.Data;
+using RecipeBot.Discord.Services;
+using RecipeBot.Domain.Data;
+using RecipeBot.Domain.Factories;
+using RecipeBot.Domain.Repositories;
 
 namespace RecipeBot.Discord;
 
 public class DatabaseInteractionModule : InteractionModuleBase<SocketInteractionContext>
 {
+    private const string authorImageUrl = @"https://static.vecteezy.com/system/resources/previews/003/725/245/non_2x/cat-cute-love-noodles-free-vector.jpg";
     private readonly IServiceScopeFactory scopeFactory;
+    private readonly RecipeModelFactory factory;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeInteractionModule"/>.
     /// </summary>
     /// <param name="scopeFactory">The <see cref="IServiceScopeFactory"/> for creating services within scope.</param>
+    /// <param name="limitProvider">The <see cref="IRecipeModelCharacterLimitProvider"/> to retrieve the character limits from.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public DatabaseInteractionModule(IServiceScopeFactory scopeFactory)
+    public DatabaseInteractionModule(IServiceScopeFactory scopeFactory, IRecipeModelCharacterLimitProvider limitProvider)
     {
         scopeFactory.IsNotNull(nameof(scopeFactory));
+        limitProvider.IsNotNull(nameof(limitProvider));
 
         this.scopeFactory = scopeFactory;
+        factory = new RecipeModelFactory(limitProvider);
     }
 
     [SlashCommand("recipe-save", "Save recipe data")]
@@ -51,50 +57,32 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
     {
         using (IServiceScope serviceScope = scopeFactory.CreateScope())
         {
-            var context = serviceScope.ServiceProvider.GetRequiredService<RecipeBotDbContext>();
+            var repository = serviceScope.ServiceProvider.GetRequiredService<IRecipeRepository>();
 
-            // Find author and if found add it
-            AuthorEntity authorEntity = context.AuthorEntities.FirstOrDefault(a => a.Name == authorName) ?? new AuthorEntity
-            {
-                Name = authorName
-            };
+            var authorData = new AuthorData(authorName, authorImageUrl);
+            RecipeData recipeData = new RecipeDataBuilder(authorData, DiscordRecipeCategory.Other, recipeTitle,
+                                                          "Ingredients don't matter", "Cooking steps don't matter").Build();
 
-            context.RecipeEntities.Add(new RecipeEntity
-            {
-                Title = recipeTitle,
-                Author = authorEntity
-            });
-
-            try
-            {
-                await context.SaveChangesAsync();
-                await Context.Interaction.RespondAsync($"Saving following data to the database: {recipeTitle}, {authorName}");
-            }
-            catch (Exception ex)
-            {
-                await Context.Interaction.RespondAsync($"Saving to database failed: {ex.Message}");
-            }
+            await repository.SaveRecipeAsync(factory.Create(recipeData));
+            await Context.Interaction.RespondAsync($"Saving following data to the database: {recipeTitle}, {authorName}");
         }
     }
 
     [SlashCommand("recipe-get", "Get the recipe data")]
-    public async Task GetData([Summary("ID", "The id pf the recipe")] int id)
+    public async Task GetData([Summary("ID", "The id of the recipe")] int id)
     {
         using (IServiceScope serviceScope = scopeFactory.CreateScope())
         {
-            var context = serviceScope.ServiceProvider.GetRequiredService<RecipeBotDbContext>();
+            var repository = serviceScope.ServiceProvider.GetRequiredService<IRecipeRepository>();
 
-            RecipeEntity? recipeData = context.RecipeEntities
-                                              .Include(e => e.Author)
-                                              .FirstOrDefault(e => e.Id == id);
-
+            RecipeData? recipeData = await repository.GetRecipeByIdAsync(id);
             if (recipeData == null)
             {
                 await Context.Interaction.RespondAsync($"Data with ID '{id}' not found.");
             }
             else
             {
-                await Context.Interaction.RespondAsync($"Retrieved data: {recipeData.Title} with author {recipeData.Author.Name}.");
+                await Context.Interaction.RespondAsync($"Retrieved data: {recipeData.RecipeTitle} with author {recipeData.AuthorData.AuthorName}.");
             }
         }
     }
@@ -105,26 +93,15 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
     {
         using (IServiceScope serviceScope = scopeFactory.CreateScope())
         {
-            var context = serviceScope.ServiceProvider.GetRequiredService<RecipeBotDbContext>();
-
-            RecipeEntity? recipeData = context.RecipeEntities.FirstOrDefault(e => e.Id == id);
-
+            var repository = serviceScope.ServiceProvider.GetRequiredService<IRecipeRepository>();
+            RecipeData? recipeData = await repository.DeleteRecipeAsync(id);
             if (recipeData == null)
             {
-                await Context.Interaction.RespondAsync($"Data with ID '{id}' not found.");
+                await Context.Interaction.RespondAsync($"ERROR: Recipe with id '{id}' not found.");
             }
             else
             {
-                try
-                {
-                    context.Remove(recipeData);
-                    await context.SaveChangesAsync();
-                    await Context.Interaction.RespondAsync($"Removed following data from the database: {recipeData.Title}");
-                }
-                catch (Exception ex)
-                {
-                    await Context.Interaction.RespondAsync($"Saving to database failed: {ex.Message}");
-                }
+                await Context.Interaction.RespondAsync($"Removed following data from the database: {recipeData.RecipeTitle}.");
             }
         }
     }

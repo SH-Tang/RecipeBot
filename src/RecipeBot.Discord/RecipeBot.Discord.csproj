@@ -20,7 +20,6 @@
     <ProjectReference Include="..\Common.Utils\Common.Utils.csproj" />
     <ProjectReference Include="..\Discord.Common\Discord.Common.csproj" />
     <ProjectReference Include="..\RecipeBot.Domain\RecipeBot.Domain.csproj" />
-    <ProjectReference Include="..\RecipeBot.Persistence\RecipeBot.Persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>
