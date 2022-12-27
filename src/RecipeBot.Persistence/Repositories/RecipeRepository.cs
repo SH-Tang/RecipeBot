@@ -16,6 +16,8 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -99,6 +101,20 @@ public class RecipeRepository : IRecipeRepository
 
         var authorData = new AuthorData(entity.Author.Name!, authorImageUrl);
         return new RecipeData(authorData, RecipeCategory.Other, entity.Title!, "RecipeIngredients", "CookingSteps");
+    }
+
+    public async Task<IEnumerable<RecipeData>> GetAllRecipes()
+    {
+        IEnumerable<RecipeEntity> entities = await context.RecipeEntities
+                                                          .Include(e => e.Author)
+                                                          .ToArrayAsync();
+
+        return entities.Select(e =>
+                               {
+                                   var authorData = new AuthorData(e.Author.Name!, authorImageUrl);
+                                   return new RecipeData(authorData, RecipeCategory.Other, e.Title!, "RecipeIngredients", "CookingSteps");
+                               })
+                       .ToArray();
     }
 
     private Task<AuthorEntity?> FindAuthorAsync(AuthorModel author)

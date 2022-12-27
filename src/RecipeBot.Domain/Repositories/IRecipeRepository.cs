@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
@@ -47,4 +48,10 @@ public interface IRecipeRepository
     /// <param name="id">The id to retrieve a recipe with.</param>
     /// <returns>A <see cref="RecipeData"/>; <c>null</c> if not found.</returns>
     Task<RecipeData?> GetRecipeByIdAsync(int id);
+
+    /// <summary>
+    /// Gets all stored recipes.
+    /// </summary>
+    /// <returns>A collection of <see cref="RecipeData"/>.</returns>
+    Task<IEnumerable<RecipeData>> GetAllRecipes();
 }

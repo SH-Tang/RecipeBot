@@ -16,6 +16,8 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
@@ -51,9 +53,9 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
     }
 
     [SlashCommand("recipe-save", "Save recipe data")]
-    public async Task SaveData([Summary("title", "The title of the recipe")] string recipeTitle,
-                               [Summary("author", "The name of the author")]
-                               string authorName)
+    public async Task SaveRecipe([Summary("title", "The title of the recipe")] string recipeTitle,
+                                 [Summary("author", "The name of the author")]
+                                 string authorName)
     {
         using (IServiceScope serviceScope = scopeFactory.CreateScope())
         {
@@ -69,7 +71,7 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
     }
 
     [SlashCommand("recipe-get", "Get the recipe data")]
-    public async Task GetData([Summary("ID", "The id of the recipe")] int id)
+    public async Task GetRecipe([Summary("ID", "The id of the recipe")] int id)
     {
         using (IServiceScope serviceScope = scopeFactory.CreateScope())
         {
@@ -87,9 +89,22 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
         }
     }
 
+    [SlashCommand("recipe-getall", "Get all the stored recipes recipe data")]
+    public async Task GetRecipe()
+    {
+        using (IServiceScope serviceScope = scopeFactory.CreateScope())
+        {
+            var repository = serviceScope.ServiceProvider.GetRequiredService<IRecipeRepository>();
+
+            IEnumerable<RecipeData> recipes = await repository.GetAllRecipes();
+            var message = string.Join($"{Environment.NewLine}", recipes.Select(r => $"{r.RecipeTitle} by {r.AuthorData.AuthorName}"));
+            await Context.Interaction.RespondAsync(message);
+        }
+    }
+
     [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ManageGuild)] // Permissions to prevent entities other than entities with managing server roles and administrative permissions from using the command
     [SlashCommand("recipe-delete", "Delete the recipe data")]
-    public async Task DeleteData([Summary("ID", "The id of the recipe to delete")] int id)
+    public async Task DeleteRecipe([Summary("ID", "The id of the recipe to delete")] int id)
     {
         using (IServiceScope serviceScope = scopeFactory.CreateScope())
         {
