@@ -21,9 +21,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Microsoft.EntityFrameworkCore;
-using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Repositories;
+using RecipeBot.Domain.Repositories.DTO;
 using RecipeBot.Persistence.Entities;
 
 namespace RecipeBot.Persistence.Repositories;
@@ -33,7 +33,6 @@ namespace RecipeBot.Persistence.Repositories;
 /// </summary>
 public class RecipeRepository : IRecipeRepository
 {
-    private const string authorImageUrl = @"https://static.vecteezy.com/system/resources/previews/003/725/245/non_2x/cat-cute-love-noodles-free-vector.jpg";
     private readonly RecipeBotDbContext context;
 
     /// <summary>
@@ -71,11 +70,10 @@ public class RecipeRepository : IRecipeRepository
         await context.SaveChangesAsync(); // Might throw exceptions, catch the lower level exceptions
     }
 
-    public async Task<RecipeData?> DeleteRecipeAsync(int id)
+    public async Task<RecipeDto?> DeleteRecipeAsync(int id)
     {
         RecipeEntity? entity = await context.RecipeEntities
-                                            .Include(e => e.Author)
-                                            .SingleOrDefaultAsync(r => r.Id == id);
+                                            .FindAsync(id);
         if (entity == null)
         {
             return null;
@@ -84,37 +82,43 @@ public class RecipeRepository : IRecipeRepository
         context.RecipeEntities.Remove(entity);
         await context.SaveChangesAsync();
 
-        var authorData = new AuthorData(entity.Author.Name!, authorImageUrl);
-        return new RecipeData(authorData, RecipeCategory.Other, entity.Title!, "RecipeIngredients", "CookingSteps");
+        return CreateRecipeDto(entity);
     }
 
-    public async Task<RecipeData?> GetRecipeByIdAsync(int id)
+    public async Task<RecipeDto?> GetRecipeByIdAsync(int id)
     {
         RecipeEntity? entity = await context.RecipeEntities
                                             .Include(e => e.Author)
-                                            .SingleOrDefaultAsync(r => r.Id == id);
-
-        if (entity == null)
-        {
-            return null;
-        }
-
-        var authorData = new AuthorData(entity.Author.Name!, authorImageUrl);
-        return new RecipeData(authorData, RecipeCategory.Other, entity.Title!, "RecipeIngredients", "CookingSteps");
+                                            .SingleOrDefaultAsync(e => e.Id == id);
+        return entity == null ? null : CreateRecipeDto(entity);
     }
 
-    public async Task<IEnumerable<RecipeData>> GetAllRecipes()
+    public async Task<IEnumerable<RecipeDto>> GetAllRecipes()
     {
         IEnumerable<RecipeEntity> entities = await context.RecipeEntities
                                                           .Include(e => e.Author)
                                                           .ToArrayAsync();
 
-        return entities.Select(e =>
-                               {
-                                   var authorData = new AuthorData(e.Author.Name!, authorImageUrl);
-                                   return new RecipeData(authorData, RecipeCategory.Other, e.Title!, "RecipeIngredients", "CookingSteps");
-                               })
-                       .ToArray();
+        return entities.Select(CreateRecipeDto).ToArray();
+    }
+
+    private static RecipeDto CreateRecipeDto(RecipeEntity entity)
+    {
+        AuthorDto? author = null;
+        if (entity.Author != null) // Only NULL when it's not being eagerly loaded in the DB context
+        {
+            author = new AuthorDto
+            {
+                Name = entity.Author.Name
+            };
+        }
+
+        return new RecipeDto
+        {
+            Id = entity.Id,
+            Author = author,
+            Title = entity.Title
+        };
     }
 
     private Task<AuthorEntity?> FindAuthorAsync(AuthorModel author)

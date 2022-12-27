@@ -28,6 +28,7 @@ using RecipeBot.Discord.Services;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Repositories;
+using RecipeBot.Domain.Repositories.DTO;
 
 namespace RecipeBot.Discord;
 
@@ -77,14 +78,14 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
         {
             var repository = serviceScope.ServiceProvider.GetRequiredService<IRecipeRepository>();
 
-            RecipeData? recipeData = await repository.GetRecipeByIdAsync(id);
-            if (recipeData == null)
+            RecipeDto? recipeDto = await repository.GetRecipeByIdAsync(id);
+            if (recipeDto == null)
             {
                 await Context.Interaction.RespondAsync($"Data with ID '{id}' not found.");
             }
             else
             {
-                await Context.Interaction.RespondAsync($"Retrieved data: {recipeData.RecipeTitle} with author {recipeData.AuthorData.AuthorName}.");
+                await Context.Interaction.RespondAsync($"Retrieved data: {recipeDto.Title} with author {recipeDto.Author.Name}.");
             }
         }
     }
@@ -96,8 +97,8 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
         {
             var repository = serviceScope.ServiceProvider.GetRequiredService<IRecipeRepository>();
 
-            IEnumerable<RecipeData> recipes = await repository.GetAllRecipes();
-            var message = string.Join($"{Environment.NewLine}", recipes.Select(r => $"{r.RecipeTitle} by {r.AuthorData.AuthorName}"));
+            IEnumerable<RecipeDto> recipes = await repository.GetAllRecipes();
+            var message = string.Join($"{Environment.NewLine}", recipes.Select(r => $"'{r.Title}' by '{r.Author.Name}' with id '{r.Id}'"));
             await Context.Interaction.RespondAsync(message);
         }
     }
@@ -109,14 +110,14 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
         using (IServiceScope serviceScope = scopeFactory.CreateScope())
         {
             var repository = serviceScope.ServiceProvider.GetRequiredService<IRecipeRepository>();
-            RecipeData? recipeData = await repository.DeleteRecipeAsync(id);
+            RecipeDto? recipeData = await repository.DeleteRecipeAsync(id);
             if (recipeData == null)
             {
                 await Context.Interaction.RespondAsync($"ERROR: Recipe with id '{id}' not found.");
             }
             else
             {
-                await Context.Interaction.RespondAsync($"Removed following data from the database: {recipeData.RecipeTitle}.");
+                await Context.Interaction.RespondAsync($"Removed following data from the database: {recipeData.Title}.");
             }
         }
     }

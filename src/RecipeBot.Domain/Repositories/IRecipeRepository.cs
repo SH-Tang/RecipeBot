@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
+using RecipeBot.Domain.Repositories.DTO;
 
 namespace RecipeBot.Domain.Repositories;
 
@@ -40,18 +41,18 @@ public interface IRecipeRepository
     /// </summary>
     /// <param name="id">The id of the recipe to delete</param>
     /// <returns>The <see cref="RecipeData"/> which was deleted; <c>null</c> if deletion was unsuccessful.</returns>
-    Task<RecipeData?> DeleteRecipeAsync(int id);
+    Task<RecipeDto?> DeleteRecipeAsync(int id);
 
     /// <summary>
     /// Gets a <see cref="RecipeData"/> by the id.
     /// </summary>
     /// <param name="id">The id to retrieve a recipe with.</param>
     /// <returns>A <see cref="RecipeData"/>; <c>null</c> if not found.</returns>
-    Task<RecipeData?> GetRecipeByIdAsync(int id);
+    Task<RecipeDto?> GetRecipeByIdAsync(int id);
 
     /// <summary>
     /// Gets all stored recipes.
     /// </summary>
     /// <returns>A collection of <see cref="RecipeData"/>.</returns>
-    Task<IEnumerable<RecipeData>> GetAllRecipes();
+    Task<IEnumerable<RecipeDto>> GetAllRecipes();
 }
