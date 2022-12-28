@@ -98,8 +98,12 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
             var repository = serviceScope.ServiceProvider.GetRequiredService<IRecipeRepository>();
 
             IEnumerable<RecipeDto> recipes = await repository.GetAllRecipes();
-            var message = string.Join($"{Environment.NewLine}", recipes.Select(r => $"'{r.Title}' by '{r.Author.Name}' with id '{r.Id}'"));
-            await Context.Interaction.RespondAsync(message);
+            
+            string header = $"{"Id",-3} {"Title",-50} {"Author",-50}";
+            string entries = string.Join($"{Environment.NewLine}", recipes.Select(r => $"{r.Id,-3} {r.Title,-50} {r.Author.Name,-50}"));
+            string message = header + Environment.NewLine + entries;
+
+            await Context.Interaction.RespondAsync(Format.Code(message));
         }
     }
 
