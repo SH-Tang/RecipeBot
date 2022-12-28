@@ -55,27 +55,22 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
         }
     }
 
-    [SlashCommand("recipe-get", "Get the recipe data")]
-    public async Task GetRecipe([Summary("ID", "The id of the recipe")] int id)
+    [SlashCommand("recipe-get", "Gets recipe data")]
+    public async Task GetRecipe([Summary("ID", "The id of the recipe")] int? id = null)
     {
         using (IServiceScope serviceScope = scopeFactory.CreateScope())
         {
             var controller = serviceScope.ServiceProvider.GetRequiredService<IRecipeController>();
-
-            string recipe = await controller.FindRecipeAsync(id);
-            await Context.Interaction.RespondAsync(recipe);
-        }
-    }
-
-    [SlashCommand("recipe-getall", "Get all the stored recipes recipe data")]
-    public async Task GetRecipe()
-    {
-        using (IServiceScope serviceScope = scopeFactory.CreateScope())
-        {
-            var controller = serviceScope.ServiceProvider.GetRequiredService<IRecipeController>();
-
-            string recipe = await controller.GetAllRecipesAsync();
-            await Context.Interaction.RespondAsync(Format.Code(recipe));
+            if (id == null)
+            {
+                string recipes = await controller.GetAllRecipesAsync();
+                await Context.Interaction.RespondAsync(Format.Code(recipes));
+            }
+            else
+            {
+                string recipe = await controller.FindRecipeAsync(id.Value);
+                await Context.Interaction.RespondAsync(recipe);
+            }
         }
     }
 
