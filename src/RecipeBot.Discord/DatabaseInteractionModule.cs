@@ -16,34 +16,23 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
 using Discord.Interactions;
 using Microsoft.Extensions.DependencyInjection;
 using RecipeBot.Discord.Controllers;
-using RecipeBot.Discord.Data;
-using RecipeBot.Discord.Services;
-using RecipeBot.Domain.Data;
-using RecipeBot.Domain.Factories;
-using RecipeBot.Domain.Repositories;
-using RecipeBot.Domain.Repositories.DTO;
 
 namespace RecipeBot.Discord;
 
 public class DatabaseInteractionModule : InteractionModuleBase<SocketInteractionContext>
 {
-    private const string authorImageUrl = @"https://static.vecteezy.com/system/resources/previews/003/725/245/non_2x/cat-cute-love-noodles-free-vector.jpg";
     private readonly IServiceScopeFactory scopeFactory;
-    private readonly RecipeModelFactory factory;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeInteractionModule"/>.
     /// </summary>
     /// <param name="scopeFactory">The <see cref="IServiceScopeFactory"/> for creating services within scope.</param>
-    /// <param name="limitProvider">The <see cref="IRecipeModelCharacterLimitProvider"/> to retrieve the character limits from.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     public DatabaseInteractionModule(IServiceScopeFactory scopeFactory)
     {
@@ -71,9 +60,9 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
     {
         using (IServiceScope serviceScope = scopeFactory.CreateScope())
         {
-            var repository = serviceScope.ServiceProvider.GetRequiredService<IRecipeController>();
+            var controller = serviceScope.ServiceProvider.GetRequiredService<IRecipeController>();
 
-            string recipe = await repository.FindRecipeAsync(id);
+            string recipe = await controller.FindRecipeAsync(id);
             await Context.Interaction.RespondAsync(recipe);
         }
     }
@@ -83,9 +72,9 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
     {
         using (IServiceScope serviceScope = scopeFactory.CreateScope())
         {
-            var repository = serviceScope.ServiceProvider.GetRequiredService<IRecipeController>();
+            var controller = serviceScope.ServiceProvider.GetRequiredService<IRecipeController>();
 
-            string recipe = await repository.GetAllRecipesAsync();
+            string recipe = await controller.GetAllRecipesAsync();
             await Context.Interaction.RespondAsync(Format.Code(recipe));
         }
     }
@@ -96,9 +85,9 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
     {
         using (IServiceScope serviceScope = scopeFactory.CreateScope())
         {
-            var repository = serviceScope.ServiceProvider.GetRequiredService<IRecipeController>();
+            var controller = serviceScope.ServiceProvider.GetRequiredService<IRecipeController>();
 
-            string deletedRecipe = await repository.DeleteRecipeAsync(id);
+            string deletedRecipe = await controller.DeleteRecipeAsync(id);
             await Context.Interaction.RespondAsync(deletedRecipe);
         }
     }
