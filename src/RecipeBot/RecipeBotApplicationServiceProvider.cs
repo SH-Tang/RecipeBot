@@ -26,6 +26,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Providers;
 using RecipeBot.Discord.Services;
 using RecipeBot.Domain.Factories;
@@ -87,7 +88,8 @@ public class RecipeBotApplicationServiceProvider
                 .AddTransient<BotInformationService>()
                 .AddTransient<RecipeModalResponseService>()
                 .AddDbContext<RecipeBotDbContext>()
-                .AddScoped<IRecipeRepository, RecipeRepository>();
+                .AddScoped<IRecipeRepository, RecipeRepository>()
+                .AddScoped<IRecipeController, RecipeController>();
     }
 
     private void ConfigureOptions(IServiceCollection services)

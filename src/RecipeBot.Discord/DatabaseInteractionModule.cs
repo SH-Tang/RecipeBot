@@ -23,6 +23,7 @@ using Common.Utils;
 using Discord;
 using Discord.Interactions;
 using Microsoft.Extensions.DependencyInjection;
+using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Services;
 using RecipeBot.Domain.Data;
@@ -44,13 +45,11 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
     /// <param name="scopeFactory">The <see cref="IServiceScopeFactory"/> for creating services within scope.</param>
     /// <param name="limitProvider">The <see cref="IRecipeModelCharacterLimitProvider"/> to retrieve the character limits from.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public DatabaseInteractionModule(IServiceScopeFactory scopeFactory, IRecipeModelCharacterLimitProvider limitProvider)
+    public DatabaseInteractionModule(IServiceScopeFactory scopeFactory)
     {
         scopeFactory.IsNotNull(nameof(scopeFactory));
-        limitProvider.IsNotNull(nameof(limitProvider));
 
         this.scopeFactory = scopeFactory;
-        factory = new RecipeModelFactory(limitProvider);
     }
 
     [SlashCommand("recipe-save", "Save recipe data")]
@@ -60,14 +59,10 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
     {
         using (IServiceScope serviceScope = scopeFactory.CreateScope())
         {
-            var repository = serviceScope.ServiceProvider.GetRequiredService<IRecipeRepository>();
+            var controller = serviceScope.ServiceProvider.GetRequiredService<IRecipeController>();
 
-            var authorData = new AuthorData(authorName, authorImageUrl);
-            RecipeData recipeData = new RecipeDataBuilder(authorData, DiscordRecipeCategory.Other, recipeTitle,
-                                                          "Ingredients don't matter", "Cooking steps don't matter").Build();
-
-            await repository.SaveRecipeAsync(factory.Create(recipeData));
-            await Context.Interaction.RespondAsync($"Saving following data to the database: {recipeTitle}, {authorName}");
+            string message = await controller.SaveRecipe(recipeTitle, authorName);
+            await Context.Interaction.RespondAsync(message);
         }
     }
 
@@ -76,17 +71,10 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
     {
         using (IServiceScope serviceScope = scopeFactory.CreateScope())
         {
-            var repository = serviceScope.ServiceProvider.GetRequiredService<IRecipeRepository>();
+            var repository = serviceScope.ServiceProvider.GetRequiredService<IRecipeController>();
 
-            RecipeDto? recipeDto = await repository.GetRecipeByIdAsync(id);
-            if (recipeDto == null)
-            {
-                await Context.Interaction.RespondAsync($"Data with ID '{id}' not found.");
-            }
-            else
-            {
-                await Context.Interaction.RespondAsync($"Retrieved data: {recipeDto.Title} with author {recipeDto.Author.Name}.");
-            }
+            string recipe = await repository.FindRecipeAsync(id);
+            await Context.Interaction.RespondAsync(recipe);
         }
     }
 
@@ -95,15 +83,10 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
     {
         using (IServiceScope serviceScope = scopeFactory.CreateScope())
         {
-            var repository = serviceScope.ServiceProvider.GetRequiredService<IRecipeRepository>();
+            var repository = serviceScope.ServiceProvider.GetRequiredService<IRecipeController>();
 
-            IEnumerable<RecipeDto> recipes = await repository.GetAllRecipes();
-            
-            string header = $"{"Id",-3} {"Title",-50} {"Author",-50}";
-            string entries = string.Join($"{Environment.NewLine}", recipes.Select(r => $"{r.Id,-3} {r.Title,-50} {r.Author.Name,-50}"));
-            string message = header + Environment.NewLine + entries;
-
-            await Context.Interaction.RespondAsync(Format.Code(message));
+            string recipe = await repository.GetAllRecipesAsync();
+            await Context.Interaction.RespondAsync(Format.Code(recipe));
         }
     }
 
@@ -113,16 +96,10 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
     {
         using (IServiceScope serviceScope = scopeFactory.CreateScope())
         {
-            var repository = serviceScope.ServiceProvider.GetRequiredService<IRecipeRepository>();
-            RecipeDto? recipeData = await repository.DeleteRecipeAsync(id);
-            if (recipeData == null)
-            {
-                await Context.Interaction.RespondAsync($"ERROR: Recipe with id '{id}' not found.");
-            }
-            else
-            {
-                await Context.Interaction.RespondAsync($"Removed following data from the database: {recipeData.Title}.");
-            }
+            var repository = serviceScope.ServiceProvider.GetRequiredService<IRecipeController>();
+
+            string deletedRecipe = await repository.DeleteRecipeAsync(id);
+            await Context.Interaction.RespondAsync(deletedRecipe);
         }
     }
 }
