@@ -64,7 +64,9 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
             if (id == null)
             {
                 string recipes = await controller.GetAllRecipesAsync();
-                await Context.Interaction.RespondAsync(Format.Code(recipes));
+
+                await Context.Interaction.RespondAsync(Format.Code(recipes), ephemeral: true);
+                await Context.Interaction.FollowupAsync(Format.Code(recipes), ephemeral: true); // Follow up only possible after RespondAsync acknowledges the interaction
             }
             else
             {
