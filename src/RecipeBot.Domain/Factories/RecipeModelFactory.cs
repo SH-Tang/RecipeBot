@@ -121,7 +121,7 @@ public class RecipeModelFactory
     private RecipeModelMetaData CreateMetaData(AuthorData authorData, string? tagData, RecipeCategory recipeCategory)
     {
         AuthorModel authorModel = authorModelFactory.Create(authorData);
-        RecipeTagsModel tagModel= recipeTagsModelFactory.Create(recipeCategory, tagData);
+        RecipeTagsModel tagModel= recipeTagsModelFactory.Create(tagData);
 
         return new RecipeModelMetaData(authorModel, tagModel, recipeCategory);
     }
