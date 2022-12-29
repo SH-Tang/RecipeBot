@@ -376,7 +376,7 @@ public class RecipeModalResponseServiceTest
 
         if (!string.IsNullOrWhiteSpace(tags))
         {
-            expectedTags.AddRange(TagAssertHelper.GetParsedTags(tags));
+            expectedTags.AddRange(TagTestHelper.GetParsedTags(tags));
         }
 
         string expectedFooterText = string.Join(", ", expectedTags);

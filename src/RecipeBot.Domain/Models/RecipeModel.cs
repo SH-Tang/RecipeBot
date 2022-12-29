@@ -46,7 +46,7 @@ public class RecipeModel
         Author = metaData.Author;
         RecipeCategory = metaData.Category;
         RecipeFields = recipeFields;
-        RecipeTags = metaData.Tags;
+        RecipeTags = new RecipeTagsModelWrapper(metaData.Tags, metaData.Category);
         Title = title;
     }
 
@@ -99,7 +99,7 @@ public class RecipeModel
     /// <summary>
     /// Gets the tags of the recipe.
     /// </summary>
-    public RecipeTagsModel RecipeTags { get; }
+    public RecipeTagsModelWrapper RecipeTags { get; }
 
     /// <summary>
     /// Gets the total character length of the model.

@@ -22,43 +22,13 @@ using System.Linq;
 using AutoFixture;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
+using RecipeBot.Domain.TestUtils;
 using Xunit;
 
 namespace RecipeBot.Domain.Test.Models;
 
 public class RecipeTagsModelWrapperTest
 {
-    private static readonly Dictionary<RecipeCategory, string> categoryMapping = new()
-    {
-        {
-            RecipeCategory.Meat, "Meat"
-        },
-        {
-            RecipeCategory.Fish, "Fish"
-        },
-        {
-            RecipeCategory.Vegetarian, "Vegetarian"
-        },
-        {
-            RecipeCategory.Vegan, "Vegan"
-        },
-        {
-            RecipeCategory.Drinks, "Drinks"
-        },
-        {
-            RecipeCategory.Pastry, "Pastry"
-        },
-        {
-            RecipeCategory.Dessert, "Dessert"
-        },
-        {
-            RecipeCategory.Snack, "Snack"
-        },
-        {
-            RecipeCategory.Other, "Other"
-        }
-    };
-
     [Fact]
     public void Wrapper_with_invalid_category_throws_exception()
     {
@@ -113,7 +83,7 @@ public class RecipeTagsModelWrapperTest
         var stringRepresentation = wrapper.ToString();
 
         // Assert
-        string expectedFirstTag = categoryMapping[category];
+        string expectedFirstTag = TagTestHelper.CategoryMapping[category];
         Assert.Equal(expectedFirstTag, stringRepresentation);
     }
 
@@ -132,7 +102,7 @@ public class RecipeTagsModelWrapperTest
         var stringRepresentation = wrapper.ToString();
 
         // Assert
-        string expectedFirstTag = categoryMapping[category];
+        string expectedFirstTag = TagTestHelper.CategoryMapping[category];
         var expectedStringRepresentation = $"{expectedFirstTag}, {string.Join(", ", tags)}";
         Assert.Equal(expectedStringRepresentation, stringRepresentation);
     }
@@ -140,7 +110,7 @@ public class RecipeTagsModelWrapperTest
     [Theory]
     [MemberData(nameof(GetTagsLengthTestCases))]
     public void Wrapper_with_tags_and_valid_category_returns_expected_total_length(
-        IEnumerable<string> tags, int tagLength)
+        IEnumerable<string> tags)
     {
         // Setup
         var fixture = new Fixture();
@@ -153,20 +123,14 @@ public class RecipeTagsModelWrapperTest
         int length = wrapper.TotalLength;
 
         // Assert
-        string expectedFirstTag = categoryMapping[category];
-        string expectedStringRepresentation = tags.Any()
-                                                  ? $"{expectedFirstTag}, {string.Join(", ", tags)}"
-                                                  : expectedFirstTag;
-
-        Assert.Equal(expectedStringRepresentation.Length, length);
+        Assert.Equal(TagTestHelper.GetTotalTagsLength(category, tagsModel), length);
     }
 
     public static IEnumerable<object[]> GetTagsLengthTestCases()
     {
         yield return new object[]
         {
-            Enumerable.Empty<string>(),
-            0
+            Enumerable.Empty<string>()
         };
 
         yield return new object[]
@@ -176,8 +140,7 @@ public class RecipeTagsModelWrapperTest
                 "Tag 1",
                 "Tag 2",
                 "Tag 3"
-            },
-            "Tag 1, Tag 2, Tag 3".Length
+            }
         };
     }
 }
