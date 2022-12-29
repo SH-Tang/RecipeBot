@@ -76,24 +76,6 @@ public static class TagTestHelper
                       .Distinct();
     }
 
-
-    /// <summary>
-    /// Gets the collection of tags based on the input arguments.
-    /// </summary>
-    /// <param name="category">The <see cref="RecipeCategory"/>.</param>
-    /// <param name="model">The <see cref="RecipeTagsModel"/>.</param>
-    /// <returns>Gets the collection of tags.</returns>
-    public static IEnumerable<string> GetTags(RecipeCategory category, RecipeTagsModel model)
-    {
-        var tags = new List<string>
-        {
-            CategoryMapping[category]
-        };
-        tags.AddRange(model.Tags);
-
-        return tags;
-    }
-
     /// <summary>
     /// Gets the total character length based on the input arguments.
     /// </summary>
@@ -106,5 +88,16 @@ public static class TagTestHelper
         string expectedStringRepresentation = string.Join(", ", tags);
 
         return expectedStringRepresentation.Length;
+    }
+
+    private static IEnumerable<string> GetTags(RecipeCategory category, RecipeTagsModel model)
+    {
+        var tags = new List<string>
+        {
+            CategoryMapping[category]
+        };
+        tags.AddRange(model.Tags);
+
+        return tags;
     }
 }

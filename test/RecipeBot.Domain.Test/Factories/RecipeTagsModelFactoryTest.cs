@@ -17,11 +17,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using AutoFixture;
 using NSubstitute;
-using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Models;
@@ -36,7 +33,6 @@ public class RecipeTagsModelFactoryTest
     {
         // Setup
         var fixture = new Fixture();
-        var category = fixture.Create<RecipeCategory>();
         var tags = fixture.Create<string>();
 
         int maximumTagsLength = tags.Length - 1;
@@ -49,7 +45,7 @@ public class RecipeTagsModelFactoryTest
 
         // Assert
         var exception = Assert.Throws<ModelCreateException>(call);
-        string expectedMessage = $"The total tag character length must be less or equal to {maximumTagsLength} characters.";
+        var expectedMessage = $"The total tag character length must be less or equal to {maximumTagsLength} characters.";
         Assert.Equal(expectedMessage, exception.Message);
     }
 
@@ -57,7 +53,7 @@ public class RecipeTagsModelFactoryTest
     [InlineData("")]
     [InlineData("    ")]
     [InlineData(null)]
-    public void Creating_model_with_valid_category_and_no_tags_returns_model_containing_only_category_tag(string tags)
+    public void Creating_model_with_no_tags_returns_model_with_empty_tag_collection(string tags)
     {
         // Setup
         var provider = Substitute.For<IRecipeTagModelCharacterLimitProvider>();
@@ -74,7 +70,7 @@ public class RecipeTagsModelFactoryTest
     [Theory]
     [MemberData(nameof(GetUniqueTagsTestCases))]
     [MemberData(nameof(GetDistinctTagsTestCases))]
-    public void Creating_model_with_valid_category_and_multiple_tags_returns_expected_tag_model(
+    public void Creating_model_with_multiple_tags_returns_model_with_expected_tag_collection(
         string tags, IEnumerable<string> expectedTags)
     {
         // Setup
