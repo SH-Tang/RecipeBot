@@ -24,6 +24,7 @@ using NSubstitute;
 using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Exceptions;
 using RecipeBot.Discord.Services;
+using RecipeBot.Discord.TestUtils;
 using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.TestUtils;
@@ -33,37 +34,6 @@ namespace RecipeBot.Discord.Test.Services;
 
 public class RecipeModalResponseServiceTest
 {
-    private static readonly Dictionary<DiscordRecipeCategory, string> categoryMapping = new()
-    {
-        {
-            DiscordRecipeCategory.Meat, "Meat"
-        },
-        {
-            DiscordRecipeCategory.Fish, "Fish"
-        },
-        {
-            DiscordRecipeCategory.Vegetarian, "Vegetarian"
-        },
-        {
-            DiscordRecipeCategory.Vegan, "Vegan"
-        },
-        {
-            DiscordRecipeCategory.Drinks, "Drinks"
-        },
-        {
-            DiscordRecipeCategory.Pastry, "Pastry"
-        },
-        {
-            DiscordRecipeCategory.Dessert, "Dessert"
-        },
-        {
-            DiscordRecipeCategory.Snack, "Snack"
-        },
-        {
-            DiscordRecipeCategory.Other, "Other"
-        }
-    };
-
     [Fact]
     public void Recipe_with_valid_data_and_invalid_category_throws_exception()
     {
@@ -401,7 +371,7 @@ public class RecipeModalResponseServiceTest
     {
         var expectedTags = new List<string>
         {
-            categoryMapping[category]
+            DiscordRecipeCategoryHelper.CategoryMapping[category]
         };
 
         if (!string.IsNullOrWhiteSpace(tags))
