@@ -15,8 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using Microsoft.EntityFrameworkCore;
+
 namespace RecipeBot.Persistence.Entities;
 
+[Index(nameof(Id), IsUnique = true)]
 public class RecipeEntity
 {
     public int Id { get; set; }

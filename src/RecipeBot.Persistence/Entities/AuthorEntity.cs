@@ -16,9 +16,11 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace RecipeBot.Persistence.Entities;
 
+[Index(nameof(Id), IsUnique = true)]
 public class AuthorEntity
 {
     public AuthorEntity()
