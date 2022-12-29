@@ -21,7 +21,7 @@ using RecipeBot.Discord.Data;
 namespace RecipeBot.Discord.TestUtils;
 
 /// <summary>
-/// Helper class which can be used for asserting data related to <see cref="DiscordRecipeCategory"/>
+/// Helper class which can be used for asserting data related to <see cref="DiscordRecipeCategory"/>.
 /// </summary>
 public static class DiscordRecipeCategoryHelper
 {
