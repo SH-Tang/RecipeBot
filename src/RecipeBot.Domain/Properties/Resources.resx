@@ -159,4 +159,7 @@
   <data name="RecipeCategoryOther_DisplayName" xml:space="preserve">
     <value>Other</value>
   </data>
+  <data name="RecipeTagsModelFactory_RecipeTagsModel_could_not_be_parsed_0_" xml:space="preserve">
+    <value>Tags could not be parsed successfully: {0}</value>
+  </data>
 </root>

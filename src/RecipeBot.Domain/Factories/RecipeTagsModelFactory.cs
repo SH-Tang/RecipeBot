@@ -56,7 +56,7 @@ public class RecipeTagsModelFactory
             return new RecipeTagsModel(Enumerable.Empty<string>());
         }
 
-        var model = new RecipeTagsModel(CreateTagCollection(tags));
+        var model = CreateModel(tags);
         int maximumRecipeTagsLength = limitProvider.MaximumRecipeTagsLength;
         if (model.TotalLength > maximumRecipeTagsLength)
         {
@@ -68,10 +68,22 @@ public class RecipeTagsModelFactory
         return model;
     }
 
+    private static RecipeTagsModel CreateModel(string tags)
+    {
+        try
+        {
+            return new RecipeTagsModel(CreateTagCollection(tags));
+        }
+        catch (RegexMatchTimeoutException ex)
+        {
+            throw new ModelCreateException(string.Format(Resources.RecipeTagsModelFactory_RecipeTagsModel_could_not_be_parsed_0_, ex.Message));
+        }
+    }
+
     private static IEnumerable<string> CreateTagCollection(string tags)
     {
         string[] splitTags = tags.Split(',');
-        return splitTags.Select(t => Regex.Replace(t, @"\s+", "").ToLower())
+        return splitTags.Select(t => Regex.Replace(t, @"\s+", "", RegexOptions.None, TimeSpan.FromMilliseconds(100)).ToLower())
                         .Distinct();
     }
 }

@@ -195,6 +195,15 @@ namespace RecipeBot.Domain.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tags could not be parsed successfully: {0}.
+        /// </summary>
+        internal static string RecipeTagsModelFactory_RecipeTagsModel_could_not_be_parsed_0_ {
+            get {
+                return ResourceManager.GetString("RecipeTagsModelFactory_RecipeTagsModel_could_not_be_parsed_0_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The total tag character length must be less or equal to {0} characters..
         /// </summary>
         internal static string RecipeTagsModelFactory_RecipeTagsModelTotalLength_must_be_less_or_equal_to_number_of_0_characters {
