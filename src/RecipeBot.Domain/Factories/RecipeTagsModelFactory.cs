@@ -49,27 +49,14 @@ public class RecipeTagsModelFactory
     /// <summary>
     /// Creates a <see cref="RecipeTagsModel"/> based on the input arguments.
     /// </summary>
-    /// <param name="category">The <see cref="RecipeCategory"/> to create the tags for.</param>
     /// <param name="tags">The string representing the unformatted tags.</param>
     /// <returns>A <see cref="RecipeTagsModel"/>.</returns>
     /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid <see cref="RecipeCategory"/>.</exception>
     /// <exception cref="NotSupportedException">Thrown when <paramref name="category"/> is a valid <see cref="RecipeCategory"/>,
     /// but not supported.</exception>
-    public RecipeTagsModel Create(RecipeCategory category, string? tags)
+    public RecipeTagsModel Create(string? tags)
     {
-        category.IsValidEnum(nameof(category));
-
-        var createdTags = new List<string>
-        {
-            GetValue(category)
-        };
-
-        if (!string.IsNullOrWhiteSpace(tags))
-        {
-            createdTags.AddRange(CreateTagCollection(tags));
-        }
-
-        var model = new RecipeTagsModel(createdTags);
+        var model = new RecipeTagsModel(CreateTagCollection(tags));
         int maximumRecipeTagsLength = limitProvider.MaximumRecipeTagsLength;
         if (model.TotalLength > maximumRecipeTagsLength)
         {
@@ -86,32 +73,5 @@ public class RecipeTagsModelFactory
         string[] splitTags = tags.Split(',');
         return splitTags.Select(t => Regex.Replace(t, @"\s+", "").ToLower())
                         .Distinct();
-    }
-
-    private static string GetValue(RecipeCategory category)
-    {
-        switch (category)
-        {
-            case RecipeCategory.Meat:
-                return Resources.RecipeCategoryMeat_DisplayName;
-            case RecipeCategory.Fish:
-                return Resources.RecipeCategoryFish_DisplayName;
-            case RecipeCategory.Vegetarian:
-                return Resources.RecipeCategoryVegetarian_DisplayName;
-            case RecipeCategory.Vegan:
-                return Resources.RecipeCategoryVegan_DisplayName;
-            case RecipeCategory.Drinks:
-                return Resources.RecipeCategoryDrinks_DisplayName;
-            case RecipeCategory.Pastry:
-                return Resources.RecipeCategoryPastry_DisplayName;
-            case RecipeCategory.Dessert:
-                return Resources.RecipeCategoryDessert_DisplayName;
-            case RecipeCategory.Snack:
-                return Resources.RecipeCategorySnack_DisplayName;
-            case RecipeCategory.Other:
-                return Resources.RecipeCategoryOther_DisplayName;
-            default:
-                throw new NotSupportedException();
-        }
     }
 }

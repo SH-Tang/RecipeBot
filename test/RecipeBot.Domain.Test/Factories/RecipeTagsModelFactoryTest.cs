@@ -44,7 +44,7 @@ public class RecipeTagsModelFactoryTest
         var factory = new RecipeTagsModelFactory(provider);
 
         // Call
-        Action call = () => factory.Create(invalidCategory, tags);
+        Action call = () => factory.Create(tags);
 
         // Assert
         Assert.Throws<InvalidEnumArgumentException>(call);
@@ -64,49 +64,12 @@ public class RecipeTagsModelFactoryTest
         var factory = new RecipeTagsModelFactory(provider);
 
         // Call
-        Action call = () => factory.Create(category, tags);
+        Action call = () => factory.Create(tags);
 
         // Assert
         var exception = Assert.Throws<ModelCreateException>(call);
         string expectedMessage = $"The total tag character length must be less or equal to {maximumTagsLength} characters.";
         Assert.Equal(expectedMessage, exception.Message);
-    }
-
-    [Theory]
-    [InlineData(RecipeCategory.Dessert, "Dessert")]
-    [InlineData(RecipeCategory.Fish, "Fish")]
-    [InlineData(RecipeCategory.Meat, "Meat")]
-    [InlineData(RecipeCategory.Pastry, "Pastry")]
-    [InlineData(RecipeCategory.Snack, "Snack")]
-    [InlineData(RecipeCategory.Vegan, "Vegan")]
-    [InlineData(RecipeCategory.Vegetarian, "Vegetarian")]
-    [InlineData(RecipeCategory.Drinks, "Drinks")]
-    [InlineData(RecipeCategory.Other, "Other")]
-    public void Creating_model_with_valid_category_and_tags_returns_expected_tag_model(
-        RecipeCategory category, string expectedFirstTag)
-    {
-        // Setup
-        var fixture = new Fixture();
-        var tags = fixture.Create<string>();
-
-        var provider = Substitute.For<IRecipeTagModelCharacterLimitProvider>();
-        provider.MaximumRecipeTagsLength.Returns(int.MaxValue);
-        var factory = new RecipeTagsModelFactory(provider);
-
-        // Call
-        RecipeTagsModel model = factory.Create(category, tags);
-
-        // Assert
-        Assert.Equal(2, model.Tags.Count());
-        Assert.Collection(model.Tags,
-                          firstTag =>
-                          {
-                              Assert.Equal(expectedFirstTag, firstTag);
-                          },
-                          secondTag =>
-                          {
-                              Assert.Equal(tags, secondTag);
-                          });
     }
 
     [Theory]
@@ -116,47 +79,32 @@ public class RecipeTagsModelFactoryTest
     public void Creating_model_with_valid_category_and_no_tags_returns_model_containing_only_category_tag(string tags)
     {
         // Setup
-        const RecipeCategory category = RecipeCategory.Other;
-
         var provider = Substitute.For<IRecipeTagModelCharacterLimitProvider>();
         provider.MaximumRecipeTagsLength.Returns(int.MaxValue);
         var factory = new RecipeTagsModelFactory(provider);
 
         // Call
-        RecipeTagsModel model = factory.Create(category, tags);
+        RecipeTagsModel model = factory.Create(tags);
 
         // Assert
-        Assert.Single(model.Tags);
-        Assert.Collection(model.Tags,
-                          firstTag =>
-                          {
-                              Assert.Equal("Other", firstTag);
-                          });
+        Assert.Empty(model.Tags);
     }
 
     [Theory]
     [MemberData(nameof(GetUniqueTagsTestCases))]
     [MemberData(nameof(GetDistinctTagsTestCases))]
     public void Creating_model_with_valid_category_and_multiple_tags_returns_expected_tag_model(
-        string tags, IEnumerable<string> expectedCreatedTags)
+        string tags, IEnumerable<string> expectedTags)
     {
         // Setup
-        const RecipeCategory category = RecipeCategory.Other;
-
         var provider = Substitute.For<IRecipeTagModelCharacterLimitProvider>();
         provider.MaximumRecipeTagsLength.Returns(int.MaxValue);
         var factory = new RecipeTagsModelFactory(provider);
 
         // Call
-        RecipeTagsModel model = factory.Create(category, tags);
+        RecipeTagsModel model = factory.Create(tags);
 
         // Assert
-        var expectedTags = new List<string>
-        {
-            "Other"
-        };
-        expectedTags.AddRange(expectedCreatedTags);
-
         Assert.Equal(expectedTags, model.Tags);
     }
 
