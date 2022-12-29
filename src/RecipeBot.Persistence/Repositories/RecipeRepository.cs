@@ -29,7 +29,7 @@ using RecipeBot.Persistence.Entities;
 namespace RecipeBot.Persistence.Repositories;
 
 /// <summary>
-/// A Entity Framework Core implementation of <see cref="IRecipeRepository"/>.
+/// An Entity Framework Core implementation of <see cref="IRecipeRepository"/>.
 /// </summary>
 public class RecipeRepository : IRecipeRepository
 {
@@ -73,7 +73,7 @@ public class RecipeRepository : IRecipeRepository
     public async Task<RecipeDto?> DeleteRecipeAsync(int id)
     {
         RecipeEntity? entity = await context.RecipeEntities
-                                            .FindAsync(id);
+                                            .SingleOrDefaultAsync(r => r.Id == id);
         if (entity == null)
         {
             return null;
@@ -88,6 +88,7 @@ public class RecipeRepository : IRecipeRepository
     public async Task<RecipeDto?> GetRecipeByIdAsync(int id)
     {
         RecipeEntity? entity = await context.RecipeEntities
+                                            .AsNoTracking()
                                             .Include(e => e.Author)
                                             .SingleOrDefaultAsync(e => e.Id == id);
         return entity == null ? null : CreateRecipeDto(entity);
@@ -96,6 +97,7 @@ public class RecipeRepository : IRecipeRepository
     public async Task<IEnumerable<RecipeDto>> GetAllRecipes()
     {
         IEnumerable<RecipeEntity> entities = await context.RecipeEntities
+                                                          .AsNoTracking()
                                                           .Include(e => e.Author)
                                                           .ToArrayAsync();
 
