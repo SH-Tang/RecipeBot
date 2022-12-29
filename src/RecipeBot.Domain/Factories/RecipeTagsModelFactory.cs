@@ -51,11 +51,13 @@ public class RecipeTagsModelFactory
     /// </summary>
     /// <param name="tags">The string representing the unformatted tags.</param>
     /// <returns>A <see cref="RecipeTagsModel"/>.</returns>
-    /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid <see cref="RecipeCategory"/>.</exception>
-    /// <exception cref="NotSupportedException">Thrown when <paramref name="category"/> is a valid <see cref="RecipeCategory"/>,
-    /// but not supported.</exception>
     public RecipeTagsModel Create(string? tags)
     {
+        if (string.IsNullOrWhiteSpace(tags))
+        {
+            return new RecipeTagsModel(Enumerable.Empty<string>());
+        }
+
         var model = new RecipeTagsModel(CreateTagCollection(tags));
         int maximumRecipeTagsLength = limitProvider.MaximumRecipeTagsLength;
         if (model.TotalLength > maximumRecipeTagsLength)

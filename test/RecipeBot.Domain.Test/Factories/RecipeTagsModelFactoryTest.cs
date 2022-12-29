@@ -32,25 +32,6 @@ namespace RecipeBot.Domain.Test.Factories;
 public class RecipeTagsModelFactoryTest
 {
     [Fact]
-    public void Creating_model_with_invalid_category_throws_exception()
-    {
-        // Setup
-        const RecipeCategory invalidCategory = (RecipeCategory)(-1);
-
-        var fixture = new Fixture();
-        var tags = fixture.Create<string>();
-
-        var provider = Substitute.For<IRecipeTagModelCharacterLimitProvider>();
-        var factory = new RecipeTagsModelFactory(provider);
-
-        // Call
-        Action call = () => factory.Create(tags);
-
-        // Assert
-        Assert.Throws<InvalidEnumArgumentException>(call);
-    }
-
-    [Fact]
     public void Creating_model_with_tags_with_invalid_character_length_throws_exception()
     {
         // Setup
