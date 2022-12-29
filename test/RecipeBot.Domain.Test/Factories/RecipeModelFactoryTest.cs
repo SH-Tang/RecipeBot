@@ -302,20 +302,17 @@ public class RecipeModelFactoryTest
         Assert.Equal(data.CookingSteps, cookingStepsField.FieldData);
     }
 
-    private static void AssertTags(RecipeData data, RecipeTagsModelWrapper model)
+    private static void AssertTags(RecipeData data, RecipeTagsModelWrapper wrapper)
     {
-        var expectedTags = new List<string>
+        string tagData = data.Tags;
+        if (string.IsNullOrWhiteSpace(tagData))
         {
-            TagTestHelper.CategoryMapping[data.Category]
-        };
-
-        string? tagData = data.Tags;
-        if (!string.IsNullOrWhiteSpace(tagData))
-        {
-            expectedTags.AddRange(TagTestHelper.GetParsedTags(tagData));
+            Assert.Empty(wrapper.Tags);
         }
-
-        Assert.Equal(expectedTags, model.Tags);
+        else
+        {
+            Assert.Equal(TagTestHelper.GetParsedTags(tagData), wrapper.Tags);
+        }
     }
 
     private static RecipeData CreateRecipeData(IRecipeModelCharacterLimitProvider limitProvider,
