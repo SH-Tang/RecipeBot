@@ -32,37 +32,6 @@ namespace RecipeBot.Domain.Test.Factories;
 
 public class RecipeModelFactoryTest
 {
-    private static readonly Dictionary<RecipeCategory, string> categoryMapping = new()
-    {
-        {
-            RecipeCategory.Meat, "Meat"
-        },
-        {
-            RecipeCategory.Fish, "Fish"
-        },
-        {
-            RecipeCategory.Vegetarian, "Vegetarian"
-        },
-        {
-            RecipeCategory.Vegan, "Vegan"
-        },
-        {
-            RecipeCategory.Drinks, "Drinks"
-        },
-        {
-            RecipeCategory.Pastry, "Pastry"
-        },
-        {
-            RecipeCategory.Dessert, "Dessert"
-        },
-        {
-            RecipeCategory.Snack, "Snack"
-        },
-        {
-            RecipeCategory.Other, "Other"
-        }
-    };
-
     [Theory]
     [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
     public void Recipe_without_optional_data_returns_model_without_optional_data(string emptyValueString)
@@ -218,7 +187,7 @@ public class RecipeModelFactoryTest
 
         // Assert
         var exception = Assert.Throws<ModelCreateException>(call);
-        string expectedMessage = $"RecipeTitle must be less or equal to {recipeCharacterLimitProvider.MaximumTitleLength} characters.";
+        var expectedMessage = $"RecipeTitle must be less or equal to {recipeCharacterLimitProvider.MaximumTitleLength} characters.";
         Assert.Equal(expectedMessage, exception.Message);
     }
 
@@ -276,7 +245,7 @@ public class RecipeModelFactoryTest
 
         // Assert
         var exception = Assert.Throws<ModelCreateException>(call);
-        string expectedMessage = $"recipeData must be less or equal to {recipeCharacterLimitProvider.MaximumRecipeLength} characters.";
+        var expectedMessage = $"recipeData must be less or equal to {recipeCharacterLimitProvider.MaximumRecipeLength} characters.";
         Assert.Equal(expectedMessage, exception.Message);
     }
 
@@ -333,20 +302,17 @@ public class RecipeModelFactoryTest
         Assert.Equal(data.CookingSteps, cookingStepsField.FieldData);
     }
 
-    private static void AssertTags(RecipeData data, RecipeTagsModel model)
+    private static void AssertTags(RecipeData data, RecipeTagsModelWrapper wrapper)
     {
-        var expectedTags = new List<string>
-        {
-            categoryMapping[data.Category]
-        };
-
         string? tagData = data.Tags;
-        if (!string.IsNullOrWhiteSpace(tagData))
+        if (string.IsNullOrWhiteSpace(tagData))
         {
-            expectedTags.AddRange(TagAssertHelper.GetParsedTags(tagData));
+            Assert.Empty(wrapper.Tags);
         }
-
-        Assert.Equal(expectedTags, model.Tags);
+        else
+        {
+            Assert.Equal(TagTestHelper.GetParsedTags(tagData), wrapper.Tags);
+        }
     }
 
     private static RecipeData CreateRecipeData(IRecipeModelCharacterLimitProvider limitProvider,

@@ -21,6 +21,7 @@ using System.Linq;
 using AutoFixture;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
+using RecipeBot.Domain.TestUtils;
 using RecipeBot.TestUtils;
 using Xunit;
 
@@ -124,7 +125,7 @@ public class RecipeModelTest
 
         // Assert
         int expectedLength = recipeTitle.Length + metaData.Author.TotalLength + recipeFields.Sum(f => f.TotalLength)
-                             + metaData.Tags.TotalLength;
+                             + TagTestHelper.GetTotalTagsLength(metaData.Category, metaData.Tags);
         Assert.Equal(expectedLength, totalLength);
     }
 
@@ -151,7 +152,7 @@ public class RecipeModelTest
 
         // Assert
         int expectedLength = recipeTitle.Length + metaData.Author.TotalLength + recipeFields.Sum(f => f.TotalLength)
-                             + metaData.Tags.TotalLength;
+                             + TagTestHelper.GetTotalTagsLength(metaData.Category, metaData.Tags);
         Assert.Equal(expectedLength, totalLength);
     }
 
@@ -171,7 +172,7 @@ public class RecipeModelTest
         int totalLength = recipe.TotalLength;
 
         // Assert
-        int expectedLength = recipeTitle.Length + +metaData.Author.TotalLength + metaData.Tags.TotalLength;
+        int expectedLength = recipeTitle.Length + +metaData.Author.TotalLength + recipe.RecipeTags.TotalLength;
         Assert.Equal(expectedLength, totalLength);
     }
 
@@ -191,7 +192,7 @@ public class RecipeModelTest
         int totalLength = recipe.TotalLength;
 
         // Assert
-        int expectedLength = recipeTitle.Length + metaData.Author.TotalLength + metaData.Tags.TotalLength;
+        int expectedLength = recipeTitle.Length + metaData.Author.TotalLength + TagTestHelper.GetTotalTagsLength(metaData.Category, metaData.Tags);
         Assert.Equal(expectedLength, totalLength);
     }
 

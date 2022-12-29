@@ -96,7 +96,6 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
                                  ? responseService.GetRecipeModalResponse(modal, user, category, attachment)
                                  : responseService.GetRecipeModalResponse(modal, user, category);
 
-
             await RespondAsync(embed: response);
         }
         catch (ModalResponseException e)
@@ -152,7 +151,7 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
         public void ResetArguments()
         {
             AttachmentArgument = null;
-            CategoryArgument = (DiscordRecipeCategory) (-1);
+            CategoryArgument = (DiscordRecipeCategory)(-1);
         }
     }
 }

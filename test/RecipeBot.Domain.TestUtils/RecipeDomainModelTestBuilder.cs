@@ -81,7 +81,7 @@ public class RecipeDomainModelTestBuilder
     /// <returns>The <see cref="RecipeDomainModelTestBuilder"/>.</returns>
     public RecipeDomainModelTestBuilder AddImage()
     {
-        this.imageUrl = "https://recipeBot.recipe.image";
+        imageUrl = "https://recipeBot.recipe.image";
         return this;
     }
 
@@ -121,7 +121,7 @@ public class RecipeDomainModelTestBuilder
                    ? new RecipeModel(metaData, recipeFields, title)
                    : new RecipeModel(metaData, recipeFields, title, imageUrl);
     }
-    
+
     private AuthorModel CreateAuthorModel()
     {
         string authorName = GetStringWithRandomLength('+', maxAuthorNameLength);

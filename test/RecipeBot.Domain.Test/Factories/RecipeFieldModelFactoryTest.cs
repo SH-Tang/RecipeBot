@@ -48,7 +48,7 @@ public class RecipeFieldModelFactoryTest
 
         // Assert
         var exception = Assert.Throws<ModelCreateException>(call);
-        string expectedMessage = $"fieldName must be less or equal to {maximumFieldNameLength} characters.";
+        var expectedMessage = $"fieldName must be less or equal to {maximumFieldNameLength} characters.";
         Assert.Equal(expectedMessage, exception.Message);
     }
 
@@ -94,7 +94,7 @@ public class RecipeFieldModelFactoryTest
 
         // Assert
         var exception = Assert.Throws<ModelCreateException>(call);
-        string expectedMessage = $"fieldData must be less or equal to {maximumFieldDataLength} characters.";
+        var expectedMessage = $"fieldData must be less or equal to {maximumFieldDataLength} characters.";
         Assert.Equal(expectedMessage, exception.Message);
     }
 

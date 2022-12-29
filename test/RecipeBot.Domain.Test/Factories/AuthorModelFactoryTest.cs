@@ -46,7 +46,7 @@ public class AuthorModelFactoryTest
 
         // Assert
         var exception = Assert.Throws<ModelCreateException>(call);
-        string expectedMessage = $"AuthorName must be less or equal to {maximumAuthorNameLength} characters.";
+        var expectedMessage = $"AuthorName must be less or equal to {maximumAuthorNameLength} characters.";
         Assert.Equal(expectedMessage, exception.Message);
     }
 

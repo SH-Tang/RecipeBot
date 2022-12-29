@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using AutoFixture;
 using Discord;
 using RecipeBot.Discord.Services;
 using RecipeBot.Domain.Data;
@@ -80,7 +81,10 @@ public class RecipeEmbedFactoryTest
     public void Recipe_with_all_data_should_return_embed_with_fields_image_and_footer()
     {
         // Setup
-        RecipeModel recipeModel = domainModelBuilder.AddImage()
+        var fixture = new Fixture();
+        var category = fixture.Create<RecipeCategory>();
+        RecipeModel recipeModel = domainModelBuilder.SetCategory(category)
+                                                    .AddImage()
                                                     .AddTags(new[]
                                                     {
                                                         "Tag1",
@@ -104,7 +108,7 @@ public class RecipeEmbedFactoryTest
 
         EmbedFooter? embedFooter = embed.Footer;
         Assert.NotNull(embedFooter);
-        const string expectedFooterText = "Tag1, Tag2";
+        var expectedFooterText = $"{TagTestHelper.CategoryMapping[category]}, Tag1, Tag2";
         Assert.Equal(expectedFooterText, embedFooter.Value.Text);
     }
 
@@ -157,7 +161,10 @@ public class RecipeEmbedFactoryTest
     public void Recipe_with_tags_should_return_embed_with_tags()
     {
         // Setup
-        RecipeModel recipeModel = domainModelBuilder.AddTags(new[]
+        var fixture = new Fixture();
+        var category = fixture.Create<RecipeCategory>();
+        RecipeModel recipeModel = domainModelBuilder.SetCategory(category)
+                                                    .AddTags(new[]
                                                     {
                                                         "Tag1",
                                                         "Tag2"
@@ -178,7 +185,7 @@ public class RecipeEmbedFactoryTest
 
         EmbedFooter? embedFooter = embed.Footer;
         Assert.NotNull(embedFooter);
-        const string expectedFooterText = "Tag1, Tag2";
+        var expectedFooterText = $"{TagTestHelper.CategoryMapping[category]}, Tag1, Tag2";
         Assert.Equal(expectedFooterText, embedFooter.Value.Text);
     }
 
