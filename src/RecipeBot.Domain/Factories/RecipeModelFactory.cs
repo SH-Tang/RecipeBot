@@ -121,11 +121,11 @@ public class RecipeModelFactory
     private RecipeModelMetaData CreateMetaData(AuthorData authorData, string? tagData, RecipeCategory recipeCategory)
     {
         AuthorModel authorModel = authorModelFactory.Create(authorData);
-        RecipeTagsModel tagModel= recipeTagsModelFactory.Create(tagData);
+        RecipeTagsModel tagModel = recipeTagsModelFactory.Create(tagData);
 
         return new RecipeModelMetaData(authorModel, tagModel, recipeCategory);
     }
-    
+
     /// <summary>
     /// Creates a collection of <see cref="RecipeFieldModel"/> based on its input argument.
     /// </summary>

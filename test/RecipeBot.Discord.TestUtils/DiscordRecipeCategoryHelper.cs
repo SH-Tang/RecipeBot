@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using RecipeBot.Discord.Data;
 using System.Collections.Generic;
+using RecipeBot.Discord.Data;
 
 namespace RecipeBot.Discord.TestUtils;
 
