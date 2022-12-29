@@ -304,7 +304,7 @@ public class RecipeModelFactoryTest
 
     private static void AssertTags(RecipeData data, RecipeTagsModelWrapper wrapper)
     {
-        string tagData = data.Tags;
+        string? tagData = data.Tags;
         if (string.IsNullOrWhiteSpace(tagData))
         {
             Assert.Empty(wrapper.Tags);
