@@ -11,5 +11,6 @@
     <IsPackable>false</IsPackable>
     <Copyright>Copyright © Dennis Tang $([System.DateTime]::Today.ToString(yyyy))</Copyright>
     <Version>0.3.0</Version>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 </Project>
