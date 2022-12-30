@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
-  <Import Project="$(SolutionDir)\build\RecipeBot.targets" />
+  <Import Project="..\..\build\RecipeBot.targets" />
 
   <ItemGroup>
     <None Include="..\..\build\Copying.licenseheader" Link="Copying.licenseheader" />

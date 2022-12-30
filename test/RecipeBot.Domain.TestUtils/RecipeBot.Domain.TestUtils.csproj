@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$(SolutionDir)\build\RecipeBot.targets" />
+  <Import Project="..\..\build\RecipeBot.targets" />
 
   <ItemGroup>
     <None Include="..\..\build\Copying.licenseheader" Link="Copying.licenseheader" />
