@@ -25,14 +25,9 @@ namespace RecipeBot.Persistence;
 /// </summary>
 public class RecipeBotDbContext : DbContext
 {
+    public RecipeBotDbContext(DbContextOptions options) : base(options) {}
+
     public DbSet<AuthorEntity> AuthorEntities { get; set; }
 
     public DbSet<RecipeEntity> RecipeEntities { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        // Tempoarily hardcode the connection string of the DB
-        // This is relative to the execution directory
-        optionsBuilder.UseSqlite("Data Source = RecipeBot.sqlite;");
-    }
 }

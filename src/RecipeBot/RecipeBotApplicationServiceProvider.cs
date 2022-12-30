@@ -24,6 +24,7 @@ using Discord.Common.InfoModule;
 using Discord.Common.Options;
 using Discord.Interactions;
 using Discord.WebSocket;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RecipeBot.Discord.Controllers;
@@ -68,7 +69,7 @@ public class RecipeBotApplicationServiceProvider
         return services.BuildServiceProvider(true);
     }
 
-    private static void ConfigureServices(IServiceCollection services)
+    private void ConfigureServices(IServiceCollection services)
     {
         var socketConfig = new DiscordSocketConfig
         {
@@ -87,7 +88,7 @@ public class RecipeBotApplicationServiceProvider
                 .AddTransient<DiscordCommandInfoFactory>()
                 .AddTransient<BotInformationService>()
                 .AddTransient<RecipeModalResponseService>()
-                .AddDbContext<RecipeBotDbContext>()
+                .AddDbContext<RecipeBotDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")))
                 .AddScoped<IRecipeRepository, RecipeRepository>()
                 .AddScoped<IRecipeController, RecipeController>();
     }
