@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Microsoft.EntityFrameworkCore;
+using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Repositories;
 using RecipeBot.Domain.Repositories.DTO;
@@ -63,6 +64,7 @@ public class RecipeRepository : IRecipeRepository
         var recipeEntity = new RecipeEntity
         {
             Title = recipe.Title,
+            Category = (PersistentRecipeCategory) recipe.RecipeCategory, // Mappings are currently one to one
             Author = authorEntity
         };
 
@@ -118,6 +120,7 @@ public class RecipeRepository : IRecipeRepository
         return new RecipeDto
         {
             Id = entity.RecipeEntityId,
+            Category = (RecipeCategory) entity.Category,
             Author = author,
             Title = entity.Title
         };

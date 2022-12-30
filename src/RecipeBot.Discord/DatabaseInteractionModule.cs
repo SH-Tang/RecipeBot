@@ -22,6 +22,7 @@ using Discord;
 using Discord.Interactions;
 using Microsoft.Extensions.DependencyInjection;
 using RecipeBot.Discord.Controllers;
+using RecipeBot.Discord.Data;
 
 namespace RecipeBot.Discord;
 
@@ -42,15 +43,19 @@ public class DatabaseInteractionModule : InteractionModuleBase<SocketInteraction
     }
 
     [SlashCommand("recipe-save", "Save recipe data")]
-    public async Task SaveRecipe([Summary("title", "The title of the recipe")] string recipeTitle,
-                                 [Summary("author", "The name of the author")]
-                                 string authorName)
+    public async Task SaveRecipe(
+        [Summary("Category, The category of the recipe")]
+        DiscordRecipeCategory category,
+        [Summary("title", "The title of the recipe")]
+        string recipeTitle,
+        [Summary("author", "The name of the author")]
+        string authorName)
     {
         using (IServiceScope serviceScope = scopeFactory.CreateScope())
         {
             var controller = serviceScope.ServiceProvider.GetRequiredService<IRecipeController>();
 
-            string message = await controller.SaveRecipe(recipeTitle, authorName);
+            string message = await controller.SaveRecipe(recipeTitle, authorName, category);
             await Context.Interaction.RespondAsync(message);
         }
     }

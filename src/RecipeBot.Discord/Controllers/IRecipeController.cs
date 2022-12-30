@@ -16,12 +16,13 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System.Threading.Tasks;
+using RecipeBot.Discord.Data;
 
 namespace RecipeBot.Discord.Controllers;
 
 public interface IRecipeController
 {
-    Task<string> SaveRecipe(string recipeTitle, string authorName);
+    Task<string> SaveRecipe(string recipeTitle, string authorName, DiscordRecipeCategory category);
     Task<string> FindRecipeAsync(int id);
     Task<string> GetAllRecipesAsync();
     Task<string> DeleteRecipeAsync(int id);

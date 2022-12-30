@@ -15,6 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using RecipeBot.Domain.Data;
+
 namespace RecipeBot.Domain.Repositories.DTO;
 
 /// <summary>
@@ -36,4 +38,9 @@ public class RecipeDto
     /// Gets or sets the <see cref="AuthorDto"/>.
     /// </summary>
     public AuthorDto? Author { get; init; }
+
+    /// <summary>
+    /// Gets or sets the recipe category.
+    /// </summary>
+    public RecipeCategory Category{ get; init; }
 }

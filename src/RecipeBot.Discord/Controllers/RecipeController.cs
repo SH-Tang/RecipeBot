@@ -48,10 +48,10 @@ public class RecipeController : IRecipeController
         factory = new RecipeModelFactory(limitProvider);
     }
 
-    public async Task<string> SaveRecipe(string recipeTitle, string authorName)
+    public async Task<string> SaveRecipe(string recipeTitle, string authorName, DiscordRecipeCategory category)
     {
         var authorData = new AuthorData(authorName, authorImageUrl);
-        RecipeData recipeData = new RecipeDataBuilder(authorData, DiscordRecipeCategory.Other, recipeTitle,
+        RecipeData recipeData = new RecipeDataBuilder(authorData, category, recipeTitle,
                                                       "Ingredients don't matter", "Cooking steps don't matter").Build();
 
         await repository.SaveRecipeAsync(factory.Create(recipeData));
@@ -70,8 +70,8 @@ public class RecipeController : IRecipeController
     {
         IEnumerable<RecipeDto> recipes = await repository.GetAllRecipes();
 
-        string header = $"{"Id",-3} {"Title",-50} {"Author",-50}";
-        string entries = string.Join($"{Environment.NewLine}", recipes.Select(r => $"{r.Id,-3} {r.Title,-50} {r.Author.Name,-50}"));
+        string header = $"{"Id",-3} {"Title",-50} {"Author",-50} {"Type", -15}";
+        string entries = string.Join($"{Environment.NewLine}", recipes.Select(r => $"{r.Id,-3} {r.Title,-50} {r.Author.Name,-50} {r.Category,-15}"));
         return header + Environment.NewLine + entries;
     }
 
