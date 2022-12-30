@@ -19,10 +19,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RecipeBot.Persistence.Entities;
 
-[Index(nameof(Id), IsUnique = true)]
+[Index(nameof(RecipeEntityId), IsUnique = true)]
 public class RecipeEntity
 {
-    public int Id { get; set; }
+    public int RecipeEntityId { get; set; }
 
     public string? Title { get; set; }
 

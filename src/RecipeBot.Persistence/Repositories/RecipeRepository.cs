@@ -73,7 +73,7 @@ public class RecipeRepository : IRecipeRepository
     public async Task<RecipeDto?> DeleteRecipeAsync(int id)
     {
         RecipeEntity? entity = await context.RecipeEntities
-                                            .SingleOrDefaultAsync(r => r.Id == id);
+                                            .SingleOrDefaultAsync(r => r.RecipeEntityId == id);
         if (entity == null)
         {
             return null;
@@ -90,7 +90,7 @@ public class RecipeRepository : IRecipeRepository
         RecipeEntity? entity = await context.RecipeEntities
                                             .AsNoTracking()
                                             .Include(e => e.Author)
-                                            .SingleOrDefaultAsync(e => e.Id == id);
+                                            .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
         return entity == null ? null : CreateRecipeDto(entity);
     }
 
@@ -117,7 +117,7 @@ public class RecipeRepository : IRecipeRepository
 
         return new RecipeDto
         {
-            Id = entity.Id,
+            Id = entity.RecipeEntityId,
             Author = author,
             Title = entity.Title
         };

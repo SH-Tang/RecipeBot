@@ -20,17 +20,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RecipeBot.Persistence.Entities;
 
-[Index(nameof(Id), IsUnique = true)]
+[Index(nameof(AuthorEntityId), IsUnique = true)]
 public class AuthorEntity
 {
-    public AuthorEntity()
-    {
-        Recipes = new List<RecipeEntity>();
-    }
-
-    public int Id { get; set; }
+    public int AuthorEntityId { get; set; }
 
     public string? Name { get; set; }
 
-    public List<RecipeEntity> Recipes { get; set; }
+    public ICollection<RecipeEntity> Recipes { get; set; }
 }
