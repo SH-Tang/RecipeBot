@@ -24,6 +24,8 @@ public class RecipeEntity
 {
     public int RecipeEntityId { get; set; }
 
+    public PersistentRecipeCategory Category { get; set; }
+
     public string? Title { get; set; }
 
     public AuthorEntity Author { get; set; }
