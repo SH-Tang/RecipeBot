@@ -17,28 +17,19 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
 
 namespace RecipeBot.Persistence.Entities;
 
 /// <summary>
-/// Entity class to persist recipe related data.
+/// Entity class to tag related data.
 /// </summary>
-[Index(nameof(RecipeEntityId), IsUnique = true)]
-public class RecipeEntity
+public class TagEntity
 {
     [Key]
-    public long RecipeEntityId { get; set; }
+    public int TagEntityId { get; set; }
 
     [Required]
-    public string RecipeTitle { get; set; } = null!;
+    public string Tag { get; set; } = null!;
 
-    [Required]
-    public PersistentRecipeCategory RecipeCategory { get; set; }
-
-    public long AuthorEntityId { get; set; }
-
-    public ICollection<RecipeFieldEntity> RecipeFieldEntities { get; set; } = null!;
-
-    public ICollection<TagEntity> TagEntities { get; set; } = null!;
+    public ICollection<RecipeEntity> RecipeEntities { get; set; } = null!;
 }
