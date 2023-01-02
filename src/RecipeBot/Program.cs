@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.Hosting;
 using System;
 using System.IO;
 using System.Threading;
@@ -39,6 +40,12 @@ namespace RecipeBot
                 Console.WriteLine(e);
                 await Task.Delay(Timeout.Infinite);
             }
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            Console.WriteLine(@"Default host builder created for Entity Framework commands");
+            return Host.CreateDefaultBuilder();
         }
     }
 }
