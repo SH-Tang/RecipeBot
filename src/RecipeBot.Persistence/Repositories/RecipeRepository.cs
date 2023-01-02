@@ -96,7 +96,7 @@ public class RecipeRepository : IRecipeRepository
         return entity == null ? null : CreateRecipeDto(entity);
     }
 
-    public async Task<IEnumerable<RecipeDto>> GetAllRecipes()
+    public async Task<IReadOnlyList<RecipeDto>> GetAllRecipes()
     {
         IEnumerable<RecipeEntity> entities = await context.RecipeEntities
                                                           .AsNoTracking()

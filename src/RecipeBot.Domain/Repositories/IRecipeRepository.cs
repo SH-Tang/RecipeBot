@@ -54,5 +54,5 @@ public interface IRecipeRepository
     /// Gets all stored recipes.
     /// </summary>
     /// <returns>A collection of <see cref="RecipeData"/>.</returns>
-    Task<IEnumerable<RecipeDto>> GetAllRecipes();
+    Task<IReadOnlyList<RecipeDto>> GetAllRecipes();
 }
