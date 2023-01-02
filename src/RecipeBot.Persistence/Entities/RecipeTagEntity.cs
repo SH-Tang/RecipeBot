@@ -15,30 +15,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
 
 namespace RecipeBot.Persistence.Entities;
 
 /// <summary>
-/// Entity class to persist recipe related data.
+/// Entity for linking recipe and tag entities.
 /// </summary>
-[Index(nameof(RecipeEntityId), IsUnique = true)]
-public class RecipeEntity
+public class RecipeTagEntity
 {
     [Key]
-    public long RecipeEntityId { get; set; }
+    public int RecipeEntityId { get; set; }
 
-    [Required]
-    public string RecipeTitle { get; set; } = null!;
+    [Key]
+    public int TagEntityId { get; set; }
 
-    [Required]
-    public PersistentRecipeCategory RecipeCategory { get; set; }
-
-    public long AuthorEntityId { get; set; }
-
-    public ICollection<RecipeFieldEntity> RecipeFieldEntities { get; set; } = null!;
-
-    public ICollection<RecipeTagEntity> Tags { get; set; } = null!;
+    public byte Order { get; set; }
 }

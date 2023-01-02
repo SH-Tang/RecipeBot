@@ -31,5 +31,5 @@ public class TagEntity
     [Required]
     public string Tag { get; set; } = null!;
 
-    public ICollection<RecipeEntity> RecipeEntities { get; set; } = null!;
+    public ICollection<RecipeTagEntity> Recipes { get; set; }
 }
