@@ -26,9 +26,11 @@ using Discord.Common;
 using Discord.Common.Handlers;
 using Discord.Common.InfoModule;
 using Discord.WebSocket;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RecipeBot.Discord;
+using RecipeBot.Persistence;
 
 namespace RecipeBot;
 
@@ -69,6 +71,7 @@ public class RecipeBotApplication
         var services = new RecipeBotApplicationServiceProvider(configurationRoot);
         using (ServiceProvider serviceProvider = services.GetServiceProvider())
         {
+            await SetupDatabase(serviceProvider);
             await ConfigureDiscordClient(serviceProvider);
             await ConfigureCommandService(serviceProvider);
             await ConfigureCommandHandlingService(serviceProvider);
@@ -117,5 +120,14 @@ public class RecipeBotApplication
         logger.LogInfoAsync(msg.Message);
 
         return Task.CompletedTask;
+    }
+
+    private static async Task SetupDatabase(IServiceProvider services)
+    {
+        using (IServiceScope scope = services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<RecipeBotDbContext>();
+            await context.Database.EnsureCreatedAsync();
+        }
     }
 }

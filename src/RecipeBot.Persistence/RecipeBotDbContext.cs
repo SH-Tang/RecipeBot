@@ -25,13 +25,13 @@ namespace RecipeBot.Persistence;
 /// </summary>
 public class RecipeBotDbContext : DbContext
 {
-    public DbSet<AuthorEntity> AuthorEntities = null!;
-
-    public DbSet<RecipeEntity> RecipeEntities = null!;
-
-    public DbSet<RecipeFieldEntity> RecipeFieldEntities = null!;
-
-    public DbSet<TagEntity> TagEntities = null!;
-
     public RecipeBotDbContext(DbContextOptions options) : base(options) {}
+
+    public DbSet<AuthorEntity> AuthorEntities { get; set; }
+
+    public DbSet<RecipeEntity> RecipeEntities { get; set; }
+
+    public DbSet<RecipeFieldEntity> RecipeFieldEntities { get; set; }
+
+    public DbSet<TagEntity> TagEntities { get; set; }
 }
