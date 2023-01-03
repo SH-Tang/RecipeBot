@@ -26,12 +26,12 @@ namespace RecipeBot.Persistence.Entities;
 [PrimaryKey(nameof(RecipeEntityId), nameof(TagEntityId))]
 public class RecipeTagEntity
 {
-    public int RecipeEntityId { get; set; }
+    public long RecipeEntityId { get; set; }
 
     [Required]
     public RecipeEntity Recipe { get; set; } = null!;
 
-    public int TagEntityId { get; set; }
+    public long TagEntityId { get; set; }
 
     [Required]
     public TagEntity Tag{ get; set; } = null!;

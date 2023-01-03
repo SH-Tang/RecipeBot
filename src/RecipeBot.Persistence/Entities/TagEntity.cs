@@ -17,16 +17,18 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace RecipeBot.Persistence.Entities;
 
 /// <summary>
 /// Entity class to tag related data.
 /// </summary>
+[Index(nameof(TagEntityId), IsUnique = true)]
 public class TagEntity
 {
     [Key]
-    public int TagEntityId { get; set; }
+    public long TagEntityId { get; set; }
 
     [Required]
     public string Tag { get; set; } = null!;
