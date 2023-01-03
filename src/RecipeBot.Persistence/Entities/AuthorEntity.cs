@@ -36,5 +36,5 @@ public class AuthorEntity
     [Required]
     public string AuthorImageUrl { get; set; } = null!;
 
-    public ICollection<RecipeEntity> RecipeEntities { get; set; } = null!;
+    public ICollection<RecipeEntity> Recipes { get; set; } = null!;
 }

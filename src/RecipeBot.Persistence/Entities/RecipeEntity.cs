@@ -38,7 +38,7 @@ public class RecipeEntity
 
     public long AuthorEntityId { get; set; }
 
-    public ICollection<RecipeFieldEntity> RecipeFieldEntities { get; set; } = null!;
+    public ICollection<RecipeFieldEntity> RecipeFields { get; set; } = null!;
 
     public ICollection<RecipeTagEntity> Tags { get; set; } = null!;
 }
