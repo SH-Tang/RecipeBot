@@ -16,19 +16,25 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace RecipeBot.Persistence.Entities;
 
 /// <summary>
 /// Entity for linking recipe and tag entities.
 /// </summary>
+[PrimaryKey(nameof(RecipeEntityId), nameof(TagEntityId))]
 public class RecipeTagEntity
 {
-    [Key]
     public int RecipeEntityId { get; set; }
 
-    [Key]
+    [Required]
+    public RecipeEntity Recipe { get; set; } = null!;
+
     public int TagEntityId { get; set; }
+
+    [Required]
+    public TagEntity Tag{ get; set; } = null!;
 
     public byte Order { get; set; }
 }

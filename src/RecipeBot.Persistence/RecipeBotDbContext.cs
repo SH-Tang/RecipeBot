@@ -27,11 +27,13 @@ public class RecipeBotDbContext : DbContext
 {
     public RecipeBotDbContext(DbContextOptions options) : base(options) {}
 
-    public DbSet<AuthorEntity> AuthorEntities { get; set; }
+    public DbSet<AuthorEntity> AuthorEntities { get; set; } = null!;
 
-    public DbSet<RecipeEntity> RecipeEntities { get; set; }
+    public DbSet<RecipeEntity> RecipeEntities { get; set; } = null!;
 
-    public DbSet<RecipeFieldEntity> RecipeFieldEntities { get; set; }
+    public DbSet<RecipeFieldEntity> RecipeFieldEntities { get; set; } = null!;
 
-    public DbSet<TagEntity> TagEntities { get; set; }
+    public DbSet<RecipeTagEntity> RecipeTagEntities { get; set; } = null!;
+
+    public DbSet<TagEntity> TagEntities { get; set; } = null!;
 }
