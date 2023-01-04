@@ -41,8 +41,9 @@ public class RecipeRepository : IRecipeRepository
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <c>null</c>.</exception>
     public RecipeRepository(RecipeBotDbContext context)
     {
-        this.context = context;
         context.IsNotNull(nameof(context));
+
+        this.context = context;
     }
 
     public async Task SaveRecipeAsync(RecipeModel model)
@@ -52,12 +53,11 @@ public class RecipeRepository : IRecipeRepository
         try
         {
             AuthorEntity authorEntity = await GetAuthorEntityAsync(model.Author);
-            RecipeEntity recipeEntity = CreateRecipeEntity(model, authorEntity);
+            ICollection<RecipeTagEntity> tagLinks = await CreateRecipeTagEntities(model);
+
+            RecipeEntity recipeEntity = CreateRecipeEntity(model, authorEntity, tagLinks);
             context.RecipeEntities.Add(recipeEntity);
             
-            IReadOnlyList<RecipeTagEntity> tagLinks = await CreateRecipeTagEntities(model, recipeEntity);
-            context.RecipeTagEntities.AddRange(tagLinks);
-
             await context.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
@@ -66,16 +66,18 @@ public class RecipeRepository : IRecipeRepository
         }
     }
 
-    private static RecipeEntity CreateRecipeEntity(RecipeModel model, AuthorEntity authorEntity)
+    private static RecipeEntity CreateRecipeEntity(RecipeModel model, 
+                                                   AuthorEntity authorEntity,
+                                                   ICollection<RecipeTagEntity> recipeTagEntities)
     {
-        var recipeEntity = new RecipeEntity
+        return new RecipeEntity
         {
             RecipeTitle = model.Title,
             RecipeCategory = (PersistentRecipeCategory)model.RecipeCategory,
             Author = authorEntity,
-            RecipeFields = CreateRecipeFieldEntities(model.RecipeFields)
+            RecipeFields = CreateRecipeFieldEntities(model.RecipeFields),
+            Tags = recipeTagEntities
         };
-        return recipeEntity;
     }
 
     private static ICollection<RecipeFieldEntity> CreateRecipeFieldEntities(IEnumerable<RecipeFieldModel> recipeFieldModels)
@@ -89,7 +91,7 @@ public class RecipeRepository : IRecipeRepository
         }).ToArray();
     }
 
-    private async Task<IReadOnlyList<RecipeTagEntity>> CreateRecipeTagEntities(RecipeModel model, RecipeEntity recipeEntity)
+    private async Task<ICollection<RecipeTagEntity>> CreateRecipeTagEntities(RecipeModel model)
     {
         byte i = 0;
         var tagLinks = new List<RecipeTagEntity>();
@@ -102,7 +104,6 @@ public class RecipeRepository : IRecipeRepository
 
             tagLinks.Add(new RecipeTagEntity
             {
-                Recipe = recipeEntity,
                 Tag = tagEntity,
                 Order = i++
             });
