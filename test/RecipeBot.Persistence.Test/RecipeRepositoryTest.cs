@@ -16,7 +16,9 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -32,10 +34,9 @@ namespace RecipeBot.Persistence.Test;
 
 public class RecipeRepositoryTest : IDisposable
 {
+    private const int characterLimit = 1000;
     private static readonly string? assemblyDirectory = Path.GetDirectoryName(typeof(RecipeRepositoryTest).GetTypeInfo().Assembly.Location);
     private static readonly string testDirectory = Path.Combine(assemblyDirectory!, "test-data");
-
-    private const int characterLimit = 1000;
     private readonly RecipeDomainModelTestBuilder testBuilder;
 
     public RecipeRepositoryTest()
@@ -70,10 +71,10 @@ public class RecipeRepositoryTest : IDisposable
     }
 
     [Fact]
-    public async Task GivenEmptyDatabase_when_saving_recipe_without_optional_data_saves_expected_data()
+    public async Task Given_empty_database_when_saving_basic_recipe_saves_expected_data()
     {
         // Setup
-        const string fileName = "Test.sqlite";
+        const string fileName = "BasicRecipe-Save.sqlite";
 
         var fixture = new Fixture();
         var category = fixture.Create<RecipeCategory>();
@@ -98,7 +99,7 @@ public class RecipeRepositoryTest : IDisposable
                                                      .Include(e => e.Tags)
                                                      .SingleAsync();
             Assert.Equal(recipeModel.Title, recipeEntity.RecipeTitle);
-            Assert.Equal((PersistentRecipeCategory) category, recipeEntity.RecipeCategory);
+            Assert.Equal((PersistentRecipeCategory)category, recipeEntity.RecipeCategory);
 
             AuthorModel expectedAuthor = recipeModel.Author;
             AuthorEntity authorEntity = recipeEntity.Author;
@@ -108,6 +109,123 @@ public class RecipeRepositoryTest : IDisposable
 
             Assert.Empty(recipeEntity.RecipeFields);
             Assert.Empty(recipeEntity.Tags);
+
+            await context.Database.EnsureDeletedAsync();
+        }
+    }
+
+    [Fact]
+    public async Task Given_database_with_author_data_when_saving_recipe_with_author_then_recipe_links_to_author()
+    {
+        // Setup
+        const string fileName = "BasicRecipeAuthor-Save.sqlite";
+
+        RecipeModel recipeModel = testBuilder.Build();
+
+        var contextProvider = RecipeBotDbContextTestProvider.CreateProvider(Path.Combine(testDirectory, fileName));
+        using (RecipeBotDbContext context = contextProvider.CreateContext())
+        {
+            context.AuthorEntities.Add(new AuthorEntity
+            {
+                AuthorName = recipeModel.Author.AuthorName,
+                AuthorImageUrl = recipeModel.Author.AuthorImageUrl
+            });
+
+            var repository = new RecipeRepository(context);
+
+            // Call
+            await repository.SaveRecipeAsync(recipeModel);
+        }
+
+        // Assert
+        using (RecipeBotDbContext context = contextProvider.CreateContext())
+        {
+            RecipeEntity recipeEntity = await context.RecipeEntities
+                                                     .Include(e => e.Author)
+                                                     .SingleAsync();
+
+            AuthorModel expectedAuthor = recipeModel.Author;
+            AuthorEntity authorEntity = recipeEntity.Author;
+            Assert.NotNull(authorEntity);
+            Assert.Equal(expectedAuthor.AuthorName, authorEntity.AuthorName);
+            Assert.Equal(expectedAuthor.AuthorImageUrl, authorEntity.AuthorImageUrl);
+
+            Assert.Same(authorEntity, recipeEntity.Author);
+
+            await context.Database.EnsureDeletedAsync();
+        }
+    }
+
+    [Fact]
+    public async Task Given_empty_database_when_saving_recipe_with_all_data_saves_expected_data()
+    {
+        // Setup
+        const string fileName = "RecipeAllData-Save.sqlite";
+
+        var fixture = new Fixture();
+        var category = fixture.Create<RecipeCategory>();
+
+        string[] tags =
+        {
+            fixture.Create<string>(),
+            fixture.Create<string>()
+        };
+
+        const int nrOfFields = 3;
+        RecipeModel recipeModel = testBuilder.SetCategory(category)
+                                             .AddFields(nrOfFields)
+                                             .AddTags(tags)
+                                             .Build();
+
+        var contextProvider = RecipeBotDbContextTestProvider.CreateProvider(Path.Combine(testDirectory, fileName));
+        using (RecipeBotDbContext context = contextProvider.CreateContext())
+        {
+            var repository = new RecipeRepository(context);
+
+            // Call
+            await repository.SaveRecipeAsync(recipeModel);
+        }
+
+        using (RecipeBotDbContext context = contextProvider.CreateContext())
+        {
+            RecipeEntity recipeEntity = await context.RecipeEntities
+                                                     .Include(e => e.Author)
+                                                     .Include(e => e.RecipeFields)
+                                                     .Include(e => e.Tags)
+                                                     .ThenInclude(e => e.Tag)
+                                                     .SingleAsync();
+
+            Assert.Equal(recipeModel.Title, recipeEntity.RecipeTitle);
+            Assert.Equal((PersistentRecipeCategory)category, recipeEntity.RecipeCategory);
+
+            AuthorModel expectedAuthor = recipeModel.Author;
+            AuthorEntity authorEntity = recipeEntity.Author;
+            Assert.NotNull(authorEntity);
+            Assert.Equal(expectedAuthor.AuthorName, authorEntity.AuthorName);
+            Assert.Equal(expectedAuthor.AuthorImageUrl, authorEntity.AuthorImageUrl);
+
+            ICollection<RecipeFieldEntity> recipeFieldEntities = recipeEntity.RecipeFields;
+            Assert.Equal(nrOfFields, recipeFieldEntities.Count);
+            for (var i = 0; i < nrOfFields; i++)
+            {
+                RecipeFieldModel fieldModel = recipeModel.RecipeFields.ElementAt(i);
+                RecipeFieldEntity fieldEntity = recipeFieldEntities.ElementAt(i);
+
+                Assert.Equal(fieldModel.FieldName, fieldEntity.RecipeFieldName);
+                Assert.Equal(fieldModel.FieldData, fieldEntity.RecipeFieldData);
+                Assert.Equal(i, fieldEntity.Order);
+            }
+
+            int nrOfTags = tags.Length;
+            Assert.Equal(nrOfTags, recipeEntity.Tags.Count);
+            for (var i = 0; i < nrOfTags; i++)
+            {
+                string expectedTag = tags[i];
+                RecipeTagEntity tagEntity = recipeEntity.Tags.ElementAt(i);
+
+                Assert.Equal(expectedTag, tagEntity.Tag.Tag);
+                Assert.Equal(i, tagEntity.Order);
+            }
 
             await context.Database.EnsureDeletedAsync();
         }
