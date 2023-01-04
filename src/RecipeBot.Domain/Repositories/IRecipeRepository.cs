@@ -15,33 +15,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
+using RecipeBot.Domain.Models;
 
-namespace RecipeBot.Persistence.Entities;
+namespace RecipeBot.Domain.Repositories;
 
 /// <summary>
-/// Entity class to persist recipe related data.
+/// Interface for describing a repository for the 
 /// </summary>
-[Index(nameof(RecipeEntityId), IsUnique = true)]
-public class RecipeEntity
+public interface IRecipeRepository
 {
-    [Key]
-    public long RecipeEntityId { get; set; }
-
-    [Required]
-    public string RecipeTitle { get; set; } = null!;
-
-    [Required]
-    public PersistentRecipeCategory RecipeCategory { get; set; }
-
-    public long AuthorEntityId { get; set; }
-
-    [Required]
-    public AuthorEntity Author { get; set; } = null!;
-
-    public ICollection<RecipeFieldEntity> RecipeFields { get; set; } = null!;
-
-    public ICollection<RecipeTagEntity> Tags { get; set; } = null!;
+    /// <summary>
+    /// Saves a <see cref="RecipeModel"/>.
+    /// </summary>
+    /// <param name="model">The <see cref="RecipeModel"/> to save.</param>
+    /// <returns>A <see cref="Task"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="model"/> is <c>null</c>.</exception>
+    public Task SaveRecipeAsync(RecipeModel model);
 }
