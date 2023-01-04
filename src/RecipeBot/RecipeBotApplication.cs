@@ -26,7 +26,6 @@ using Discord.Common;
 using Discord.Common.Handlers;
 using Discord.Common.InfoModule;
 using Discord.WebSocket;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RecipeBot.Discord;
@@ -102,7 +101,8 @@ public class RecipeBotApplication
         await interactionCommandHandlingServices.InitializeHandlerAsync(new[]
         {
             typeof(InfoInteractionModule),
-            typeof(RecipeInteractionModule)
+            // typeof(RecipeInteractionModule), // TODO: Re-enable once CRUD functionality is in place
+            typeof(RecipeDbInteractionTestModule)
         });
     }
 

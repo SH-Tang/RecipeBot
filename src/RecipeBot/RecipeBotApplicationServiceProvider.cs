@@ -30,6 +30,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RecipeBot.Discord.Providers;
 using RecipeBot.Discord.Services;
 using RecipeBot.Domain.Factories;
+using RecipeBot.Domain.Repositories;
 using RecipeBot.Persistence;
 using RecipeBot.Services;
 
@@ -85,7 +86,8 @@ public class RecipeBotApplicationServiceProvider
                 .AddTransient<DiscordCommandInfoFactory>()
                 .AddTransient<BotInformationService>()
                 .AddTransient<RecipeModalResponseService>()
-                .AddDbContext<RecipeBotDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
+                .AddDbContext<RecipeBotDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")))
+                .AddScoped<IRecipeRepository, RecipeRepository>();
     }
 
     private void ConfigureOptions(IServiceCollection services)
