@@ -17,12 +17,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Microsoft.EntityFrameworkCore;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Repositories;
+using RecipeBot.Persistence.Creators;
 using RecipeBot.Persistence.Entities;
 
 namespace RecipeBot.Persistence;
@@ -55,40 +55,15 @@ public class RecipeRepository : IRecipeRepository
             AuthorEntity authorEntity = await GetAuthorEntityAsync(model.Author);
             ICollection<RecipeTagEntity> tagLinks = await CreateRecipeTagEntities(model);
 
-            RecipeEntity recipeEntity = CreateRecipeEntity(model, authorEntity, tagLinks);
+            RecipeEntity recipeEntity = RecipeEntityCreator.Create(model, authorEntity, tagLinks);
             context.RecipeEntities.Add(recipeEntity);
-            
+
             await context.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
             throw new Exception(ex.Message, ex); // TODO: Introduce custom exception
         }
-    }
-
-    private static RecipeEntity CreateRecipeEntity(RecipeModel model, 
-                                                   AuthorEntity authorEntity,
-                                                   ICollection<RecipeTagEntity> recipeTagEntities)
-    {
-        return new RecipeEntity
-        {
-            RecipeTitle = model.Title,
-            RecipeCategory = (PersistentRecipeCategory)model.RecipeCategory,
-            Author = authorEntity,
-            RecipeFields = CreateRecipeFieldEntities(model.RecipeFields),
-            Tags = recipeTagEntities
-        };
-    }
-
-    private static ICollection<RecipeFieldEntity> CreateRecipeFieldEntities(IEnumerable<RecipeFieldModel> recipeFieldModels)
-    {
-        byte i = 0;
-        return recipeFieldModels.Select(recipeField => new RecipeFieldEntity
-        {
-            RecipeFieldName = recipeField.FieldName,
-            RecipeFieldData = recipeField.FieldData,
-            Order = i++
-        }).ToArray();
     }
 
     private async Task<ICollection<RecipeTagEntity>> CreateRecipeTagEntities(RecipeModel model)
@@ -116,11 +91,7 @@ public class RecipeRepository : IRecipeRepository
     {
         string authorName = authorModel.AuthorName;
         AuthorEntity? foundEntity = await context.AuthorEntities.SingleOrDefaultAsync(e => e.AuthorName == authorName);
-        return foundEntity ?? new AuthorEntity
-        {
-            AuthorName = authorName,
-            AuthorImageUrl = authorModel.AuthorImageUrl
-        };
+        return foundEntity ?? AuthorEntityCreator.Create(authorModel);
     }
 
     private Task<TagEntity?> FindTagEntityAsync(string tag)
