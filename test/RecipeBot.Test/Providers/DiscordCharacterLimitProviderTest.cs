@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using Discord;
+using RecipeBot.Providers;
 using Xunit;
 
 namespace RecipeBot.Test.Providers;
