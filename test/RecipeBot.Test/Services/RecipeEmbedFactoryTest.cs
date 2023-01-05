@@ -109,7 +109,7 @@ public class RecipeEmbedFactoryTest
         EmbedFooter? embedFooter = embed.Footer;
         Assert.NotNull(embedFooter);
         var expectedFooterText = $"{TagTestHelper.CategoryMapping[category]}, Tag1, Tag2";
-        Assert.Equal(expectedFooterText, (string?)embedFooter.Value.Text);
+        Assert.Equal(expectedFooterText, embedFooter.Value.Text);
     }
 
     [Fact]
@@ -186,7 +186,7 @@ public class RecipeEmbedFactoryTest
         EmbedFooter? embedFooter = embed.Footer;
         Assert.NotNull(embedFooter);
         var expectedFooterText = $"{TagTestHelper.CategoryMapping[category]}, Tag1, Tag2";
-        Assert.Equal(expectedFooterText, (string?)embedFooter.Value.Text);
+        Assert.Equal(expectedFooterText, embedFooter.Value.Text);
     }
 
     public static IEnumerable<object[]> GetRecipeCategoriesAndColor()
@@ -243,7 +243,7 @@ public class RecipeEmbedFactoryTest
     private static void AssertAuthor(AuthorModel authorData, EmbedAuthor? actualAuthor)
     {
         Assert.NotNull(actualAuthor);
-        Assert.Equal(authorData.AuthorName, actualAuthor!.Value.Name);
+        Assert.Equal(authorData.AuthorName, actualAuthor.Value.Name);
         Assert.Equal(authorData.AuthorImageUrl, actualAuthor.Value.IconUrl);
     }
 

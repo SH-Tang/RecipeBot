@@ -215,7 +215,7 @@ public class RecipeDataBuilderTest
         // Assert
         AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
         Assert.Equal(notes, result.AdditionalNotes);
-        Assert.Equal((string?)recipeImageUrl, result.ImageUrl);
+        Assert.Equal(recipeImageUrl, result.ImageUrl);
         Assert.Equal(tags, result.Tags);
     }
 
@@ -272,9 +272,9 @@ public class RecipeDataBuilderTest
         string expectedRecipeTitle, string expectedRecipeIngredients, string expectedCookingSteps, AuthorData expectedAuthorData,
         RecipeData actualRecipeData)
     {
-        Assert.Equal(expectedRecipeTitle, (string?)actualRecipeData.RecipeTitle);
-        Assert.Equal(expectedRecipeIngredients, (string?)actualRecipeData.RecipeIngredients);
-        Assert.Equal(expectedCookingSteps, (string?)actualRecipeData.CookingSteps);
+        Assert.Equal(expectedRecipeTitle, actualRecipeData.RecipeTitle);
+        Assert.Equal(expectedRecipeIngredients, actualRecipeData.RecipeIngredients);
+        Assert.Equal(expectedCookingSteps, actualRecipeData.CookingSteps);
 
         Assert.Same(expectedAuthorData, actualRecipeData.AuthorData);
     }

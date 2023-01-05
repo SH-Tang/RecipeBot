@@ -104,7 +104,7 @@ public class RecipeModelCreationServiceTest
 
     [Theory]
     [MemberData(nameof(GetRecipeCategories))]
-    public void Recipe_with_valid_data_returns_expected_response(DiscordRecipeCategory category)
+    public void Recipe_with_valid_data_returns_expected_model(DiscordRecipeCategory category)
     {
         // Setup
         const string authorName = "Recipe author";
@@ -215,7 +215,7 @@ public class RecipeModelCreationServiceTest
 
     [Theory]
     [MemberData(nameof(GetRecipeCategories))]
-    public void Recipe_with_valid_data_and_attachment_returns_expected_response(DiscordRecipeCategory category)
+    public void Recipe_with_valid_data_and_attachment_returns_expected_model(DiscordRecipeCategory category)
     {
         // Setup
         const string authorName = "Recipe author";
