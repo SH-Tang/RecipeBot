@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Discord;
 using RecipeBot.Discord.Data;
@@ -37,5 +38,6 @@ public interface IRecipeController
     /// <param name="attachment">The <see cref="IAttachment"/> that belongs to the recipe.</param>
     /// <returns>The result of the save action.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="modal"/> and <paramref name="user"/> is <c>null</c>.</exception>
+    /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid value of <see cref="DiscordRecipeCategory"/>.</exception>
     Task<ControllerResult<Embed>> SaveRecipeAsync(RecipeModal modal, IUser user, DiscordRecipeCategory category, IAttachment? attachment);
 }

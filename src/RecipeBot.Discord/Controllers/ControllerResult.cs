@@ -21,7 +21,7 @@ using Common.Utils;
 namespace RecipeBot.Discord.Controllers;
 
 /// <summary>
-/// Class holding the result of the controller.
+/// Class holding the result of a controller.
 /// </summary>
 /// <typeparam name="TResult">The result to host.</typeparam>
 public class ControllerResult<TResult> where TResult : class

@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
@@ -38,6 +39,12 @@ public class RecipeController : IRecipeController
     private readonly ILoggingService logger;
     private readonly RecipeModelCreationService modelCreationService;
 
+    /// <summary>
+    /// Creates a new instance of <see cref="RecipeController"/>.
+    /// </summary>
+    /// <param name="limitProvider">The limit provider to retrieve the character limits from.</param>
+    /// <param name="logger">The logger to log with.</param>
+    /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     public RecipeController(IRecipeModelCharacterLimitProvider limitProvider,
                             ILoggingService logger)
     {
