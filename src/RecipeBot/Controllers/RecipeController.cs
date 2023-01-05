@@ -73,13 +73,17 @@ public class RecipeController : IRecipeController
         }
         catch (ModelCreateException e)
         {
-            await logger.LogErrorAsync(e);
-            return new ControllerResult<Embed>(e.Message);
+            return await HandleException(e);
         }
         catch (EmbedCreateException e)
         {
-            await logger.LogErrorAsync(e);
-            return new ControllerResult<Embed>(e.Message);
+            return await HandleException(e);
         }
+    }
+
+    private async Task<ControllerResult<Embed>> HandleException(Exception e)
+    {
+        await logger.LogErrorAsync(e);
+        return new ControllerResult<Embed>(e.Message);
     }
 }
