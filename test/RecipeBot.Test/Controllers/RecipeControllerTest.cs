@@ -351,7 +351,7 @@ public class RecipeControllerTest
     {
         var expectedTags = new List<string>
         {
-            DiscordRecipeCategoryHelper.CategoryStringMapping[category]
+            DiscordRecipeCategoryTestHelper.CategoryStringMapping[category]
         };
 
         if (!string.IsNullOrWhiteSpace(tags))

@@ -311,7 +311,7 @@ public class RecipeModelCreationServiceTest
     private static void AssertCommonModelProperties(IUser user, DiscordRecipeCategory category,
                                                     RecipeModal modal, RecipeModel actualRecipe)
     {
-        Assert.Equal(DiscordRecipeCategoryHelper.RecipeCategoryMapping[category], actualRecipe.RecipeCategory);
+        Assert.Equal(DiscordRecipeCategoryTestHelper.RecipeCategoryMapping[category], actualRecipe.RecipeCategory);
 
         AuthorModel actualAuthor = actualRecipe.Author;
         Assert.NotNull(actualAuthor);
