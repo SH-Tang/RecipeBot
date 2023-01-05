@@ -39,6 +39,8 @@ jobs:
           dotnet-version: 6.0.x
       - name: Restore dependencies
         run: dotnet restore $env:build_directory --verbosity normal --configfile $env:build_directory/NuGet.config
+      - name: Creating dummy config
+        run: New-Item $env:build_directory/config.json
       - name: Install dotnet-coverage
         run: dotnet tool install --global dotnet-coverage
       - name: Cache SonarCloud packages
