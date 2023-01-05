@@ -23,12 +23,12 @@ using Discord;
 using Discord.Common.Utils;
 using NSubstitute;
 using RecipeBot.Discord.Data;
-using RecipeBot.Discord.Services;
 using RecipeBot.Domain.Data;
+using RecipeBot.Services;
 using RecipeBot.TestUtils;
 using Xunit;
 
-namespace RecipeBot.Discord.Test.Services;
+namespace RecipeBot.Test.Services;
 
 public class RecipeDataBuilderTest
 {

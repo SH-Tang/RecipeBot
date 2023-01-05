@@ -56,7 +56,7 @@ public class RecipeTagsModelFactory
             return new RecipeTagsModel(Enumerable.Empty<string>());
         }
 
-        var model = CreateModel(tags);
+        RecipeTagsModel model = CreateModel(tags);
         int maximumRecipeTagsLength = limitProvider.MaximumRecipeTagsLength;
         if (model.TotalLength > maximumRecipeTagsLength)
         {

@@ -22,7 +22,7 @@ using Discord;
 using RecipeBot.Discord.Data;
 using RecipeBot.Domain.Data;
 
-namespace RecipeBot.Discord.Converters;
+namespace RecipeBot.Services;
 
 /// <summary>
 /// Converter for <see cref="RecipeCategory"/>

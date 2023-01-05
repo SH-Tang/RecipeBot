@@ -19,13 +19,13 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
 using Discord;
-using RecipeBot.Discord.Services;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.TestUtils;
+using RecipeBot.Services;
 using Xunit;
 
-namespace RecipeBot.Discord.Test.Services;
+namespace RecipeBot.Test.Services;
 
 public class RecipeEmbedFactoryTest
 {
@@ -243,7 +243,7 @@ public class RecipeEmbedFactoryTest
     private static void AssertAuthor(AuthorModel authorData, EmbedAuthor? actualAuthor)
     {
         Assert.NotNull(actualAuthor);
-        Assert.Equal(authorData.AuthorName, actualAuthor!.Value.Name);
+        Assert.Equal(authorData.AuthorName, actualAuthor.Value.Name);
         Assert.Equal(authorData.AuthorImageUrl, actualAuthor.Value.IconUrl);
     }
 

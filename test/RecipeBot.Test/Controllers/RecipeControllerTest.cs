@@ -17,24 +17,41 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Threading.Tasks;
 using AutoFixture;
 using Discord;
+using Discord.Common;
 using NSubstitute;
+using RecipeBot.Controllers;
+using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
-using RecipeBot.Discord.Exceptions;
-using RecipeBot.Discord.Services;
-using RecipeBot.Discord.TestUtils;
 using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.TestUtils;
+using RecipeBot.TestUtils;
 using Xunit;
 
-namespace RecipeBot.Discord.Test.Services;
+namespace RecipeBot.Test.Controllers;
 
-public class RecipeModalResponseServiceTest
+public class RecipeControllerTest
 {
     [Fact]
-    public void Recipe_with_valid_data_and_invalid_category_throws_exception()
+    public void Controller_is_recipe_controller()
+    {
+        // Setup
+        var logger = Substitute.For<ILoggingService>();
+        var limitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
+
+        // Call
+        var controller = new RecipeController(limitProvider, logger);
+
+        // Assert
+        Assert.IsAssignableFrom<IRecipeController>(controller);
+    }
+
+    [Fact]
+    public async Task Recipe_with_valid_data_and_invalid_category_throws_exception()
     {
         // Setup
         const DiscordRecipeCategory category = (DiscordRecipeCategory)(-1);
@@ -52,22 +69,17 @@ public class RecipeModalResponseServiceTest
             Tags = "Tag1, Tag2, Tag1"
         };
 
+        var logger = Substitute.For<ILoggingService>();
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
 
-        var service = new RecipeModalResponseService(limitProvider);
+        var controller = new RecipeController(limitProvider, logger);
 
-        // Call
-        Action call = () => service.GetRecipeModalResponse(modal, user, category);
-
-        // Assert
-        var exception = Assert.Throws<ModalResponseException>(call);
-        Exception? innerException = exception.InnerException;
-        Assert.NotNull(innerException);
-        Assert.Equal(innerException!.Message, exception.Message);
+        // Call & Assert
+        await Assert.ThrowsAsync<InvalidEnumArgumentException>(() => controller.SaveRecipeAsync(modal, user, category, null));
     }
 
     [Fact]
-    public void Recipe_with_invalid_data_and_valid_category_throws_exception()
+    public async Task Recipe_with_invalid_data_and_valid_category_returns_result_with_error()
     {
         // Setup
         var fixture = new Fixture();
@@ -93,21 +105,20 @@ public class RecipeModalResponseServiceTest
         limitProvider.MaximumFieldDataLength.Returns(EmbedFieldBuilder.MaxFieldValueLength);
         limitProvider.MaximumRecipeTagsLength.Returns(EmbedFooterBuilder.MaxFooterTextLength);
 
-        var service = new RecipeModalResponseService(limitProvider);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeController(limitProvider, logger);
 
         // Call
-        Action call = () => service.GetRecipeModalResponse(modal, user, category);
+        ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, null);
 
         // Assert
-        var exception = Assert.Throws<ModalResponseException>(call);
-        Exception? innerException = exception.InnerException;
-        Assert.NotNull(innerException);
-        Assert.Equal(innerException.Message, exception.Message);
+        Assert.True(controllerResult.HasError);
+        Assert.NotNull(controllerResult.ErrorMessage);
     }
 
     [Theory]
     [MemberData(nameof(GetRecipeCategoriesAndColor))]
-    public void Recipe_with_valid_data_returns_expected_response(
+    public async Task Recipe_with_valid_data_returns_result_with_embed(
         DiscordRecipeCategory category, Color expectedColor)
     {
         // Setup
@@ -131,19 +142,23 @@ public class RecipeModalResponseServiceTest
             Tags = tags
         };
 
+        var logger = Substitute.For<ILoggingService>();
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
-        var service = new RecipeModalResponseService(limitProvider);
+        var controller = new RecipeController(limitProvider, logger);
 
         // Call
-        Embed response = service.GetRecipeModalResponse(modal, user, category);
+        ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, null);
 
         // Assert
-        AssertCommonEmbedResponseProperties(user, category, modal, expectedColor, response);
-        Assert.Null(response.Image);
+        Assert.False(controllerResult.HasError);
+
+        Embed embedResult = controllerResult.Result!;
+        AssertCommonEmbedResponseProperties(user, category, modal, expectedColor, embedResult);
+        Assert.Null(embedResult.Image);
     }
 
     [Fact]
-    public void Recipe_with_valid_attachment_and_category_and_invalid_data_throws_exception()
+    public async Task Recipe_with_valid_attachment_and_category_and_invalid_data_returns_result_with_error()
     {
         // Setup
         var fixture = new Fixture();
@@ -174,58 +189,20 @@ public class RecipeModalResponseServiceTest
         limitProvider.MaximumFieldDataLength.Returns(EmbedFieldBuilder.MaxFieldValueLength);
         limitProvider.MaximumRecipeTagsLength.Returns(EmbedFooterBuilder.MaxFooterTextLength);
 
-        var service = new RecipeModalResponseService(limitProvider);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeController(limitProvider, logger);
 
         // Call
-        Action call = () => service.GetRecipeModalResponse(modal, user, category, attachment);
+        ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, attachment);
 
         // Assert
-        var exception = Assert.Throws<ModalResponseException>(call);
-        Exception? innerException = exception.InnerException;
-        Assert.NotNull(innerException);
-        Assert.Equal(innerException!.Message, exception.Message);
-    }
-
-    [Fact]
-    public void Recipe_with_valid_attachment_and_valid_data_and_invalid_category_throws_exception()
-    {
-        // Setup
-        const DiscordRecipeCategory category = (DiscordRecipeCategory)(-1);
-
-        var user = Substitute.For<IUser>();
-        user.Username.Returns("Recipe author");
-        user.GetAvatarUrl().ReturnsForAnyArgs("https://AuthorImage.url");
-
-        var attachment = Substitute.For<IAttachment>();
-        attachment.ContentType.Returns("image/");
-        attachment.Url.Returns("https://RecipeImage.url");
-
-        var modal = new RecipeModal
-        {
-            RecipeTitle = "Recipe title",
-            Ingredients = "My ingredients",
-            CookingSteps = "My recipe steps",
-            Notes = "My notes",
-            Tags = "Tag1, Tag2"
-        };
-
-        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
-
-        var service = new RecipeModalResponseService(limitProvider);
-
-        // Call
-        Action call = () => service.GetRecipeModalResponse(modal, user, category, attachment);
-
-        // Assert
-        var exception = Assert.Throws<ModalResponseException>(call);
-        Exception? innerException = exception.InnerException;
-        Assert.NotNull(innerException);
-        Assert.Equal(innerException!.Message, exception.Message);
+        Assert.True(controllerResult.HasError);
+        Assert.NotNull(controllerResult.ErrorMessage);
     }
 
     [Theory]
     [MemberData(nameof(GetRecipeCategoriesAndColor))]
-    public void Recipe_with_valid_data_and_attachment_returns_expected_response(
+    public async Task Recipe_with_valid_data_and_attachment_returns_result_with_embed(
         DiscordRecipeCategory category, Color expectedColor)
     {
         // Setup
@@ -254,18 +231,22 @@ public class RecipeModalResponseServiceTest
             Tags = tags
         };
 
+        var logger = Substitute.For<ILoggingService>();
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
-        var service = new RecipeModalResponseService(limitProvider);
+        var controller = new RecipeController(limitProvider, logger);
 
         // Call
-        Embed response = service.GetRecipeModalResponse(modal, user, category, attachment);
+        ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, attachment);
 
         // Assert
-        AssertCommonEmbedResponseProperties(user, category, modal, expectedColor, response);
+        Assert.False(controllerResult.HasError);
 
-        EmbedImage? embedImage = response.Image;
+        Embed embedResult = controllerResult.Result!;
+        AssertCommonEmbedResponseProperties(user, category, modal, expectedColor, embedResult);
+
+        EmbedImage? embedImage = embedResult.Image;
         Assert.NotNull(embedImage);
-        EmbedImage resultImage = embedImage!.Value;
+        EmbedImage resultImage = embedImage.Value;
         Assert.Equal(recipeImageUrl, resultImage.Url);
     }
 
@@ -355,14 +336,14 @@ public class RecipeModalResponseServiceTest
 
     private static void AssertAuthor(string expectedAuthorName, string expectedAuthorImageUrl, EmbedAuthor actualAuthor)
     {
-        Assert.Equal(expectedAuthorName, actualAuthor.Name);
-        Assert.Equal(expectedAuthorImageUrl, actualAuthor.IconUrl);
+        Assert.Equal(expectedAuthorName, (string?)actualAuthor.Name);
+        Assert.Equal(expectedAuthorImageUrl, (string?)actualAuthor.IconUrl);
     }
 
     private static void AssertField(string expectedName, string? expectedValue, EmbedField actualField)
     {
-        Assert.Equal(expectedName, actualField.Name);
-        Assert.Equal(expectedValue, actualField.Value);
+        Assert.Equal(expectedName, (string?)actualField.Name);
+        Assert.Equal(expectedValue, (string?)actualField.Value);
         Assert.False(actualField.Inline);
     }
 
@@ -370,7 +351,7 @@ public class RecipeModalResponseServiceTest
     {
         var expectedTags = new List<string>
         {
-            DiscordRecipeCategoryHelper.CategoryMapping[category]
+            DiscordRecipeCategoryTestHelper.CategoryStringMapping[category]
         };
 
         if (!string.IsNullOrWhiteSpace(tags))
@@ -379,6 +360,6 @@ public class RecipeModalResponseServiceTest
         }
 
         string expectedFooterText = string.Join(", ", expectedTags);
-        Assert.Equal(expectedFooterText, actualFooter.Text);
+        Assert.Equal(expectedFooterText, (string?)actualFooter.Text);
     }
 }
