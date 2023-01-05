@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -69,22 +70,24 @@ public class RecipeRepository : IRecipeRepository
     private async Task<ICollection<RecipeTagEntity>> CreateRecipeTagEntities(RecipeModel model)
     {
         byte i = 0;
-        var tagLinks = new List<RecipeTagEntity>();
-        foreach (string tag in model.RecipeTags.Tags)
+        Task<RecipeTagEntity>[] tasks = model.RecipeTags.Tags.Select(t => CreateRecipeTagEntity(t, i++)).ToArray();
+        await Task.WhenAll(tasks);
+
+        return tasks.Select(task => task.Result).ToArray();
+    }
+
+    private async Task<RecipeTagEntity> CreateRecipeTagEntity(string tag, byte i)
+    {
+        TagEntity tagEntity = await FindTagEntityAsync(tag) ?? new TagEntity
         {
-            TagEntity tagEntity = await FindTagEntityAsync(tag) ?? new TagEntity
-            {
-                Tag = tag
-            };
+            Tag = tag
+        };
 
-            tagLinks.Add(new RecipeTagEntity
-            {
-                Tag = tagEntity,
-                Order = i++
-            });
-        }
-
-        return tagLinks;
+        return new RecipeTagEntity
+        {
+            Tag = tagEntity,
+            Order = i
+        };
     }
 
     private async Task<AuthorEntity> GetAuthorEntityAsync(AuthorModel authorModel)
