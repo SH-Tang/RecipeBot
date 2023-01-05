@@ -28,6 +28,7 @@ using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Factories;
+using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Repositories;
 using RecipeBot.Domain.TestUtils;
 using RecipeBot.TestUtils;
@@ -53,7 +54,7 @@ public class RecipeControllerTest
     }
 
     [Fact]
-    public async Task Recipe_with_valid_data_and_invalid_category_throws_exception()
+    public async Task Recipe_with_valid_data_and_invalid_category_throws_exception_and_does_not_save()
     {
         // Setup
         const DiscordRecipeCategory category = (DiscordRecipeCategory)(-1);
@@ -79,10 +80,11 @@ public class RecipeControllerTest
 
         // Call & Assert
         await Assert.ThrowsAsync<InvalidEnumArgumentException>(() => controller.SaveRecipeAsync(modal, user, category, null));
+        await repository.DidNotReceiveWithAnyArgs().SaveRecipeAsync(Arg.Any<RecipeModel>());
     }
 
     [Fact]
-    public async Task Recipe_with_invalid_data_and_valid_category_returns_result_with_error()
+    public async Task Recipe_with_invalid_data_and_valid_category_returns_result_with_error_and_does_not_save()
     {
         // Setup
         var fixture = new Fixture();
@@ -118,6 +120,8 @@ public class RecipeControllerTest
         // Assert
         Assert.True(controllerResult.HasError);
         Assert.NotNull(controllerResult.ErrorMessage);
+
+        await repository.DidNotReceiveWithAnyArgs().SaveRecipeAsync(Arg.Any<RecipeModel>());
     }
 
     [Theory]
@@ -163,7 +167,7 @@ public class RecipeControllerTest
     }
 
     [Fact]
-    public async Task Recipe_with_valid_attachment_and_category_and_invalid_data_returns_result_with_error()
+    public async Task Recipe_with_valid_attachment_and_category_and_invalid_data_returns_result_with_error_and_does_not_save()
     {
         // Setup
         var fixture = new Fixture();
@@ -204,6 +208,8 @@ public class RecipeControllerTest
         // Assert
         Assert.True(controllerResult.HasError);
         Assert.NotNull(controllerResult.ErrorMessage);
+
+        await repository.DidNotReceiveWithAnyArgs().SaveRecipeAsync(Arg.Any<RecipeModel>());
     }
 
     [Theory]
