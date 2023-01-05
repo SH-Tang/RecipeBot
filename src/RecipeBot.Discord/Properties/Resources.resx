@@ -120,4 +120,7 @@
   <data name="Attachment_must_be_an_image" xml:space="preserve">
     <value>Attachment must be an image.</value>
   </data>
+  <data name="RecipeInteractionModule_ERROR_0_" xml:space="preserve">
+    <value>ERROR: {0}</value>
+  </data>
 </root>

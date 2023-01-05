@@ -101,7 +101,7 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
 
                 if (response.HasError)
                 {
-                    await RespondAsync(response.ErrorMessage, ephemeral: true);
+                    await RespondAsync(string.Format(Resources.RecipeInteractionModule_ERROR_0_,response.ErrorMessage), ephemeral: true);
                 }
                 else
                 {
