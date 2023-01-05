@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
@@ -26,6 +27,7 @@ using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Models;
+using RecipeBot.Domain.Repositories;
 using RecipeBot.Exceptions;
 using RecipeBot.Services;
 
@@ -36,6 +38,7 @@ namespace RecipeBot.Controllers;
 /// </summary>
 public class RecipeController : IRecipeController
 {
+    private readonly IRecipeRepository repository;
     private readonly ILoggingService logger;
     private readonly RecipeModelCreationService modelCreationService;
 
@@ -43,16 +46,19 @@ public class RecipeController : IRecipeController
     /// Creates a new instance of <see cref="RecipeController"/>.
     /// </summary>
     /// <param name="limitProvider">The limit provider to retrieve the character limits from.</param>
+    /// <param name="repository">The repository to handle with the data persistence of recipes.</param>
     /// <param name="logger">The logger to log with.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     public RecipeController(IRecipeModelCharacterLimitProvider limitProvider,
-                            ILoggingService logger)
+                            IRecipeRepository repository, ILoggingService logger)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
+        repository.IsNotNull(nameof(repository));
         logger.IsNotNull(nameof(logger));
 
         modelCreationService = new RecipeModelCreationService(limitProvider);
 
+        this.repository = repository;
         this.logger = logger;
     }
 
@@ -69,7 +75,16 @@ public class RecipeController : IRecipeController
                                           ? modelCreationService.CreateRecipeModel(modal, user, category)
                                           : modelCreationService.CreateRecipeModel(modal, user, category, attachment);
 
-            return new ControllerResult<Embed>(RecipeEmbedFactory.Create(recipeModel));
+            Task<Embed> embedTask = Task.Run(() => RecipeEmbedFactory.Create(recipeModel));
+            Task[] tasks = 
+            {
+                embedTask,
+                repository.SaveRecipeAsync(recipeModel)
+            };
+
+            await Task.WhenAll(tasks);
+
+            return new ControllerResult<Embed>(embedTask.Result);
         }
         catch (ModelCreateException e)
         {

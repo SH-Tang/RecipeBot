@@ -28,6 +28,7 @@ using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Factories;
+using RecipeBot.Domain.Repositories;
 using RecipeBot.Domain.TestUtils;
 using RecipeBot.TestUtils;
 using Xunit;
@@ -40,11 +41,12 @@ public class RecipeControllerTest
     public void Controller_is_recipe_controller()
     {
         // Setup
-        var logger = Substitute.For<ILoggingService>();
         var limitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
+        var repository = Substitute.For<IRecipeRepository>();
+        var logger = Substitute.For<ILoggingService>();
 
         // Call
-        var controller = new RecipeController(limitProvider, logger);
+        var controller = new RecipeController(limitProvider, repository, logger);
 
         // Assert
         Assert.IsAssignableFrom<IRecipeController>(controller);
@@ -69,10 +71,11 @@ public class RecipeControllerTest
             Tags = "Tag1, Tag2, Tag1"
         };
 
+        var repository = Substitute.For<IRecipeRepository>();
         var logger = Substitute.For<ILoggingService>();
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
 
-        var controller = new RecipeController(limitProvider, logger);
+        var controller = new RecipeController(limitProvider, repository, logger);
 
         // Call & Assert
         await Assert.ThrowsAsync<InvalidEnumArgumentException>(() => controller.SaveRecipeAsync(modal, user, category, null));
@@ -105,8 +108,9 @@ public class RecipeControllerTest
         limitProvider.MaximumFieldDataLength.Returns(EmbedFieldBuilder.MaxFieldValueLength);
         limitProvider.MaximumRecipeTagsLength.Returns(EmbedFooterBuilder.MaxFooterTextLength);
 
+        var repository = Substitute.For<IRecipeRepository>();
         var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, logger);
+        var controller = new RecipeController(limitProvider, repository, logger);
 
         // Call
         ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, null);
@@ -142,9 +146,10 @@ public class RecipeControllerTest
             Tags = tags
         };
 
-        var logger = Substitute.For<ILoggingService>();
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
-        var controller = new RecipeController(limitProvider, logger);
+        var repository = Substitute.For<IRecipeRepository>();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeController(limitProvider, repository, logger);
 
         // Call
         ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, null);
@@ -189,8 +194,9 @@ public class RecipeControllerTest
         limitProvider.MaximumFieldDataLength.Returns(EmbedFieldBuilder.MaxFieldValueLength);
         limitProvider.MaximumRecipeTagsLength.Returns(EmbedFooterBuilder.MaxFooterTextLength);
 
+        var repository = Substitute.For<IRecipeRepository>();
         var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, logger);
+        var controller = new RecipeController(limitProvider, repository, logger);
 
         // Call
         ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, attachment);
@@ -231,9 +237,10 @@ public class RecipeControllerTest
             Tags = tags
         };
 
-        var logger = Substitute.For<ILoggingService>();
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
-        var controller = new RecipeController(limitProvider, logger);
+        var repository = Substitute.For<IRecipeRepository>();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeController(limitProvider, repository, logger);
 
         // Call
         ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, attachment);

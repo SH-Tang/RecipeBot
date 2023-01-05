@@ -22,7 +22,7 @@ using RecipeBot.Domain.Models;
 namespace RecipeBot.Domain.Repositories;
 
 /// <summary>
-/// Interface for describing a repository for the 
+/// Interface for describing a repository for handling with data persistence of recipes.
 /// </summary>
 public interface IRecipeRepository
 {
