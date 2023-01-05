@@ -84,7 +84,7 @@ public class RecipeBotApplicationServiceProvider
                 .AddTransient<ITimeProvider, TimeProvider>()
                 .AddTransient<DiscordCommandInfoFactory>()
                 .AddTransient<BotInformationService>()
-                .AddTransient<RecipeModalResponseService>()
+                .AddTransient<RecipeModelCreationService>()
                 .AddDbContext<RecipeBotDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")))
                 .AddScoped<IRecipeRepository, RecipeRepository>();
     }
