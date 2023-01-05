@@ -33,7 +33,7 @@ namespace Common.Utils
         /// <param name="argument">The argument to guard.</param>
         /// <param name="argumentName">The name of the argument.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="argument"/> is <c>null</c>.</exception>
-        public static void IsNotNull<T>(this T argument, string argumentName) where T : class
+        public static void IsNotNull<T>(this T argument, string argumentName) where T: class
         {
             if (argument == null)
             {

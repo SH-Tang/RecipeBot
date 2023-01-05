@@ -16,11 +16,12 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Threading.Tasks;
 using Discord;
 using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Views;
 
-namespace RecipeBot.Discord;
+namespace RecipeBot.Discord.Controllers;
 
 /// <summary>
 /// Interface for describing a controller dealing with recipe interactions.
@@ -34,7 +35,7 @@ public interface IRecipeController
     /// <param name="user">The <see cref="IUser"/> invoking the command.</param>
     /// <param name="category">The <see cref="DiscordRecipeCategory"/> the recipe belongs to.</param>
     /// <param name="attachment">The <see cref="IAttachment"/> that belongs to the recipe.</param>
-    /// <returns>The saved data from the <see cref="Embed"/>.</returns>
+    /// <returns>The result of the save action.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="modal"/> and <paramref name="user"/> is <c>null</c>.</exception>
-    Embed SaveRecipe(RecipeModal modal, IUser user, DiscordRecipeCategory category, IAttachment attachment);
+    Task<ControllerResult<Embed>> SaveRecipeAsync(RecipeModal modal, IUser user, DiscordRecipeCategory category, IAttachment attachment);
 }
