@@ -17,9 +17,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using AutoFixture;
 using Discord;
+using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Views;
@@ -36,6 +38,36 @@ namespace RecipeBot.Test.Services;
 
 public class RecipeModelCreationServiceTest
 {
+    [Fact]
+    public void Recipe_with_valid_data_and_invalid_category_throws_exception()
+    {
+        // Setup
+        const DiscordRecipeCategory category = (DiscordRecipeCategory)(-1);
+
+        var user = Substitute.For<IUser>();
+        user.Username.Returns("Recipe author");
+        user.GetAvatarUrl().ReturnsForAnyArgs("https://AuthorImage.url");
+
+        var modal = new RecipeModal
+        {
+            RecipeTitle = "Recipe title",
+            Ingredients = "My ingredients",
+            CookingSteps = "My recipe steps",
+            Notes = "My notes",
+            Tags = "Tag1, Tag2, Tag1"
+        };
+
+        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
+
+        var service = new RecipeModelCreationService(limitProvider);
+
+        // Call
+        Action call = () => service.CreateRecipeModel(modal, user, category);
+
+        // Assert
+        Assert.Throws<InvalidEnumArgumentException>(call);
+    }
+
     [Fact]
     public void Recipe_with_invalid_data_and_valid_category_throws_exception()
     {
@@ -69,7 +101,7 @@ public class RecipeModelCreationServiceTest
         Action call = () => service.CreateRecipeModel(modal, user, category);
 
         // Assert
-        var exception = Assert.Throws<ModelCreateException>(call);
+        Assert.Throws<ModelCreateException>(call);
     }
 
     [Theory]
@@ -146,10 +178,7 @@ public class RecipeModelCreationServiceTest
         Action call = () => service.CreateRecipeModel(modal, user, category, attachment);
 
         // Assert
-        var exception = Assert.Throws<EmbedCreateException>(call);
-        Exception? innerException = exception.InnerException;
-        Assert.NotNull(innerException);
-        Assert.Equal(innerException!.Message, exception.Message);
+        Assert.Throws<ModelCreateException>(call);
     }
 
     [Fact]
@@ -183,10 +212,7 @@ public class RecipeModelCreationServiceTest
         Action call = () => service.CreateRecipeModel(modal, user, category, attachment);
 
         // Assert
-        var exception = Assert.Throws<EmbedCreateException>(call);
-        Exception? innerException = exception.InnerException;
-        Assert.NotNull(innerException);
-        Assert.Equal(innerException!.Message, exception.Message);
+        Assert.Throws<InvalidEnumArgumentException>(call);
     }
 
     [Theory]
