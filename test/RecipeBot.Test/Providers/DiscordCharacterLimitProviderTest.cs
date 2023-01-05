@@ -16,10 +16,9 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using Discord;
-using RecipeBot.Discord.Providers;
 using Xunit;
 
-namespace RecipeBot.Discord.Test.Providers;
+namespace RecipeBot.Test.Providers;
 
 public class DiscordCharacterLimitProviderTest
 {

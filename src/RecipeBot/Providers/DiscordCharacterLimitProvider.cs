@@ -18,7 +18,7 @@
 using Discord;
 using RecipeBot.Domain.Factories;
 
-namespace RecipeBot.Discord.Providers;
+namespace RecipeBot.Providers;
 
 /// <summary>
 /// Class that holds the character limits of Discord.
