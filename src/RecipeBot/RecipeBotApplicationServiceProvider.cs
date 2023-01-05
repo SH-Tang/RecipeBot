@@ -28,7 +28,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RecipeBot.Discord.Providers;
-using RecipeBot.Discord.Services;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Repositories;
 using RecipeBot.Persistence;

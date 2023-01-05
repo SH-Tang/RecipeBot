@@ -20,12 +20,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Common.Utils;
 using Discord;
-using RecipeBot.Discord.Converters;
-using RecipeBot.Discord.Exceptions;
-using RecipeBot.Discord.Properties;
 using RecipeBot.Domain.Models;
+using RecipeBot.Exceptions;
 
-namespace RecipeBot.Discord.Services;
+namespace RecipeBot.Services;
 
 /// <summary>
 /// Factory to create instances of <see cref="Embed"/> for recipes.
@@ -87,7 +85,7 @@ internal static class RecipeEmbedFactory
         }
         catch (ArgumentException e)
         {
-            throw new ModalResponseException(string.Format(Resources.RecipeModal_response_could_not_be_determined_reason_0_, e.Message), e);
+            throw new ModalResponseException(string.Format((string)Resources.RecipeModal_response_could_not_be_determined_reason_0_, e.Message), e);
         }
     }
 }

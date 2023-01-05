@@ -20,11 +20,10 @@ using System.ComponentModel;
 using Common.Utils;
 using Discord;
 using Discord.Common.Utils;
-using RecipeBot.Discord.Converters;
 using RecipeBot.Discord.Data;
 using RecipeBot.Domain.Data;
 
-namespace RecipeBot.Discord.Services;
+namespace RecipeBot.Services;
 
 /// <summary>
 /// Builder to create instances of <see cref="RecipeData"/>.
@@ -61,7 +60,7 @@ internal class RecipeDataBuilder
     {
         if (attachment != null)
         {
-            attachment.IsValidArgument(x => x.IsImage(), "Attachment must be an image.", nameof(attachment));
+            attachment.IsValidArgument(x => IAttachmentExtensions.IsImage((IAttachment)x), "Attachment must be an image.", nameof(attachment));
             data.ImageUrl = attachment.Url;
         }
 

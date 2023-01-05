@@ -20,14 +20,14 @@ using System.ComponentModel;
 using Common.Utils;
 using Discord;
 using RecipeBot.Discord.Data;
-using RecipeBot.Discord.Exceptions;
 using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Models;
+using RecipeBot.Exceptions;
 
-namespace RecipeBot.Discord.Services;
+namespace RecipeBot.Services;
 
 /// <summary>
 /// Service to determine the response based on a <see cref="RecipeModal"/>.
