@@ -49,7 +49,7 @@ internal static class RecipeEmbedFactory
         }
         catch (InvalidOperationException e)
         {
-            throw new EmbedCreateException(string.Format(Resources.RecipeModal_response_could_not_be_determined_reason_0_, e.Message), e);
+            throw new EmbedCreateException(string.Format(Resources.Embed_could_not_be_created_reason_0_, e.Message), e);
         }
     }
 
@@ -86,7 +86,7 @@ internal static class RecipeEmbedFactory
         }
         catch (ArgumentException e)
         {
-            throw new EmbedCreateException(string.Format(Resources.RecipeModal_response_could_not_be_determined_reason_0_, e.Message), e);
+            throw new EmbedCreateException(string.Format(Resources.Embed_could_not_be_created_reason_0_, e.Message), e);
         }
     }
 }

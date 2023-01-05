@@ -78,11 +78,11 @@ namespace RecipeBot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Recipe could not be successfully formatted: {0}..
         /// </summary>
-        internal static string RecipeModal_response_could_not_be_determined_reason_0_ {
+        internal static string Embed_could_not_be_created_reason_0_ {
             get {
-                return ResourceManager.GetString("RecipeModal_response_could_not_be_determined_reason_0_", resourceCulture);
+                return ResourceManager.GetString("Embed_could_not_be_created_reason_0_", resourceCulture);
             }
         }
     }
