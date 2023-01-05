@@ -23,10 +23,10 @@ using Discord.Common;
 using Discord.Common.Utils;
 using Discord.Interactions;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
+using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
-using RecipeBot.Discord.Exceptions;
 using RecipeBot.Discord.Properties;
-using RecipeBot.Discord.Services;
 using RecipeBot.Discord.Views;
 
 namespace RecipeBot.Discord;
@@ -36,22 +36,23 @@ namespace RecipeBot.Discord;
 /// </summary>
 public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionContext>
 {
+    private readonly IServiceScopeFactory scopeFactory;
     private readonly ILoggingService logger;
-    private readonly RecipeModalResponseService responseService;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeInteractionModule"/>.
     /// </summary>
+    /// <param name="scopeFactory">The <see cref="IServiceScopeFactory"/> to resolve dependencies with.</param>
     /// <param name="logger">The logger to use.</param>
-    /// <param name="responseService">The <see cref="RecipeModalResponseService"/> to retrieve the response with.</param>
-    /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public RecipeInteractionModule(ILoggingService logger,
-                                   RecipeModalResponseService responseService)
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="scopeFactory"/> is <c>null</c>.</exception>
+    public RecipeInteractionModule(IServiceScopeFactory scopeFactory,
+                                   ILoggingService logger)
     {
+        scopeFactory.IsNotNull(nameof(scopeFactory));
         logger.IsNotNull(nameof(logger));
-        responseService.IsNotNull(nameof(responseService));
+
+        this.scopeFactory = scopeFactory;
         this.logger = logger;
-        this.responseService = responseService;
     }
 
     [SlashCommand("recipe", "Tell us about your recipe")]
@@ -92,13 +93,23 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
             DiscordRecipeCategory category = arguments.CategoryArgument;
 
             SocketUser? user = Context.User;
-            Embed response = attachment != null && attachment.IsImage()
-                                 ? responseService.GetRecipeModalResponse(modal, user, category, attachment)
-                                 : responseService.GetRecipeModalResponse(modal, user, category);
 
-            await RespondAsync(embed: response);
+            using (IServiceScope scope = scopeFactory.CreateScope())
+            {
+                var controller = scope.ServiceProvider.GetRequiredService<IRecipeController>();
+                ControllerResult<Embed> response = await controller.SaveRecipeAsync(modal, user, category, attachment);
+
+                if (response.HasError)
+                {
+                    await RespondAsync(response.ErrorMessage, ephemeral: true);
+                }
+                else
+                {
+                    await RespondAsync(embed: response.Result);
+                }
+            }
         }
-        catch (ModalResponseException e)
+        catch (Exception e)
         {
             Task[] tasks =
             {
@@ -107,10 +118,6 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
             };
 
             Task.WaitAll(tasks);
-        }
-        catch (Exception e)
-        {
-            await logger.LogErrorAsync(e);
         }
         finally
         {
