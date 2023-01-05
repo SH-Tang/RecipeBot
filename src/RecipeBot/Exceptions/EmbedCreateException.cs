@@ -21,13 +21,13 @@ using System.Runtime.Serialization;
 namespace RecipeBot.Exceptions;
 
 /// <summary>
-/// Exception thrown when the modal response could not be successfully determined.
+/// Exception thrown when the embed could not be successfully created.
 /// </summary>
 [Serializable]
-public class ModalResponseException : Exception
+public class EmbedCreateException : Exception
 {
     /// <summary>
-    /// Initializes a new instance of <see cref="ModalResponseException"/> with
+    /// Initializes a new instance of <see cref="EmbedCreateException"/> with
     /// serialized data.</summary>
     /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized
     /// object data about the exception being thrown.</param>
@@ -37,27 +37,27 @@ public class ModalResponseException : Exception
     /// <c>null</c>.</exception>
     /// <exception cref="SerializationException">The class name is <c>null</c> or
     /// <see cref="Exception.HResult" /> is zero (0).</exception>
-    protected ModalResponseException(SerializationInfo info, StreamingContext context) : base(info, context) {}
+    protected EmbedCreateException(SerializationInfo info, StreamingContext context) : base(info, context) {}
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ModalResponseException"/> class.
+    /// Initializes a new instance of the <see cref="EmbedCreateException"/> class.
     /// </summary>
-    internal ModalResponseException() {}
+    internal EmbedCreateException() {}
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ModalResponseException"/> class 
+    /// Initializes a new instance of the <see cref="EmbedCreateException"/> class 
     /// with a specified error message.
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
-    internal ModalResponseException(string message)
+    internal EmbedCreateException(string message)
         : base(message) {}
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ModalResponseException"/> class with a specified error message 
+    /// Initializes a new instance of the <see cref="EmbedCreateException"/> class with a specified error message 
     /// and a reference to the inner exception that is the cause of this exception.
     /// </summary>
     /// <param name="message">The error message that explains the reason for the exception.</param>
     /// <param name="innerException">The exception that is the cause of the current exception,
     /// or <c>null</c> if no inner exception is specified.</param>
-    internal ModalResponseException(string message, Exception innerException) : base(message, innerException) {}
+    internal EmbedCreateException(string message, Exception innerException) : base(message, innerException) {}
 }

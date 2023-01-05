@@ -146,7 +146,7 @@ public class RecipeModelCreationServiceTest
         Action call = () => service.CreateRecipeModel(modal, user, category, attachment);
 
         // Assert
-        var exception = Assert.Throws<ModalResponseException>(call);
+        var exception = Assert.Throws<EmbedCreateException>(call);
         Exception? innerException = exception.InnerException;
         Assert.NotNull(innerException);
         Assert.Equal(innerException!.Message, exception.Message);
@@ -183,7 +183,7 @@ public class RecipeModelCreationServiceTest
         Action call = () => service.CreateRecipeModel(modal, user, category, attachment);
 
         // Assert
-        var exception = Assert.Throws<ModalResponseException>(call);
+        var exception = Assert.Throws<EmbedCreateException>(call);
         Exception? innerException = exception.InnerException;
         Assert.NotNull(innerException);
         Assert.Equal(innerException!.Message, exception.Message);

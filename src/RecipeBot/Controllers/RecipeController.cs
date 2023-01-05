@@ -71,7 +71,7 @@ public class RecipeController : IRecipeController
             await logger.LogErrorAsync(e);
             return new ControllerResult<Embed>(e.Message);
         }
-        catch (ModalResponseException e)
+        catch (EmbedCreateException e)
         {
             await logger.LogErrorAsync(e);
             return new ControllerResult<Embed>(e.Message);

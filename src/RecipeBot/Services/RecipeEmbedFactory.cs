@@ -37,7 +37,7 @@ internal static class RecipeEmbedFactory
     /// <param name="recipe">The <see cref="RecipeModel"/> to create the <see cref="Embed"/> with.</param>
     /// <returns>An <see cref="Embed"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="recipe"/> is <c>null</c>.</exception>
-    /// <exception cref="ModalResponseException">Thrown when the response could not be successfully determined.</exception>
+    /// <exception cref="EmbedCreateException">Thrown when the <see cref="Embed"/> could not be successfully created.</exception>
     public static Embed Create(RecipeModel recipe)
     {
         recipe.IsNotNull(nameof(recipe));
@@ -49,7 +49,7 @@ internal static class RecipeEmbedFactory
         }
         catch (InvalidOperationException e)
         {
-            throw new ModalResponseException(string.Format(Resources.RecipeModal_response_could_not_be_determined_reason_0_, e.Message), e);
+            throw new EmbedCreateException(string.Format(Resources.RecipeModal_response_could_not_be_determined_reason_0_, e.Message), e);
         }
     }
 
@@ -86,7 +86,7 @@ internal static class RecipeEmbedFactory
         }
         catch (ArgumentException e)
         {
-            throw new ModalResponseException(string.Format(Resources.RecipeModal_response_could_not_be_determined_reason_0_, e.Message), e);
+            throw new EmbedCreateException(string.Format(Resources.RecipeModal_response_could_not_be_determined_reason_0_, e.Message), e);
         }
     }
 }
