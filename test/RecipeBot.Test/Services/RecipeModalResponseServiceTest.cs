@@ -21,15 +21,15 @@ using AutoFixture;
 using Discord;
 using NSubstitute;
 using RecipeBot.Discord.Data;
-using RecipeBot.Discord.Exceptions;
-using RecipeBot.Discord.Services;
 using RecipeBot.Discord.TestUtils;
 using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.TestUtils;
+using RecipeBot.Exceptions;
+using RecipeBot.Services;
 using Xunit;
 
-namespace RecipeBot.Discord.Test.Services;
+namespace RecipeBot.Test.Services;
 
 public class RecipeModalResponseServiceTest
 {
@@ -266,7 +266,7 @@ public class RecipeModalResponseServiceTest
         EmbedImage? embedImage = response.Image;
         Assert.NotNull(embedImage);
         EmbedImage resultImage = embedImage!.Value;
-        Assert.Equal(recipeImageUrl, resultImage.Url);
+        Assert.Equal((string?)recipeImageUrl, (string?)resultImage.Url);
     }
 
     public static IEnumerable<object[]> GetRecipeCategoriesAndColor()
@@ -355,15 +355,15 @@ public class RecipeModalResponseServiceTest
 
     private static void AssertAuthor(string expectedAuthorName, string expectedAuthorImageUrl, EmbedAuthor actualAuthor)
     {
-        Assert.Equal(expectedAuthorName, actualAuthor.Name);
-        Assert.Equal(expectedAuthorImageUrl, actualAuthor.IconUrl);
+        Assert.Equal(expectedAuthorName, (string?)actualAuthor.Name);
+        Assert.Equal(expectedAuthorImageUrl, (string?)actualAuthor.IconUrl);
     }
 
     private static void AssertField(string expectedName, string? expectedValue, EmbedField actualField)
     {
-        Assert.Equal(expectedName, actualField.Name);
-        Assert.Equal(expectedValue, actualField.Value);
-        Assert.False(actualField.Inline);
+        Assert.Equal(expectedName, (string?)actualField.Name);
+        Assert.Equal(expectedValue, (string?)actualField.Value);
+        Assert.False((bool)actualField.Inline);
     }
 
     private static void AssertTags(DiscordRecipeCategory category, string? tags, EmbedFooter actualFooter)
@@ -379,6 +379,6 @@ public class RecipeModalResponseServiceTest
         }
 
         string expectedFooterText = string.Join(", ", expectedTags);
-        Assert.Equal(expectedFooterText, actualFooter.Text);
+        Assert.Equal(expectedFooterText, (string?)actualFooter.Text);
     }
 }

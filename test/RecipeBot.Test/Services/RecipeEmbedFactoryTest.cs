@@ -19,13 +19,13 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
 using Discord;
-using RecipeBot.Discord.Services;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.TestUtils;
+using RecipeBot.Services;
 using Xunit;
 
-namespace RecipeBot.Discord.Test.Services;
+namespace RecipeBot.Test.Services;
 
 public class RecipeEmbedFactoryTest
 {
@@ -109,7 +109,7 @@ public class RecipeEmbedFactoryTest
         EmbedFooter? embedFooter = embed.Footer;
         Assert.NotNull(embedFooter);
         var expectedFooterText = $"{TagTestHelper.CategoryMapping[category]}, Tag1, Tag2";
-        Assert.Equal(expectedFooterText, embedFooter.Value.Text);
+        Assert.Equal(expectedFooterText, (string?)embedFooter.Value.Text);
     }
 
     [Fact]
@@ -186,7 +186,7 @@ public class RecipeEmbedFactoryTest
         EmbedFooter? embedFooter = embed.Footer;
         Assert.NotNull(embedFooter);
         var expectedFooterText = $"{TagTestHelper.CategoryMapping[category]}, Tag1, Tag2";
-        Assert.Equal(expectedFooterText, embedFooter.Value.Text);
+        Assert.Equal(expectedFooterText, (string?)embedFooter.Value.Text);
     }
 
     public static IEnumerable<object[]> GetRecipeCategoriesAndColor()
@@ -261,6 +261,6 @@ public class RecipeEmbedFactoryTest
     {
         Assert.Equal(model.FieldName, actualField.Name);
         Assert.Equal(model.FieldData, actualField.Value);
-        Assert.False(actualField.Inline);
+        Assert.False((bool)actualField.Inline);
     }
 }
