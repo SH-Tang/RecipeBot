@@ -83,7 +83,7 @@ public class RecipeModelCreationService
     /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="recipeCategory"/>
     /// is an invalid <see cref="DiscordRecipeCategory"/>.</exception>
     /// <exception cref="ModelCreateException">Thrown when the model could not be successfully created.</exception>
-    public RecipeModel CreateRecipeModel(RecipeModal modal, IUser user, DiscordRecipeCategory recipeCategory, IAttachment attachment)
+    public RecipeModel CreateRecipeModel(RecipeModal modal, IUser user, DiscordRecipeCategory recipeCategory, IAttachment? attachment)
     {
         modal.IsNotNull(nameof(modal));
         user.IsNotNull(nameof(user));

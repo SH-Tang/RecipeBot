@@ -37,5 +37,5 @@ public interface IRecipeController
     /// <param name="attachment">The <see cref="IAttachment"/> that belongs to the recipe.</param>
     /// <returns>The result of the save action.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="modal"/> and <paramref name="user"/> is <c>null</c>.</exception>
-    Task<ControllerResult<Embed>> SaveRecipeAsync(RecipeModal modal, IUser user, DiscordRecipeCategory category, IAttachment attachment);
+    Task<ControllerResult<Embed>> SaveRecipeAsync(RecipeModal modal, IUser user, DiscordRecipeCategory category, IAttachment? attachment);
 }

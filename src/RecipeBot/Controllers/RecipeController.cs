@@ -19,10 +19,16 @@ using System;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
+using Discord.Common;
+using Microsoft.Extensions.Logging;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Views;
+using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
+using RecipeBot.Domain.Models;
+using RecipeBot.Exceptions;
+using RecipeBot.Services;
 
 namespace RecipeBot.Controllers;
 
@@ -31,21 +37,44 @@ namespace RecipeBot.Controllers;
 /// </summary>
 public class RecipeController : IRecipeController
 {
-    private readonly RecipeModelFactory factory;
+    private readonly ILoggingService logger;
+    private readonly RecipeModelCreationService modelCreationService;
 
-    public RecipeController(RecipeModelFactory factory)
+    public RecipeController(IRecipeModelCharacterLimitProvider limitProvider,
+                            ILoggingService logger)
     {
-        this.factory = factory;
-        factory.IsNotNull(nameof(factory));
+        limitProvider.IsNotNull(nameof(limitProvider));
+        logger.IsNotNull(nameof(logger));
+
+        modelCreationService = new RecipeModelCreationService(limitProvider);
+
+        this.logger = logger;
     }
 
-    public Task<ControllerResult<Embed>> SaveRecipeAsync(RecipeModal modal, IUser user,
-                                                         DiscordRecipeCategory category, IAttachment attachment)
+    public async Task<ControllerResult<Embed>> SaveRecipeAsync(RecipeModal modal, IUser user,
+                                                               DiscordRecipeCategory category, IAttachment? attachment)
     {
         modal.IsNotNull(nameof(modal));
         user.IsNotNull(nameof(user));
         category.IsValidEnum(nameof(category));
 
-        throw new NotImplementedException();
+        try
+        {
+            RecipeModel recipeModel = attachment == null
+                                          ? modelCreationService.CreateRecipeModel(modal, user, category)
+                                          : modelCreationService.CreateRecipeModel(modal, user, category, attachment);
+
+            return new ControllerResult<Embed>(RecipeEmbedFactory.Create(recipeModel));
+        }
+        catch (ModelCreateException e)
+        {
+            await logger.LogErrorAsync(e);
+            return new ControllerResult<Embed>(e.Message);
+        }
+        catch (ModalResponseException e)
+        {
+            await logger.LogErrorAsync(e);
+            return new ControllerResult<Embed>(e.Message);
+        }
     }
 }
