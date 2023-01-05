@@ -34,7 +34,7 @@ public class RecipeTagEntity
     public long TagEntityId { get; set; }
 
     [Required]
-    public TagEntity Tag{ get; set; } = null!;
+    public TagEntity Tag { get; set; } = null!;
 
     public byte Order { get; set; }
 }

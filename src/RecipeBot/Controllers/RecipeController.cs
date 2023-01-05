@@ -15,12 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
 using Discord.Common;
-using Microsoft.Extensions.Logging;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Views;

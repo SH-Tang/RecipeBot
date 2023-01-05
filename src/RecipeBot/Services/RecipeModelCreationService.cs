@@ -45,6 +45,7 @@ public class RecipeModelCreationService
         limitProvider.IsNotNull(nameof(limitProvider));
         recipeModelFactory = new RecipeModelFactory(limitProvider);
     }
+
     /// <summary>
     /// Gets the <see cref="RecipeModel"/> based on its input arguments.
     /// </summary>

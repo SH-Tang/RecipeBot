@@ -60,7 +60,7 @@ internal class RecipeDataBuilder
     {
         if (attachment != null)
         {
-            attachment.IsValidArgument(x => IAttachmentExtensions.IsImage((IAttachment)x), "Attachment must be an image.", nameof(attachment));
+            attachment.IsValidArgument(x => x.IsImage(), "Attachment must be an image.", nameof(attachment));
             data.ImageUrl = attachment.Url;
         }
 

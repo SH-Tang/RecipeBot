@@ -261,6 +261,6 @@ public class RecipeEmbedFactoryTest
     {
         Assert.Equal(model.FieldName, actualField.Name);
         Assert.Equal(model.FieldData, actualField.Value);
-        Assert.False((bool)actualField.Inline);
+        Assert.False(actualField.Inline);
     }
 }

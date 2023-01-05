@@ -130,7 +130,7 @@ public class RecipeDataBuilderTest
 
         // Assert
         AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
-        Assert.Equal(notes, (string?)result.AdditionalNotes);
+        Assert.Equal(notes, result.AdditionalNotes);
     }
 
     [Theory]
@@ -155,7 +155,7 @@ public class RecipeDataBuilderTest
 
         // Assert
         AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
-        Assert.Equal(expectedRecipeImageUrl, (string?)result.ImageUrl);
+        Assert.Equal(expectedRecipeImageUrl, result.ImageUrl);
     }
 
     [Theory]
@@ -182,7 +182,7 @@ public class RecipeDataBuilderTest
 
         // Assert
         AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
-        Assert.Equal(tags, (string?)result.Tags);
+        Assert.Equal(tags, result.Tags);
     }
 
     [Fact]
@@ -215,7 +215,7 @@ public class RecipeDataBuilderTest
         // Assert
         AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
         Assert.Equal(notes, result.AdditionalNotes);
-        Assert.Equal((string?)recipeImageUrl, (string?)result.ImageUrl);
+        Assert.Equal((string?)recipeImageUrl, result.ImageUrl);
         Assert.Equal(tags, result.Tags);
     }
 
@@ -239,7 +239,7 @@ public class RecipeDataBuilderTest
         var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
 
         // Precondition
-        Assert.False((bool)attachment.IsImage());
+        Assert.False(attachment.IsImage());
 
         // Call
         Action call = () => builder.AddImage(attachment);

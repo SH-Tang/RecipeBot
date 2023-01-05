@@ -46,7 +46,7 @@ public class RecipeEntityCreatorTest
         var authorEntity = new AuthorEntity
         {
             AuthorName = fixture.Create<string>(),
-            AuthorImageUrl = fixture.Create<string>(),
+            AuthorImageUrl = fixture.Create<string>()
         };
 
         const int characterLimit = 256;

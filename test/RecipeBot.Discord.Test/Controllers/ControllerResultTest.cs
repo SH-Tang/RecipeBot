@@ -28,7 +28,7 @@ public class ControllerResultTest
     {
         // Setup
         var result = new object();
-        
+
         // Call
         var controllerResult = new ControllerResult<object>(result);
 
