@@ -117,7 +117,7 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
                 logger.LogErrorAsync(e)
             };
 
-            Task.WaitAll(tasks);
+            await Task.WhenAll(tasks);
         }
         finally
         {

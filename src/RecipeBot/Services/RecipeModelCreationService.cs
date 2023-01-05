@@ -31,7 +31,7 @@ namespace RecipeBot.Services;
 /// <summary>
 /// Service to create instances of <see cref="RecipeModel"/>.
 /// </summary>
-public class RecipeModelCreationService
+internal class RecipeModelCreationService
 {
     private readonly RecipeModelFactory recipeModelFactory;
 

@@ -26,7 +26,6 @@ namespace RecipeBot.TestUtils;
 /// </summary>
 public static class DiscordRecipeCategoryTestHelper
 {
-
     /// <summary>
     /// Gets the string representations of each <see cref="DiscordRecipeCategory"/>.
     /// </summary>

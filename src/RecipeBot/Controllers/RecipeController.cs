@@ -16,7 +16,6 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
