@@ -101,8 +101,7 @@ public class RecipeBotApplication
         await interactionCommandHandlingServices.InitializeHandlerAsync(new[]
         {
             typeof(InfoInteractionModule),
-            // typeof(RecipeInteractionModule), // TODO: Re-enable once CRUD functionality is in place
-            typeof(RecipeDbInteractionTestModule)
+            typeof(RecipeInteractionModule) 
         });
     }
 
