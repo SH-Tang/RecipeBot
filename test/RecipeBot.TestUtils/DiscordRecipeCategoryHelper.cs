@@ -19,48 +19,13 @@ using System.Collections.Generic;
 using RecipeBot.Discord.Data;
 using RecipeBot.Domain.Data;
 
-namespace RecipeBot.Discord.TestUtils;
+namespace RecipeBot.TestUtils;
 
 /// <summary>
 /// Helper class which can be used for asserting data related to <see cref="DiscordRecipeCategory"/>.
 /// </summary>
 public static class DiscordRecipeCategoryHelper
 {
-    /// <summary>
-    /// Gets the string representations of each <see cref="DiscordRecipeCategory"/>.
-    /// </summary>
-    public static IReadOnlyDictionary<DiscordRecipeCategory, string> CategoryStringMapping =>
-        new Dictionary<DiscordRecipeCategory, string>
-        {
-            {
-                DiscordRecipeCategory.Meat, "Meat"
-            },
-            {
-                DiscordRecipeCategory.Fish, "Fish"
-            },
-            {
-                DiscordRecipeCategory.Vegetarian, "Vegetarian"
-            },
-            {
-                DiscordRecipeCategory.Vegan, "Vegan"
-            },
-            {
-                DiscordRecipeCategory.Drinks, "Drinks"
-            },
-            {
-                DiscordRecipeCategory.Pastry, "Pastry"
-            },
-            {
-                DiscordRecipeCategory.Dessert, "Dessert"
-            },
-            {
-                DiscordRecipeCategory.Snack, "Snack"
-            },
-            {
-                DiscordRecipeCategory.Other, "Other"
-            }
-        };
-
     /// <summary>
     /// Gets the <see cref="RecipeCategory"/> representations of each <see cref="DiscordRecipeCategory"/>.
     /// </summary>

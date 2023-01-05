@@ -22,7 +22,6 @@ using AutoFixture;
 using Discord;
 using NSubstitute;
 using RecipeBot.Discord.Data;
-using RecipeBot.Discord.TestUtils;
 using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
@@ -30,6 +29,7 @@ using RecipeBot.Domain.Models;
 using RecipeBot.Domain.TestUtils;
 using RecipeBot.Exceptions;
 using RecipeBot.Services;
+using RecipeBot.TestUtils;
 using Xunit;
 
 namespace RecipeBot.Test.Services;

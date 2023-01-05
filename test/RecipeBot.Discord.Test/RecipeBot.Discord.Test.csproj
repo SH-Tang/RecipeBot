@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\RecipeBot.Discord\RecipeBot.Discord.csproj" />
-    <ProjectReference Include="..\RecipeBot.Discord.TestUtils\RecipeBot.Discord.TestUtils.csproj" />
     <ProjectReference Include="..\RecipeBot.Domain.TestUtils\RecipeBot.Domain.TestUtils.csproj" />
     <ProjectReference Include="..\RecipeBot.TestUtils\RecipeBot.TestUtils.csproj" />
   </ItemGroup>
