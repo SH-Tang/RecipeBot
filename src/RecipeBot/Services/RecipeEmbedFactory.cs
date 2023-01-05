@@ -22,6 +22,7 @@ using Common.Utils;
 using Discord;
 using RecipeBot.Domain.Models;
 using RecipeBot.Exceptions;
+using RecipeBot.Properties;
 
 namespace RecipeBot.Services;
 
@@ -85,7 +86,7 @@ internal static class RecipeEmbedFactory
         }
         catch (ArgumentException e)
         {
-            throw new ModalResponseException(string.Format((string)Resources.RecipeModal_response_could_not_be_determined_reason_0_, e.Message), e);
+            throw new ModalResponseException(string.Format(Resources.RecipeModal_response_could_not_be_determined_reason_0_, e.Message), e);
         }
     }
 }
