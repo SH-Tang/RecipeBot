@@ -34,20 +34,13 @@ namespace RecipeBot.Persistence.Test;
 
 public class RecipeRepositoryTest : IDisposable
 {
-    private const int characterLimit = 1000;
     private static readonly string? assemblyDirectory = Path.GetDirectoryName(typeof(RecipeRepositoryTest).GetTypeInfo().Assembly.Location);
     private static readonly string testDirectory = Path.Combine(assemblyDirectory!, "test-data");
-    private readonly RecipeDomainModelTestBuilder testBuilder;
+    private readonly RecipeModelTestBuilder testBuilder;
 
     public RecipeRepositoryTest()
     {
-        testBuilder = new RecipeDomainModelTestBuilder(new RecipeDomainModelTestBuilder.ConstructionProperties
-        {
-            MaxAuthorNameLength = characterLimit,
-            MaxTitleLength = characterLimit,
-            MaxFieldNameLength = characterLimit,
-            MaxFieldDataLength = characterLimit
-        });
+        testBuilder = new RecipeModelTestBuilder();
 
         if (!Directory.Exists(testDirectory))
         {

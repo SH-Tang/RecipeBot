@@ -29,11 +29,11 @@ namespace RecipeBot.Test.Services;
 
 public class RecipeEmbedFactoryTest
 {
-    private readonly RecipeDomainModelTestBuilder domainModelBuilder;
+    private readonly RecipeModelTestBuilder modelBuilder;
 
     public RecipeEmbedFactoryTest()
     {
-        domainModelBuilder = new RecipeDomainModelTestBuilder(new RecipeDomainModelTestBuilder.ConstructionProperties
+        modelBuilder = new RecipeModelTestBuilder(new RecipeModelTestBuilder.ConstructionProperties
         {
             MaxAuthorNameLength = EmbedAuthorBuilder.MaxAuthorNameLength,
             MaxTitleLength = EmbedBuilder.MaxTitleLength,
@@ -48,7 +48,7 @@ public class RecipeEmbedFactoryTest
         RecipeCategory category, Color expectedColor)
     {
         // Setup
-        RecipeModel recipeModel = domainModelBuilder.SetCategory(category)
+        RecipeModel recipeModel = modelBuilder.SetCategory(category)
                                                     .Build();
 
         // Call
@@ -62,7 +62,7 @@ public class RecipeEmbedFactoryTest
     public void Basic_recipe_should_return_embed_without_image_and_fields()
     {
         // Setup
-        RecipeModel recipeModel = domainModelBuilder.Build();
+        RecipeModel recipeModel = modelBuilder.Build();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel);
@@ -83,7 +83,7 @@ public class RecipeEmbedFactoryTest
         // Setup
         var fixture = new Fixture();
         var category = fixture.Create<RecipeCategory>();
-        RecipeModel recipeModel = domainModelBuilder.SetCategory(category)
+        RecipeModel recipeModel = modelBuilder.SetCategory(category)
                                                     .AddImage()
                                                     .AddTags(new[]
                                                     {
@@ -116,7 +116,7 @@ public class RecipeEmbedFactoryTest
     public void Recipe_with_image_should_return_embed_with_image()
     {
         // Setup
-        RecipeModel recipeModel = domainModelBuilder.AddImage()
+        RecipeModel recipeModel = modelBuilder.AddImage()
                                                     .Build();
 
         // Call
@@ -139,7 +139,7 @@ public class RecipeEmbedFactoryTest
     public void Recipe_with_fields_should_return_embed_with_fields()
     {
         // Setup
-        RecipeModel recipeModel = domainModelBuilder.AddFields(3)
+        RecipeModel recipeModel = modelBuilder.AddFields(3)
                                                     .Build();
 
         // Call
@@ -163,7 +163,7 @@ public class RecipeEmbedFactoryTest
         // Setup
         var fixture = new Fixture();
         var category = fixture.Create<RecipeCategory>();
-        RecipeModel recipeModel = domainModelBuilder.SetCategory(category)
+        RecipeModel recipeModel = modelBuilder.SetCategory(category)
                                                     .AddTags(new[]
                                                     {
                                                         "Tag1",

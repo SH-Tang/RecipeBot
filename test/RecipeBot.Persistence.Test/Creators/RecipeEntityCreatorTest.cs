@@ -49,14 +49,7 @@ public class RecipeEntityCreatorTest
             AuthorImageUrl = fixture.Create<string>()
         };
 
-        const int characterLimit = 256;
-        var testBuilder = new RecipeDomainModelTestBuilder(new RecipeDomainModelTestBuilder.ConstructionProperties
-        {
-            MaxAuthorNameLength = characterLimit,
-            MaxTitleLength = characterLimit,
-            MaxFieldNameLength = characterLimit,
-            MaxFieldDataLength = characterLimit
-        });
+        var testBuilder = new RecipeModelTestBuilder();
         RecipeModel recipeModel = testBuilder.SetCategory(category)
                                              .Build();
 
