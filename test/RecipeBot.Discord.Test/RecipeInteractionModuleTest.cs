@@ -56,9 +56,9 @@ public class RecipeInteractionModuleTest
 
         // Assert
         Assert.NotNull(commandAttribute);
-        Assert.Equal("recipe", commandAttribute!.Name);
+        Assert.Equal("recipe", commandAttribute.Name);
 
-        const string expectedDescription = "Tell us about your recipe";
+        const string expectedDescription = "Formats and stores an user recipe";
         Assert.Equal(expectedDescription, commandAttribute.Description);
     }
 
