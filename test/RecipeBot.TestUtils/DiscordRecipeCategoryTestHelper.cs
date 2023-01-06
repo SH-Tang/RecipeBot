@@ -17,18 +17,19 @@
 
 using System.Collections.Generic;
 using RecipeBot.Discord.Data;
+using RecipeBot.Domain.Data;
 
-namespace RecipeBot.Discord.TestUtils;
+namespace RecipeBot.TestUtils;
 
 /// <summary>
 /// Helper class which can be used for asserting data related to <see cref="DiscordRecipeCategory"/>.
 /// </summary>
-public static class DiscordRecipeCategoryHelper
+public static class DiscordRecipeCategoryTestHelper
 {
     /// <summary>
     /// Gets the string representations of each <see cref="DiscordRecipeCategory"/>.
     /// </summary>
-    public static IReadOnlyDictionary<DiscordRecipeCategory, string> CategoryMapping =>
+    public static IReadOnlyDictionary<DiscordRecipeCategory, string> CategoryStringMapping =>
         new Dictionary<DiscordRecipeCategory, string>
         {
             {
@@ -57,6 +58,41 @@ public static class DiscordRecipeCategoryHelper
             },
             {
                 DiscordRecipeCategory.Other, "Other"
+            }
+        };
+
+    /// <summary>
+    /// Gets the <see cref="RecipeCategory"/> representations of each <see cref="DiscordRecipeCategory"/>.
+    /// </summary>
+    public static IReadOnlyDictionary<DiscordRecipeCategory, RecipeCategory> RecipeCategoryMapping =>
+        new Dictionary<DiscordRecipeCategory, RecipeCategory>
+        {
+            {
+                DiscordRecipeCategory.Meat, RecipeCategory.Meat
+            },
+            {
+                DiscordRecipeCategory.Fish, RecipeCategory.Fish
+            },
+            {
+                DiscordRecipeCategory.Vegetarian, RecipeCategory.Vegetarian
+            },
+            {
+                DiscordRecipeCategory.Vegan, RecipeCategory.Vegan
+            },
+            {
+                DiscordRecipeCategory.Drinks, RecipeCategory.Drinks
+            },
+            {
+                DiscordRecipeCategory.Pastry, RecipeCategory.Pastry
+            },
+            {
+                DiscordRecipeCategory.Dessert, RecipeCategory.Dessert
+            },
+            {
+                DiscordRecipeCategory.Snack, RecipeCategory.Snack
+            },
+            {
+                DiscordRecipeCategory.Other, RecipeCategory.Other
             }
         };
 }

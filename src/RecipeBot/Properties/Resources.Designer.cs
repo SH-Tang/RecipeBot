@@ -25,7 +25,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RecipeBot.Discord.Properties {
+namespace RecipeBot.Properties {
     using System;
     
     
@@ -56,7 +56,7 @@ namespace RecipeBot.Discord.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RecipeBot.Discord.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RecipeBot.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -78,20 +78,11 @@ namespace RecipeBot.Discord.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attachment must be an image..
+        ///   Looks up a localized string similar to Recipe could not be successfully formatted: {0}..
         /// </summary>
-        internal static string Attachment_must_be_an_image {
+        internal static string Embed_could_not_be_created_reason_0_ {
             get {
-                return ResourceManager.GetString("Attachment_must_be_an_image", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ERROR: {0}.
-        /// </summary>
-        internal static string RecipeInteractionModule_ERROR_0_ {
-            get {
-                return ResourceManager.GetString("RecipeInteractionModule_ERROR_0_", resourceCulture);
+                return ResourceManager.GetString("Embed_could_not_be_created_reason_0_", resourceCulture);
             }
         }
     }

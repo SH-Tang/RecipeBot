@@ -15,20 +15,26 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using Discord;
-using RecipeBot.Domain.Factories;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
-namespace RecipeBot.Discord.Providers;
+namespace RecipeBot.Persistence.Entities;
 
 /// <summary>
-/// Class that holds the character limits of Discord.
+/// Entity class to persist author related data.
 /// </summary>
-public class DiscordCharacterLimitProvider : IRecipeModelCharacterLimitProvider
+[Index(nameof(AuthorEntityId), IsUnique = true)]
+public class AuthorEntity
 {
-    public int MaximumAuthorNameLength => EmbedAuthorBuilder.MaxAuthorNameLength;
-    public int MaximumFieldNameLength => EmbedFieldBuilder.MaxFieldNameLength;
-    public int MaximumFieldDataLength => EmbedFieldBuilder.MaxFieldValueLength;
-    public int MaximumTitleLength => EmbedBuilder.MaxTitleLength;
-    public int MaximumRecipeLength => EmbedBuilder.MaxEmbedLength;
-    public int MaximumRecipeTagsLength => EmbedFooterBuilder.MaxFooterTextLength;
+    [Key]
+    public long AuthorEntityId { get; set; }
+
+    [Required]
+    public string AuthorName { get; set; } = null!;
+
+    [Required]
+    public string AuthorImageUrl { get; set; } = null!;
+
+    public ICollection<RecipeEntity> Recipes { get; set; } = null!;
 }

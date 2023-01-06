@@ -27,7 +27,7 @@ namespace RecipeBot.Domain.TestUtils;
 /// <summary>
 /// Class which creates instances of <see cref="RecipeModel"/> that can be used for testing.
 /// </summary>
-public class RecipeDomainModelTestBuilder
+public class RecipeModelTestBuilder
 {
     private readonly int maxAuthorNameLength;
     private readonly int maxFieldDataLength;
@@ -40,12 +40,23 @@ public class RecipeDomainModelTestBuilder
     private RecipeCategory category = RecipeCategory.Other;
 
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeDomainModelTestBuilder"/>.
+    /// Creates a new instance of <see cref="RecipeModelTestBuilder"/>.
+    /// </summary>
+    public RecipeModelTestBuilder() :this(new ConstructionProperties
+    {
+        MaxTitleLength = 256,
+        MaxAuthorNameLength = 256,
+        MaxFieldDataLength = 256,
+        MaxFieldNameLength = 256
+    }){}
+
+    /// <summary>
+    /// Creates a new instance of <see cref="RecipeModelTestBuilder"/>.
     /// </summary>
     /// <param name="constructionProperties">The <see cref="ConstructionProperties"/> to construct the factory with.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="constructionProperties"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="constructionProperties"/> contains invalid values.</exception>
-    public RecipeDomainModelTestBuilder(ConstructionProperties constructionProperties)
+    public RecipeModelTestBuilder(ConstructionProperties constructionProperties)
     {
         constructionProperties.IsNotNull(nameof(constructionProperties));
 
@@ -68,8 +79,8 @@ public class RecipeDomainModelTestBuilder
     /// Sets the <see cref="RecipeCategory"/> to the <see cref="RecipeModel"/>.
     /// </summary>
     /// <param name="category">The <see cref="RecipeCategory"/> to set.</param>
-    /// <returns>The <see cref="RecipeDomainModelTestBuilder"/>.</returns>
-    public RecipeDomainModelTestBuilder SetCategory(RecipeCategory category)
+    /// <returns>The <see cref="RecipeModelTestBuilder"/>.</returns>
+    public RecipeModelTestBuilder SetCategory(RecipeCategory category)
     {
         this.category = category;
         return this;
@@ -78,8 +89,8 @@ public class RecipeDomainModelTestBuilder
     /// <summary>
     /// Adds an image to the <see cref="RecipeModel"/>.
     /// </summary>
-    /// <returns>The <see cref="RecipeDomainModelTestBuilder"/>.</returns>
-    public RecipeDomainModelTestBuilder AddImage()
+    /// <returns>The <see cref="RecipeModelTestBuilder"/>.</returns>
+    public RecipeModelTestBuilder AddImage()
     {
         imageUrl = "https://recipeBot.recipe.image";
         return this;
@@ -89,8 +100,8 @@ public class RecipeDomainModelTestBuilder
     /// Adds a collection of tags to the <see cref="RecipeModel"/>.
     /// </summary>
     /// <param name="tags">The collection of tags to add.</param>
-    /// <returns>The <see cref="RecipeDomainModelTestBuilder"/>.</returns>
-    public RecipeDomainModelTestBuilder AddTags(IEnumerable<string> tags)
+    /// <returns>The <see cref="RecipeModelTestBuilder"/>.</returns>
+    public RecipeModelTestBuilder AddTags(IEnumerable<string> tags)
     {
         this.tags = new RecipeTagsModel(tags);
         return this;
@@ -100,8 +111,8 @@ public class RecipeDomainModelTestBuilder
     /// Adds a number of recipe fields to the <see cref="RecipeModel"/>.
     /// </summary>
     /// <param name="nrOfFields">The number of fields to add.</param>
-    /// <returns>The <see cref="RecipeDomainModelTestBuilder"/>.</returns>
-    public RecipeDomainModelTestBuilder AddFields(int nrOfFields)
+    /// <returns>The <see cref="RecipeModelTestBuilder"/>.</returns>
+    public RecipeModelTestBuilder AddFields(int nrOfFields)
     {
         var random = new Random(21);
         recipeFields = Enumerable.Repeat(CreateRecipeFieldModel(random.Next()), nrOfFields);
@@ -149,7 +160,7 @@ public class RecipeDomainModelTestBuilder
     }
 
     /// <summary>
-    /// Class holding construction variables for <see cref="RecipeDomainModelTestBuilder"/>.
+    /// Class holding construction variables for <see cref="RecipeModelTestBuilder"/>.
     /// </summary>
     public class ConstructionProperties
     {

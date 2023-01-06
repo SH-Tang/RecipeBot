@@ -18,11 +18,10 @@
 using Discord;
 using Discord.Common;
 using Discord.Interactions;
+using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using RecipeBot.Discord.Data;
-using RecipeBot.Discord.Services;
 using RecipeBot.Discord.Views;
-using RecipeBot.Domain.Factories;
 using RecipeBot.TestUtils;
 using Xunit;
 
@@ -34,12 +33,11 @@ public class RecipeInteractionModuleTest
     public void Module_is_interactive_module()
     {
         // Setup
+        var scopeFactory = Substitute.For<IServiceScopeFactory>();
         var loggingService = Substitute.For<ILoggingService>();
-        var limitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
-        var responseService = new RecipeModalResponseService(limitProvider);
 
         // Call
-        var module = new RecipeInteractionModule(loggingService, responseService);
+        var module = new RecipeInteractionModule(scopeFactory, loggingService);
 
         // Assert
         Assert.IsAssignableFrom<InteractionModuleBase<SocketInteractionContext>>(module);
@@ -58,9 +56,9 @@ public class RecipeInteractionModuleTest
 
         // Assert
         Assert.NotNull(commandAttribute);
-        Assert.Equal("recipe", commandAttribute!.Name);
+        Assert.Equal("recipe", commandAttribute.Name);
 
-        const string expectedDescription = "Tell us about your recipe";
+        const string expectedDescription = "Formats and stores an user recipe";
         Assert.Equal(expectedDescription, commandAttribute.Description);
     }
 
