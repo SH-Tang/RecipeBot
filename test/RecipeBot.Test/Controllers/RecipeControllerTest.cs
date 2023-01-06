@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using Discord;
@@ -61,18 +62,12 @@ public class RecipeControllerTest
         // Setup
         const DiscordRecipeCategory category = (DiscordRecipeCategory)(-1);
 
+        var fixture = new Fixture();
+        var modal = fixture.Create<RecipeModal>();
+
         var user = Substitute.For<IUser>();
         user.Username.Returns("Recipe author");
         user.GetAvatarUrl().ReturnsForAnyArgs("https://AuthorImage.url");
-
-        var modal = new RecipeModal
-        {
-            RecipeTitle = "Recipe title",
-            Ingredients = "My ingredients",
-            CookingSteps = "My recipe steps",
-            Notes = "My notes",
-            Tags = "Tag1, Tag2, Tag1"
-        };
 
         var repository = Substitute.For<IRecipeRepository>();
         var logger = Substitute.For<ILoggingService>();
@@ -91,19 +86,11 @@ public class RecipeControllerTest
         // Setup
         var fixture = new Fixture();
         var category = fixture.Create<DiscordRecipeCategory>();
+        var modal = fixture.Create<RecipeModal>();
 
         var user = Substitute.For<IUser>();
         user.Username.Returns("Recipe author");
         user.GetAvatarUrl().ReturnsForAnyArgs("https://AuthorImage.url");
-
-        var modal = new RecipeModal
-        {
-            RecipeTitle = "Recipe title",
-            Ingredients = "My ingredients",
-            CookingSteps = "My recipe steps",
-            Notes = "My notes",
-            Tags = "Tag1, Tag2, Tag1"
-        };
 
         const string exceptionMessage = "Saving failed";
         var repository = Substitute.For<IRecipeRepository>();
@@ -130,20 +117,13 @@ public class RecipeControllerTest
         // Setup
         var fixture = new Fixture();
         var category = fixture.Create<DiscordRecipeCategory>();
-
+        var modal = fixture.Create<RecipeModal>();
+        
         var user = Substitute.For<IUser>();
         user.Username.Returns("Recipe author");
         user.GetAvatarUrl().ReturnsForAnyArgs("https://AuthorImage.url");
 
-        var modal = new RecipeModal
-        {
-            RecipeTitle = "Recipe title",
-            Ingredients = "My ingredients",
-            CookingSteps = "My recipe steps",
-            Notes = "My notes",
-            Tags = "Tag1, Tag2, Tag1"
-        };
-
+        
         var limitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
         limitProvider.MaximumTitleLength.Returns(EmbedBuilder.MaxTitleLength);
         limitProvider.MaximumAuthorNameLength.Returns(EmbedAuthorBuilder.MaxAuthorNameLength);
@@ -213,6 +193,7 @@ public class RecipeControllerTest
         // Setup
         var fixture = new Fixture();
         var category = fixture.Create<DiscordRecipeCategory>();
+        var modal = fixture.Create<RecipeModal>();
 
         var user = Substitute.For<IUser>();
         user.Username.Returns("Recipe author");
@@ -221,15 +202,6 @@ public class RecipeControllerTest
         var attachment = Substitute.For<IAttachment>();
         attachment.ContentType.Returns("image/");
         attachment.Url.Returns("https://RecipeImage.url");
-
-        var modal = new RecipeModal
-        {
-            RecipeTitle = "Recipe title",
-            Ingredients = "My ingredients",
-            CookingSteps = "My recipe steps",
-            Notes = "My notes",
-            Tags = "tag1, tag2"
-        };
 
         var limitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
         limitProvider.MaximumTitleLength.Returns(EmbedBuilder.MaxTitleLength);
@@ -302,6 +274,100 @@ public class RecipeControllerTest
         Assert.NotNull(embedImage);
         EmbedImage resultImage = embedImage.Value;
         Assert.Equal(recipeImageUrl, resultImage.Url);
+    }
+
+    [Fact]
+    public async Task Recipe_with_valid_data_saves_correct_model()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var category = fixture.Create<DiscordRecipeCategory>();
+
+        const string authorName = "Recipe author";
+        const string authorImageUrl = "https://AuthorImage.url";
+        var user = Substitute.For<IUser>();
+        user.Username.Returns(authorName);
+        user.GetAvatarUrl().ReturnsForAnyArgs(authorImageUrl);
+
+        const string recipeTitle = "Recipe title";
+        const string recipeIngredients = "My ingredients";
+        const string recipeSteps = "My recipe steps";
+        const string recipeNotes = "My notes";
+        const string tags = "Tag1, TAG1, tag1, tag    1,      tag1, tag1      , tag2";
+        var modal = new RecipeModal
+        {
+            RecipeTitle = recipeTitle,
+            Ingredients = recipeIngredients,
+            CookingSteps = recipeSteps,
+            Notes = recipeNotes,
+            Tags = tags
+        };
+
+        var savedModels = new List<RecipeModel>();
+        var repository = Substitute.For<IRecipeRepository>();
+        repository.WhenForAnyArgs(r => r.SaveRecipeAsync(Arg.Any<RecipeModel>()))
+                  .Do(c => savedModels.Add(c.Arg<RecipeModel>()));
+
+        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeController(limitProvider, repository, logger);
+
+        // Call
+        await controller.SaveRecipeAsync(modal, user, category, null);
+
+        // Assert
+        RecipeModel savedModel = savedModels.Single();
+        RecipeModelTestHelper.AssertCommonModelProperties(user, category, modal, savedModel);
+    }
+
+    [Fact]
+    public async Task Recipe_with_valid_data_and_attachment_saves_correct_model()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var category = fixture.Create<DiscordRecipeCategory>();
+
+        const string authorName = "Recipe author";
+        const string authorImageUrl = "https://AuthorImage.url";
+        var user = Substitute.For<IUser>();
+        user.Username.Returns(authorName);
+        user.GetAvatarUrl().ReturnsForAnyArgs(authorImageUrl);
+
+        const string recipeImageUrl = "https://RecipeImage.url";
+        var attachment = Substitute.For<IAttachment>();
+        attachment.ContentType.Returns("image/");
+        attachment.Url.Returns(recipeImageUrl);
+
+        const string recipeTitle = "Recipe title";
+        const string recipeIngredients = "My ingredients";
+        const string recipeSteps = "My recipe steps";
+        const string recipeNotes = "My notes";
+        const string tags = "Tag1, TAG1, tag1, tag    1,      tag1, tag1      , tag2";
+        var modal = new RecipeModal
+        {
+            RecipeTitle = recipeTitle,
+            Ingredients = recipeIngredients,
+            CookingSteps = recipeSteps,
+            Notes = recipeNotes,
+            Tags = tags
+        };
+
+        var savedModels = new List<RecipeModel>();
+        var repository = Substitute.For<IRecipeRepository>();
+        repository.WhenForAnyArgs(r => r.SaveRecipeAsync(Arg.Any<RecipeModel>()))
+                  .Do(c => savedModels.Add(c.Arg<RecipeModel>()));
+
+        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeController(limitProvider, repository, logger);
+
+        // Call
+        await controller.SaveRecipeAsync(modal, user, category, attachment);
+
+        // Assert
+        RecipeModel savedModel = savedModels.Single();
+        RecipeModelTestHelper.AssertCommonModelProperties(user, category, modal, savedModel);
+        Assert.Equal(recipeImageUrl, savedModel.RecipeImageUrl);
     }
 
     public static IEnumerable<object[]> GetRecipeCategoriesAndColor()

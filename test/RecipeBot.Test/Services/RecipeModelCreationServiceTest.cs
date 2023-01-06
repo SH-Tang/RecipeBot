@@ -134,7 +134,7 @@ public class RecipeModelCreationServiceTest
         RecipeModel model = service.CreateRecipeModel(modal, user, category);
 
         // Assert
-        AssertCommonModelProperties(user, category, modal, model);
+        RecipeModelTestHelper.AssertCommonModelProperties(user, category, modal, model);
         Assert.Null(model.RecipeImageUrl);
     }
 
@@ -250,7 +250,7 @@ public class RecipeModelCreationServiceTest
         RecipeModel recipeModel = service.CreateRecipeModel(modal, user, category, attachment);
 
         // Assert
-        AssertCommonModelProperties(user, category, modal, recipeModel);
+        RecipeModelTestHelper.AssertCommonModelProperties(user, category, modal, recipeModel);
         Assert.Equal(recipeImageUrl, recipeModel.RecipeImageUrl);
     }
 
@@ -306,42 +306,5 @@ public class RecipeModelCreationServiceTest
         limitProvider.MaximumFieldDataLength.Returns(EmbedFieldBuilder.MaxFieldValueLength);
         limitProvider.MaximumRecipeTagsLength.Returns(EmbedFooterBuilder.MaxFooterTextLength);
         return limitProvider;
-    }
-
-    private static void AssertCommonModelProperties(IUser user, DiscordRecipeCategory category,
-                                                    RecipeModal modal, RecipeModel actualRecipe)
-    {
-        Assert.Equal(DiscordRecipeCategoryTestHelper.RecipeCategoryMapping[category], actualRecipe.RecipeCategory);
-
-        AuthorModel actualAuthor = actualRecipe.Author;
-        Assert.NotNull(actualAuthor);
-        AssertAuthor(user.Username, user.GetAvatarUrl(), actualAuthor);
-
-        Assert.Equal(modal.RecipeTitle, actualRecipe.Title);
-
-        Assert.Equal(3, actualRecipe.RecipeFields.Count());
-        AssertField("Ingredients", modal.Ingredients, actualRecipe.RecipeFields.ElementAt(0));
-        AssertField("Cooking steps", modal.CookingSteps, actualRecipe.RecipeFields.ElementAt(1));
-        AssertField("Additional notes", modal.Notes, actualRecipe.RecipeFields.ElementAt(2));
-
-        AssertTags(modal.Tags, actualRecipe.RecipeTags);
-    }
-
-    private static void AssertAuthor(string expectedAuthorName, string expectedAuthorImageUrl, AuthorModel actualAuthor)
-    {
-        Assert.Equal(expectedAuthorName, actualAuthor.AuthorName);
-        Assert.Equal(expectedAuthorImageUrl, actualAuthor.AuthorImageUrl);
-    }
-
-    private static void AssertField(string expectedName, string? expectedValue, RecipeFieldModel actualField)
-    {
-        Assert.Equal(expectedName, actualField.FieldName);
-        Assert.Equal(expectedValue, actualField.FieldData);
-    }
-
-    private static void AssertTags(string? tags, RecipeTagsModelWrapper actualTags)
-    {
-        IEnumerable<string> expectedTags = TagTestHelper.GetParsedTags(tags);
-        Assert.Equal(expectedTags, actualTags.Tags);
     }
 }
