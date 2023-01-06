@@ -17,6 +17,7 @@
 
 using System;
 using System.Threading.Tasks;
+using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Models;
 
 namespace RecipeBot.Domain.Repositories;
@@ -32,5 +33,6 @@ public interface IRecipeRepository
     /// <param name="model">The <see cref="RecipeModel"/> to save.</param>
     /// <returns>A <see cref="Task"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="model"/> is <c>null</c>.</exception>
+    /// <exception cref="RepositoryDataSaveException">Thrown when the data could not be successfully saved.</exception>
     public Task SaveRecipeAsync(RecipeModel model);
 }

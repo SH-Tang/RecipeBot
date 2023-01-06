@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Microsoft.EntityFrameworkCore;
+using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Repositories;
 using RecipeBot.Persistence.Creators;
@@ -63,7 +64,7 @@ public class RecipeRepository : IRecipeRepository
         }
         catch (DbUpdateException ex)
         {
-            throw new Exception(ex.Message, ex); // TODO: Introduce custom exception
+            throw new RepositoryDataSaveException(ex.Message, ex);
         }
     }
 
