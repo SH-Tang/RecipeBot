@@ -84,7 +84,7 @@ public class RecipeBotApplication
         var discordClient = services.GetRequiredService<DiscordSocketClient>();
         discordClient.Log += message => LogAsync(services, message);
 
-        string token = configurationRoot["Token"];
+        string? token = configurationRoot["Token"];
         await discordClient.LoginAsync(TokenType.Bot, token);
         await discordClient.StartAsync();
     }

@@ -54,7 +54,14 @@ public static class RecipeModelTestHelper
 
     private static void AssertTags(string? tags, RecipeTagsModelWrapper actualTags)
     {
-        IEnumerable<string> expectedTags = TagTestHelper.GetParsedTags(tags);
-        Assert.Equal(expectedTags, actualTags.Tags);
+        if (tags != null)
+        {
+            IEnumerable<string> expectedTags = TagTestHelper.GetParsedTags(tags);
+            Assert.Equal(expectedTags, actualTags.Tags);
+        }
+        else
+        {
+            Assert.Empty(actualTags.Tags);
+        }
     }
 }
