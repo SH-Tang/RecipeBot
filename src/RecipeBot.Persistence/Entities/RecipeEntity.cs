@@ -36,8 +36,6 @@ public class RecipeEntity
     [Required]
     public PersistentRecipeCategory RecipeCategory { get; set; }
 
-    public long AuthorEntityId { get; set; }
-
     [Required]
     public AuthorEntity Author { get; set; } = null!;
 

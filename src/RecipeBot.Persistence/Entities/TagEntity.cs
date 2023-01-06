@@ -22,7 +22,7 @@ using Microsoft.EntityFrameworkCore;
 namespace RecipeBot.Persistence.Entities;
 
 /// <summary>
-/// Entity class to tag related data.
+/// Entity class to persist tag related data.
 /// </summary>
 [Index(nameof(TagEntityId), IsUnique = true)]
 public class TagEntity
