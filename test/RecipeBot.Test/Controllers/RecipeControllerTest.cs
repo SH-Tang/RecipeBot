@@ -318,6 +318,7 @@ public class RecipeControllerTest
         // Assert
         RecipeModel savedModel = savedModels.Single();
         RecipeModelTestHelper.AssertCommonModelProperties(user, category, modal, savedModel);
+        Assert.Null(savedModel.RecipeImageUrl);
     }
 
     [Fact]
