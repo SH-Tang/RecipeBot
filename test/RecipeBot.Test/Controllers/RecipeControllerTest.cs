@@ -23,10 +23,12 @@ using AutoFixture;
 using Discord;
 using Discord.Common;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using RecipeBot.Controllers;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Views;
+using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Repositories;
@@ -81,6 +83,45 @@ public class RecipeControllerTest
         // Call & Assert
         await Assert.ThrowsAsync<InvalidEnumArgumentException>(() => controller.SaveRecipeAsync(modal, user, category, null));
         await repository.DidNotReceiveWithAnyArgs().SaveRecipeAsync(Arg.Any<RecipeModel>());
+    }
+
+    [Fact]
+    public async Task Recipe_with_valid_data_and_unsuccessfully_saved_returns_result_with_error()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var category = fixture.Create<DiscordRecipeCategory>();
+
+        var user = Substitute.For<IUser>();
+        user.Username.Returns("Recipe author");
+        user.GetAvatarUrl().ReturnsForAnyArgs("https://AuthorImage.url");
+
+        var modal = new RecipeModal
+        {
+            RecipeTitle = "Recipe title",
+            Ingredients = "My ingredients",
+            CookingSteps = "My recipe steps",
+            Notes = "My notes",
+            Tags = "Tag1, Tag2, Tag1"
+        };
+
+        const string exceptionMessage = "Saving failed";
+        var repository = Substitute.For<IRecipeRepository>();
+        repository.SaveRecipeAsync(Arg.Any<RecipeModel>())
+                  .ReturnsForAnyArgs(Task.FromException<RepositoryDataSaveException>(new RepositoryDataSaveException(exceptionMessage)));
+
+
+        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeController(limitProvider, repository, logger);
+
+        // Call
+        ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, null);
+
+        // Assert
+        Assert.True(controllerResult.HasError);
+        Assert.Equal(exceptionMessage, controllerResult.ErrorMessage);
+
     }
 
     [Fact]

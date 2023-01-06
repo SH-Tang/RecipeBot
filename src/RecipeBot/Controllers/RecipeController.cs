@@ -75,7 +75,7 @@ public class RecipeController : IRecipeController
                                           : modelCreationService.CreateRecipeModel(modal, user, category, attachment);
 
             Task<Embed> embedTask = Task.Run(() => RecipeEmbedFactory.Create(recipeModel));
-            Task[] tasks = 
+            Task[] tasks =
             {
                 embedTask,
                 repository.SaveRecipeAsync(recipeModel)
@@ -90,6 +90,10 @@ public class RecipeController : IRecipeController
             return await HandleException(e);
         }
         catch (EmbedCreateException e)
+        {
+            return await HandleException(e);
+        }
+        catch (RepositoryDataSaveException e)
         {
             return await HandleException(e);
         }
