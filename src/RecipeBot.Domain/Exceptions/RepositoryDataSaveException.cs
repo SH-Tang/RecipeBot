@@ -21,7 +21,7 @@ using System.Runtime.Serialization;
 namespace RecipeBot.Domain.Exceptions;
 
 /// <summary>
-/// Exception thrown when the repository could not successfully save data.
+/// Exception thrown when the data could not be successfully saved by the repository.
 /// </summary>
 [Serializable]
 public class RepositoryDataSaveException : Exception
