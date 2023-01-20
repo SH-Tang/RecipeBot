@@ -16,12 +16,12 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
@@ -59,7 +59,7 @@ public class RecipeRepositoryTest : IDisposable
             var repository = new RecipeRepository(context);
 
             // Assert
-            Assert.IsAssignableFrom<IRecipeRepository>(repository);
+            repository.Should().BeAssignableTo<IRecipeRepository>();
         }
     }
 
@@ -83,17 +83,18 @@ public class RecipeRepositoryTest : IDisposable
                                                     .Include(e => e.Tags)
                                                     .Single();
 
-                Assert.Equal(recipeModel.Title, recipeEntity.RecipeTitle);
-                Assert.Equal((PersistentRecipeCategory)category, recipeEntity.RecipeCategory);
+                recipeEntity.RecipeTitle.Should().Be(recipeModel.Title);
+                recipeEntity.RecipeCategory.Should().Be((PersistentRecipeCategory)category);
 
-                AuthorModel expectedAuthor = recipeModel.Author;
-                AuthorEntity authorEntity = recipeEntity.Author;
-                Assert.NotNull(authorEntity);
-                Assert.Equal(expectedAuthor.AuthorName, authorEntity.AuthorName);
-                Assert.Equal(expectedAuthor.AuthorImageUrl, authorEntity.AuthorImageUrl);
+                recipeEntity.Author.Should().NotBeNull().And.BeEquivalentTo(
+                    recipeModel.Author,
+                    options => options.Including(e => e.AuthorName)
+                                      .Including(e => e.AuthorImageUrl)
+                                      .WithMapping<AuthorEntity>(e => e.AuthorName, s => s.AuthorName)
+                                      .WithMapping<AuthorEntity>(e => e.AuthorImageUrl, s => s.AuthorImageUrl));
 
-                Assert.Empty(recipeEntity.RecipeFields);
-                Assert.Empty(recipeEntity.Tags);
+                recipeEntity.RecipeFields.Should().BeEmpty();
+                recipeEntity.Tags.Should().BeEmpty();
             };
 
         // Call & Assert
@@ -132,37 +133,25 @@ public class RecipeRepositoryTest : IDisposable
                                                    .ThenInclude(e => e.Tag)
                                                    .Single();
 
-                Assert.Equal(recipeModel.Title, recipeEntity.RecipeTitle);
-                Assert.Equal((PersistentRecipeCategory)category, recipeEntity.RecipeCategory);
+                recipeEntity.RecipeTitle.Should().Be(recipeModel.Title);
+                recipeEntity.RecipeCategory.Should().Be((PersistentRecipeCategory)category);
 
-                AuthorModel expectedAuthor = recipeModel.Author;
-                AuthorEntity authorEntity = recipeEntity.Author;
-                Assert.NotNull(authorEntity);
-                Assert.Equal(expectedAuthor.AuthorName, authorEntity.AuthorName);
-                Assert.Equal(expectedAuthor.AuthorImageUrl, authorEntity.AuthorImageUrl);
+                recipeEntity.Author.Should().NotBeNull().And.BeEquivalentTo(
+                    recipeModel.Author,
+                    options => options.Including(e => e.AuthorName)
+                                      .Including(e => e.AuthorImageUrl)
+                                      .WithMapping<AuthorEntity>(e => e.AuthorName, s => s.AuthorName)
+                                      .WithMapping<AuthorEntity>(e => e.AuthorImageUrl, s => s.AuthorImageUrl));
 
-                ICollection<RecipeFieldEntity> recipeFieldEntities = recipeEntity.RecipeFields;
-                Assert.Equal(nrOfFields, recipeFieldEntities.Count);
-                for (var i = 0; i < nrOfFields; i++)
-                {
-                    RecipeFieldModel fieldModel = recipeModel.RecipeFields.ElementAt(i);
-                    RecipeFieldEntity fieldEntity = recipeFieldEntities.ElementAt(i);
+                recipeEntity.RecipeFields.OrderBy(f => f.Order).Should().BeEquivalentTo(
+                    recipeModel.RecipeFields,
+                    options => options.WithStrictOrdering()
+                                      .Including(e => e.FieldName)
+                                      .Including(e => e.FieldData)
+                                      .WithMapping<RecipeFieldEntity>(e => e.FieldName, s => s.RecipeFieldName)
+                                      .WithMapping<RecipeFieldEntity>(e => e.FieldData, s => s.RecipeFieldData));
 
-                    Assert.Equal(fieldModel.FieldName, fieldEntity.RecipeFieldName);
-                    Assert.Equal(fieldModel.FieldData, fieldEntity.RecipeFieldData);
-                    Assert.Equal(i, fieldEntity.Order);
-                }
-
-                int nrOfTags = tags.Length;
-                Assert.Equal(nrOfTags, recipeEntity.Tags.Count);
-                for (var i = 0; i < nrOfTags; i++)
-                {
-                    string expectedTag = tags[i];
-                    RecipeTagEntity tagEntity = recipeEntity.Tags.ElementAt(i);
-
-                    Assert.Equal(expectedTag, tagEntity.Tag.Tag);
-                    Assert.Equal(i, tagEntity.Order);
-                }
+                recipeEntity.Tags.OrderBy(t => t.Order).Should().Equal(tags, (s, e) => s.Tag.Tag == e);
             };
 
         // Call & Assert
@@ -194,14 +183,17 @@ public class RecipeRepositoryTest : IDisposable
                 RecipeEntity recipeEntity = context.RecipeEntities
                                                    .Include(e => e.Author)
                                                    .Single();
+                AuthorEntity expectedAuthorEntity = context.AuthorEntities.Single();
 
-                AuthorModel expectedAuthor = recipeModel.Author;
                 AuthorEntity authorEntity = recipeEntity.Author;
-                Assert.NotNull(authorEntity);
-                Assert.Equal(expectedAuthor.AuthorName, authorEntity.AuthorName);
-                Assert.Equal(expectedAuthor.AuthorImageUrl, authorEntity.AuthorImageUrl);
-
-                Assert.Same(authorEntity, recipeEntity.Author);
+                authorEntity.Should().NotBeNull()
+                            .And.BeSameAs(expectedAuthorEntity)
+                            .And.BeEquivalentTo(
+                                recipeModel.Author,
+                                options => options.Including(e => e.AuthorName)
+                                                  .Including(e => e.AuthorImageUrl)
+                                                  .WithMapping<AuthorEntity>(e => e.AuthorName, s => s.AuthorName)
+                                                  .WithMapping<AuthorEntity>(e => e.AuthorImageUrl, s => s.AuthorImageUrl));
             };
 
         // Call & Assert
@@ -242,19 +234,8 @@ public class RecipeRepositoryTest : IDisposable
                                                    .ThenInclude(e => e.Tag)
                                                    .Single();
 
-                int nrOfTags = tags.Length;
-                IReadOnlyCollection<RecipeTagEntity> orderedTags = recipeEntity.Tags
-                                                                               .OrderBy(e => e.Order)
-                                                                               .ToArray();
-                Assert.Equal(nrOfTags, orderedTags.Count);
-                for (var i = 0; i < nrOfTags; i++)
-                {
-                    string expectedTag = tags[i];
-                    RecipeTagEntity tagEntity = orderedTags.ElementAt(i);
-
-                    Assert.Equal(expectedTag, tagEntity.Tag.Tag);
-                    Assert.Equal(i, tagEntity.Order);
-                }
+                recipeEntity.Tags.OrderBy(t => t.Order).Should().Equal(tags, (s, e) => s.Tag.Tag == e);
+                context.TagEntities.Should().HaveCount(tags.Length);
             };
 
         // Call & Assert
