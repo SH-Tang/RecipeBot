@@ -62,8 +62,8 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
         PersistentRecipeCategory persistentCategory = PersistentRecipeCategoryCreator.Create(category);
 
         return await context.RecipeEntities
-                            .Include(r => r.Author)
                             .Where(r => r.RecipeCategory == persistentCategory)
+                            .Include(r => r.Author)
                             .Select(r => new RecipeEntryData(r.RecipeEntityId, r.RecipeTitle, r.Author.AuthorName))
                             .OrderBy(r => r.Id)
                             .ToArrayAsync();
