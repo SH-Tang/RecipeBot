@@ -18,6 +18,7 @@
 using Discord;
 using Discord.Common;
 using Discord.Interactions;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using RecipeBot.Discord.Data;
@@ -40,7 +41,7 @@ public class RecipeInteractionModuleTest
         var module = new RecipeInteractionModule(scopeFactory, loggingService);
 
         // Assert
-        Assert.IsAssignableFrom<InteractionModuleBase<SocketInteractionContext>>(module);
+        module.Should().BeAssignableTo<InteractionModuleBase<SocketInteractionContext>>();
     }
 
     [Fact]
@@ -55,11 +56,12 @@ public class RecipeInteractionModuleTest
             });
 
         // Assert
-        Assert.NotNull(commandAttribute);
-        Assert.Equal("recipe", commandAttribute.Name);
-
+        const string expectedName = "recipe";
         const string expectedDescription = "Formats and stores an user recipe";
-        Assert.Equal(expectedDescription, commandAttribute.Description);
+
+        commandAttribute.Should().NotBeNull();
+        commandAttribute!.Name.Should().Be(expectedName);
+        commandAttribute.Description.Should().Be(expectedDescription);
     }
 
     [Fact]
@@ -73,7 +75,7 @@ public class RecipeInteractionModuleTest
             });
 
         // Assert
-        Assert.NotNull(interactionAttribute);
-        Assert.Equal(RecipeModal.ModalId, interactionAttribute!.CustomId);
+        interactionAttribute.Should().NotBeNull();
+        interactionAttribute!.CustomId.Should().Be(RecipeModal.ModalId);
     }
 }
