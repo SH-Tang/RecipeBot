@@ -89,9 +89,7 @@ public class RecipeRepositoryTest : IDisposable
                 recipeEntity.Author.Should().NotBeNull().And.BeEquivalentTo(
                     recipeModel.Author,
                     options => options.Including(e => e.AuthorName)
-                                      .Including(e => e.AuthorImageUrl)
-                                      .WithMapping<AuthorEntity>(e => e.AuthorName, s => s.AuthorName)
-                                      .WithMapping<AuthorEntity>(e => e.AuthorImageUrl, s => s.AuthorImageUrl));
+                                      .Including(e => e.AuthorImageUrl));
 
                 recipeEntity.RecipeFields.Should().BeEmpty();
                 recipeEntity.Tags.Should().BeEmpty();
@@ -139,9 +137,7 @@ public class RecipeRepositoryTest : IDisposable
                 recipeEntity.Author.Should().NotBeNull().And.BeEquivalentTo(
                     recipeModel.Author,
                     options => options.Including(e => e.AuthorName)
-                                      .Including(e => e.AuthorImageUrl)
-                                      .WithMapping<AuthorEntity>(e => e.AuthorName, s => s.AuthorName)
-                                      .WithMapping<AuthorEntity>(e => e.AuthorImageUrl, s => s.AuthorImageUrl));
+                                      .Including(e => e.AuthorImageUrl));
 
                 recipeEntity.RecipeFields.OrderBy(f => f.Order).Should().BeEquivalentTo(
                     recipeModel.RecipeFields,
@@ -191,9 +187,7 @@ public class RecipeRepositoryTest : IDisposable
                             .And.BeEquivalentTo(
                                 recipeModel.Author,
                                 options => options.Including(e => e.AuthorName)
-                                                  .Including(e => e.AuthorImageUrl)
-                                                  .WithMapping<AuthorEntity>(e => e.AuthorName, s => s.AuthorName)
-                                                  .WithMapping<AuthorEntity>(e => e.AuthorImageUrl, s => s.AuthorImageUrl));
+                                                  .Including(e => e.AuthorImageUrl));
             };
 
         // Call & Assert
