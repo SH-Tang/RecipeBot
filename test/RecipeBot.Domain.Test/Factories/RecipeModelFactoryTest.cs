@@ -242,7 +242,7 @@ public class RecipeModelFactoryTest
                                    recipeCharacterLimitProvider.MaximumTitleLength +
                                    recipeCharacterLimitProvider.MaximumFieldDataLength +
                                    recipeCharacterLimitProvider.MaximumRecipeTagsLength;
-        Assert.True(totalCharacterLength > recipeCharacterLimitProvider.MaximumRecipeLength);
+        recipeCharacterLimitProvider.MaximumRecipeLength.Should().BeLessOrEqualTo(totalCharacterLength);
 
         // Call                    
         Action call = () => factory.Create(recipeData);

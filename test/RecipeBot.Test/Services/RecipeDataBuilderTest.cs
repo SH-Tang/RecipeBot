@@ -240,7 +240,7 @@ public class RecipeDataBuilderTest
         var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
 
         // Precondition
-        Assert.False(attachment.IsImage());
+        attachment.IsImage().Should().BeFalse();
 
         // Call
         Action call = () => builder.AddImage(attachment);
