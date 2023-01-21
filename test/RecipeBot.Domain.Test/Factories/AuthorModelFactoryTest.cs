@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using FluentAssertions;
 using NSubstitute;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Exceptions;
@@ -45,9 +46,10 @@ public class AuthorModelFactoryTest
         Action call = () => factory.Create(authorData);
 
         // Assert
-        var exception = Assert.Throws<ModelCreateException>(call);
         var expectedMessage = $"AuthorName must be less or equal to {maximumAuthorNameLength} characters.";
-        Assert.Equal(expectedMessage, exception.Message);
+
+        call.Should().ThrowExactly<ModelCreateException>()
+            .WithMessage(expectedMessage);
     }
 
     [Theory]
@@ -68,8 +70,8 @@ public class AuthorModelFactoryTest
         Action call = () => factory.Create(authorData);
 
         // Assert
-        string exceptionMessage = Assert.Throws<ModelCreateException>(call).Message;
-        Assert.False(exceptionMessage.StartsWith("AuthorName must be less or equal to"));
+        call.Should().ThrowExactly<ModelCreateException>()
+            .And.Message.Should().NotStartWith("AuthorName must be less or equal to");
     }
 
     [Theory]
@@ -93,7 +95,7 @@ public class AuthorModelFactoryTest
         AuthorModel model = factory.Create(authorData);
 
         // Assert
-        Assert.Equal(authorName, model.AuthorName);
-        Assert.Equal(authorImageUrl, model.AuthorImageUrl);
+        model.AuthorName.Should().Be(authorName);
+        model.AuthorImageUrl.Should().Be(authorImageUrl);
     }
 }

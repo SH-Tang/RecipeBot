@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
+using FluentAssertions;
 using NSubstitute;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Exceptions;
@@ -49,11 +50,13 @@ public class RecipeModelFactoryTest
         RecipeModel model = factory.Create(recipeData);
 
         // Assert
-        Assert.Null(model.RecipeImageUrl);
+        model.RecipeImageUrl.Should().BeNull();
 
-        AssertAuthor(recipeData.AuthorData, model.Author);
-        Assert.Equal(2, model.RecipeFields.Count());
+        model.Author.Should().BeEquivalentTo(recipeData.AuthorData);
+        
+        model.RecipeFields.Should().HaveCount(2);
         AssertMandatoryFields(recipeData, model.RecipeFields);
+
         AssertTags(recipeData, model.RecipeTags);
     }
 
@@ -73,11 +76,13 @@ public class RecipeModelFactoryTest
         RecipeModel model = factory.Create(recipeData);
 
         // Assert
-        Assert.Equal(imageUrl, model.RecipeImageUrl);
+        model.RecipeImageUrl.Should().Be(recipeData.ImageUrl);
 
-        AssertAuthor(recipeData.AuthorData, model.Author);
-        Assert.Equal(2, model.RecipeFields.Count());
+        model.Author.Should().BeEquivalentTo(recipeData.AuthorData);
+
+        model.RecipeFields.Should().HaveCount(2);
         AssertMandatoryFields(recipeData, model.RecipeFields);
+
         AssertTags(recipeData, model.RecipeTags);
     }
 
@@ -96,12 +101,12 @@ public class RecipeModelFactoryTest
         RecipeModel model = factory.Create(recipeData);
 
         // Assert
-        Assert.Equal(recipeData.RecipeTitle, model.Title);
-        Assert.Null(model.RecipeImageUrl);
+        model.RecipeImageUrl.Should().BeNull();
 
-        IEnumerable<RecipeFieldModel> recipeFields = model.RecipeFields;
-        Assert.Equal(2, recipeFields.Count());
-        AssertMandatoryFields(recipeData, recipeFields);
+        model.Author.Should().BeEquivalentTo(recipeData.AuthorData);
+
+        model.RecipeFields.Should().HaveCount(2);
+        AssertMandatoryFields(recipeData, model.RecipeFields);
 
         AssertTags(recipeData, model.RecipeTags);
     }
@@ -121,16 +126,15 @@ public class RecipeModelFactoryTest
         RecipeModel model = factory.Create(recipeData);
 
         // Assert
-        Assert.Null(model.RecipeImageUrl);
+        model.RecipeImageUrl.Should().BeNull();
 
-        AssertAuthor(recipeData.AuthorData, model.Author);
+        model.Author.Should().BeEquivalentTo(recipeData.AuthorData);
 
         IEnumerable<RecipeFieldModel> recipeFields = model.RecipeFields;
-        Assert.Equal(3, recipeFields.Count());
+        recipeFields.Should().HaveCount(3);
         AssertMandatoryFields(recipeData, recipeFields);
-        RecipeFieldModel additionalNotesField = recipeFields.ElementAt(2);
-        Assert.Equal("Additional notes", additionalNotesField.FieldName);
-        Assert.Equal(recipeData.AdditionalNotes, additionalNotesField.FieldData);
+        recipeFields.ElementAt(2).Should().Match<RecipeFieldModel>(
+            s => s.FieldName == "Additional notes" && s.FieldData == recipeData.AdditionalNotes);
 
         AssertTags(recipeData, model.RecipeTags);
     }
@@ -153,15 +157,15 @@ public class RecipeModelFactoryTest
         RecipeModel model = factory.Create(recipeData);
 
         // Assert
-        Assert.Equal(recipeData.RecipeTitle, model.Title);
-        Assert.Equal(recipeData.ImageUrl, model.RecipeImageUrl);
+        model.RecipeImageUrl.Should().Be(recipeData.ImageUrl);
+
+        model.Author.Should().BeEquivalentTo(recipeData.AuthorData);
 
         IEnumerable<RecipeFieldModel> recipeFields = model.RecipeFields;
-        Assert.Equal(3, recipeFields.Count());
+        recipeFields.Should().HaveCount(3);
         AssertMandatoryFields(recipeData, recipeFields);
-        RecipeFieldModel additionalNotesField = recipeFields.ElementAt(2);
-        Assert.Equal("Additional notes", additionalNotesField.FieldName);
-        Assert.Equal(recipeData.AdditionalNotes, additionalNotesField.FieldData);
+        recipeFields.ElementAt(2).Should().Match<RecipeFieldModel>(
+            s => s.FieldName == "Additional notes" && s.FieldData == recipeData.AdditionalNotes);
 
         AssertTags(recipeData, model.RecipeTags);
     }
@@ -186,9 +190,9 @@ public class RecipeModelFactoryTest
         Action call = () => factory.Create(recipeData);
 
         // Assert
-        var exception = Assert.Throws<ModelCreateException>(call);
         var expectedMessage = $"RecipeTitle must be less or equal to {recipeCharacterLimitProvider.MaximumTitleLength} characters.";
-        Assert.Equal(expectedMessage, exception.Message);
+        call.Should().Throw<ModelCreateException>()
+            .WithMessage(expectedMessage);
     }
 
     [Theory]
@@ -214,8 +218,8 @@ public class RecipeModelFactoryTest
         RecipeModel model = factory.Create(recipeData);
 
         // Assert
-        Assert.Equal(recipeData.RecipeTitle, model.Title);
-    }
+        model.Title.Should().Be(recipeData.RecipeTitle);
+     }
 
     [Fact]
     public void Recipe_with_data_exceeding_total_recipe_length_throws_exception()
@@ -244,9 +248,9 @@ public class RecipeModelFactoryTest
         Action call = () => factory.Create(recipeData);
 
         // Assert
-        var exception = Assert.Throws<ModelCreateException>(call);
         var expectedMessage = $"recipeData must be less or equal to {recipeCharacterLimitProvider.MaximumRecipeLength} characters.";
-        Assert.Equal(expectedMessage, exception.Message);
+        call.Should().Throw<ModelCreateException>()
+            .WithMessage(expectedMessage);
     }
 
     [Fact]
@@ -269,7 +273,7 @@ public class RecipeModelFactoryTest
         Action call = () => factory.Create(recipeData);
 
         // Assert
-        Assert.Throws<ModelCreateException>(call);
+        call.Should().Throw<ModelCreateException>();
     }
 
     private static IRecipeModelCharacterLimitProvider CreateDefaultRecipeCharacterLimitProvider()
@@ -285,21 +289,13 @@ public class RecipeModelFactoryTest
         return recipeCharacterLimitProvider;
     }
 
-    private static void AssertAuthor(AuthorData data, AuthorModel model)
-    {
-        Assert.Equal(data.AuthorName, model.AuthorName);
-        Assert.Equal(data.AuthorImageUrl, model.AuthorImageUrl);
-    }
-
     private static void AssertMandatoryFields(RecipeData data, IEnumerable<RecipeFieldModel> recipeFields)
     {
-        RecipeFieldModel ingredientField = recipeFields.First();
-        Assert.Equal("Ingredients", ingredientField.FieldName);
-        Assert.Equal(data.RecipeIngredients, ingredientField.FieldData);
+        recipeFields.ElementAt(0).Should().Match<RecipeFieldModel>(
+                s => s.FieldName == "Ingredients" && s.FieldData == data.RecipeIngredients );
 
-        RecipeFieldModel cookingStepsField = recipeFields.ElementAt(1);
-        Assert.Equal("Cooking steps", cookingStepsField.FieldName);
-        Assert.Equal(data.CookingSteps, cookingStepsField.FieldData);
+        recipeFields.ElementAt(1).Should().Match<RecipeFieldModel>(
+                s => s.FieldName == "Cooking steps" && s.FieldData == data.CookingSteps);
     }
 
     private static void AssertTags(RecipeData data, RecipeTagsModelWrapper wrapper)
@@ -307,11 +303,11 @@ public class RecipeModelFactoryTest
         string? tagData = data.Tags;
         if (string.IsNullOrWhiteSpace(tagData))
         {
-            Assert.Empty(wrapper.Tags);
+            wrapper.Tags.Should().BeEmpty();
         }
         else
         {
-            Assert.Equal(TagTestHelper.GetParsedTags(tagData), wrapper.Tags);
+            wrapper.Tags.Should().BeEquivalentTo(TagTestHelper.GetParsedTags(tagData), options => options.WithStrictOrdering());
         }
     }
 

@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using FluentAssertions;
 using RecipeBot.Domain.Models;
 using RecipeBot.TestUtils;
 using Xunit;
@@ -35,7 +36,7 @@ public class AuthorModelTest
         Action call = () => new AuthorModel(invalidAuthorName, imageUrl);
 
         // Assert
-        Assert.Throws<ArgumentException>(call);
+        call.Should().Throw<ArgumentException>();
     }
 
     [Theory]
@@ -52,7 +53,7 @@ public class AuthorModelTest
         Action call = () => new AuthorModel(authorName, invalidImageUrl);
 
         // Assert
-        Assert.Throws<ArgumentException>(call);
+        call.Should().Throw<ArgumentException>();
     }
 
     [Theory]
@@ -71,6 +72,6 @@ public class AuthorModelTest
         int totalLength = recipeField.TotalLength;
 
         // Assert
-        Assert.Equal(authorName.Length, totalLength);
+        totalLength.Should().Be(authorName.Length);
     }
 }

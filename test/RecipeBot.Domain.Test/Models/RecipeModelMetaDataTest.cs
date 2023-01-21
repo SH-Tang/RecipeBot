@@ -19,6 +19,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using AutoFixture;
+using FluentAssertions;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
 using Xunit;
@@ -45,6 +46,6 @@ public class RecipeModelMetaDataTest
         Action call = () => new RecipeModelMetaData(author, tags, invalidCategory);
 
         // Assert
-        Assert.Throws<InvalidEnumArgumentException>(call);
+        call.Should().ThrowExactly<InvalidEnumArgumentException>();
     }
 }

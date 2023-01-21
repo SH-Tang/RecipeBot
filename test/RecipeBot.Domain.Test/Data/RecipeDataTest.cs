@@ -18,6 +18,7 @@
 using System;
 using System.ComponentModel;
 using AutoFixture;
+using FluentAssertions;
 using RecipeBot.Domain.Data;
 using RecipeBot.TestUtils;
 using Xunit;
@@ -39,7 +40,7 @@ public class RecipeDataTest
         Action call = () => new RecipeData(authorData, category, fixture.Create<string>(), fixture.Create<string>(), fixture.Create<string>());
 
         // Assert
-        Assert.Throws<InvalidEnumArgumentException>(call);
+        call.Should().Throw<InvalidEnumArgumentException>();
     }
 
     [Theory]
@@ -54,7 +55,7 @@ public class RecipeDataTest
         Action call = () => new RecipeData(authorData, fixture.Create<RecipeCategory>(), invalidRecipeTitle, fixture.Create<string>(), fixture.Create<string>());
 
         // Assert
-        Assert.Throws<ArgumentException>(call);
+        call.Should().Throw<ArgumentException>();
     }
 
     [Theory]
@@ -69,7 +70,7 @@ public class RecipeDataTest
         Action call = () => new RecipeData(authorData, fixture.Create<RecipeCategory>(), fixture.Create<string>(), invalidRecipeIngredients, fixture.Create<string>());
 
         // Assert
-        Assert.Throws<ArgumentException>(call);
+        call.Should().Throw<ArgumentException>();
     }
 
     [Theory]
@@ -84,7 +85,7 @@ public class RecipeDataTest
         Action call = () => new RecipeData(authorData, fixture.Create<RecipeCategory>(), fixture.Create<string>(), fixture.Create<string>(), invalidCookingSteps);
 
         // Assert
-        Assert.Throws<ArgumentException>(call);
+        call.Should().Throw<ArgumentException>();
     }
 
     private static AuthorData CreateValidAuthorData(Fixture fixture)
