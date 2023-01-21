@@ -21,6 +21,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.Common.InfoModule;
+using FluentAssertions;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using Xunit;
@@ -44,20 +45,22 @@ public class BotInformationServiceTest
         Embed result = await service.GetCommandInfoSummaries(Enumerable.Empty<DiscordCommandInfo>());
 
         // Assert
-        Assert.Equal(Color.Blue, result.Color);
+        result.Color.Should().Be(Color.Blue);
 
         string expectedTitle = botInformation.BotInformationUrl == null
                                    ? "Available commands"
                                    : $"Available commands for {botInformation.BotName}";
-        Assert.Equal(expectedTitle, result.Title);
-        Assert.Equal(botInformation.BotInformationUrl, result.Url);
+        result.Title.Should().Be(expectedTitle);
+        result.Url.Should().Be(botInformation.BotInformationUrl);
 
-        AuthorInformation? authorInformation = botInformation.AuthorInformation;
-        Assert.NotNull(result.Author);
+        EmbedAuthor? resultAuthor = result.Author;
+        resultAuthor.Should().NotBeNull();
+
         EmbedAuthor embedAuthor = result.Author!.Value;
-        Assert.Equal(authorInformation?.AuthorName, embedAuthor.Name);
-        Assert.Equal(authorInformation?.AuthorUrl, embedAuthor.Url);
-        Assert.Equal(authorInformation?.AuthorAvatarUrl, embedAuthor.IconUrl);
+        AuthorInformation? authorInformation = botInformation.AuthorInformation;
+        embedAuthor.Name.Should().Be(authorInformation?.AuthorName);
+        embedAuthor.Url.Should().Be(authorInformation?.AuthorUrl);
+        embedAuthor.IconUrl.Should().Be(authorInformation?.AuthorAvatarUrl);
     }
 
     [Fact]
@@ -85,13 +88,18 @@ public class BotInformationServiceTest
 
         // Assert
         ImmutableArray<EmbedField> embedFields = result.Fields;
-        Assert.Equal(commandInfos.Count(), embedFields.Length);
-
-        var index = 0;
-        foreach (EmbedField embedField in embedFields)
-        {
-            AssertEmbedField(embedField, commandInfos.ElementAt(index++));
-        }
+        embedFields.Should().HaveCount(2)
+                   .And.SatisfyRespectively(
+                       firstField =>
+                       {
+                           firstField.Name.Should().Be(commandInfos.ElementAt(0).Name);
+                           firstField.Value.Should().Be($"No description available.{Environment.NewLine}");
+                       },
+                       secondField =>
+                       {
+                           secondField.Name.Should().Be(commandInfos.ElementAt(1).Name);
+                           secondField.Value.Should().Be(commandInfos.ElementAt(1).Summary);
+                       });
     }
 
     public static IEnumerable<object[]> GetInfoOptions()
@@ -115,13 +123,5 @@ public class BotInformationServiceTest
                 BotInformationUrl = @"https://github.com/"
             }
         };
-    }
-
-    private static void AssertEmbedField(EmbedField field, DiscordCommandInfo info)
-    {
-        Assert.Equal(field.Name, info.Name);
-
-        string expectedSummary = info.Summary ?? $"No description available.{Environment.NewLine}";
-        Assert.Equal(expectedSummary, field.Value);
     }
 }
