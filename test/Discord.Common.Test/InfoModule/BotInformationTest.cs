@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using Discord.Common.InfoModule;
+using FluentAssertions;
 using Xunit;
 
 namespace Discord.Common.Test.InfoModule;
@@ -29,7 +30,7 @@ public class BotInformationTest
         const string key = BotInformation.SectionKey;
 
         // Assert
-        Assert.Equal("BotInformation", key);
+        key.Should().Be("BotInformation");
     }
 
     [Fact]
@@ -39,8 +40,8 @@ public class BotInformationTest
         var options = new BotInformation();
 
         // Assert
-        Assert.Null(options.AuthorInformation);
-        Assert.Null(options.BotInformationUrl);
-        Assert.Null(options.BotName);
+        options.AuthorInformation.Should().BeNull();
+        options.BotInformationUrl.Should().BeNull();
+        options.BotName.Should().BeNull();
     }
 }

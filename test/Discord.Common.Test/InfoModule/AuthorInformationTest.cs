@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using Discord.Common.InfoModule;
+using FluentAssertions;
 using Xunit;
 
 namespace Discord.Common.Test.InfoModule;
@@ -29,8 +30,8 @@ public class AuthorInformationTest
         var options = new AuthorInformation();
 
         // Assert
-        Assert.Null(options.AuthorName);
-        Assert.Null(options.AuthorUrl);
-        Assert.Null(options.AuthorAvatarUrl);
+        options.AuthorName.Should().BeNull();
+        options.AuthorUrl.Should().BeNull();
+        options.AuthorAvatarUrl.Should().BeNull();
     }
 }

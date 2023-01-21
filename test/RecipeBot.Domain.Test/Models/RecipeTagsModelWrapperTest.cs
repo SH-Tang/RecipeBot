@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using AutoFixture;
+using FluentAssertions;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.TestUtils;
@@ -43,7 +44,7 @@ public class RecipeTagsModelWrapperTest
         Action call = () => new RecipeTagsModelWrapper(tagsModel, invalidCategory);
 
         // Assert
-        Assert.Throws<InvalidEnumArgumentException>(call);
+        call.Should().Throw<InvalidEnumArgumentException>();
     }
 
     [Fact]
@@ -59,7 +60,7 @@ public class RecipeTagsModelWrapperTest
         var wrapper = new RecipeTagsModelWrapper(tagsModel, category);
 
         // Assert
-        Assert.Same(tagsModel.Tags, wrapper.Tags);
+        wrapper.Tags.Should().BeSameAs(tagsModel.Tags);
     }
 
     [Theory]
@@ -84,7 +85,7 @@ public class RecipeTagsModelWrapperTest
 
         // Assert
         string expectedFirstTag = TagTestHelper.CategoryMapping[category];
-        Assert.Equal(expectedFirstTag, stringRepresentation);
+        stringRepresentation.Should().Be(expectedFirstTag);
     }
 
     [Fact]
@@ -104,7 +105,7 @@ public class RecipeTagsModelWrapperTest
         // Assert
         string expectedFirstTag = TagTestHelper.CategoryMapping[category];
         var expectedStringRepresentation = $"{expectedFirstTag}, {string.Join(", ", tags)}";
-        Assert.Equal(expectedStringRepresentation, stringRepresentation);
+        stringRepresentation.Should().Be(expectedStringRepresentation);
     }
 
     [Theory]
@@ -123,7 +124,7 @@ public class RecipeTagsModelWrapperTest
         int length = wrapper.TotalLength;
 
         // Assert
-        Assert.Equal(TagTestHelper.GetTotalTagsLength(category, tagsModel), length);
+        length.Should().Be(TagTestHelper.GetTotalTagsLength(category, tagsModel));
     }
 
     public static IEnumerable<object[]> GetTagsLengthTestCases()

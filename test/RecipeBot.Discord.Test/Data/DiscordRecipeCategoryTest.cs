@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using Discord.Interactions;
+using FluentAssertions;
 using RecipeBot.Discord.Data;
 using RecipeBot.TestUtils;
 using Xunit;
@@ -35,8 +36,8 @@ public class DiscordRecipeCategoryTest
         ChoiceDisplayAttribute? attribute = ReflectionHelper.GetCustomAttributeFromEnum<DiscordRecipeCategory, ChoiceDisplayAttribute>(category);
 
         // Assert
-        Assert.NotNull(attribute);
-        Assert.Equal(expectedDisplayValue, attribute!.Name);
+        attribute.Should().NotBeNull();
+        attribute!.Name.Should().Be(expectedDisplayValue);
     }
 
     [Theory]
@@ -48,7 +49,7 @@ public class DiscordRecipeCategoryTest
         var order = Convert.ToInt32(category);
 
         // Assert
-        Assert.Equal(expectedOrder, order);
+        order.Should().Be(expectedOrder);
     }
 
     public static IEnumerable<object[]> GetRecipeCategoryDisplayValues()

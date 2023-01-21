@@ -17,6 +17,7 @@
 
 using Discord;
 using Discord.Interactions;
+using FluentAssertions;
 using RecipeBot.Discord.Views;
 using RecipeBot.TestUtils;
 using Xunit;
@@ -35,7 +36,7 @@ public class RecipeModalTest
         string title = modal.Title;
 
         // Assert
-        Assert.Equal("Recipe", title);
+        title.Should().Be("Recipe");
     }
 
     [Fact]
@@ -83,34 +84,34 @@ public class RecipeModalTest
 
         AssertInputLabel("Notes", notesInputLabel);
         AssertModalParagraphInput("Additional notes for your recipe", notesModalInput);
-        Assert.NotNull(notesRequiredInput);
-        Assert.False(notesRequiredInput.IsRequired);
+        notesRequiredInput.Should().NotBeNull();
+        notesRequiredInput!.IsRequired.Should().BeFalse();
 
         AssertInputLabel("Tags", tagsInputLabel);
         AssertModalSingleLineInput("Optional Tag1, Optional Tag2, Optional Tag3, etc", EmbedFooterBuilder.MaxFooterTextLength, tagsModalInput);
-        Assert.NotNull(tagsRequiredInput);
-        Assert.False(tagsRequiredInput.IsRequired);
+        tagsRequiredInput.Should().NotBeNull();
+        tagsRequiredInput!.IsRequired.Should().BeFalse();
     }
 
     private static void AssertInputLabel(string expectedLabel, InputLabelAttribute? actual)
     {
-        Assert.NotNull(actual);
-        Assert.Equal(expectedLabel, actual.Label);
+        actual.Should().NotBeNull();
+        actual!.Label.Should().Be(expectedLabel);
     }
 
     private static void AssertModalSingleLineInput(string expectedPlaceholder, int expectedMaxLength, ModalTextInputAttribute? actual)
     {
-        Assert.NotNull(actual);
-        Assert.Equal(TextInputStyle.Short, actual.Style);
-        Assert.Equal(expectedMaxLength, actual.MaxLength);
-        Assert.Equal(expectedPlaceholder, actual.Placeholder);
+        actual.Should().NotBeNull();
+        actual!.Style.Should().Be(TextInputStyle.Short);
+        actual.MaxLength.Should().Be(expectedMaxLength);
+        actual.Placeholder.Should().Be(expectedPlaceholder);
     }
 
     private static void AssertModalParagraphInput(string expectedPlaceholder, ModalTextInputAttribute? actual)
     {
-        Assert.NotNull(actual);
-        Assert.Equal(TextInputStyle.Paragraph, actual.Style);
-        Assert.Equal(EmbedFieldBuilder.MaxFieldValueLength, actual.MaxLength);
-        Assert.Equal(expectedPlaceholder, actual.Placeholder);
+        actual.Should().NotBeNull();
+        actual!.Style.Should().Be(TextInputStyle.Paragraph);
+        actual.MaxLength.Should().Be(EmbedFieldBuilder.MaxFieldValueLength);
+        actual.Placeholder.Should().Be(expectedPlaceholder);
     }
 }

@@ -20,6 +20,7 @@ using Discord.Common.InfoModule;
 using Discord.Common.Options;
 using Discord.Interactions;
 using Discord.WebSocket;
+using FluentAssertions;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using RecipeBot.TestUtils;
@@ -48,7 +49,7 @@ public class InfoInteractionModuleTest
         var module = new InfoInteractionModule(commandService, interactionService, commandInfoFactory, infoService);
 
         // Assert
-        Assert.IsAssignableFrom<InteractionModuleBase<SocketInteractionContext>>(module);
+        module.Should().BeAssignableTo<InteractionModuleBase<SocketInteractionContext>>();
     }
 
     [Fact]
@@ -59,10 +60,10 @@ public class InfoInteractionModuleTest
             nameof(InfoInteractionModule.GetHelpResponseAsync));
 
         // Assert
-        Assert.NotNull(commandAttribute);
-        Assert.Equal("help", commandAttribute!.Name);
+        commandAttribute.Should().NotBeNull();
+        commandAttribute!.Name.Should().Be("help");
 
         const string expectedDescription = "Provides information about all the available commands.";
-        Assert.Equal(expectedDescription, commandAttribute.Description);
+        commandAttribute.Description.Should().Be(expectedDescription);
     }
 }

@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using Discord.Common.Utils;
+using FluentAssertions;
 using NSubstitute;
 using RecipeBot.TestUtils;
 using Xunit;
@@ -29,12 +30,15 @@ public class IAttachmentExtensionsTest
     [InlineData("someImageExtension")]
     public void Attachment_returns_true_when_image(string? imageType)
     {
+        // Setup
         var attachment = Substitute.For<IAttachment>();
         attachment.ContentType.Returns($"image/{imageType}");
 
+        // Call
         bool result = attachment.IsImage();
 
-        Assert.True(result);
+        // Assert
+        result.Should().BeTrue();
     }
 
     [Theory]
@@ -42,11 +46,14 @@ public class IAttachmentExtensionsTest
     [InlineData("somePrefix/")]
     public void Attachment_returns_false_when_not_an_image(string? imageType)
     {
+        // Setup
         var attachment = Substitute.For<IAttachment>();
         attachment.ContentType.Returns(imageType);
 
+        // Call
         bool result = attachment.IsImage();
 
-        Assert.False(result);
+        // Assert
+        result.Should().BeFalse();
     }
 }

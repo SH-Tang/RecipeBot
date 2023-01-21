@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
+using FluentAssertions;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.TestUtils;
@@ -42,7 +43,7 @@ public class RecipeModelTest
         Action call = () => new RecipeModel(CreateMetaData(fixture), Enumerable.Empty<RecipeFieldModel>(), invalidRecipeTitle);
 
         // Assert
-        Assert.Throws<ArgumentException>(call);
+        call.Should().ThrowExactly<ArgumentException>();
     }
 
     [Theory]
@@ -56,7 +57,7 @@ public class RecipeModelTest
         Action call = () => new RecipeModel(CreateMetaData(fixture), Enumerable.Empty<RecipeFieldModel>(), invalidRecipeTitle, imageUrl);
 
         // Assert
-        Assert.Throws<ArgumentException>(call);
+        call.Should().ThrowExactly<ArgumentException>();
     }
 
     [Fact]
@@ -70,7 +71,7 @@ public class RecipeModelTest
         var recipe = new RecipeModel(CreateMetaData(fixture), Enumerable.Empty<RecipeFieldModel>(), recipeTitle);
 
         // Assert
-        Assert.Null(recipe.RecipeImageUrl);
+        recipe.RecipeImageUrl.Should().BeNull();
     }
 
     [Fact]
@@ -84,7 +85,7 @@ public class RecipeModelTest
         var recipe = new RecipeModel(CreateMetaData(fixture), Enumerable.Empty<RecipeFieldModel>(), recipeTitle, imageUrl);
 
         // Assert
-        Assert.Equal(imageUrl, recipe.RecipeImageUrl);
+        recipe.RecipeImageUrl.Should().Be(imageUrl);
     }
 
     [Theory]
@@ -99,7 +100,7 @@ public class RecipeModelTest
         Action call = () => new RecipeModel(CreateMetaData(fixture), Enumerable.Empty<RecipeFieldModel>(), recipeTitle, invalidImageUrl);
 
         // Assert
-        Assert.Throws<ArgumentException>(call);
+        call.Should().ThrowExactly<ArgumentException>();
     }
 
     [Theory]
@@ -126,7 +127,7 @@ public class RecipeModelTest
         // Assert
         int expectedLength = recipeTitle.Length + metaData.Author.TotalLength + recipeFields.Sum(f => f.TotalLength)
                              + TagTestHelper.GetTotalTagsLength(metaData.Category, metaData.Tags);
-        Assert.Equal(expectedLength, totalLength);
+        totalLength.Should().Be(expectedLength);
     }
 
     [Theory]
@@ -153,7 +154,7 @@ public class RecipeModelTest
         // Assert
         int expectedLength = recipeTitle.Length + metaData.Author.TotalLength + recipeFields.Sum(f => f.TotalLength)
                              + TagTestHelper.GetTotalTagsLength(metaData.Category, metaData.Tags);
-        Assert.Equal(expectedLength, totalLength);
+        totalLength.Should().Be(expectedLength);
     }
 
     [Fact]
@@ -173,7 +174,7 @@ public class RecipeModelTest
 
         // Assert
         int expectedLength = recipeTitle.Length + +metaData.Author.TotalLength + recipe.RecipeTags.TotalLength;
-        Assert.Equal(expectedLength, totalLength);
+        totalLength.Should().Be(expectedLength);
     }
 
     [Fact]
@@ -193,7 +194,7 @@ public class RecipeModelTest
 
         // Assert
         int expectedLength = recipeTitle.Length + metaData.Author.TotalLength + TagTestHelper.GetTotalTagsLength(metaData.Category, metaData.Tags);
-        Assert.Equal(expectedLength, totalLength);
+        totalLength.Should().Be(expectedLength);
     }
 
     private static RecipeModelMetaData CreateMetaData(Fixture fixture)

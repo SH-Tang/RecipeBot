@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using FluentAssertions;
 using NSubstitute;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
@@ -47,9 +48,9 @@ public class RecipeFieldModelFactoryTest
         Action call = () => factory.Create(fieldName, fieldData);
 
         // Assert
-        var exception = Assert.Throws<ModelCreateException>(call);
         var expectedMessage = $"fieldName must be less or equal to {maximumFieldNameLength} characters.";
-        Assert.Equal(expectedMessage, exception.Message);
+        call.Should().Throw<ModelCreateException>()
+            .WithMessage(expectedMessage);
     }
 
     [Theory]
@@ -67,10 +68,9 @@ public class RecipeFieldModelFactoryTest
         Action call = () => factory.Create(invalidFieldName, "fieldData");
 
         // Assert
-        var exception = Assert.Throws<ModelCreateException>(call);
-        string exceptionMessage = exception.Message;
-        Assert.False(exceptionMessage.StartsWith("fieldName must be less or equal to"));
-        Assert.False(exceptionMessage.StartsWith("fieldData must be less or equal to"));
+        call.Should().Throw<ModelCreateException>()
+            .And.Message.Should().NotStartWith("fieldName must be less or equal to")
+            .And.NotStartWith("fieldData must be less or equal to");
     }
 
     [Fact]
@@ -93,9 +93,9 @@ public class RecipeFieldModelFactoryTest
         Action call = () => factory.Create(fieldName, fieldData);
 
         // Assert
-        var exception = Assert.Throws<ModelCreateException>(call);
         var expectedMessage = $"fieldData must be less or equal to {maximumFieldDataLength} characters.";
-        Assert.Equal(expectedMessage, exception.Message);
+        call.Should().Throw<ModelCreateException>()
+            .WithMessage(expectedMessage);
     }
 
     [Theory]
@@ -113,10 +113,9 @@ public class RecipeFieldModelFactoryTest
         Action call = () => factory.Create("fieldName", invalidFieldData);
 
         // Assert
-        var exception = Assert.Throws<ModelCreateException>(call);
-        string exceptionMessage = exception.Message;
-        Assert.False(exceptionMessage.StartsWith("fieldName must be less or equal to"));
-        Assert.False(exceptionMessage.StartsWith("fieldData must be less or equal to"));
+        call.Should().Throw<ModelCreateException>()
+            .And.Message.Should().NotStartWith("fieldName must be less or equal to")
+            .And.NotStartWith("fieldData must be less or equal to");
     }
 
     [Theory]
@@ -144,7 +143,7 @@ public class RecipeFieldModelFactoryTest
         RecipeFieldModel model = factory.Create(fieldName, fieldData);
 
         // Assert
-        Assert.Equal(fieldName, model.FieldName);
-        Assert.Equal(fieldData, model.FieldData);
+        model.FieldName.Should().Be(fieldName);
+        model.FieldData.Should().Be(fieldData);
     }
 }

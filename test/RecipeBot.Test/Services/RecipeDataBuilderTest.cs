@@ -21,6 +21,7 @@ using System.ComponentModel;
 using AutoFixture;
 using Discord;
 using Discord.Common.Utils;
+using FluentAssertions;
 using NSubstitute;
 using RecipeBot.Discord.Data;
 using RecipeBot.Domain.Data;
@@ -59,7 +60,7 @@ public class RecipeDataBuilderTest
         RecipeData result = builder.Build();
 
         // Assert
-        Assert.Equal(expectedCategory, result.Category);
+        result.Category.Should().Be(expectedCategory);
     }
 
     [Fact]
@@ -79,7 +80,7 @@ public class RecipeDataBuilderTest
         Action call = () => new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
 
         // Assert
-        Assert.Throws<InvalidEnumArgumentException>(call);
+        call.Should().Throw<InvalidEnumArgumentException>();
     }
 
     [Fact]
@@ -101,9 +102,9 @@ public class RecipeDataBuilderTest
 
         // Assert
         AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
-        Assert.Null(result.AdditionalNotes);
-        Assert.Null(result.ImageUrl);
-        Assert.Null(result.Tags);
+        result.AdditionalNotes.Should().BeNull();
+        result.ImageUrl.Should().BeNull();
+        result.Tags.Should().BeNull();
     }
 
     [Theory]
@@ -130,7 +131,7 @@ public class RecipeDataBuilderTest
 
         // Assert
         AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
-        Assert.Equal(notes, result.AdditionalNotes);
+        result.AdditionalNotes.Should().Be(notes);
     }
 
     [Theory]
@@ -155,7 +156,7 @@ public class RecipeDataBuilderTest
 
         // Assert
         AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
-        Assert.Equal(expectedRecipeImageUrl, result.ImageUrl);
+        result.ImageUrl.Should().Be(expectedRecipeImageUrl);
     }
 
     [Theory]
@@ -182,7 +183,7 @@ public class RecipeDataBuilderTest
 
         // Assert
         AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
-        Assert.Equal(tags, result.Tags);
+        result.Tags.Should().Be(tags);
     }
 
     [Fact]
@@ -214,9 +215,9 @@ public class RecipeDataBuilderTest
 
         // Assert
         AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
-        Assert.Equal(notes, result.AdditionalNotes);
-        Assert.Equal(recipeImageUrl, result.ImageUrl);
-        Assert.Equal(tags, result.Tags);
+        result.AdditionalNotes.Should().Be(notes);
+        result.ImageUrl.Should().Be(recipeImageUrl);
+        result.Tags.Should().Be(tags);
     }
 
     [Theory]
@@ -239,13 +240,13 @@ public class RecipeDataBuilderTest
         var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
 
         // Precondition
-        Assert.False(attachment.IsImage());
+        attachment.IsImage().Should().BeFalse();
 
         // Call
         Action call = () => builder.AddImage(attachment);
 
         // Assert
-        Assert.Throws<ArgumentException>(call);
+        call.Should().ThrowExactly<ArgumentException>();
     }
 
     public static IEnumerable<object?[]> GetValidImageAttachments()
@@ -272,10 +273,10 @@ public class RecipeDataBuilderTest
         string expectedRecipeTitle, string expectedRecipeIngredients, string expectedCookingSteps, AuthorData expectedAuthorData,
         RecipeData actualRecipeData)
     {
-        Assert.Equal(expectedRecipeTitle, actualRecipeData.RecipeTitle);
-        Assert.Equal(expectedRecipeIngredients, actualRecipeData.RecipeIngredients);
-        Assert.Equal(expectedCookingSteps, actualRecipeData.CookingSteps);
+        actualRecipeData.RecipeTitle.Should().Be(expectedRecipeTitle);
+        actualRecipeData.RecipeIngredients.Should().Be(expectedRecipeIngredients);
+        actualRecipeData.CookingSteps.Should().Be(expectedCookingSteps);
 
-        Assert.Same(expectedAuthorData, actualRecipeData.AuthorData);
+        actualRecipeData.AuthorData.Should().BeSameAs(expectedAuthorData);
     }
 }

@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using Discord.Common.Options;
+using FluentAssertions;
 using Xunit;
 
 namespace Discord.Common.Test.Options;
@@ -29,7 +30,7 @@ public class StringFormatOptionsTest
         const string key = StringFormatOptions.SectionKey;
 
         // Assert
-        Assert.Equal("StringFormatOptions", key);
+        key.Should().Be("StringFormatOptions");
     }
 
     [Fact]
@@ -39,8 +40,8 @@ public class StringFormatOptionsTest
         var options = new StringFormatOptions();
 
         // Assert
-        Assert.Equal("F", options.FloatingNumberFormat);
-        Assert.Equal("F", options.DateTimeFormat);
-        Assert.Equal("c", options.TimeSpanFormat);
+        options.FloatingNumberFormat.Should().Be("F");
+        options.DateTimeFormat.Should().Be("F");
+        options.TimeSpanFormat.Should().Be("c");
     }
 }

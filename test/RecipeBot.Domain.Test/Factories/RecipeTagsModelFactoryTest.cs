@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using AutoFixture;
+using FluentAssertions;
 using NSubstitute;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
@@ -44,9 +45,9 @@ public class RecipeTagsModelFactoryTest
         Action call = () => factory.Create(tags);
 
         // Assert
-        var exception = Assert.Throws<ModelCreateException>(call);
         var expectedMessage = $"The total tag character length must be less or equal to {maximumTagsLength} characters.";
-        Assert.Equal(expectedMessage, exception.Message);
+        call.Should().Throw<ModelCreateException>()
+            .WithMessage(expectedMessage);
     }
 
     [Theory]
@@ -64,7 +65,7 @@ public class RecipeTagsModelFactoryTest
         RecipeTagsModel model = factory.Create(tags);
 
         // Assert
-        Assert.Empty(model.Tags);
+        model.Tags.Should().BeEmpty();
     }
 
     [Theory]
@@ -82,7 +83,7 @@ public class RecipeTagsModelFactoryTest
         RecipeTagsModel model = factory.Create(tags);
 
         // Assert
-        Assert.Equal(expectedTags, model.Tags);
+        model.Tags.Should().BeEquivalentTo(expectedTags, options => options.WithStrictOrdering());
     }
 
     public static IEnumerable<object[]> GetUniqueTagsTestCases()

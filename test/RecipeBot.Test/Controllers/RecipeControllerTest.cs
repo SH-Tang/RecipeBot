@@ -23,8 +23,8 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Discord;
 using Discord.Common;
+using FluentAssertions;
 using NSubstitute;
-using NSubstitute.ExceptionExtensions;
 using RecipeBot.Controllers;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
@@ -53,7 +53,7 @@ public class RecipeControllerTest
         var controller = new RecipeController(limitProvider, repository, logger);
 
         // Assert
-        Assert.IsAssignableFrom<IRecipeController>(controller);
+        controller.Should().BeAssignableTo<IRecipeController>();
     }
 
     [Fact]
@@ -75,8 +75,11 @@ public class RecipeControllerTest
 
         var controller = new RecipeController(limitProvider, repository, logger);
 
-        // Call & Assert
-        await Assert.ThrowsAsync<InvalidEnumArgumentException>(() => controller.SaveRecipeAsync(modal, user, category, null));
+        // Call
+        Func<Task> call = () => controller.SaveRecipeAsync(modal, user, category, null);
+
+        // Assert
+        await call.Should().ThrowAsync<InvalidEnumArgumentException>();
         await repository.DidNotReceiveWithAnyArgs().SaveRecipeAsync(Arg.Any<RecipeModel>());
     }
 
@@ -97,7 +100,6 @@ public class RecipeControllerTest
         repository.SaveRecipeAsync(Arg.Any<RecipeModel>())
                   .ReturnsForAnyArgs(Task.FromException<RepositoryDataSaveException>(new RepositoryDataSaveException(exceptionMessage)));
 
-
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
         var logger = Substitute.For<ILoggingService>();
         var controller = new RecipeController(limitProvider, repository, logger);
@@ -106,9 +108,8 @@ public class RecipeControllerTest
         ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, null);
 
         // Assert
-        Assert.True(controllerResult.HasError);
-        Assert.Equal(exceptionMessage, controllerResult.ErrorMessage);
-
+        controllerResult.HasError.Should().BeTrue();
+        controllerResult.ErrorMessage.Should().NotBeNullOrWhiteSpace();
     }
 
     [Fact]
@@ -118,12 +119,11 @@ public class RecipeControllerTest
         var fixture = new Fixture();
         var category = fixture.Create<DiscordRecipeCategory>();
         var modal = fixture.Create<RecipeModal>();
-        
+
         var user = Substitute.For<IUser>();
         user.Username.Returns("Recipe author");
         user.GetAvatarUrl().ReturnsForAnyArgs("https://AuthorImage.url");
 
-        
         var limitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
         limitProvider.MaximumTitleLength.Returns(EmbedBuilder.MaxTitleLength);
         limitProvider.MaximumAuthorNameLength.Returns(EmbedAuthorBuilder.MaxAuthorNameLength);
@@ -139,8 +139,8 @@ public class RecipeControllerTest
         ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, null);
 
         // Assert
-        Assert.True(controllerResult.HasError);
-        Assert.NotNull(controllerResult.ErrorMessage);
+        controllerResult.HasError.Should().BeTrue();
+        controllerResult.ErrorMessage.Should().NotBeNullOrWhiteSpace();
 
         await repository.DidNotReceiveWithAnyArgs().SaveRecipeAsync(Arg.Any<RecipeModel>());
     }
@@ -180,11 +180,11 @@ public class RecipeControllerTest
         ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, null);
 
         // Assert
-        Assert.False(controllerResult.HasError);
+        controllerResult.HasError.Should().BeFalse();
 
         Embed embedResult = controllerResult.Result!;
         AssertCommonEmbedResponseProperties(user, category, modal, expectedColor, embedResult);
-        Assert.Null(embedResult.Image);
+        embedResult.Image.Should().BeNull();
     }
 
     [Fact]
@@ -219,8 +219,8 @@ public class RecipeControllerTest
         ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, attachment);
 
         // Assert
-        Assert.True(controllerResult.HasError);
-        Assert.NotNull(controllerResult.ErrorMessage);
+        controllerResult.HasError.Should().BeTrue();
+        controllerResult.ErrorMessage.Should().NotBeNullOrWhiteSpace();
 
         await repository.DidNotReceiveWithAnyArgs().SaveRecipeAsync(Arg.Any<RecipeModel>());
     }
@@ -265,15 +265,13 @@ public class RecipeControllerTest
         ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, attachment);
 
         // Assert
-        Assert.False(controllerResult.HasError);
+        controllerResult.HasError.Should().BeFalse();
 
         Embed embedResult = controllerResult.Result!;
         AssertCommonEmbedResponseProperties(user, category, modal, expectedColor, embedResult);
 
         EmbedImage? embedImage = embedResult.Image;
-        Assert.NotNull(embedImage);
-        EmbedImage resultImage = embedImage.Value;
-        Assert.Equal(recipeImageUrl, resultImage.Url);
+        embedImage.Should().Match<EmbedImage?>(s => s.HasValue && s.Value.Url == recipeImageUrl);
     }
 
     [Fact]
@@ -318,7 +316,7 @@ public class RecipeControllerTest
         // Assert
         RecipeModel savedModel = savedModels.Single();
         RecipeModelTestHelper.AssertCommonModelProperties(user, category, modal, savedModel);
-        Assert.Null(savedModel.RecipeImageUrl);
+        savedModel.RecipeImageUrl.Should().BeNull();
     }
 
     [Fact]
@@ -368,7 +366,7 @@ public class RecipeControllerTest
         // Assert
         RecipeModel savedModel = savedModels.Single();
         RecipeModelTestHelper.AssertCommonModelProperties(user, category, modal, savedModel);
-        Assert.Equal(recipeImageUrl, savedModel.RecipeImageUrl);
+        savedModel.RecipeImageUrl.Should().Be(recipeImageUrl);
     }
 
     public static IEnumerable<object[]> GetRecipeCategoriesAndColor()
@@ -437,35 +435,34 @@ public class RecipeControllerTest
     private static void AssertCommonEmbedResponseProperties(
         IUser user, DiscordRecipeCategory category, RecipeModal modal, Color color, IEmbed actualResponse)
     {
+        actualResponse.Title.Should().Be(modal.RecipeTitle);
+        actualResponse.Color.Should().Be(color);
+
         EmbedAuthor? actualResponseAuthor = actualResponse.Author;
-        Assert.NotNull(actualResponseAuthor);
-        AssertAuthor(user.Username, user.GetAvatarUrl(), actualResponseAuthor.Value);
+        actualResponseAuthor.Should().NotBeNull();
+        AssertAuthor(user.Username, user.GetAvatarUrl(), actualResponseAuthor!.Value);
 
-        Assert.Equal(modal.RecipeTitle, actualResponse.Title);
-
-        Assert.Equal(3, actualResponse.Fields.Length);
-        AssertField("Ingredients", modal.Ingredients, actualResponse.Fields[0]);
-        AssertField("Cooking steps", modal.CookingSteps, actualResponse.Fields[1]);
-        AssertField("Additional notes", modal.Notes, actualResponse.Fields[2]);
-
-        Assert.Equal(color, actualResponse.Color);
+        actualResponse.Fields.Should().SatisfyRespectively(
+            firstField => AssertField("Ingredients", modal.Ingredients, firstField),
+            secondField => AssertField("Cooking steps", modal.CookingSteps, secondField),
+            thirdField => AssertField("Additional notes", modal.Notes, thirdField));
 
         EmbedFooter? actualResponseFooter = actualResponse.Footer;
-        Assert.NotNull(actualResponseFooter);
-        AssertTags(category, modal.Tags, actualResponseFooter.Value);
+        actualResponseFooter.Should().NotBeNull();
+        AssertTags(category, modal.Tags, actualResponseFooter!.Value);
     }
 
     private static void AssertAuthor(string expectedAuthorName, string expectedAuthorImageUrl, EmbedAuthor actualAuthor)
     {
-        Assert.Equal(expectedAuthorName, (string?)actualAuthor.Name);
-        Assert.Equal(expectedAuthorImageUrl, (string?)actualAuthor.IconUrl);
+        actualAuthor.Name.Should().Be(expectedAuthorName);
+        actualAuthor.IconUrl.Should().Be(expectedAuthorImageUrl);
     }
 
     private static void AssertField(string expectedName, string? expectedValue, EmbedField actualField)
     {
-        Assert.Equal(expectedName, (string?)actualField.Name);
-        Assert.Equal(expectedValue, (string?)actualField.Value);
-        Assert.False(actualField.Inline);
+        actualField.Name.Should().Be(expectedName);
+        actualField.Value.Should().Be(expectedValue);
+        actualField.Inline.Should().BeFalse();
     }
 
     private static void AssertTags(DiscordRecipeCategory category, string? tags, EmbedFooter actualFooter)
@@ -481,6 +478,6 @@ public class RecipeControllerTest
         }
 
         string expectedFooterText = string.Join(", ", expectedTags);
-        Assert.Equal(expectedFooterText, (string?)actualFooter.Text);
+        actualFooter.Text.Should().Be(expectedFooterText);
     }
 }

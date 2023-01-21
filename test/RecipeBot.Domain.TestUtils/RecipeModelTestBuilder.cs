@@ -42,13 +42,13 @@ public class RecipeModelTestBuilder
     /// <summary>
     /// Creates a new instance of <see cref="RecipeModelTestBuilder"/>.
     /// </summary>
-    public RecipeModelTestBuilder() :this(new ConstructionProperties
+    public RecipeModelTestBuilder() : this(new ConstructionProperties
     {
         MaxTitleLength = 256,
         MaxAuthorNameLength = 256,
         MaxFieldDataLength = 256,
         MaxFieldNameLength = 256
-    }){}
+    }) {}
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeModelTestBuilder"/>.

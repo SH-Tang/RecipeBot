@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Discord.Common.Options;
+using FluentAssertions;
 using Xunit;
 
 namespace Discord.Common.Test.Options;
@@ -46,7 +47,7 @@ public class StringFormatOptionsExtensionsTest
         string formattedValue = options.Format(value);
 
         // Assert
-        Assert.Equal(expectedValue, formattedValue);
+        formattedValue.Should().Be(expectedValue);
     }
 
     [Theory]
@@ -63,7 +64,7 @@ public class StringFormatOptionsExtensionsTest
         string formattedValue = options.Format(value);
 
         // Assert
-        Assert.Equal(expectedValue, formattedValue);
+        formattedValue.Should().Be(expectedValue);
     }
 
     [Theory]
@@ -80,7 +81,7 @@ public class StringFormatOptionsExtensionsTest
         string formattedValue = options.Format(value);
 
         // Assert
-        Assert.Equal(expectedValue, formattedValue);
+        formattedValue.Should().Be(expectedValue);
     }
 
     public static IEnumerable<object[]> GetDateTimeTestCaseData()

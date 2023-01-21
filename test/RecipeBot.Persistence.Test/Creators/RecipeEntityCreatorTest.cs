@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using AutoFixture;
+using FluentAssertions;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.TestUtils;
@@ -57,6 +58,6 @@ public class RecipeEntityCreatorTest
         RecipeEntity recipeEntity = RecipeEntityCreator.Create(recipeModel, authorEntity, new List<RecipeTagEntity>());
 
         // Assert
-        Assert.Equal(expectedCategory, recipeEntity.RecipeCategory);
+        recipeEntity.RecipeCategory.Should().Be(expectedCategory);
     }
 }

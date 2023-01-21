@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using Discord.Common.Options;
+using FluentAssertions;
 using Xunit;
 
 namespace Discord.Common.Test.Options;
@@ -29,7 +30,7 @@ public class DiscordCommandOptionsTest
         const string key = DiscordCommandOptions.SectionKey;
 
         // Assert
-        Assert.Equal("CommandOptions", key);
+        key.Should().Be("CommandOptions");
     }
 
     [Fact]
@@ -39,7 +40,7 @@ public class DiscordCommandOptionsTest
         var options = new DiscordCommandOptions();
 
         // Assert
-        Assert.Equal('~', options.CommandPrefix);
-        Assert.Null(options.TestGuildId);
+        options.CommandPrefix.Should().Be('~');
+        options.TestGuildId.Should().BeNull();
     }
 }

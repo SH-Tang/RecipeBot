@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using FluentAssertions;
 using Xunit;
 
 namespace Common.Utils.Test;
@@ -93,7 +94,7 @@ public class UrlValidationHelperTest
         Action call = () => UrlValidationHelper.ValidateHttpUrl(invalidUrl);
 
         // Assert
-        var exception = Assert.Throws<ArgumentException>(call);
-        Assert.Equal("url is an invalid http or https url.", exception.Message);
+        call.Should().ThrowExactly<ArgumentException>()
+            .WithMessage("url is an invalid http or https url.");
     }
 }

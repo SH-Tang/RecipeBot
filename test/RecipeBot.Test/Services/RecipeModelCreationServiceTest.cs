@@ -18,16 +18,15 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using AutoFixture;
 using Discord;
+using FluentAssertions;
 using NSubstitute;
 using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Models;
-using RecipeBot.Domain.TestUtils;
 using RecipeBot.Services;
 using RecipeBot.TestUtils;
 using Xunit;
@@ -63,7 +62,7 @@ public class RecipeModelCreationServiceTest
         Action call = () => service.CreateRecipeModel(modal, user, category);
 
         // Assert
-        Assert.Throws<InvalidEnumArgumentException>(call);
+        call.Should().Throw<InvalidEnumArgumentException>();
     }
 
     [Fact]
@@ -99,7 +98,7 @@ public class RecipeModelCreationServiceTest
         Action call = () => service.CreateRecipeModel(modal, user, category);
 
         // Assert
-        Assert.Throws<ModelCreateException>(call);
+        call.Should().Throw<ModelCreateException>();
     }
 
     [Theory]
@@ -135,7 +134,7 @@ public class RecipeModelCreationServiceTest
 
         // Assert
         RecipeModelTestHelper.AssertCommonModelProperties(user, category, modal, model);
-        Assert.Null(model.RecipeImageUrl);
+        model.RecipeImageUrl.Should().BeNull();
     }
 
     [Fact]
@@ -176,7 +175,7 @@ public class RecipeModelCreationServiceTest
         Action call = () => service.CreateRecipeModel(modal, user, category, attachment);
 
         // Assert
-        Assert.Throws<ModelCreateException>(call);
+        call.Should().Throw<ModelCreateException>();
     }
 
     [Fact]
@@ -210,7 +209,7 @@ public class RecipeModelCreationServiceTest
         Action call = () => service.CreateRecipeModel(modal, user, category, attachment);
 
         // Assert
-        Assert.Throws<InvalidEnumArgumentException>(call);
+        call.Should().Throw<InvalidEnumArgumentException>();
     }
 
     [Theory]
@@ -251,7 +250,7 @@ public class RecipeModelCreationServiceTest
 
         // Assert
         RecipeModelTestHelper.AssertCommonModelProperties(user, category, modal, recipeModel);
-        Assert.Equal(recipeImageUrl, recipeModel.RecipeImageUrl);
+        recipeModel.RecipeImageUrl.Should().Be(recipeImageUrl);
     }
 
     public static IEnumerable<object[]> GetRecipeCategories()

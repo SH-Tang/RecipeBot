@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using Discord;
+using FluentAssertions;
 using RecipeBot.Providers;
 using Xunit;
 
@@ -30,14 +31,14 @@ public class DiscordCharacterLimitProviderTest
         var limitProvider = new DiscordCharacterLimitProvider();
 
         // Assert
-        Assert.Equal(EmbedBuilder.MaxEmbedLength, limitProvider.MaximumRecipeLength);
-        Assert.Equal(EmbedBuilder.MaxTitleLength, limitProvider.MaximumTitleLength);
+        limitProvider.MaximumRecipeLength.Should().Be(EmbedBuilder.MaxEmbedLength);
+        limitProvider.MaximumTitleLength.Should().Be(EmbedBuilder.MaxTitleLength);
 
-        Assert.Equal(EmbedAuthorBuilder.MaxAuthorNameLength, limitProvider.MaximumAuthorNameLength);
+        limitProvider.MaximumAuthorNameLength.Should().Be(EmbedAuthorBuilder.MaxAuthorNameLength);
 
-        Assert.Equal(EmbedFieldBuilder.MaxFieldNameLength, limitProvider.MaximumFieldNameLength);
-        Assert.Equal(EmbedFieldBuilder.MaxFieldValueLength, limitProvider.MaximumFieldDataLength);
+        limitProvider.MaximumFieldNameLength.Should().Be(EmbedFieldBuilder.MaxFieldNameLength);
+        limitProvider.MaximumFieldDataLength.Should().Be(EmbedFieldBuilder.MaxFieldValueLength);
 
-        Assert.Equal(EmbedFooterBuilder.MaxFooterTextLength, limitProvider.MaximumRecipeTagsLength);
+        limitProvider.MaximumRecipeTagsLength.Should().Be(EmbedFooterBuilder.MaxFooterTextLength);
     }
 }

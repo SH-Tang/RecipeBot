@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using AutoFixture;
+using FluentAssertions;
 using RecipeBot.Discord.Controllers;
 using Xunit;
 
@@ -33,9 +34,9 @@ public class ControllerResultTest
         var controllerResult = new ControllerResult<object>(result);
 
         // Assert
-        Assert.Same(result, controllerResult.Result);
-        Assert.False(controllerResult.HasError);
-        Assert.Null(controllerResult.ErrorMessage);
+        controllerResult.Result.Should().BeSameAs(result);
+        controllerResult.HasError.Should().BeFalse();
+        controllerResult.ErrorMessage.Should().BeNull();
     }
 
     [Fact]
@@ -49,8 +50,8 @@ public class ControllerResultTest
         var controllerResult = new ControllerResult<object>(errorMessage);
 
         // Assert
-        Assert.Null(controllerResult.Result);
-        Assert.True(controllerResult.HasError);
-        Assert.Equal(errorMessage, controllerResult.ErrorMessage);
+        controllerResult.Result.Should().BeNull();
+        controllerResult.HasError.Should().BeTrue();
+        controllerResult.ErrorMessage.Should().Be(errorMessage);
     }
 }
