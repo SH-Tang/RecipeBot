@@ -36,7 +36,7 @@ public class RecipeModalTest
         string title = modal.Title;
 
         // Assert
-        Assert.Equal("Recipe", title);
+        title.Should().Be("Recipe");
     }
 
     [Fact]
@@ -85,12 +85,12 @@ public class RecipeModalTest
         AssertInputLabel("Notes", notesInputLabel);
         AssertModalParagraphInput("Additional notes for your recipe", notesModalInput);
         notesRequiredInput.Should().NotBeNull();
-        notesRequiredInput.IsRequired.Should().BeFalse();
+        notesRequiredInput!.IsRequired.Should().BeFalse();
 
         AssertInputLabel("Tags", tagsInputLabel);
         AssertModalSingleLineInput("Optional Tag1, Optional Tag2, Optional Tag3, etc", EmbedFooterBuilder.MaxFooterTextLength, tagsModalInput);
         tagsRequiredInput.Should().NotBeNull();
-        tagsRequiredInput.IsRequired.Should().BeFalse();
+        tagsRequiredInput!.IsRequired.Should().BeFalse();
     }
 
     private static void AssertInputLabel(string expectedLabel, InputLabelAttribute? actual)

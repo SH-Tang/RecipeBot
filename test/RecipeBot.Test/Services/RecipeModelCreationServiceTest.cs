@@ -21,6 +21,7 @@ using System.ComponentModel;
 using System.Linq;
 using AutoFixture;
 using Discord;
+using FluentAssertions;
 using NSubstitute;
 using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Views;
@@ -63,7 +64,7 @@ public class RecipeModelCreationServiceTest
         Action call = () => service.CreateRecipeModel(modal, user, category);
 
         // Assert
-        Assert.Throws<InvalidEnumArgumentException>(call);
+        call.Should().ThrowExactly<InvalidEnumArgumentException>();
     }
 
     [Fact]
@@ -99,7 +100,7 @@ public class RecipeModelCreationServiceTest
         Action call = () => service.CreateRecipeModel(modal, user, category);
 
         // Assert
-        Assert.Throws<ModelCreateException>(call);
+        call.Should().ThrowExactly<ModelCreateException>();
     }
 
     [Theory]
@@ -135,7 +136,7 @@ public class RecipeModelCreationServiceTest
 
         // Assert
         RecipeModelTestHelper.AssertCommonModelProperties(user, category, modal, model);
-        Assert.Null(model.RecipeImageUrl);
+        model.RecipeImageUrl.Should().BeNull();
     }
 
     [Fact]
@@ -176,7 +177,7 @@ public class RecipeModelCreationServiceTest
         Action call = () => service.CreateRecipeModel(modal, user, category, attachment);
 
         // Assert
-        Assert.Throws<ModelCreateException>(call);
+        call.Should().ThrowExactly<ModelCreateException>();
     }
 
     [Fact]
@@ -210,7 +211,7 @@ public class RecipeModelCreationServiceTest
         Action call = () => service.CreateRecipeModel(modal, user, category, attachment);
 
         // Assert
-        Assert.Throws<InvalidEnumArgumentException>(call);
+        call.Should().ThrowExactly<InvalidEnumArgumentException>();
     }
 
     [Theory]
@@ -251,7 +252,7 @@ public class RecipeModelCreationServiceTest
 
         // Assert
         RecipeModelTestHelper.AssertCommonModelProperties(user, category, modal, recipeModel);
-        Assert.Equal(recipeImageUrl, recipeModel.RecipeImageUrl);
+        recipeModel.RecipeImageUrl.Should().Be(recipeImageUrl);
     }
 
     public static IEnumerable<object[]> GetRecipeCategories()
