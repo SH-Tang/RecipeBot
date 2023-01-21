@@ -43,7 +43,7 @@ public class RecipeModelTest
         Action call = () => new RecipeModel(CreateMetaData(fixture), Enumerable.Empty<RecipeFieldModel>(), invalidRecipeTitle);
 
         // Assert
-        call.Should().Throw<ArgumentException>();
+        call.Should().ThrowExactly<ArgumentException>();
     }
 
     [Theory]
@@ -57,7 +57,7 @@ public class RecipeModelTest
         Action call = () => new RecipeModel(CreateMetaData(fixture), Enumerable.Empty<RecipeFieldModel>(), invalidRecipeTitle, imageUrl);
 
         // Assert
-        call.Should().Throw<ArgumentException>();
+        call.Should().ThrowExactly<ArgumentException>();
     }
 
     [Fact]

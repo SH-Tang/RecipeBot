@@ -55,7 +55,7 @@ public class RecipeDataTest
         Action call = () => new RecipeData(authorData, fixture.Create<RecipeCategory>(), invalidRecipeTitle, fixture.Create<string>(), fixture.Create<string>());
 
         // Assert
-        call.Should().Throw<ArgumentException>();
+        call.Should().ThrowExactly<ArgumentException>();
     }
 
     [Theory]
@@ -70,7 +70,7 @@ public class RecipeDataTest
         Action call = () => new RecipeData(authorData, fixture.Create<RecipeCategory>(), fixture.Create<string>(), invalidRecipeIngredients, fixture.Create<string>());
 
         // Assert
-        call.Should().Throw<ArgumentException>();
+        call.Should().ThrowExactly<ArgumentException>();
     }
 
     [Theory]
@@ -85,7 +85,7 @@ public class RecipeDataTest
         Action call = () => new RecipeData(authorData, fixture.Create<RecipeCategory>(), fixture.Create<string>(), fixture.Create<string>(), invalidCookingSteps);
 
         // Assert
-        call.Should().Throw<ArgumentException>();
+        call.Should().ThrowExactly<ArgumentException>();
     }
 
     private static AuthorData CreateValidAuthorData(Fixture fixture)

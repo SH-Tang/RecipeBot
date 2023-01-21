@@ -36,7 +36,7 @@ public class AuthorDataTest
         Action call = () => new AuthorData(invalidAuthorName, authorImageUrl);
 
         // Assert
-        call.Should().Throw<ArgumentException>();
+        call.Should().ThrowExactly<ArgumentException>();
     }
 
     [Theory]
@@ -50,6 +50,6 @@ public class AuthorDataTest
         Action call = () => new AuthorData(authorName, invalidAuthorImageUrl);
 
         // Assert
-        call.Should().Throw<ArgumentException>();
+        call.Should().ThrowExactly<ArgumentException>();
     }
 }

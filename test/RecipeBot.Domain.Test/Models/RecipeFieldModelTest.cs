@@ -36,7 +36,7 @@ public class RecipeFieldModelTest
         Action call = () => new RecipeFieldModel(invalidFieldName, fieldData);
 
         // Assert
-        call.Should().Throw<ArgumentException>();
+        call.Should().ThrowExactly<ArgumentException>();
     }
 
     [Theory]
@@ -50,7 +50,7 @@ public class RecipeFieldModelTest
         Action call = () => new RecipeFieldModel(fieldName, invalidFieldData);
 
         // Assert
-        call.Should().Throw<ArgumentException>();
+        call.Should().ThrowExactly<ArgumentException>();
     }
 
     [Theory]

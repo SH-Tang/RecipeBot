@@ -46,6 +46,6 @@ public class RecipeModelMetaDataTest
         Action call = () => new RecipeModelMetaData(author, tags, invalidCategory);
 
         // Assert
-        call.Should().ThrowExactly<InvalidEnumArgumentException>();
+        call.Should().Throw<InvalidEnumArgumentException>();
     }
 }

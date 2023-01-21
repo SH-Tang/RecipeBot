@@ -48,7 +48,7 @@ public class AuthorModelFactoryTest
         // Assert
         var expectedMessage = $"AuthorName must be less or equal to {maximumAuthorNameLength} characters.";
 
-        call.Should().ThrowExactly<ModelCreateException>()
+        call.Should().Throw<ModelCreateException>()
             .WithMessage(expectedMessage);
     }
 
@@ -70,7 +70,7 @@ public class AuthorModelFactoryTest
         Action call = () => factory.Create(authorData);
 
         // Assert
-        call.Should().ThrowExactly<ModelCreateException>()
+        call.Should().Throw<ModelCreateException>()
             .And.Message.Should().NotStartWith("AuthorName must be less or equal to");
     }
 

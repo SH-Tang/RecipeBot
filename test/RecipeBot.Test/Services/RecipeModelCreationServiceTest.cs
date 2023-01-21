@@ -62,7 +62,7 @@ public class RecipeModelCreationServiceTest
         Action call = () => service.CreateRecipeModel(modal, user, category);
 
         // Assert
-        call.Should().ThrowExactly<InvalidEnumArgumentException>();
+        call.Should().Throw<InvalidEnumArgumentException>();
     }
 
     [Fact]
@@ -98,7 +98,7 @@ public class RecipeModelCreationServiceTest
         Action call = () => service.CreateRecipeModel(modal, user, category);
 
         // Assert
-        call.Should().ThrowExactly<ModelCreateException>();
+        call.Should().Throw<ModelCreateException>();
     }
 
     [Theory]
@@ -175,7 +175,7 @@ public class RecipeModelCreationServiceTest
         Action call = () => service.CreateRecipeModel(modal, user, category, attachment);
 
         // Assert
-        call.Should().ThrowExactly<ModelCreateException>();
+        call.Should().Throw<ModelCreateException>();
     }
 
     [Fact]
@@ -209,7 +209,7 @@ public class RecipeModelCreationServiceTest
         Action call = () => service.CreateRecipeModel(modal, user, category, attachment);
 
         // Assert
-        call.Should().ThrowExactly<InvalidEnumArgumentException>();
+        call.Should().Throw<InvalidEnumArgumentException>();
     }
 
     [Theory]

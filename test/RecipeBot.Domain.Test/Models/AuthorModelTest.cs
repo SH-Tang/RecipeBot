@@ -36,7 +36,7 @@ public class AuthorModelTest
         Action call = () => new AuthorModel(invalidAuthorName, imageUrl);
 
         // Assert
-        call.Should().Throw<ArgumentException>();
+        call.Should().ThrowExactly<ArgumentException>();
     }
 
     [Theory]
@@ -53,7 +53,7 @@ public class AuthorModelTest
         Action call = () => new AuthorModel(authorName, invalidImageUrl);
 
         // Assert
-        call.Should().Throw<ArgumentException>();
+        call.Should().ThrowExactly<ArgumentException>();
     }
 
     [Theory]
