@@ -19,7 +19,6 @@ using AutoFixture;
 using FluentAssertions;
 using RecipeBot.Discord.Controllers;
 using Xunit;
-using Xunit.Sdk;
 
 namespace RecipeBot.Discord.Test.Controllers;
 

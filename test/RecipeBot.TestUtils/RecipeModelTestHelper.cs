@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Discord;
 using FluentAssertions;
 using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.TestUtils;
-using Xunit;
 
 namespace RecipeBot.TestUtils;
 
@@ -50,7 +48,7 @@ public static class RecipeModelTestHelper
 
         AssertTags(modal.Tags, actualRecipe.RecipeTags);
     }
-    
+
     private static void AssertTags(string? tags, RecipeTagsModelWrapper actualTags)
     {
         if (tags != null)

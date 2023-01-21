@@ -53,7 +53,7 @@ public class RecipeModelFactoryTest
         model.RecipeImageUrl.Should().BeNull();
 
         model.Author.Should().BeEquivalentTo(recipeData.AuthorData);
-        
+
         model.RecipeFields.Should().HaveCount(2);
         AssertMandatoryFields(recipeData, model.RecipeFields);
 
@@ -219,7 +219,7 @@ public class RecipeModelFactoryTest
 
         // Assert
         model.Title.Should().Be(recipeData.RecipeTitle);
-     }
+    }
 
     [Fact]
     public void Recipe_with_data_exceeding_total_recipe_length_throws_exception()
@@ -292,10 +292,10 @@ public class RecipeModelFactoryTest
     private static void AssertMandatoryFields(RecipeData data, IEnumerable<RecipeFieldModel> recipeFields)
     {
         recipeFields.ElementAt(0).Should().Match<RecipeFieldModel>(
-                s => s.FieldName == "Ingredients" && s.FieldData == data.RecipeIngredients );
+            s => s.FieldName == "Ingredients" && s.FieldData == data.RecipeIngredients);
 
         recipeFields.ElementAt(1).Should().Match<RecipeFieldModel>(
-                s => s.FieldName == "Cooking steps" && s.FieldData == data.CookingSteps);
+            s => s.FieldName == "Cooking steps" && s.FieldData == data.CookingSteps);
     }
 
     private static void AssertTags(RecipeData data, RecipeTagsModelWrapper wrapper)

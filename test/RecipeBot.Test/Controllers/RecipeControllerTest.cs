@@ -25,7 +25,6 @@ using Discord;
 using Discord.Common;
 using FluentAssertions;
 using NSubstitute;
-using NSubstitute.ExceptionExtensions;
 using RecipeBot.Controllers;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;

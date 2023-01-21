@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using AutoFixture;
 using Discord;
 using FluentAssertions;
@@ -28,7 +27,6 @@ using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Models;
-using RecipeBot.Domain.TestUtils;
 using RecipeBot.Services;
 using RecipeBot.TestUtils;
 using Xunit;
