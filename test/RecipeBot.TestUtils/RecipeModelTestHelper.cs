@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Discord;
+using FluentAssertions;
 using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Models;
@@ -24,44 +25,42 @@ public static class RecipeModelTestHelper
     public static void AssertCommonModelProperties(IUser user, DiscordRecipeCategory category,
                                                    RecipeModal modal, RecipeModel actualRecipe)
     {
-        Assert.Equal(DiscordRecipeCategoryTestHelper.RecipeCategoryMapping[category], actualRecipe.RecipeCategory);
+        actualRecipe.Title.Should().Be(modal.RecipeTitle);
+        actualRecipe.RecipeCategory.Should().Be(DiscordRecipeCategoryTestHelper.RecipeCategoryMapping[category]);
 
-        AuthorModel actualAuthor = actualRecipe.Author;
-        Assert.NotNull(actualAuthor);
-        AssertAuthor(user.Username, user.GetAvatarUrl(), actualAuthor);
+        string? expectedAvatarUrl = user.GetAvatarUrl();
+        actualRecipe.Author.Should().Match<AuthorModel>(s => s.AuthorName == user.Username && s.AuthorImageUrl == expectedAvatarUrl);
 
-        Assert.Equal(modal.RecipeTitle, actualRecipe.Title);
-
-        Assert.Equal(3, actualRecipe.RecipeFields.Count());
-        AssertField("Ingredients", modal.Ingredients, actualRecipe.RecipeFields.ElementAt(0));
-        AssertField("Cooking steps", modal.CookingSteps, actualRecipe.RecipeFields.ElementAt(1));
-        AssertField("Additional notes", modal.Notes, actualRecipe.RecipeFields.ElementAt(2));
+        actualRecipe.RecipeFields.Should().SatisfyRespectively(
+            firstField =>
+            {
+                firstField.FieldName.Should().Be("Ingredients");
+                firstField.FieldData.Should().Be(modal.Ingredients);
+            },
+            secondField =>
+            {
+                secondField.FieldName.Should().Be("Cooking steps");
+                secondField.FieldData.Should().Be(modal.CookingSteps);
+            },
+            thirdField =>
+            {
+                thirdField.FieldName.Should().Be("Additional notes");
+                thirdField.FieldData.Should().Be(modal.Notes);
+            });
 
         AssertTags(modal.Tags, actualRecipe.RecipeTags);
     }
-
-    private static void AssertAuthor(string expectedAuthorName, string expectedAuthorImageUrl, AuthorModel actualAuthor)
-    {
-        Assert.Equal(expectedAuthorName, actualAuthor.AuthorName);
-        Assert.Equal(expectedAuthorImageUrl, actualAuthor.AuthorImageUrl);
-    }
-
-    private static void AssertField(string expectedName, string? expectedValue, RecipeFieldModel actualField)
-    {
-        Assert.Equal(expectedName, actualField.FieldName);
-        Assert.Equal(expectedValue, actualField.FieldData);
-    }
-
+    
     private static void AssertTags(string? tags, RecipeTagsModelWrapper actualTags)
     {
         if (tags != null)
         {
             IEnumerable<string> expectedTags = TagTestHelper.GetParsedTags(tags);
-            Assert.Equal(expectedTags, actualTags.Tags);
+            actualTags.Tags.Should().BeEquivalentTo(expectedTags);
         }
         else
         {
-            Assert.Empty(actualTags.Tags);
+            actualTags.Tags.Should().BeEmpty();
         }
     }
 }
