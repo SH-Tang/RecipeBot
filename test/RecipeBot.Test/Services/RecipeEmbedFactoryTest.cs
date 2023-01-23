@@ -233,11 +233,9 @@ public class RecipeEmbedFactoryTest
     {
         actualAuthor.Should().NotBeNull().And.BeEquivalentTo(
             authorData,
-            options => options
-                       .Including(e => e.AuthorName)
-                       .Including(e => e.AuthorImageUrl)
-                       .WithMapping<EmbedAuthor>(e => e.AuthorName, s => s.Name)
-                       .WithMapping<EmbedAuthor>(e => e.AuthorImageUrl, s => s.IconUrl));
+            options => options.ExcludingMissingMembers()
+                              .WithMapping<EmbedAuthor>(e => e.AuthorName, s => s.Name)
+                              .WithMapping<EmbedAuthor>(e => e.AuthorImageUrl, s => s.IconUrl));
     }
 
     private static void AssertFields(IEnumerable<RecipeFieldModel> recipeFields, IEnumerable<EmbedField> embedFields)
@@ -251,8 +249,7 @@ public class RecipeEmbedFactoryTest
             embedFields.Should().NotBeNull().And.BeEquivalentTo(
                 recipeFields,
                 options => options.WithStrictOrdering()
-                                  .Including(e => e.FieldName)
-                                  .Including(e => e.FieldData)
+                                  .ExcludingMissingMembers()
                                   .WithMapping<EmbedField>(e => e.FieldName, s => s.Name)
                                   .WithMapping<EmbedField>(e => e.FieldData, s => s.Value));
             embedFields.Should().AllSatisfy(s => s.Inline.Should().BeFalse());

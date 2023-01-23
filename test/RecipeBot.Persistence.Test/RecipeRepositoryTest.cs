@@ -131,8 +131,7 @@ public class RecipeRepositoryTest
                 recipeEntity.RecipeFields.OrderBy(f => f.Order).Should().BeEquivalentTo(
                     recipeModel.RecipeFields,
                     options => options.WithStrictOrdering()
-                                      .Including(e => e.FieldName)
-                                      .Including(e => e.FieldData)
+                                      .ExcludingMissingMembers()
                                       .WithMapping<RecipeFieldEntity>(e => e.FieldName, s => s.RecipeFieldName)
                                       .WithMapping<RecipeFieldEntity>(e => e.FieldData, s => s.RecipeFieldData));
 
