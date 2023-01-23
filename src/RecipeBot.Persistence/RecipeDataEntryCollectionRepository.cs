@@ -50,22 +50,25 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
 
     public async Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesAsync()
     {
-        return await context.RecipeEntities
-                            .Include(r => r.Author)
-                            .Select(r => new RecipeEntryData(r.RecipeEntityId, r.RecipeTitle, r.Author.AuthorName))
-                            .OrderBy(r => r.Id)
-                            .ToArrayAsync();
+        IEnumerable<RecipeEntity> recipeEntities = await context.RecipeEntities
+                                                                .Include(r => r.Author)
+                                                                .ToArrayAsync();
+        return recipeEntities.Select(r => new RecipeEntryData(r.RecipeEntityId, r.RecipeTitle, r.Author.AuthorName))
+                             .OrderBy(r => r.Id)
+                             .ToArray();
     }
 
     public async Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesAsync(RecipeCategory category)
     {
         PersistentRecipeCategory persistentCategory = PersistentRecipeCategoryCreator.Create(category);
 
-        return await context.RecipeEntities
-                            .Where(r => r.RecipeCategory == persistentCategory)
-                            .Include(r => r.Author)
-                            .Select(r => new RecipeEntryData(r.RecipeEntityId, r.RecipeTitle, r.Author.AuthorName))
-                            .OrderBy(r => r.Id)
-                            .ToArrayAsync();
+        IEnumerable<RecipeEntity> recipeEntities = await context.RecipeEntities
+                                                                .Where(r => r.RecipeCategory == persistentCategory)
+                                                                .Include(r => r.Author)
+                                                                .ToArrayAsync();
+
+        return recipeEntities.Select(r => new RecipeEntryData(r.RecipeEntityId, r.RecipeTitle, r.Author.AuthorName))
+                             .OrderBy(r => r.Id)
+                             .ToArray();
     }
 }
