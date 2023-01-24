@@ -101,7 +101,8 @@ public class RecipeBotApplication
         await interactionCommandHandlingServices.InitializeHandlerAsync(new[]
         {
             typeof(InfoInteractionModule),
-            typeof(RecipeInteractionModule)
+            typeof(RecipeInteractionModule),
+            typeof(RecipeCollectionInteractionModule)
         });
     }
 
