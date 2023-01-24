@@ -204,15 +204,15 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
     }
 
     [Theory]
-    [MemberData(nameof(GetCategoryTests), parameters: RecipeCategory.Other)]
-    [MemberData(nameof(GetCategoryTests), parameters: RecipeCategory.Fish)]
-    [MemberData(nameof(GetCategoryTests), parameters: RecipeCategory.Meat)]
-    [MemberData(nameof(GetCategoryTests), parameters: RecipeCategory.Drinks)]
-    [MemberData(nameof(GetCategoryTests), parameters: RecipeCategory.Pastry)]
-    [MemberData(nameof(GetCategoryTests), parameters: RecipeCategory.Dessert)]
-    [MemberData(nameof(GetCategoryTests), parameters: RecipeCategory.Snack)]
-    [MemberData(nameof(GetCategoryTests), parameters: RecipeCategory.Vegetarian)]
-    [MemberData(nameof(GetCategoryTests), parameters: RecipeCategory.Vegan)]
+    [MemberData(nameof(GetCategoryTests), RecipeCategory.Other)]
+    [MemberData(nameof(GetCategoryTests), RecipeCategory.Fish)]
+    [MemberData(nameof(GetCategoryTests), RecipeCategory.Meat)]
+    [MemberData(nameof(GetCategoryTests), RecipeCategory.Drinks)]
+    [MemberData(nameof(GetCategoryTests), RecipeCategory.Pastry)]
+    [MemberData(nameof(GetCategoryTests), RecipeCategory.Dessert)]
+    [MemberData(nameof(GetCategoryTests), RecipeCategory.Snack)]
+    [MemberData(nameof(GetCategoryTests), RecipeCategory.Vegetarian)]
+    [MemberData(nameof(GetCategoryTests), RecipeCategory.Vegan)]
     public async Task Given_seeded_database_when_loading_entries_with_category_and_match_found_returns_filtered_data_ordered_by_id(
         IReadOnlyCollection<RecipeEntity> recipeEntries, RecipeCategory categoryToFilter, IEnumerable<RecipeEntity> expectedRecipes)
     {

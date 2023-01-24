@@ -25,8 +25,8 @@ public class RecipeEntryData
     /// <summary>
     /// Creates a new instance of <see cref="RecipeEntryData"/>.
     /// </summary>
-    /// <param name="title">The id of the recipe.</param>
-    /// <param name="authorName">The title of the recipe.</param>
+    /// <param name="id">The id of the recipe.</param>
+    /// <param name="title">The title of the recipe.</param>
     /// <param name="authorName">The name of the author of the recipe.</param>
     public RecipeEntryData(long id, string title, string authorName)
     {
