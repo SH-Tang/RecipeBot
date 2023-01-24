@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using RecipeBot.Discord.Data;
 
@@ -37,5 +38,6 @@ public interface IRecipeCollectionController
     /// </summary>
     /// <param name="category">The category to filter the recipes on.</param>
     /// <returns>A collection of messages containing formatted recipe data entries.</returns>
+    /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid value of <see cref="DiscordRecipeCategory"/>.</exception>
     Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync(DiscordRecipeCategory category);
 }

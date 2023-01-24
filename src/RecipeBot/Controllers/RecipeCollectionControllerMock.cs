@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Common.Utils;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
 
@@ -12,17 +13,13 @@ public class RecipeCollectionControllerMock : IRecipeCollectionController
 {
     public Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync()
     {
-        var messages = new[]
-        {
-            "Recipe One",
-            "Recipe Two",
-        };
-
-        return Task.FromResult(new ControllerResult<IReadOnlyList<string>>("ErrorMessage"));
+        return Task.FromResult(new ControllerResult<IReadOnlyList<string>>("Not implemented yet"));
     }
 
     public Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync(DiscordRecipeCategory category)
     {
-        throw new System.NotImplementedException();
+        category.IsValidEnum(nameof(category));
+
+        return Task.FromResult(new ControllerResult<IReadOnlyList<string>>("Not implemented yet"));
     }
 }
