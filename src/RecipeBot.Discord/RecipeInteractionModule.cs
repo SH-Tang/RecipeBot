@@ -32,7 +32,7 @@ using RecipeBot.Discord.Views;
 namespace RecipeBot.Discord;
 
 /// <summary>
-/// Module containing commands for the recipe.
+/// Module containing commands to interact with individual recipes.
 /// </summary>
 public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionContext>
 {
