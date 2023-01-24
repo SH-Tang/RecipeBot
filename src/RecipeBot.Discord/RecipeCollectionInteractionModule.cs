@@ -93,7 +93,7 @@ public class RecipeCollectionInteractionModule : InteractionModuleBase<SocketInt
         {
             return new[]
             {
-                RespondAsync(string.Format(Resources.RecipeInteractionModule_ERROR_0_, result.ErrorMessage), ephemeral: true)
+                RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, result.ErrorMessage), ephemeral: true)
             };
         }
 
@@ -102,7 +102,9 @@ public class RecipeCollectionInteractionModule : InteractionModuleBase<SocketInt
         {
             return new[]
             {
-                RespondAsync(string.Format(Resources.RecipeInteractionModule_ERROR_0_, "Something went wrong with retrieving the data."), ephemeral: true)
+                RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, 
+                                           Resources.IRecipeCollectionController_should_not_have_returned_an_empty_collection_when_querying),
+                             ephemeral: true)
             };
         }
 
