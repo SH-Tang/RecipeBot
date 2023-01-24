@@ -52,6 +52,7 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
     {
         IEnumerable<RecipeEntity> recipeEntities = await context.RecipeEntities
                                                                 .Include(r => r.Author)
+                                                                .AsNoTracking()
                                                                 .ToArrayAsync();
         return recipeEntities.Select(r => new RecipeEntryData(r.RecipeEntityId, r.RecipeTitle, r.Author.AuthorName))
                              .OrderBy(r => r.Id)
@@ -65,6 +66,7 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
         IEnumerable<RecipeEntity> recipeEntities = await context.RecipeEntities
                                                                 .Where(r => r.RecipeCategory == persistentCategory)
                                                                 .Include(r => r.Author)
+                                                                .AsNoTracking()
                                                                 .ToArrayAsync();
 
         return recipeEntities.Select(r => new RecipeEntryData(r.RecipeEntityId, r.RecipeTitle, r.Author.AuthorName))
