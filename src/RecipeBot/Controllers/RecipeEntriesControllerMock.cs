@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
@@ -35,8 +36,8 @@ namespace RecipeBot.Controllers;
 public class RecipeEntriesControllerMock : IRecipeEntriesController
 {
     private readonly IMessageCharacterLimitProvider limitProvider;
-    private readonly IRecipeDataEntryCollectionRepository repository;
     private readonly ILoggingService logger;
+    private readonly IRecipeDataEntryCollectionRepository repository;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeEntriesControllerMock"/>.
@@ -45,7 +46,7 @@ public class RecipeEntriesControllerMock : IRecipeEntriesController
     /// <param name="repository">The repository to handle with the persistence of recipe entries.</param>
     /// <param name="logger">The logger to log with.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public RecipeEntriesControllerMock(IMessageCharacterLimitProvider limitProvider, 
+    public RecipeEntriesControllerMock(IMessageCharacterLimitProvider limitProvider,
         IRecipeDataEntryCollectionRepository repository, ILoggingService logger)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
@@ -68,13 +69,7 @@ public class RecipeEntriesControllerMock : IRecipeEntriesController
             });
         }
 
-        var header = $"{"Id",-3} {"Title",-50} {"Author",-50} ";
-        string formattedEntries = string.Join($"{Environment.NewLine}", entries.Select(r => $"{r.Id,-3} {r.Title,-50} {r.AuthorName,-50}"));
-
-        return new ControllerResult<IReadOnlyList<string>>(new []
-        {
-            Format.Code($"{header}{Environment.NewLine}{formattedEntries}")
-        });
+        return new ControllerResult<IReadOnlyList<string>>(CreateMessages(entries));
     }
 
     public Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync(DiscordRecipeCategory category)
@@ -82,5 +77,45 @@ public class RecipeEntriesControllerMock : IRecipeEntriesController
         category.IsValidEnum(nameof(category));
 
         return Task.FromResult(new ControllerResult<IReadOnlyList<string>>("Not implemented yet"));
+    }
+
+    private IReadOnlyList<string> CreateMessages(IReadOnlyList<RecipeEntryData> entries)
+    {
+        var messages = new List<string>();
+        StringBuilder messageBuilder = new StringBuilder().AppendLine(CreateHeader());
+        string formattedCurrentMessage = Format.Code(messageBuilder.ToString());
+
+        for (var i = 0; i < entries.Count; i++)
+        {
+            RecipeEntryData currentEntry = entries[i];
+            string formattedEntry = CreateFormattedEntry(currentEntry);
+
+            var messageWithCurrentEntry = $"{messageBuilder}{formattedEntry}";
+            if (Format.Code(messageWithCurrentEntry).Length > limitProvider.MaxMessageLength)
+            {
+                messages.Add(formattedCurrentMessage);
+                messageBuilder.Clear();
+                messageBuilder.AppendLine(CreateHeader());
+            }
+
+            messageBuilder.AppendLine(formattedEntry);
+
+            var currentMessage = messageBuilder.ToString();
+            formattedCurrentMessage = Format.Code(currentMessage);
+        }
+
+        messages.Add(formattedCurrentMessage);
+        return messages;
+    }
+
+    private static string CreateHeader()
+    {
+        var header = $"{"Id",-3} {"Title",-50} {"Author",-50} ";
+        return header;
+    }
+
+    private static string CreateFormattedEntry(RecipeEntryData recipeEntry)
+    {
+        return $"{recipeEntry.Id,-3} {recipeEntry.Title,-50} {recipeEntry.AuthorName,-50}";
     }
 }

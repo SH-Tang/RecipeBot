@@ -26,7 +26,6 @@ using FluentAssertions;
 using NSubstitute;
 using RecipeBot.Controllers;
 using RecipeBot.Discord.Controllers;
-using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Repositories;
 using RecipeBot.Domain.Repositories.Data;
 using Xunit;
@@ -98,8 +97,49 @@ public class RecipeEntriesControllerTest
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
             $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorName,-50}{Environment.NewLine}" +
             $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorName,-50}{Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorName,-50}";
+            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorName,-50}{Environment.NewLine}";
         result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
+    [Theory]
+    [InlineData(328)] // Exactly intersects with 2 entries
+    [InlineData(340)]
+    public async Task Given_repository_returning_collection_and_message_exceeding_limits_when_listing_all_recipes_returns_expected_messages(
+        int maxMessageLength)
+    {
+        // Setup
+        var logger = Substitute.For<ILoggingService>();
+
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        limitProvider.MaxMessageLength.Returns(maxMessageLength);
+
+        var fixture = new Fixture();
+        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(entries);
+
+        var controller = new RecipeEntriesControllerMock(limitProvider, repository, logger);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync();
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        string expectedMessageOne =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorName,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorName,-50}{Environment.NewLine}";
+
+        string expectedMessageTwo =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorName,-50}{Environment.NewLine}";
+
+        result.Result.Should().BeEquivalentTo(new[]
+        {
+            Format.Code(expectedMessageOne), 
+            Format.Code(expectedMessageTwo)
+        }, options => options.WithStrictOrdering());
+    }
 }
