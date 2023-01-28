@@ -61,15 +61,8 @@ public class RecipeEntriesControllerMock : IRecipeEntriesController
     public async Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync()
     {
         IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesAsync();
-        if (!entries.Any())
-        {
-            return new ControllerResult<IReadOnlyList<string>>(new[]
-            {
-                "No saved recipes are found."
-            });
-        }
 
-        return new ControllerResult<IReadOnlyList<string>>(CreateMessages(entries));
+        return new ControllerResult<IReadOnlyList<string>>(CreateMessages(entries, "No saved recipes are found."));
     }
 
     public Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync(DiscordRecipeCategory category)
@@ -79,15 +72,22 @@ public class RecipeEntriesControllerMock : IRecipeEntriesController
         return Task.FromResult(new ControllerResult<IReadOnlyList<string>>("Not implemented yet"));
     }
 
-    private IReadOnlyList<string> CreateMessages(IReadOnlyList<RecipeEntryData> entries)
+    private IReadOnlyList<string> CreateMessages(IReadOnlyList<RecipeEntryData> entries, string emptyMessage)
     {
+        if (!entries.Any())
+        {
+            return new[]
+            {
+                emptyMessage
+            };
+        }
+        
         var messages = new List<string>();
         StringBuilder messageBuilder = new StringBuilder().AppendLine(CreateHeader());
         string formattedCurrentMessage = Format.Code(messageBuilder.ToString());
 
-        for (var i = 0; i < entries.Count; i++)
+        foreach (RecipeEntryData currentEntry in entries)
         {
-            RecipeEntryData currentEntry = entries[i];
             string formattedEntry = CreateFormattedEntry(currentEntry);
 
             var messageWithCurrentEntry = $"{messageBuilder}{formattedEntry}";
