@@ -271,7 +271,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
         {
             RecipeEntityId = fixture.Create<int>(),
             Author = authorTwo,
-            RecipeCategory = category == PersistentRecipeCategory.Other ? PersistentRecipeCategory.Dessert : category,
+            RecipeCategory = category == PersistentRecipeCategory.Other ? PersistentRecipeCategory.Dessert : PersistentRecipeCategory.Other,
             RecipeTitle = fixture.Create<string>()
         };
         var recipeThree = new RecipeEntity

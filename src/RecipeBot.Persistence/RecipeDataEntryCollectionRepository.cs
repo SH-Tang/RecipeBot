@@ -54,9 +54,7 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
                                                                 .Include(r => r.Author)
                                                                 .AsNoTracking()
                                                                 .ToArrayAsync();
-        return recipeEntities.Select(r => new RecipeEntryData(r.RecipeEntityId, r.RecipeTitle, r.Author.AuthorName))
-                             .OrderBy(r => r.Id)
-                             .ToArray();
+        return CreateRecipeEntryDataCollection(recipeEntities);
     }
 
     public async Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesAsync(RecipeCategory category)
@@ -69,8 +67,13 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
                                                                 .AsNoTracking()
                                                                 .ToArrayAsync();
 
+        return CreateRecipeEntryDataCollection(recipeEntities);
+    }
+
+    private static RecipeEntryData[] CreateRecipeEntryDataCollection(IEnumerable<RecipeEntity> recipeEntities)
+    {
         return recipeEntities.Select(r => new RecipeEntryData(r.RecipeEntityId, r.RecipeTitle, r.Author.AuthorName))
-                             .OrderBy(r => r.Id)
-                             .ToArray();
+            .OrderBy(r => r.Id)
+            .ToArray();
     }
 }
