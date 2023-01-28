@@ -25,8 +25,10 @@ using Discord;
 using Discord.Common;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
+using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Repositories;
 using RecipeBot.Domain.Repositories.Data;
+using RecipeBot.Services;
 
 namespace RecipeBot.Controllers;
 
@@ -65,11 +67,15 @@ public class RecipeEntriesControllerMock : IRecipeEntriesController
         return new ControllerResult<IReadOnlyList<string>>(CreateMessages(entries, "No saved recipes are found."));
     }
 
-    public Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync(DiscordRecipeCategory category)
+    public async Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync(DiscordRecipeCategory category)
     {
         category.IsValidEnum(nameof(category));
 
-        return Task.FromResult(new ControllerResult<IReadOnlyList<string>>("Not implemented yet"));
+        RecipeCategory repositoryCategory = RecipeCategoryConverter.ConvertFrom(category);
+        IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesAsync(repositoryCategory);
+
+
+        return new ControllerResult<IReadOnlyList<string>>(CreateMessages(entries, "No saved recipes are found based on the given category."));
     }
 
     private IReadOnlyList<string> CreateMessages(IReadOnlyList<RecipeEntryData> entries, string emptyMessage)

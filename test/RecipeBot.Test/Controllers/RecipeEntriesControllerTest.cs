@@ -26,8 +26,11 @@ using FluentAssertions;
 using NSubstitute;
 using RecipeBot.Controllers;
 using RecipeBot.Discord.Controllers;
+using RecipeBot.Discord.Data;
+using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Repositories;
 using RecipeBot.Domain.Repositories.Data;
+using RecipeBot.TestUtils;
 using Xunit;
 
 namespace RecipeBot.Test.Controllers;
@@ -139,6 +142,130 @@ public class RecipeEntriesControllerTest
         result.Result.Should().BeEquivalentTo(new[]
         {
             Format.Code(expectedMessageOne), 
+            Format.Code(expectedMessageTwo)
+        }, options => options.WithStrictOrdering());
+    }
+
+    [Fact]
+    public async Task Given_repository_returning_empty_collection_when_listing_recipes_with_category_filter_returns_expected_message()
+    {
+        // Setup
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        var logger = Substitute.For<ILoggingService>();
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+
+        var controller = new RecipeEntriesControllerMock(limitProvider, repository, logger);
+
+        var fixture = new Fixture();
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync(fixture.Create<DiscordRecipeCategory>());
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        result.Result.Should().HaveCount(1).And.Contain("No saved recipes are found based on the given category.");
+    }
+
+    [Theory]
+    [InlineData(DiscordRecipeCategory.Meat)]
+    [InlineData(DiscordRecipeCategory.Fish)]
+    [InlineData(DiscordRecipeCategory.Vegetarian)]
+    [InlineData(DiscordRecipeCategory.Vegan)]
+    [InlineData(DiscordRecipeCategory.Drinks)]
+    [InlineData(DiscordRecipeCategory.Pastry)]
+    [InlineData(DiscordRecipeCategory.Dessert)]
+    [InlineData(DiscordRecipeCategory.Snack)]
+    [InlineData(DiscordRecipeCategory.Other)]
+    public async Task Listing_recipes_with_category_filter_repository_receives_correct_category_filter(DiscordRecipeCategory category)
+    {
+        // Setup
+        var logger = Substitute.For<ILoggingService>();
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+
+        var controller = new RecipeEntriesControllerMock(limitProvider, repository, logger);
+
+        // Call
+        await controller.ListAllRecipesAsync(category);
+
+        // Assert
+        await repository.Received(1).LoadRecipeEntriesAsync(DiscordRecipeCategoryTestHelper.RecipeCategoryMapping[category]);
+    }
+
+    [Fact]
+    public async Task Given_repository_returning_collection_and_message_within_limits_when_listing_recipes_with_category_filter_returns_expected_message()
+    {
+        // Setup
+        var logger = Substitute.For<ILoggingService>();
+
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        limitProvider.MaxMessageLength.Returns(int.MaxValue);
+
+        var fixture = new Fixture();
+        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(entries);
+
+        var controller = new RecipeEntriesControllerMock(limitProvider, repository, logger);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync(fixture.Create<DiscordRecipeCategory>());
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        string expectedMessage =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorName,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorName,-50}{Environment.NewLine}" +
+            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorName,-50}{Environment.NewLine}";
+        result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
+    }
+
+    [Theory]
+    [InlineData(328)] // Exactly intersects with 2 entries
+    [InlineData(340)]
+    public async Task Given_repository_returning_collection_and_message_exceeding_limits_when_listing_recipes_with_categroy_filter_returns_expected_messages(
+        int maxMessageLength)
+    {
+        // Setup
+        var logger = Substitute.For<ILoggingService>();
+
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        limitProvider.MaxMessageLength.Returns(maxMessageLength);
+
+        var fixture = new Fixture();
+        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(entries);
+
+        var controller = new RecipeEntriesControllerMock(limitProvider, repository, logger);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync(fixture.Create<DiscordRecipeCategory>());
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        string expectedMessageOne =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorName,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorName,-50}{Environment.NewLine}";
+
+        string expectedMessageTwo =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorName,-50}{Environment.NewLine}";
+
+        result.Result.Should().BeEquivalentTo(new[]
+        {
+            Format.Code(expectedMessageOne),
             Format.Code(expectedMessageTwo)
         }, options => options.WithStrictOrdering());
     }
