@@ -22,12 +22,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
-using Discord.Common;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Repositories;
 using RecipeBot.Domain.Repositories.Data;
+using RecipeBot.Properties;
 using RecipeBot.Services;
 
 namespace RecipeBot.Controllers;
@@ -60,7 +60,7 @@ public class RecipeEntriesController : IRecipeEntriesController
     {
         IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesAsync();
 
-        return new ControllerResult<IReadOnlyList<string>>(CreateMessages(entries, "No saved recipes are found."));
+        return new ControllerResult<IReadOnlyList<string>>(CreateMessages(entries, Resources.RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found));
     }
 
     public async Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync(DiscordRecipeCategory category)
@@ -71,7 +71,7 @@ public class RecipeEntriesController : IRecipeEntriesController
         IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesAsync(repositoryCategory);
 
 
-        return new ControllerResult<IReadOnlyList<string>>(CreateMessages(entries, "No saved recipes are found based on the given category."));
+        return new ControllerResult<IReadOnlyList<string>>(CreateMessages(entries, Resources.RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found_with_category));
     }
 
     private IReadOnlyList<string> CreateMessages(IReadOnlyList<RecipeEntryData> entries, string emptyMessage)

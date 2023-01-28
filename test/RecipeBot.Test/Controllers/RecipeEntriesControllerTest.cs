@@ -158,7 +158,7 @@ public class RecipeEntriesControllerTest
         // Assert
         result.HasError.Should().BeFalse();
 
-        result.Result.Should().HaveCount(1).And.Contain("No saved recipes are found based on the given category.");
+        result.Result.Should().HaveCount(1).And.Contain("No saved recipes are found with the given category.");
     }
 
     [Theory]
