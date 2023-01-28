@@ -21,7 +21,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using Discord;
-using Discord.Common;
 using FluentAssertions;
 using NSubstitute;
 using RecipeBot.Controllers;
