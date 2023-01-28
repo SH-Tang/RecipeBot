@@ -38,7 +38,6 @@ namespace RecipeBot.Controllers;
 public class RecipeEntriesController : IRecipeEntriesController
 {
     private readonly IMessageCharacterLimitProvider limitProvider;
-    private readonly ILoggingService logger;
     private readonly IRecipeDataEntryCollectionRepository repository;
 
     /// <summary>
@@ -46,18 +45,15 @@ public class RecipeEntriesController : IRecipeEntriesController
     /// </summary>
     /// <param name="limitProvider">The limit provider to retrieve the message character limits from.</param>
     /// <param name="repository">The repository to handle with the persistence of recipe entries.</param>
-    /// <param name="logger">The logger to log with.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     public RecipeEntriesController(IMessageCharacterLimitProvider limitProvider,
-        IRecipeDataEntryCollectionRepository repository, ILoggingService logger)
+        IRecipeDataEntryCollectionRepository repository)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
         repository.IsNotNull(nameof(repository));
-        logger.IsNotNull(nameof(logger));
 
         this.limitProvider = limitProvider;
         this.repository = repository;
-        this.logger = logger;
     }
 
     public async Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync()

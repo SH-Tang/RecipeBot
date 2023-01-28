@@ -43,10 +43,9 @@ public class RecipeEntriesControllerTest
         // Setup
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
-        var logger = Substitute.For<ILoggingService>();
 
         // Call
-        var controller = new RecipeEntriesController(limitProvider, repository, logger);
+        var controller = new RecipeEntriesController(limitProvider, repository);
 
         // Assert
         controller.Should().BeAssignableTo<IRecipeEntriesController>();
@@ -57,12 +56,11 @@ public class RecipeEntriesControllerTest
     {
         // Setup
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
-        var logger = Substitute.For<ILoggingService>();
 
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
 
-        var controller = new RecipeEntriesController(limitProvider, repository, logger);
+        var controller = new RecipeEntriesController(limitProvider, repository);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync();
@@ -77,8 +75,6 @@ public class RecipeEntriesControllerTest
     public async Task Given_repository_returning_collection_and_message_within_limits_when_listing_all_recipes_returns_expected_message()
     {
         // Setup
-        var logger = Substitute.For<ILoggingService>();
-
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         limitProvider.MaxMessageLength.Returns(int.MaxValue);
 
@@ -88,7 +84,7 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesController(limitProvider, repository, logger);
+        var controller = new RecipeEntriesController(limitProvider, repository);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync();
@@ -111,8 +107,6 @@ public class RecipeEntriesControllerTest
         int maxMessageLength)
     {
         // Setup
-        var logger = Substitute.For<ILoggingService>();
-
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         limitProvider.MaxMessageLength.Returns(maxMessageLength);
 
@@ -122,7 +116,7 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesController(limitProvider, repository, logger);
+        var controller = new RecipeEntriesController(limitProvider, repository);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync();
@@ -151,12 +145,11 @@ public class RecipeEntriesControllerTest
     {
         // Setup
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
-        var logger = Substitute.For<ILoggingService>();
 
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
 
-        var controller = new RecipeEntriesController(limitProvider, repository, logger);
+        var controller = new RecipeEntriesController(limitProvider, repository);
 
         var fixture = new Fixture();
 
@@ -182,13 +175,12 @@ public class RecipeEntriesControllerTest
     public async Task Listing_recipes_with_category_filter_repository_receives_correct_category_filter(DiscordRecipeCategory category)
     {
         // Setup
-        var logger = Substitute.For<ILoggingService>();
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
 
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
 
-        var controller = new RecipeEntriesController(limitProvider, repository, logger);
+        var controller = new RecipeEntriesController(limitProvider, repository);
 
         // Call
         await controller.ListAllRecipesAsync(category);
@@ -201,8 +193,6 @@ public class RecipeEntriesControllerTest
     public async Task Given_repository_returning_collection_and_message_within_limits_when_listing_recipes_with_category_filter_returns_expected_message()
     {
         // Setup
-        var logger = Substitute.For<ILoggingService>();
-
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         limitProvider.MaxMessageLength.Returns(int.MaxValue);
 
@@ -212,7 +202,7 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesController(limitProvider, repository, logger);
+        var controller = new RecipeEntriesController(limitProvider, repository);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync(fixture.Create<DiscordRecipeCategory>());
@@ -235,8 +225,6 @@ public class RecipeEntriesControllerTest
         int maxMessageLength)
     {
         // Setup
-        var logger = Substitute.For<ILoggingService>();
-
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         limitProvider.MaxMessageLength.Returns(maxMessageLength);
 
@@ -246,7 +234,7 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesController(limitProvider, repository, logger);
+        var controller = new RecipeEntriesController(limitProvider, repository);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync(fixture.Create<DiscordRecipeCategory>());
