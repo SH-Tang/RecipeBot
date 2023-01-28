@@ -23,9 +23,9 @@ using RecipeBot.Discord.Data;
 namespace RecipeBot.Discord.Controllers;
 
 /// <summary>
-/// Interface for describing a controller dealing with recipe collection interactions.
+/// Interface for describing a controller dealing with interactions with recipe entries.
 /// </summary>
-public interface IRecipeCollectionController
+public interface IRecipeEntriesController
 {
     /// <summary>
     /// Lists all recipes.

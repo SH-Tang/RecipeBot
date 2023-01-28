@@ -30,20 +30,20 @@ using RecipeBot.Discord.Properties;
 namespace RecipeBot.Discord;
 
 /// <summary>
-/// Module containing commands to interact with collection of recipes.
+/// Module containing commands to interact with recipe entries.
 /// </summary>
-public class RecipeCollectionInteractionModule : InteractionModuleBase<SocketInteractionContext>
+public class RecipeEntriesInteractionModule : InteractionModuleBase<SocketInteractionContext>
 {
     private readonly IServiceScopeFactory scopeFactory;
     private readonly ILoggingService logger;
 
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeCollectionInteractionModule"/>.
+    /// Creates a new instance of <see cref="RecipeEntriesInteractionModule"/>.
     /// </summary>
     /// <param name="scopeFactory">The <see cref="IServiceScopeFactory"/> to resolve dependencies with.</param>
     /// <param name="logger">The logger to use.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="scopeFactory"/> is <c>null</c>.</exception>
-    public RecipeCollectionInteractionModule(IServiceScopeFactory scopeFactory,
+    public RecipeEntriesInteractionModule(IServiceScopeFactory scopeFactory,
                                              ILoggingService logger)
     {
         scopeFactory.IsNotNull(nameof(scopeFactory));
@@ -60,7 +60,7 @@ public class RecipeCollectionInteractionModule : InteractionModuleBase<SocketInt
         {
             using (IServiceScope scope = scopeFactory.CreateScope())
             {
-                var controller = scope.ServiceProvider.GetRequiredService<IRecipeCollectionController>();
+                var controller = scope.ServiceProvider.GetRequiredService<IRecipeEntriesController>();
                 IEnumerable<Task> tasks;
                 if (category == null)
                 {

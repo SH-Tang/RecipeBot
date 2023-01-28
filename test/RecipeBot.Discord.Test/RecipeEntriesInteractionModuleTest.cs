@@ -26,7 +26,7 @@ using Xunit;
 
 namespace RecipeBot.Discord.Test;
 
-public class RecipeCollectionInteractionModuleTest
+public class RecipeEntriesInteractionModuleTest
 {
     [Fact]
     public void Module_is_interactive_module()
@@ -36,7 +36,7 @@ public class RecipeCollectionInteractionModuleTest
         var loggingService = Substitute.For<ILoggingService>();
 
         // Call
-        var module = new RecipeCollectionInteractionModule(scopeFactory, loggingService);
+        var module = new RecipeEntriesInteractionModule(scopeFactory, loggingService);
 
         // Assert
         module.Should().BeAssignableTo<InteractionModuleBase<SocketInteractionContext>>();
@@ -46,8 +46,8 @@ public class RecipeCollectionInteractionModuleTest
     public void Format_recipe_command_has_expected_attributes()
     {
         // Call
-        SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeCollectionInteractionModule, SlashCommandAttribute>(
-            nameof(RecipeCollectionInteractionModule.ListRecipes), new[]
+        SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeEntriesInteractionModule, SlashCommandAttribute>(
+            nameof(RecipeEntriesInteractionModule.ListRecipes), new[]
             {
                 typeof(DiscordRecipeCategory)
             });
