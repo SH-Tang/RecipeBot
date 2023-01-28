@@ -89,7 +89,7 @@ public class RecipeBotApplicationServiceProvider
                 .AddDbContext<RecipeBotDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")))
                 .AddScoped<IRecipeRepository, RecipeRepository>()
                 .AddScoped<IRecipeController, RecipeController>()
-                .AddScoped<IRecipeEntriesController, RecipeEntriesControllerMock>();
+                .AddScoped<IRecipeEntriesController, RecipeEntriesController>();
     }
 
     private void ConfigureOptions(IServiceCollection services)

@@ -46,7 +46,7 @@ public class RecipeEntriesControllerTest
         var logger = Substitute.For<ILoggingService>();
 
         // Call
-        var controller = new RecipeEntriesControllerMock(limitProvider, repository, logger);
+        var controller = new RecipeEntriesController(limitProvider, repository, logger);
 
         // Assert
         controller.Should().BeAssignableTo<IRecipeEntriesController>();
@@ -62,7 +62,7 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
 
-        var controller = new RecipeEntriesControllerMock(limitProvider, repository, logger);
+        var controller = new RecipeEntriesController(limitProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync();
@@ -88,7 +88,7 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesControllerMock(limitProvider, repository, logger);
+        var controller = new RecipeEntriesController(limitProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync();
@@ -122,7 +122,7 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesControllerMock(limitProvider, repository, logger);
+        var controller = new RecipeEntriesController(limitProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync();
@@ -156,7 +156,7 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
 
-        var controller = new RecipeEntriesControllerMock(limitProvider, repository, logger);
+        var controller = new RecipeEntriesController(limitProvider, repository, logger);
 
         var fixture = new Fixture();
 
@@ -188,7 +188,7 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
 
-        var controller = new RecipeEntriesControllerMock(limitProvider, repository, logger);
+        var controller = new RecipeEntriesController(limitProvider, repository, logger);
 
         // Call
         await controller.ListAllRecipesAsync(category);
@@ -212,7 +212,7 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesControllerMock(limitProvider, repository, logger);
+        var controller = new RecipeEntriesController(limitProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync(fixture.Create<DiscordRecipeCategory>());
@@ -246,7 +246,7 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesControllerMock(limitProvider, repository, logger);
+        var controller = new RecipeEntriesController(limitProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync(fixture.Create<DiscordRecipeCategory>());

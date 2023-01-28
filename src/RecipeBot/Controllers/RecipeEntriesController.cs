@@ -35,20 +35,20 @@ namespace RecipeBot.Controllers;
 /// <summary>
 /// A concrete implementation of the <see cref="IRecipeEntriesController"/>.
 /// </summary>
-public class RecipeEntriesControllerMock : IRecipeEntriesController
+public class RecipeEntriesController : IRecipeEntriesController
 {
     private readonly IMessageCharacterLimitProvider limitProvider;
     private readonly ILoggingService logger;
     private readonly IRecipeDataEntryCollectionRepository repository;
 
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeEntriesControllerMock"/>.
+    /// Creates a new instance of <see cref="RecipeEntriesController"/>.
     /// </summary>
     /// <param name="limitProvider">The limit provider to retrieve the message character limits from.</param>
     /// <param name="repository">The repository to handle with the persistence of recipe entries.</param>
     /// <param name="logger">The logger to log with.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public RecipeEntriesControllerMock(IMessageCharacterLimitProvider limitProvider,
+    public RecipeEntriesController(IMessageCharacterLimitProvider limitProvider,
         IRecipeDataEntryCollectionRepository repository, ILoggingService logger)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
