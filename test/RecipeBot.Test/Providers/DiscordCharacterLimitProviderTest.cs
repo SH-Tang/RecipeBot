@@ -40,5 +40,7 @@ public class DiscordCharacterLimitProviderTest
         limitProvider.MaximumFieldDataLength.Should().Be(EmbedFieldBuilder.MaxFieldValueLength);
 
         limitProvider.MaximumRecipeTagsLength.Should().Be(EmbedFooterBuilder.MaxFooterTextLength);
+
+        limitProvider.MaxMessageLength.Should().Be(DiscordConfig.MaxMessageSize);
     }
 }

@@ -32,7 +32,7 @@ using RecipeBot.Discord.Views;
 namespace RecipeBot.Discord;
 
 /// <summary>
-/// Module containing commands for the recipe.
+/// Module containing commands to interact with individual recipes.
 /// </summary>
 public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionContext>
 {
@@ -44,9 +44,8 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
     /// </summary>
     /// <param name="scopeFactory">The <see cref="IServiceScopeFactory"/> to resolve dependencies with.</param>
     /// <param name="logger">The logger to use.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="scopeFactory"/> is <c>null</c>.</exception>
-    public RecipeInteractionModule(IServiceScopeFactory scopeFactory,
-                                   ILoggingService logger)
+    /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
+    public RecipeInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger)
     {
         scopeFactory.IsNotNull(nameof(scopeFactory));
         logger.IsNotNull(nameof(logger));
@@ -101,7 +100,7 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
 
                 if (response.HasError)
                 {
-                    await RespondAsync(string.Format(Resources.RecipeInteractionModule_ERROR_0_, response.ErrorMessage), ephemeral: true);
+                    await RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, response.ErrorMessage), ephemeral: true);
                 }
                 else
                 {

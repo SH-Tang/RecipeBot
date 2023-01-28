@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using Discord;
+using RecipeBot.Controllers;
 using RecipeBot.Domain.Factories;
 
 namespace RecipeBot.Providers;
@@ -23,7 +24,7 @@ namespace RecipeBot.Providers;
 /// <summary>
 /// Class that holds the character limits of Discord.
 /// </summary>
-public class DiscordCharacterLimitProvider : IRecipeModelCharacterLimitProvider
+public class DiscordCharacterLimitProvider : IRecipeModelCharacterLimitProvider, IMessageCharacterLimitProvider
 {
     public int MaximumAuthorNameLength => EmbedAuthorBuilder.MaxAuthorNameLength;
     public int MaximumFieldNameLength => EmbedFieldBuilder.MaxFieldNameLength;
@@ -31,4 +32,5 @@ public class DiscordCharacterLimitProvider : IRecipeModelCharacterLimitProvider
     public int MaximumTitleLength => EmbedBuilder.MaxTitleLength;
     public int MaximumRecipeLength => EmbedBuilder.MaxEmbedLength;
     public int MaximumRecipeTagsLength => EmbedFooterBuilder.MaxFooterTextLength;
+    public int MaxMessageLength => DiscordConfig.MaxMessageSize;
 }

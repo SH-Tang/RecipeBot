@@ -89,9 +89,19 @@ namespace RecipeBot.Discord.Properties {
         /// <summary>
         ///   Looks up a localized string similar to ERROR: {0}.
         /// </summary>
-        internal static string RecipeInteractionModule_ERROR_0_ {
+        internal static string InteractionModule_ERROR_0_ {
             get {
-                return ResourceManager.GetString("RecipeInteractionModule_ERROR_0_", resourceCulture);
+                return ResourceManager.GetString("InteractionModule_ERROR_0_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IRecipeCollectionController should not have returned an empty collection when querying..
+        /// </summary>
+        internal static string IRecipeCollectionController_should_not_have_returned_an_empty_collection_when_querying {
+            get {
+                return ResourceManager.GetString("IRecipeCollectionController_should_not_have_returned_an_empty_collection_when_que" +
+                        "rying", resourceCulture);
             }
         }
     }

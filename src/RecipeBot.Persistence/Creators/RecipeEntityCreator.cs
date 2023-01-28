@@ -50,45 +50,11 @@ internal static class RecipeEntityCreator
         return new RecipeEntity
         {
             RecipeTitle = model.Title,
-            RecipeCategory = Create(model.RecipeCategory),
+            RecipeCategory = PersistentRecipeCategoryCreator.Create(model.RecipeCategory),
             Author = authorEntity,
             RecipeFields = Create(model.RecipeFields),
             Tags = recipeTagEntities
         };
-    }
-
-    /// <summary>
-    /// Creates a <see cref="PersistentRecipeCategory"/> based on its input argument.
-    /// </summary>
-    /// <param name="category">The <see cref="RecipeCategory"/> to create the <see cref="PersistentRecipeCategory"/> with.</param>
-    /// <returns>A <see cref="PersistentRecipeCategory"/>.</returns>
-    /// <exception cref="NotSupportedException">Thrown when <paramref name="category"/> is a valid <see cref="RecipeCategory"/>,
-    /// but unsupported.</exception>
-    private static PersistentRecipeCategory Create(RecipeCategory category)
-    {
-        switch (category)
-        {
-            case RecipeCategory.Meat:
-                return PersistentRecipeCategory.Meat;
-            case RecipeCategory.Fish:
-                return PersistentRecipeCategory.Fish;
-            case RecipeCategory.Vegetarian:
-                return PersistentRecipeCategory.Vegetarian;
-            case RecipeCategory.Vegan:
-                return PersistentRecipeCategory.Vegan;
-            case RecipeCategory.Drinks:
-                return PersistentRecipeCategory.Drinks;
-            case RecipeCategory.Pastry:
-                return PersistentRecipeCategory.Pastry;
-            case RecipeCategory.Dessert:
-                return PersistentRecipeCategory.Dessert;
-            case RecipeCategory.Snack:
-                return PersistentRecipeCategory.Snack;
-            case RecipeCategory.Other:
-                return PersistentRecipeCategory.Other;
-            default:
-                throw new NotSupportedException();
-        }
     }
 
     private static ICollection<RecipeFieldEntity> Create(IEnumerable<RecipeFieldModel> recipeFieldModels)

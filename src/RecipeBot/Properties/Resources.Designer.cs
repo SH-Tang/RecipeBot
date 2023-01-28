@@ -85,5 +85,24 @@ namespace RecipeBot.Properties {
                 return ResourceManager.GetString("Embed_could_not_be_created_reason_0_", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No saved recipes are found..
+        /// </summary>
+        internal static string RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found {
+            get {
+                return ResourceManager.GetString("RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No saved recipes are found with the given category..
+        /// </summary>
+        internal static string RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found_with_category {
+            get {
+                return ResourceManager.GetString("RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found_with_categ" +
+                        "ory", resourceCulture);
+            }
+        }
     }
 }

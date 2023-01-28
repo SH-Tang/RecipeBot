@@ -82,13 +82,17 @@ public class RecipeBotApplicationServiceProvider
                 .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
                 .AddSingleton<InteractionDiscordCommandHandler>()
                 .AddSingleton<ILoggingService, ConsoleLoggingService>()
-                .AddSingleton<IRecipeModelCharacterLimitProvider, DiscordCharacterLimitProvider>()
+                .AddSingleton<DiscordCharacterLimitProvider>()
+                .AddSingleton<IRecipeModelCharacterLimitProvider>(x => x.GetRequiredService<DiscordCharacterLimitProvider>())
+                .AddSingleton<IMessageCharacterLimitProvider>(x => x.GetRequiredService<DiscordCharacterLimitProvider>())
                 .AddTransient<ITimeProvider, TimeProvider>()
                 .AddTransient<DiscordCommandInfoFactory>()
                 .AddTransient<BotInformationService>()
                 .AddDbContext<RecipeBotDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")))
                 .AddScoped<IRecipeRepository, RecipeRepository>()
-                .AddScoped<IRecipeController, RecipeController>();
+                .AddScoped<IRecipeController, RecipeController>()
+                .AddScoped<IRecipeDataEntryCollectionRepository, RecipeDataEntryCollectionRepository>()
+                .AddScoped<IRecipeEntriesController, RecipeEntriesController>();
     }
 
     private void ConfigureOptions(IServiceCollection services)
