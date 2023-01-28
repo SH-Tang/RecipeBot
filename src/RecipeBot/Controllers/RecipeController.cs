@@ -45,7 +45,7 @@ public class RecipeController : IRecipeController
     /// Creates a new instance of <see cref="RecipeController"/>.
     /// </summary>
     /// <param name="limitProvider">The limit provider to retrieve the character limits from.</param>
-    /// <param name="repository">The repository to handle with the data persistence of recipes.</param>
+    /// <param name="repository">The repository to handle with the persistence of recipes.</param>
     /// <param name="logger">The logger to log with.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     public RecipeController(IRecipeModelCharacterLimitProvider limitProvider,

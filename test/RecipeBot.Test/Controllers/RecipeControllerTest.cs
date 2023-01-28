@@ -84,7 +84,7 @@ public class RecipeControllerTest
     }
 
     [Fact]
-    public async Task Recipe_with_valid_data_and_unsuccessfully_saved_returns_result_with_error()
+    public async Task Recipe_with_valid_data_and_unsuccessfully_saved_logs_and_returns_result_with_error()
     {
         // Setup
         var fixture = new Fixture();
@@ -110,10 +110,12 @@ public class RecipeControllerTest
         // Assert
         controllerResult.HasError.Should().BeTrue();
         controllerResult.ErrorMessage.Should().NotBeNullOrWhiteSpace();
+
+        await logger.ReceivedWithAnyArgs().LogErrorAsync(Arg.Any<Exception>());
     }
 
     [Fact]
-    public async Task Recipe_with_invalid_data_and_valid_category_returns_result_with_error_and_does_not_save()
+    public async Task Recipe_with_invalid_data_and_valid_category_logs_and_returns_result_with_error_and_does_not_save()
     {
         // Setup
         var fixture = new Fixture();
@@ -143,6 +145,7 @@ public class RecipeControllerTest
         controllerResult.ErrorMessage.Should().NotBeNullOrWhiteSpace();
 
         await repository.DidNotReceiveWithAnyArgs().SaveRecipeAsync(Arg.Any<RecipeModel>());
+        await logger.ReceivedWithAnyArgs().LogErrorAsync(Arg.Any<Exception>());
     }
 
     [Theory]
@@ -188,7 +191,7 @@ public class RecipeControllerTest
     }
 
     [Fact]
-    public async Task Recipe_with_valid_attachment_and_category_and_invalid_data_returns_result_with_error_and_does_not_save()
+    public async Task Recipe_with_valid_attachment_and_category_and_invalid_data_logs_and_returns_result_with_error_and_does_not_save()
     {
         // Setup
         var fixture = new Fixture();
@@ -223,6 +226,7 @@ public class RecipeControllerTest
         controllerResult.ErrorMessage.Should().NotBeNullOrWhiteSpace();
 
         await repository.DidNotReceiveWithAnyArgs().SaveRecipeAsync(Arg.Any<RecipeModel>());
+        await logger.ReceivedWithAnyArgs().LogErrorAsync(Arg.Any<Exception>());
     }
 
     [Theory]
