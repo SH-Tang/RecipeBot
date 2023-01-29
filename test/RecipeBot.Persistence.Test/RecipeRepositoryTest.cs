@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -23,8 +24,10 @@ using FluentAssertions;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using RecipeBot.Domain.Data;
+using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Repositories;
+using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.Domain.TestUtils;
 using RecipeBot.Persistence.Entities;
 using Xunit;
@@ -44,7 +47,7 @@ public class RecipeRepositoryTest
     public void Repository_is_recipe_repository()
     {
         // Setup
-        using (var context = new RecipeBotDbContext(new DbContextOptions<RecipeBotDbContext>()))
+        using(var context = new RecipeBotDbContext(new DbContextOptions<RecipeBotDbContext>()))
         {
             // Call
             var repository = new RecipeRepository(context);
@@ -85,10 +88,8 @@ public class RecipeRepositoryTest
             };
 
         // Call & Assert
-        using (var test = new RecipeRepositoryPersistDataTest(recipeModel, assertPersistedDataAction))
-        {
-            await test.ExecuteTest();
-        }
+        var test = new RecipeRepositoryPersistDataTest(recipeModel, assertPersistedDataAction);
+        await test.ExecuteTest();
     }
 
     [Fact]
@@ -139,10 +140,8 @@ public class RecipeRepositoryTest
             };
 
         // Call & Assert
-        using (var test = new RecipeRepositoryPersistDataTest(recipeModel, assertPersistedDataAction))
-        {
-            await test.ExecuteTest();
-        }
+        var test = new RecipeRepositoryPersistDataTest(recipeModel, assertPersistedDataAction);
+        await test.ExecuteTest();
     }
 
     [Fact]
@@ -179,10 +178,8 @@ public class RecipeRepositoryTest
             };
 
         // Call & Assert
-        using (var test = new RecipeRepositoryPersistDataTest(recipeModel, assertPersistedDataAction, seedDatabaseAction))
-        {
-            await test.ExecuteTest();
-        }
+        var test = new RecipeRepositoryPersistDataTest(recipeModel, assertPersistedDataAction, seedDatabaseAction);
+        await test.ExecuteTest();
     }
 
     [Fact]
@@ -221,34 +218,202 @@ public class RecipeRepositoryTest
             };
 
         // Call & Assert
-        using (var test = new RecipeRepositoryPersistDataTest(recipeModel, assertPersistedDataAction, seedDatabaseAction))
+        var test = new RecipeRepositoryPersistDataTest(recipeModel, assertPersistedDataAction, seedDatabaseAction);
+        await test.ExecuteTest();
+    }
+
+    [Fact]
+    public async Task Given_empty_database_when_deleting_recipe_throws_exception()
+    {
+        // Setup
+        using(var provider = new RecipeBotDBContextProvider())
+        using(RecipeBotDbContext context = provider.CreateInMemoryContext())
         {
-            await test.ExecuteTest();
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var repository = new RecipeRepository(context);
+
+            var idToDelete = fixture.Create<long>();
+
+            // Call
+            Func<Task> call = () => repository.DeleteRecipeAsync(idToDelete);
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataDeleteException>()
+                      .WithMessage($"No recipe matches with ID '{idToDelete}'.");
         }
     }
 
-    private class RecipeRepositoryPersistDataTest : IDisposable
+    [Fact]
+    public async Task Given_seeded_database_when_deleting_recipe_only_deletes_affected_data_and_returns_result()
+    {
+        // Setup
+        using(var provider = new RecipeBotDBContextProvider())
+        using(RecipeBotDbContext context = provider.CreateInMemoryContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var authorEntity = new AuthorEntity
+            {
+                AuthorName = fixture.Create<string>(),
+                AuthorImageUrl = fixture.Create<string>()
+            };
+
+            IReadOnlyList<TagEntity> tagEntities = new[]
+            {
+                new TagEntity
+                {
+                    Tag = fixture.Create<string>()
+                },
+                new TagEntity
+                {
+                    Tag = fixture.Create<string>()
+                },
+                new TagEntity
+                {
+                    Tag = fixture.Create<string>()
+                },
+                new TagEntity
+                {
+                    Tag = fixture.Create<string>()
+                }
+            };
+
+            var recipeToDelete = new RecipeEntity
+            {
+                RecipeEntityId = fixture.Create<long>(),
+                RecipeTitle = fixture.Create<string>(),
+                Author = authorEntity,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeFields = new[]
+                {
+                    new RecipeFieldEntity
+                    {
+                        RecipeFieldData = fixture.Create<string>(),
+                        RecipeFieldName = fixture.Create<string>(),
+                        Order = fixture.Create<byte>()
+                    },
+                    new RecipeFieldEntity
+                    {
+                        RecipeFieldData = fixture.Create<string>(),
+                        RecipeFieldName = fixture.Create<string>(),
+                        Order = fixture.Create<byte>()
+                    }
+                },
+                Tags = new[]
+                {
+                    new RecipeTagEntity
+                    {
+                        Tag = tagEntities[0],
+                        Order = fixture.Create<byte>()
+                    },
+                    new RecipeTagEntity
+                    {
+                        Tag = tagEntities[3],
+                        Order = fixture.Create<byte>()
+                    }
+                }
+            };
+
+            var unaffectedRecipe = new RecipeEntity
+            {
+                RecipeEntityId = fixture.Create<long>(),
+                RecipeTitle = fixture.Create<string>(),
+                Author = authorEntity,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeFields = new[]
+                {
+                    new RecipeFieldEntity
+                    {
+                        RecipeFieldData = fixture.Create<string>(),
+                        RecipeFieldName = fixture.Create<string>(),
+                        Order = fixture.Create<byte>()
+                    },
+                    new RecipeFieldEntity
+                    {
+                        RecipeFieldData = fixture.Create<string>(),
+                        RecipeFieldName = fixture.Create<string>(),
+                        Order = fixture.Create<byte>()
+                    }
+                },
+                Tags = new[]
+                {
+                    new RecipeTagEntity
+                    {
+                        Tag = tagEntities[1],
+                        Order = fixture.Create<byte>()
+                    },
+                    new RecipeTagEntity
+                    {
+                        Tag = tagEntities[2],
+                        Order = fixture.Create<byte>()
+                    }
+                }
+            };
+
+            await context.RecipeEntities.AddRangeAsync(recipeToDelete, unaffectedRecipe);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeRepository(context);
+
+            // Call
+            RecipeEntryData result = await repository.DeleteRecipeAsync(recipeToDelete.RecipeEntityId);
+            context.ChangeTracker.Clear();
+
+            // Assert
+            result.Id.Should().Be(recipeToDelete.RecipeEntityId);
+            result.Title.Should().Be(recipeToDelete.RecipeTitle);
+            result.AuthorName.Should().Be(authorEntity.AuthorName);
+
+            context.AuthorEntities.Should().BeEquivalentTo(new[]
+            {
+                authorEntity
+            }, options => options.Excluding(s => s.Recipes));
+
+            context.TagEntities.Should().BeEquivalentTo(tagEntities, options => options.Excluding(s => s.Recipes));
+            context.RecipeFieldEntities.Should().BeEquivalentTo(unaffectedRecipe.RecipeFields);
+            context.RecipeTagEntities.Should().BeEquivalentTo(unaffectedRecipe.Tags, options => options.Excluding(s => s.Recipe)
+                                                                                                       .Excluding(s => s.Tag));
+
+            RecipeEntity recipeEntity = await context.RecipeEntities
+                                                     .Include(e => e.Author)
+                                                     .Include(e => e.Tags)
+                                                     .SingleOrDefaultAsync();
+
+            recipeEntity.Should().BeEquivalentTo(unaffectedRecipe, options => options.Excluding(s => s.Author)
+                                                                                     .Excluding(s => s.Tags));
+            recipeEntity.Author.Should().BeEquivalentTo(unaffectedRecipe.Author, options => options.Including(s => s.AuthorEntityId)
+                                                                                                   .Including(s => s.AuthorName)
+                                                                                                   .Including(s => s.AuthorImageUrl));
+            recipeEntity.Tags.Should().BeEquivalentTo(unaffectedRecipe.Tags, options => options.Including(s => s.TagEntityId)
+                                                                                               .Including(s => s.RecipeEntityId)
+                                                                                               .Including(s => s.Order));
+        }
+    }
+
+    private class RecipeRepositoryPersistDataTest
     {
         private readonly RecipeModel recipe;
         private readonly Action<RecipeBotDbContext>? seedDatabaseAction;
         private readonly Action<RecipeBotDbContext> assertPersistedDataAction;
-        private readonly SqliteConnection connection;
 
         public RecipeRepositoryPersistDataTest(RecipeModel recipe,
-                                               Action<RecipeBotDbContext> assertPersistedDataAction,
-                                               Action<RecipeBotDbContext>? seedDatabaseAction = null)
+            Action<RecipeBotDbContext> assertPersistedDataAction,
+            Action<RecipeBotDbContext>? seedDatabaseAction = null)
         {
             this.recipe = recipe;
             this.seedDatabaseAction = seedDatabaseAction;
             this.assertPersistedDataAction = assertPersistedDataAction;
-
-            connection = new SqliteConnection("Filename=:memory:");
-            connection.Open();
         }
 
         public async Task ExecuteTest()
         {
-            using (RecipeBotDbContext context = CreateInMemoryContext())
+            using(var provider = new RecipeBotDBContextProvider())
+            using(RecipeBotDbContext context = provider.CreateInMemoryContext())
             {
                 await context.Database.EnsureCreatedAsync();
 
@@ -267,19 +432,33 @@ public class RecipeRepositoryTest
                 assertPersistedDataAction(context);
             }
         }
+    }
 
-        public void Dispose()
+    /// <summary>
+    /// Test class for providing <see cref="RecipeBotDbContext"/>.
+    /// </summary>
+    private class RecipeBotDBContextProvider : IDisposable
+    {
+        private readonly SqliteConnection connection;
+
+        public RecipeBotDBContextProvider()
         {
-            GC.SuppressFinalize(this);
-            connection.Dispose();
+            connection = new SqliteConnection("Filename=:memory:");
+            connection.Open();
         }
 
-        private RecipeBotDbContext CreateInMemoryContext()
+        public RecipeBotDbContext CreateInMemoryContext()
         {
             DbContextOptions<RecipeBotDbContext> contextOptions =
                 new DbContextOptionsBuilder<RecipeBotDbContext>().UseSqlite(connection)
                                                                  .Options;
             return new RecipeBotDbContext(contextOptions);
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            connection?.Dispose();
         }
     }
 }

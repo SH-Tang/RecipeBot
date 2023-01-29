@@ -24,6 +24,7 @@ using Microsoft.EntityFrameworkCore;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Repositories;
+using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.Persistence.Creators;
 using RecipeBot.Persistence.Entities;
 
@@ -61,6 +62,34 @@ public class RecipeRepository : IRecipeRepository
             context.RecipeEntities.Add(recipeEntity);
 
             await context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            throw new RepositoryDataSaveException(ex.Message, ex);
+        }
+    }
+
+    public async Task<RecipeEntryData> DeleteRecipeAsync(long id)
+    {
+        try
+        {
+            RecipeEntity entityToDelete = await context.RecipeEntities
+                                                       .Include(e => e.RecipeFields)
+                                                       .Include(e => e.Tags)
+                                                       .Include(e => e.Author)
+                                                       .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
+            if (entityToDelete == null)
+            {
+                throw new RepositoryDataDeleteException(string.Format("No recipe matches with ID '{0}'.", id)); 
+            }
+
+            context.RecipeEntities.Remove(entityToDelete);
+            context.RecipeFieldEntities.RemoveRange(entityToDelete.RecipeFields);
+            context.RecipeTagEntities.RemoveRange(entityToDelete.Tags);
+
+            await context.SaveChangesAsync();
+
+            return new RecipeEntryData(entityToDelete.RecipeEntityId, entityToDelete.RecipeTitle, entityToDelete.Author.AuthorName);
         }
         catch (DbUpdateException ex)
         {
