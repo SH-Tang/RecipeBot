@@ -27,6 +27,7 @@ using RecipeBot.Domain.Repositories;
 using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.Persistence.Creators;
 using RecipeBot.Persistence.Entities;
+using RecipeBot.Persistence.Properties;
 
 namespace RecipeBot.Persistence;
 
@@ -73,14 +74,14 @@ public class RecipeRepository : IRecipeRepository
     {
         try
         {
-            RecipeEntity entityToDelete = await context.RecipeEntities
-                                                       .Include(e => e.RecipeFields)
-                                                       .Include(e => e.Tags)
-                                                       .Include(e => e.Author)
-                                                       .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
+            RecipeEntity? entityToDelete = await context.RecipeEntities
+                                                        .Include(e => e.RecipeFields)
+                                                        .Include(e => e.Tags)
+                                                        .Include(e => e.Author)
+                                                        .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
             if (entityToDelete == null)
             {
-                throw new RepositoryDataDeleteException(string.Format("No recipe matches with ID '{0}'.", id)); 
+                throw new RepositoryDataDeleteException(string.Format(Resources.RecipeRepository_DeleteRecipeAsync_No_recipe_matches_with_Id_0, id));
             }
 
             context.RecipeEntities.Remove(entityToDelete);
