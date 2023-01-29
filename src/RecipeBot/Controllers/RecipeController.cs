@@ -27,7 +27,9 @@ using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Repositories;
+using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.Exceptions;
+using RecipeBot.Properties;
 using RecipeBot.Services;
 
 namespace RecipeBot.Controllers;
@@ -83,25 +85,41 @@ public class RecipeController : IRecipeController
 
             await Task.WhenAll(tasks);
 
-            return new ControllerResult<Embed>(embedTask.Result);
+            return ControllerResult<Embed>.CreateControllerResultWithValidResult(embedTask.Result);
         }
         catch (ModelCreateException e)
         {
-            return await HandleException(e);
+            return await HandleException<Embed>(e);
         }
         catch (EmbedCreateException e)
         {
-            return await HandleException(e);
+            return await HandleException<Embed>(e);
         }
         catch (RepositoryDataSaveException e)
         {
-            return await HandleException(e);
+            return await HandleException<Embed>(e);
         }
     }
 
-    private async Task<ControllerResult<Embed>> HandleException(Exception e)
+
+    public async Task<ControllerResult<string>> DeleteRecipeAsync(long idToDelete)
+    {
+        try
+        {
+            RecipeEntryData deletedRecipe = await repository.DeleteRecipeAsync(idToDelete);
+
+            return ControllerResult<string>.CreateControllerResultWithValidResult(string.Format(Resources.RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted,
+                deletedRecipe.Title, deletedRecipe.Id, deletedRecipe.AuthorName));
+        }
+        catch (RepositoryDataDeleteException e)
+        {
+            return await HandleException<string>(e);
+        }
+    }
+
+    private async Task<ControllerResult<TResult>> HandleException<TResult>(Exception e) where TResult : class
     {
         await logger.LogErrorAsync(e);
-        return new ControllerResult<Embed>(e.Message);
+        return ControllerResult<TResult>.CreateControllerResultWithError(e.Message);
     }
 }

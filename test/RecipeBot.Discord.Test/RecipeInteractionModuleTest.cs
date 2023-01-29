@@ -45,11 +45,11 @@ public class RecipeInteractionModuleTest
     }
 
     [Fact]
-    public void Format_recipe_command_has_expected_attributes()
+    public void Save_recipe_command_has_expected_attributes()
     {
         // Call
         SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeInteractionModule, SlashCommandAttribute>(
-            nameof(RecipeInteractionModule.FormatRecipe), new[]
+            nameof(RecipeInteractionModule.SaveRecipe), new[]
             {
                 typeof(DiscordRecipeCategory),
                 typeof(IAttachment)
@@ -62,6 +62,34 @@ public class RecipeInteractionModuleTest
         commandAttribute.Should().NotBeNull();
         commandAttribute!.Name.Should().Be(expectedName);
         commandAttribute.Description.Should().Be(expectedDescription);
+    }
+
+    [Fact]
+    public void Delete_recipe_command_has_expected_attributes()
+    {
+        // Call
+        SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeInteractionModule, SlashCommandAttribute>(
+            nameof(RecipeInteractionModule.DeleteRecipe), new []
+            {
+                typeof(long)
+            });
+
+        DefaultMemberPermissionsAttribute? permissionAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeInteractionModule, DefaultMemberPermissionsAttribute>(
+            nameof(RecipeInteractionModule.DeleteRecipe), new[]
+            {
+                typeof(long)
+            });
+
+        // Assert
+        const string expectedName = "recipe-delete";
+        const string expectedDescription = "Deletes a recipe based on the id";
+
+        commandAttribute.Should().NotBeNull();
+        commandAttribute!.Name.Should().Be(expectedName);
+        commandAttribute.Description.Should().Be(expectedDescription);
+
+        permissionAttribute.Should().NotBeNull();
+        permissionAttribute!.Permissions.Should().Be(GuildPermission.Administrator | GuildPermission.ModerateMembers);
     }
 
     [Fact]

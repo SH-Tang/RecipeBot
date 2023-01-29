@@ -40,4 +40,11 @@ public interface IRecipeController
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="modal"/> and <paramref name="user"/> is <c>null</c>.</exception>
     /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid value of <see cref="DiscordRecipeCategory"/>.</exception>
     Task<ControllerResult<Embed>> SaveRecipeAsync(RecipeModal modal, IUser user, DiscordRecipeCategory category, IAttachment? attachment);
+
+    /// <summary>
+    /// Deletes a recipe based on its input arguments.
+    /// </summary>
+    /// <param name="idToDelete">The id of the recipe to delete.</param>
+    /// <returns>The result of the delete action.</returns>
+    Task<ControllerResult<string>> DeleteRecipeAsync(long idToDelete);
 }

@@ -25,7 +25,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RecipeBot.Properties {
+namespace RecipeBot.Persistence.Properties {
     using System;
     
     
@@ -56,7 +56,7 @@ namespace RecipeBot.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RecipeBot.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RecipeBot.Persistence.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -78,40 +78,11 @@ namespace RecipeBot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Recipe could not be successfully formatted: {0}..
+        ///   Looks up a localized string similar to No recipe matches with Id &apos;{0}&apos;..
         /// </summary>
-        internal static string Embed_could_not_be_created_reason_0_ {
+        internal static string RecipeRepository_DeleteRecipeAsync_No_recipe_matches_with_Id_0 {
             get {
-                return ResourceManager.GetString("Embed_could_not_be_created_reason_0_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Recipe titled &apos;{0}&apos; with Id &apos;{1}&apos; and author &apos;{2}&apos; was successfully deleted..
-        /// </summary>
-        internal static string RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted {
-            get {
-                return ResourceManager.GetString("RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2" +
-                        "_was_succesfully_deleted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No saved recipes are found..
-        /// </summary>
-        internal static string RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found {
-            get {
-                return ResourceManager.GetString("RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No saved recipes are found with the given category..
-        /// </summary>
-        internal static string RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found_with_category {
-            get {
-                return ResourceManager.GetString("RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found_with_categ" +
-                        "ory", resourceCulture);
+                return ResourceManager.GetString("RecipeRepository_DeleteRecipeAsync_No_recipe_matches_with_Id_0", resourceCulture);
             }
         }
     }

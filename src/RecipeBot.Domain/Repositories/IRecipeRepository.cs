@@ -19,6 +19,7 @@ using System;
 using System.Threading.Tasks;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Models;
+using RecipeBot.Domain.Repositories.Data;
 
 namespace RecipeBot.Domain.Repositories;
 
@@ -35,4 +36,12 @@ public interface IRecipeRepository
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="model"/> is <c>null</c>.</exception>
     /// <exception cref="RepositoryDataSaveException">Thrown when the data could not be successfully saved.</exception>
     public Task SaveRecipeAsync(RecipeModel model);
+
+    /// <summary>
+    /// Deletes a recipe based on its id.
+    /// </summary>
+    /// <param name="id">The id of the recipe to delete.</param>
+    /// <returns>A <see cref="RecipeEntryData"/> containing the information of the deleted recipe.</returns>
+    /// <exception cref="RepositoryDataDeleteException">Thrown when the data could not be successfully deleted.</exception>
+    Task<RecipeEntryData> DeleteRecipeAsync(long id);
 }

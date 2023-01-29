@@ -31,7 +31,7 @@ public class ControllerResultTest
         var result = new object();
 
         // Call
-        var controllerResult = new ControllerResult<object>(result);
+        ControllerResult<object> controllerResult = ControllerResult<object>.CreateControllerResultWithValidResult(result);
 
         // Assert
         controllerResult.Result.Should().BeSameAs(result);
@@ -47,7 +47,7 @@ public class ControllerResultTest
         var errorMessage = fixture.Create<string>();
 
         // Call
-        var controllerResult = new ControllerResult<object>(errorMessage);
+        var controllerResult = ControllerResult<object>.CreateControllerResultWithError(errorMessage);
 
         // Assert
         controllerResult.Result.Should().BeNull();
