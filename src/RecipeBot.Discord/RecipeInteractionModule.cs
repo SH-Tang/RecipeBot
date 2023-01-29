@@ -54,10 +54,41 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
         this.logger = logger;
     }
 
+    [SlashCommand("recipe-delete", "Deletes a recipe based on the id")]
+    public async Task DeleteRecipe([Summary("Recipe id", "The id of the recipe to delete")] long recipeIdToDelete)
+    {
+        try
+        {
+            using(IServiceScope scope = scopeFactory.CreateScope())
+            {
+                var controller = scope.ServiceProvider.GetRequiredService<IRecipeController>();
+                ControllerResult<string> response = await controller.DeleteRecipeAsync(recipeIdToDelete);
+                if (response.HasError)
+                {
+                    await RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, response.ErrorMessage), ephemeral: true);
+                }
+                else
+                {
+                    await RespondAsync(response.Result, ephemeral: true);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Task[] tasks =
+            {
+                RespondAsync(e.Message, ephemeral: true),
+                logger.LogErrorAsync(e)
+            };
+
+            await Task.WhenAll(tasks);
+        }
+    }
+
     [SlashCommand("recipe", "Formats and stores an user recipe")]
-    public async Task FormatRecipe([Summary("category", "The category the recipe belongs to")] DiscordRecipeCategory category,
-                                   [Summary("image", "The image of the recipe result (optional)")]
-                                   IAttachment? attachment = null)
+    public async Task SaveRecipe([Summary("category", "The category the recipe belongs to")] DiscordRecipeCategory category,
+        [Summary("image", "The image of the recipe result (optional)")]
+        IAttachment? attachment = null)
     {
         if (attachment != null && !attachment.IsImage())
         {
@@ -93,7 +124,7 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
 
             SocketUser? user = Context.User;
 
-            using (IServiceScope scope = scopeFactory.CreateScope())
+            using(IServiceScope scope = scopeFactory.CreateScope())
             {
                 var controller = scope.ServiceProvider.GetRequiredService<IRecipeController>();
                 ControllerResult<Embed> response = await controller.SaveRecipeAsync(modal, user, category, attachment);
