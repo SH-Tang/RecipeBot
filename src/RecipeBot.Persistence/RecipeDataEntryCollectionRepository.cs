@@ -94,7 +94,7 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
     /// <summary>
     /// Class representing a simplified recipe entry in the database.
     /// </summary>
-    private class RecipeDatabaseEntry
+    private sealed class RecipeDatabaseEntry
     {
         /// <summary>
         /// Gets or sets the id of the recipe.
@@ -104,11 +104,11 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
         /// <summary>
         /// Gets or sets the title of the recipe.
         /// </summary>
-        public string Title { get; init; }
+        public string Title { get; init; } = null!;
 
         /// <summary>
         /// Gets or sets the name of the author of the recipe.
         /// </summary>
-        public string AuthorName { get; init; }
+        public string AuthorName { get; init; } = null!;
     }
 }
