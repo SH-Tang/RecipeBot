@@ -48,23 +48,12 @@ public class ControllerResult<TResult> where TResult : class
     }
 
 
-    /// <summary>
-    /// Creates a new instance of <see cref="ControllerResult{TResult}"/> with a valid result.
-    /// </summary>
-    /// <param name="result">The <typeparamref name="TResult"/> to host.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="result"/> is <c>null</c>.</exception>
     private ControllerResult(TResult result)
     {
-        result.IsNotNull(nameof(result));
-
         HasError = false;
         Result = result;
     }
 
-    /// <summary>
-    /// Creates a new instance of <see cref="ControllerResult{TResult}"/> with an error message.
-    /// </summary>
-    /// <param name="errorMessage">The error message.</param>
     private ControllerResult(string errorMessage)
     {
         ErrorMessage = errorMessage;

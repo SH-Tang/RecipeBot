@@ -385,24 +385,21 @@ public class RecipeRepositoryTest
                                                      .SingleAsync();
             recipeEntity.Should().BeEquivalentTo(unaffectedRecipe, options => options.Excluding(s => s.Author)
                                                                                      .Excluding(s => s.Tags));
-            recipeEntity.Author.Should().BeEquivalentTo(unaffectedRecipe.Author, options => options.Including(s => s.AuthorEntityId)
-                                                                                                   .Including(s => s.AuthorName)
-                                                                                                   .Including(s => s.AuthorImageUrl));
-            recipeEntity.Tags.Should().BeEquivalentTo(unaffectedRecipe.Tags, options => options.Including(s => s.TagEntityId)
-                                                                                               .Including(s => s.RecipeEntityId)
-                                                                                               .Including(s => s.Order));
+            recipeEntity.Author.Should().BeEquivalentTo(unaffectedRecipe.Author, options => options.Excluding(s => s.Recipes));
+            recipeEntity.Tags.Should().BeEquivalentTo(unaffectedRecipe.Tags, options => options.Excluding(s => s.Recipe)
+                                                                                               .Excluding(s => s.Tag));
         }
     }
 
     private class RecipeRepositoryPersistDataTest
     {
+        private readonly Action<RecipeBotDbContext> assertPersistedDataAction;
         private readonly RecipeModel recipe;
         private readonly Action<RecipeBotDbContext>? seedDatabaseAction;
-        private readonly Action<RecipeBotDbContext> assertPersistedDataAction;
 
         public RecipeRepositoryPersistDataTest(RecipeModel recipe,
-            Action<RecipeBotDbContext> assertPersistedDataAction,
-            Action<RecipeBotDbContext>? seedDatabaseAction = null)
+                                               Action<RecipeBotDbContext> assertPersistedDataAction,
+                                               Action<RecipeBotDbContext>? seedDatabaseAction = null)
         {
             this.recipe = recipe;
             this.seedDatabaseAction = seedDatabaseAction;
@@ -446,18 +443,18 @@ public class RecipeRepositoryTest
             connection.Open();
         }
 
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            connection?.Dispose();
+        }
+
         public RecipeBotDbContext CreateInMemoryContext()
         {
             DbContextOptions<RecipeBotDbContext> contextOptions =
                 new DbContextOptionsBuilder<RecipeBotDbContext>().UseSqlite(connection)
                                                                  .Options;
             return new RecipeBotDbContext(contextOptions);
-        }
-
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-            connection?.Dispose();
         }
     }
 }

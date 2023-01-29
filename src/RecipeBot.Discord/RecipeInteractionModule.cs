@@ -88,8 +88,8 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
 
     [SlashCommand("recipe", "Formats and stores an user recipe")]
     public async Task SaveRecipe([Summary("category", "The category the recipe belongs to")] DiscordRecipeCategory category,
-        [Summary("image", "The image of the recipe result (optional)")]
-        IAttachment? attachment = null)
+                                 [Summary("image", "The image of the recipe result (optional)")]
+                                 IAttachment? attachment = null)
     {
         if (attachment != null && !attachment.IsImage())
         {

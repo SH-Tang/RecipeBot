@@ -89,15 +89,15 @@ public class RecipeController : IRecipeController
         }
         catch (ModelCreateException e)
         {
-            return await HandleException(e);
+            return await HandleException<Embed>(e);
         }
         catch (EmbedCreateException e)
         {
-            return await HandleException(e);
+            return await HandleException<Embed>(e);
         }
         catch (RepositoryDataSaveException e)
         {
-            return await HandleException(e);
+            return await HandleException<Embed>(e);
         }
     }
 
@@ -113,14 +113,13 @@ public class RecipeController : IRecipeController
         }
         catch (RepositoryDataDeleteException e)
         {
-            await logger.LogErrorAsync(e);
-            return ControllerResult<string>.CreateControllerResultWithError(e.Message);
+            return await HandleException<string>(e);
         }
     }
 
-    private async Task<ControllerResult<Embed>> HandleException(Exception e)
+    private async Task<ControllerResult<TResult>> HandleException<TResult>(Exception e) where TResult : class
     {
         await logger.LogErrorAsync(e);
-        return ControllerResult<Embed>.CreateControllerResultWithError(e.Message);
+        return ControllerResult<TResult>.CreateControllerResultWithError(e.Message);
     }
 }
