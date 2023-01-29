@@ -382,8 +382,7 @@ public class RecipeRepositoryTest
             RecipeEntity recipeEntity = await context.RecipeEntities
                                                      .Include(e => e.Author)
                                                      .Include(e => e.Tags)
-                                                     .SingleOrDefaultAsync();
-
+                                                     .SingleAsync();
             recipeEntity.Should().BeEquivalentTo(unaffectedRecipe, options => options.Excluding(s => s.Author)
                                                                                      .Excluding(s => s.Tags));
             recipeEntity.Author.Should().BeEquivalentTo(unaffectedRecipe.Author, options => options.Including(s => s.AuthorEntityId)

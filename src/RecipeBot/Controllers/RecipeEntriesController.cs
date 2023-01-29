@@ -60,7 +60,7 @@ public class RecipeEntriesController : IRecipeEntriesController
     {
         IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesAsync();
 
-        return new ControllerResult<IReadOnlyList<string>>(CreateMessages(entries, Resources.RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found));
+        return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(CreateMessages(entries, Resources.RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found));
     }
 
     public async Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync(DiscordRecipeCategory category)
@@ -71,7 +71,7 @@ public class RecipeEntriesController : IRecipeEntriesController
         IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesAsync(repositoryCategory);
 
 
-        return new ControllerResult<IReadOnlyList<string>>(CreateMessages(entries, Resources.RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found_with_category));
+        return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(CreateMessages(entries, Resources.RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found_with_category));
     }
 
     private IReadOnlyList<string> CreateMessages(IReadOnlyList<RecipeEntryData> entries, string emptyMessage)
