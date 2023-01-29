@@ -50,10 +50,18 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
 
     public async Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesAsync()
     {
-        IEnumerable<RecipeEntity> recipeEntities = await context.RecipeEntities
-                                                                .Include(r => r.Author)
-                                                                .AsNoTracking()
-                                                                .ToArrayAsync();
+        IEnumerable<RecipeDatabaseEntry> recipeEntities = await context.RecipeEntities
+                                                                       .Include(r => r.Author)
+                                                                       .Select(e => new RecipeDatabaseEntry
+                                                                       {
+                                                                           Id = e.RecipeEntityId,
+                                                                           Title = e.RecipeTitle,
+                                                                           AuthorName = e.Author.AuthorName
+                                                                       })
+                                                                       .AsNoTracking()
+                                                                       .ToArrayAsync();
+
+
         return CreateRecipeEntryDataCollection(recipeEntities);
     }
 
@@ -61,19 +69,46 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
     {
         PersistentRecipeCategory persistentCategory = PersistentRecipeCategoryCreator.Create(category);
 
-        IEnumerable<RecipeEntity> recipeEntities = await context.RecipeEntities
-                                                                .Where(r => r.RecipeCategory == persistentCategory)
-                                                                .Include(r => r.Author)
-                                                                .AsNoTracking()
-                                                                .ToArrayAsync();
+        IEnumerable<RecipeDatabaseEntry> recipeEntities = await context.RecipeEntities
+                                                                       .Where(r => r.RecipeCategory == persistentCategory)
+                                                                       .Include(r => r.Author)
+                                                                       .Select(e => new RecipeDatabaseEntry
+                                                                       {
+                                                                           Id = e.RecipeEntityId,
+                                                                           Title = e.RecipeTitle,
+                                                                           AuthorName = e.Author.AuthorName
+                                                                       })
+                                                                       .AsNoTracking()
+                                                                       .ToArrayAsync();
 
         return CreateRecipeEntryDataCollection(recipeEntities);
     }
 
-    private static RecipeEntryData[] CreateRecipeEntryDataCollection(IEnumerable<RecipeEntity> recipeEntities)
+    private static RecipeEntryData[] CreateRecipeEntryDataCollection(IEnumerable<RecipeDatabaseEntry> recipeDatabaseEntries)
     {
-        return recipeEntities.Select(r => new RecipeEntryData(r.RecipeEntityId, r.RecipeTitle, r.Author.AuthorName))
-            .OrderBy(r => r.Id)
-            .ToArray();
+        return recipeDatabaseEntries.Select(r => new RecipeEntryData(r.Id, r.Title, r.AuthorName))
+                                    .OrderBy(r => r.Id)
+                                    .ToArray();
+    }
+
+    /// <summary>
+    /// Class representing a simplified recipe entry in the database.
+    /// </summary>
+    private sealed class RecipeDatabaseEntry
+    {
+        /// <summary>
+        /// Gets or sets the id of the recipe.
+        /// </summary>
+        public long Id { get; init; }
+
+        /// <summary>
+        /// Gets or sets the title of the recipe.
+        /// </summary>
+        public string Title { get; init; } = null!;
+
+        /// <summary>
+        /// Gets or sets the name of the author of the recipe.
+        /// </summary>
+        public string AuthorName { get; init; } = null!;
     }
 }
