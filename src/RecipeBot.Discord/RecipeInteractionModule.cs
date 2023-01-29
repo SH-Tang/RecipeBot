@@ -55,7 +55,7 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
     }
 
     [SlashCommand("recipe-delete", "Deletes a recipe based on the id")]
-    public async Task DeleteRecipe([Summary("Recipe id", "The id of the recipe to delete")] long recipeIdToDelete)
+    public async Task DeleteRecipe([Summary("RecipeId", "The id of the recipe to delete")] long recipeIdToDelete)
     {
         try
         {
