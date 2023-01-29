@@ -396,7 +396,7 @@ public class RecipeControllerTest
         // Assert
         result.HasError.Should().BeFalse();
 
-        result.Result.Should().Be($"Recipe titled '{deletedResult.Title}' with id '{deletedResult.Id}' and author '{deletedResult.AuthorName}' was successfully deleted.");
+        result.Result.Should().Be($"Recipe titled '{deletedResult.Title}' with Id '{deletedResult.Id}' and author '{deletedResult.AuthorName}' was successfully deleted.");
     }
 
     [Fact]

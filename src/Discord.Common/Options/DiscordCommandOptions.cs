@@ -33,7 +33,7 @@ public class DiscordCommandOptions
     public char CommandPrefix { get; set; } = '~';
 
     /// <summary>
-    /// Gets or sets the Id for the test Discord server.
+    /// Gets or sets the id for the test Discord server.
     /// </summary>
     public ulong? TestGuildId { get; set; }
 }

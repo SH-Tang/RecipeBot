@@ -87,7 +87,7 @@ namespace RecipeBot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Recipe titled &apos;{0}&apos; with id &apos;{1}&apos; and author &apos;{2}&apos; was successfully deleted..
+        ///   Looks up a localized string similar to Recipe titled &apos;{0}&apos; with Id &apos;{1}&apos; and author &apos;{2}&apos; was successfully deleted..
         /// </summary>
         internal static string RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted {
             get {

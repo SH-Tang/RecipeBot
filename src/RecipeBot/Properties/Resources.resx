@@ -127,6 +127,6 @@
     <value>No saved recipes are found with the given category.</value>
   </data>
   <data name="RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted" xml:space="preserve">
-    <value>Recipe titled '{0}' with id '{1}' and author '{2}' was successfully deleted.</value>
+    <value>Recipe titled '{0}' with Id '{1}' and author '{2}' was successfully deleted.</value>
   </data>
 </root>
