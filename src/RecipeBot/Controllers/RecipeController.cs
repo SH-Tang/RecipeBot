@@ -27,7 +27,9 @@ using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Repositories;
+using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.Exceptions;
+using RecipeBot.Properties;
 using RecipeBot.Services;
 
 namespace RecipeBot.Controllers;
@@ -96,6 +98,23 @@ public class RecipeController : IRecipeController
         catch (RepositoryDataSaveException e)
         {
             return await HandleException(e);
+        }
+    }
+
+
+    public async Task<ControllerResult<string>> DeleteRecipeAsync(long idToDelete)
+    {
+        try
+        {
+            RecipeEntryData deletedRecipe = await repository.DeleteRecipeAsync(idToDelete);
+
+            return new ControllerResult<string>(string.Format(Resources.RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted,
+                deletedRecipe.Title, deletedRecipe.Id, deletedRecipe.AuthorName));
+        }
+        catch (RepositoryDataDeleteException e)
+        {
+            await logger.LogErrorAsync(e);
+            return new ControllerResult<string>(e.Message);
         }
     }
 

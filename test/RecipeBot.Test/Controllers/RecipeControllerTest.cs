@@ -25,6 +25,7 @@ using Discord;
 using Discord.Common;
 using FluentAssertions;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using RecipeBot.Controllers;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
@@ -33,6 +34,7 @@ using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Repositories;
+using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.Domain.TestUtils;
 using RecipeBot.TestUtils;
 using Xunit;
@@ -371,6 +373,52 @@ public class RecipeControllerTest
         RecipeModel savedModel = savedModels.Single();
         RecipeModelTestHelper.AssertCommonModelProperties(user, category, modal, savedModel);
         savedModel.RecipeImageUrl.Should().Be(recipeImageUrl);
+    }
+
+    [Fact]
+    public async Task Deleting_recipe_and_delete_successful_returns_result()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var idToDelete = fixture.Create<long>();
+
+        var deletedResult = fixture.Create<RecipeEntryData>();
+        var repository = Substitute.For<IRecipeRepository>();
+        repository.DeleteRecipeAsync(idToDelete).Returns(deletedResult);
+
+        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeController(limitProvider, repository, logger);
+
+        // Call
+        ControllerResult<string> result = await controller.DeleteRecipeAsync(idToDelete);
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        result.Result.Should().Be($"Recipe titled '{deletedResult.Title}' with id '{deletedResult.Id}' and author '{deletedResult.AuthorName}' was successfully deleted.");
+    }
+
+    [Fact]
+    public async Task Deleting_recipe_and_delete_unsuccessful_returns_result_with_error()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var exceptionMessage = fixture.Create<string>();
+
+        var repository = Substitute.For<IRecipeRepository>();
+        repository.DeleteRecipeAsync(Arg.Any<long>()).ThrowsAsyncForAnyArgs(new RepositoryDataDeleteException(exceptionMessage));
+
+        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeController(limitProvider, repository, logger);
+
+        // Call
+        ControllerResult<string> result = await controller.DeleteRecipeAsync(fixture.Create<long>());
+
+        // Assert
+        result.HasError.Should().BeTrue();
+        result.ErrorMessage.Should().Be(exceptionMessage);
     }
 
     public static IEnumerable<object[]> GetRecipeCategoriesAndColor()

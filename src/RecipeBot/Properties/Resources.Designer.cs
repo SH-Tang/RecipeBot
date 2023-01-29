@@ -87,6 +87,16 @@ namespace RecipeBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Recipe titled &apos;{0}&apos; with id &apos;{1}&apos; and author &apos;{2}&apos; was successfully deleted..
+        /// </summary>
+        internal static string RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted {
+            get {
+                return ResourceManager.GetString("RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2" +
+                        "_was_succesfully_deleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No saved recipes are found..
         /// </summary>
         internal static string RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found {
