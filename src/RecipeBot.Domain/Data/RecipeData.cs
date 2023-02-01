@@ -71,21 +71,6 @@ public class RecipeData
     public string RecipeTitle { get; }
 
     /// <summary>
-    /// Gets the ingredients of the recipe.
-    /// </summary>
-    public string RecipeIngredients { get; }
-
-    /// <summary>
-    /// Gets the cooking steps of the recipe.
-    /// </summary>
-    public string CookingSteps { get; }
-
-    /// <summary>
-    /// Gets or sets the additional notes of the recipe.
-    /// </summary>
-    public string? AdditionalNotes { get; set; }
-
-    /// <summary>
     /// Gets or sets the image url of the recipe.
     /// </summary>
     public string? ImageUrl { get; set; }

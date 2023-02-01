@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using AutoFixture;
 using FluentAssertions;
 using NSubstitute;
@@ -41,7 +40,6 @@ public class RecipeModelFactoryTest
         IRecipeModelCharacterLimitProvider recipeCharacterLimitProvider = CreateDefaultRecipeCharacterLimitProvider();
 
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
-        recipeData.AdditionalNotes = emptyValueString;
         recipeData.Tags = emptyValueString;
 
         var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
@@ -104,7 +102,6 @@ public class RecipeModelFactoryTest
         const string imageUrl = "http://www.recipeBotImage.com";
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
         recipeData.ImageUrl = imageUrl;
-        recipeData.AdditionalNotes = new string('%', recipeCharacterLimitProvider.MaximumFieldDataLength);
         recipeData.Tags = "Tag1, TAG1, tag1, tag    1,      tag1, tag1      , tag2";
 
         var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
@@ -238,15 +235,6 @@ public class RecipeModelFactoryTest
         recipeCharacterLimitProvider.MaximumRecipeLength.Returns(700);
 
         return recipeCharacterLimitProvider;
-    }
-
-    private static void AssertMandatoryFields(RecipeData data, IEnumerable<RecipeFieldModel> recipeFields)
-    {
-        recipeFields.ElementAt(0).Should().Match<RecipeFieldModel>(
-            s => s.FieldName == "Ingredients" && s.FieldData == data.RecipeIngredients);
-
-        recipeFields.ElementAt(1).Should().Match<RecipeFieldModel>(
-            s => s.FieldName == "Cooking steps" && s.FieldData == data.CookingSteps);
     }
 
     private static void AssertTags(RecipeData data, RecipeTagsModelWrapper wrapper)
