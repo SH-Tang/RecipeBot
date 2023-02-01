@@ -375,7 +375,7 @@ public class RecipeRepositoryTest
             }, options => options.Excluding(s => s.Recipes));
 
             context.TagEntities.Should().BeEquivalentTo(tagEntities, options => options.Excluding(s => s.Recipes));
-            context.RecipeFieldEntities.Should().BeEquivalentTo(unaffectedRecipe.RecipeFields);
+            context.RecipeFieldEntities.Should().BeEquivalentTo(unaffectedRecipe.RecipeFields, options => options.Excluding(s => s.Recipe));
             context.RecipeTagEntities.Should().BeEquivalentTo(unaffectedRecipe.Tags, options => options.Excluding(s => s.Recipe)
                                                                                                        .Excluding(s => s.Tag));
 
@@ -384,10 +384,13 @@ public class RecipeRepositoryTest
                                                      .Include(e => e.Tags)
                                                      .SingleAsync();
             recipeEntity.Should().BeEquivalentTo(unaffectedRecipe, options => options.Excluding(s => s.Author)
-                                                                                     .Excluding(s => s.Tags));
+                                                                                     .Excluding(s => s.Tags)
+                                                                                     .Excluding(s => s.RecipeFields));
             recipeEntity.Author.Should().BeEquivalentTo(unaffectedRecipe.Author, options => options.Excluding(s => s.Recipes));
             recipeEntity.Tags.Should().BeEquivalentTo(unaffectedRecipe.Tags, options => options.Excluding(s => s.Recipe)
                                                                                                .Excluding(s => s.Tag));
+
+            recipeEntity.RecipeFields.Should().BeEquivalentTo(unaffectedRecipe.RecipeFields, options => options.Excluding(s => s.Recipe));
         }
     }
 

@@ -85,9 +85,6 @@ public class RecipeRepository : IRecipeRepository
             }
 
             context.RecipeEntities.Remove(entityToDelete);
-            context.RecipeFieldEntities.RemoveRange(entityToDelete.RecipeFields);
-            context.RecipeTagEntities.RemoveRange(entityToDelete.Tags);
-
             await context.SaveChangesAsync();
 
             return new RecipeEntryData(entityToDelete.RecipeEntityId, entityToDelete.RecipeTitle, entityToDelete.Author.AuthorName);
