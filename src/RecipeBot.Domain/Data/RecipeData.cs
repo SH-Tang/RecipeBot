@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Common.Utils;
 
@@ -55,6 +56,25 @@ public class RecipeData
     }
 
     /// <summary>
+    /// Creates a new instance of <see cref="RecipeData"/>.
+    /// </summary>
+    /// <param name="authorData">The <see cref="Data.AuthorData"/>.</param>
+    /// <param name="recipeFields">The collection of fields to contain within the recipe.</param>
+    /// <param name="category">The <see cref="RecipeCategory"/> the recipe belongs to.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="authorData"/> or <paramref name="recipeFields"/> is <c>null</c>.</exception>
+    /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid <see cref="RecipeCategory"/>.</exception>
+    public RecipeData(AuthorData authorData, IEnumerable<RecipeFieldData> recipeFields, RecipeCategory category)
+    {
+        authorData.IsNotNull(nameof(authorData));
+        recipeFields.IsNotNull(nameof(recipeFields));
+        category.IsValidEnum(nameof(category));
+
+        AuthorData = authorData;
+        RecipeFields = recipeFields;
+        Category = category;
+    }
+
+    /// <summary>
     /// Gets the <see cref="Data.AuthorData"/>.
     /// </summary>
     public AuthorData AuthorData { get; }
@@ -63,6 +83,11 @@ public class RecipeData
     /// Gets the <see cref="RecipeCategory"/>.
     /// </summary>
     public RecipeCategory Category { get; }
+
+    /// <summary>
+    /// Gets the collection of <see cref="RecipeFieldData"/>.
+    /// </summary>
+    public IEnumerable<RecipeFieldData> RecipeFields { get; }
 
     /// <summary>
     /// Gets the title of the recipe.
