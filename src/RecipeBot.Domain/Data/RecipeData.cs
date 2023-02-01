@@ -31,34 +31,6 @@ public class RecipeData
     /// Creates a new instance of <see cref="RecipeData"/>.
     /// </summary>
     /// <param name="authorData">The <see cref="Data.AuthorData"/>.</param>
-    /// <param name="category">The <see cref="RecipeCategory"/> the recipe belongs to.</param>
-    /// <param name="recipeTitle">The title of the recipe.</param>
-    /// <param name="recipeIngredients">The ingredients of the recipe.</param>
-    /// <param name="cookingSteps">The cooking steps of the recipe.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="authorData"/> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="recipeTitle"/>, <paramref name="recipeIngredients"/>
-    /// or <paramref name="cookingSteps"/> is <c>null</c> or consists of whitespaces.</exception>
-    /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid <see cref="RecipeCategory"/>.</exception>
-    public RecipeData(AuthorData authorData, RecipeCategory category, string recipeTitle, string recipeIngredients,
-                      string cookingSteps)
-    {
-        authorData.IsNotNull(nameof(authorData));
-        category.IsValidEnum(nameof(category));
-        recipeTitle.IsNotNullOrWhiteSpaces(nameof(recipeTitle));
-        recipeIngredients.IsNotNullOrWhiteSpaces(nameof(recipeIngredients));
-        cookingSteps.IsNotNullOrWhiteSpaces(nameof(cookingSteps));
-
-        AuthorData = authorData;
-        Category = category;
-        RecipeTitle = recipeTitle;
-        RecipeIngredients = recipeIngredients;
-        CookingSteps = cookingSteps;
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="RecipeData"/>.
-    /// </summary>
-    /// <param name="authorData">The <see cref="Data.AuthorData"/>.</param>
     /// <param name="recipeFields">The collection of fields to contain within the recipe.</param>
     /// <param name="recipeTitle">The title of the recipe.</param>
     /// <param name="category">The <see cref="RecipeCategory"/> the recipe belongs to.</param>

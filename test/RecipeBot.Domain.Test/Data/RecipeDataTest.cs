@@ -17,6 +17,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Linq;
 using AutoFixture;
 using FluentAssertions;
 using RecipeBot.Domain.Data;
@@ -37,7 +38,7 @@ public class RecipeDataTest
         const RecipeCategory category = (RecipeCategory)(-1);
 
         // Call
-        Action call = () => new RecipeData(authorData, category, fixture.Create<string>(), fixture.Create<string>(), fixture.Create<string>());
+        Action call = () => new RecipeData(authorData, Enumerable.Empty<RecipeFieldData>(), fixture.Create<string>(), category);
 
         // Assert
         call.Should().Throw<InvalidEnumArgumentException>();
@@ -52,37 +53,7 @@ public class RecipeDataTest
         AuthorData authorData = CreateValidAuthorData(fixture);
 
         // Call
-        Action call = () => new RecipeData(authorData, fixture.Create<RecipeCategory>(), invalidRecipeTitle, fixture.Create<string>(), fixture.Create<string>());
-
-        // Assert
-        call.Should().ThrowExactly<ArgumentException>();
-    }
-
-    [Theory]
-    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
-    public void Given_recipe_data_with_invalid_recipe_ingredients_throws_exception(string invalidRecipeIngredients)
-    {
-        // Setup
-        var fixture = new Fixture();
-        AuthorData authorData = CreateValidAuthorData(fixture);
-
-        // Call
-        Action call = () => new RecipeData(authorData, fixture.Create<RecipeCategory>(), fixture.Create<string>(), invalidRecipeIngredients, fixture.Create<string>());
-
-        // Assert
-        call.Should().ThrowExactly<ArgumentException>();
-    }
-
-    [Theory]
-    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
-    public void Given_recipe_data_with_invalid_cooking_steps_throws_exception(string invalidCookingSteps)
-    {
-        // Setup
-        var fixture = new Fixture();
-        AuthorData authorData = CreateValidAuthorData(fixture);
-
-        // Call
-        Action call = () => new RecipeData(authorData, fixture.Create<RecipeCategory>(), fixture.Create<string>(), fixture.Create<string>(), invalidCookingSteps);
+        Action call = () => new RecipeData(authorData, Enumerable.Empty<RecipeFieldData>(), invalidRecipeTitle, fixture.Create<RecipeCategory>());
 
         // Assert
         call.Should().ThrowExactly<ArgumentException>();
