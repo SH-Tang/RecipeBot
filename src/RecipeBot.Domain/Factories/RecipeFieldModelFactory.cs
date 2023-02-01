@@ -17,6 +17,7 @@
 
 using System;
 using Common.Utils;
+using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Properties;
@@ -40,6 +41,41 @@ internal class RecipeFieldModelFactory
         limitProvider.IsNotNull(nameof(limitProvider));
 
         this.limitProvider = limitProvider;
+    }
+
+    /// <summary>
+    /// Creates a <see cref="RecipeFieldModel"/> based on its input argument.
+    /// </summary>
+    /// <param name="recipeFieldData">The <see cref="RecipeFieldData"/> to create a <see cref="RecipeFieldModel"/> with.</param>
+    /// <returns>A <see cref="RecipeFieldModel"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="recipeFieldData"/> is <c>null</c>.</exception>
+    /// <exception cref="ModelCreateException">Thrown when the model could not be successfully created.</exception>
+    public RecipeFieldModel Create(RecipeFieldData recipeFieldData)
+    {
+        recipeFieldData.IsNotNull(nameof(recipeFieldData));
+
+        int maximumFieldNameLength = limitProvider.MaximumFieldNameLength;
+        string fieldName = recipeFieldData.FieldName;
+        if (fieldName.Length > maximumFieldNameLength)
+        {
+            throw new ModelCreateException(CreateInvalidCharacterLengthExceptionMessage(nameof(RecipeFieldData.FieldName), maximumFieldNameLength));
+        }
+
+        int maximumFieldDataLength = limitProvider.MaximumFieldDataLength;
+        string fieldData = recipeFieldData.FieldData;
+        if (fieldData.Length > maximumFieldDataLength)
+        {
+            throw new ModelCreateException(CreateInvalidCharacterLengthExceptionMessage(nameof(RecipeFieldData.FieldData), maximumFieldDataLength));
+        }
+
+        try
+        {
+            return new RecipeFieldModel(fieldName, fieldData);
+        }
+        catch (ArgumentException e)
+        {
+            throw new ModelCreateException(e.Message);
+        }
     }
 
     /// <summary>

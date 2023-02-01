@@ -18,10 +18,10 @@
 using System;
 using FluentAssertions;
 using NSubstitute;
+using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Models;
-using RecipeBot.TestUtils;
 using Xunit;
 
 namespace RecipeBot.Domain.Test.Factories;
@@ -44,33 +44,15 @@ public class RecipeFieldModelFactoryTest
         var fieldName = new string('x', maximumFieldNameLength + 1);
         var fieldData = new string('+', maximumFieldDataLength);
 
+        var invalidFieldData = new RecipeFieldData(fieldName, fieldData);
+
         // Call
-        Action call = () => factory.Create(fieldName, fieldData);
+        Action call = () => factory.Create(invalidFieldData);
 
         // Assert
-        var expectedMessage = $"fieldName must be less or equal to {maximumFieldNameLength} characters.";
+        var expectedMessage = $"{nameof(RecipeFieldData.FieldName)} must be less or equal to {maximumFieldNameLength} characters.";
         call.Should().Throw<ModelCreateException>()
             .WithMessage(expectedMessage);
-    }
-
-    [Theory]
-    [ClassData(typeof(EmptyOrWhiteSpaceStringValueGenerator))]
-    public void Creating_model_with_invalid_field_name_throws_exception(string invalidFieldName)
-    {
-        // Setup
-        var limitProvider = Substitute.For<IRecipeFieldModelCharacterLimitProvider>();
-        limitProvider.MaximumFieldNameLength.Returns(10);
-        limitProvider.MaximumFieldDataLength.Returns(10);
-
-        var factory = new RecipeFieldModelFactory(limitProvider);
-
-        // Call
-        Action call = () => factory.Create(invalidFieldName, "fieldData");
-
-        // Assert
-        call.Should().Throw<ModelCreateException>()
-            .And.Message.Should().NotStartWith("fieldName must be less or equal to")
-            .And.NotStartWith("fieldData must be less or equal to");
     }
 
     [Fact]
@@ -89,33 +71,15 @@ public class RecipeFieldModelFactoryTest
         var fieldName = new string('x', maximumFieldNameLength);
         var fieldData = new string('+', maximumFieldDataLength + 1);
 
+        var invalidFieldData = new RecipeFieldData(fieldName, fieldData);
+        
         // Call
-        Action call = () => factory.Create(fieldName, fieldData);
+        Action call = () => factory.Create(invalidFieldData);
 
         // Assert
-        var expectedMessage = $"fieldData must be less or equal to {maximumFieldDataLength} characters.";
+        var expectedMessage = $"{nameof(RecipeFieldData.FieldData)} must be less or equal to {maximumFieldDataLength} characters.";
         call.Should().Throw<ModelCreateException>()
             .WithMessage(expectedMessage);
-    }
-
-    [Theory]
-    [ClassData(typeof(EmptyOrWhiteSpaceStringValueGenerator))]
-    public void Creating_model_with_invalid_field_data_throws_exception(string invalidFieldData)
-    {
-        // Setup
-        var limitProvider = Substitute.For<IRecipeFieldModelCharacterLimitProvider>();
-        limitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
-        limitProvider.MaximumFieldDataLength.Returns(int.MaxValue);
-
-        var factory = new RecipeFieldModelFactory(limitProvider);
-
-        // Call
-        Action call = () => factory.Create("fieldName", invalidFieldData);
-
-        // Assert
-        call.Should().Throw<ModelCreateException>()
-            .And.Message.Should().NotStartWith("fieldName must be less or equal to")
-            .And.NotStartWith("fieldData must be less or equal to");
     }
 
     [Theory]
@@ -139,8 +103,10 @@ public class RecipeFieldModelFactoryTest
         var fieldName = new string('x', maximumFieldNameLength - fieldNameCharacterOffset);
         var fieldData = new string('+', maximumFieldDataLength - fieldDataCharacterOffset);
 
+        var validFieldData = new RecipeFieldData(fieldName, fieldData);
+
         // Call
-        RecipeFieldModel model = factory.Create(fieldName, fieldData);
+        RecipeFieldModel model = factory.Create(validFieldData);
 
         // Assert
         model.FieldName.Should().Be(fieldName);
