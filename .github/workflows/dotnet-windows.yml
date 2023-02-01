@@ -84,7 +84,7 @@ jobs:
       - name: Generate unit test Report
         uses: dorny/test-reporter@v1
         if: always()
-          with:
+        with:
           name: xUnit Test Report
           path: "test/**/*.trx"
           reporter: dotnet-trx
