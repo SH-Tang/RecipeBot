@@ -78,40 +78,6 @@ internal class RecipeFieldModelFactory
         }
     }
 
-    /// <summary>
-    /// Creates a <see cref="RecipeFieldModel"/> based on its input arguments.
-    /// </summary>
-    /// <param name="fieldName">The name of the field.</param>
-    /// <param name="fieldData">The data of the field.</param>
-    /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    /// <exception cref="ModelCreateException">Thrown when the model could not be successfully created.</exception>
-    public RecipeFieldModel Create(string fieldName, string fieldData)
-    {
-        fieldName.IsNotNull(nameof(fieldName));
-        fieldData.IsNotNull(nameof(fieldData));
-
-        int maximumFieldNameLength = limitProvider.MaximumFieldNameLength;
-        if (fieldName.Length > maximumFieldNameLength)
-        {
-            throw new ModelCreateException(CreateInvalidCharacterLengthExceptionMessage(nameof(fieldName), maximumFieldNameLength));
-        }
-
-        int maximumFieldDataLength = limitProvider.MaximumFieldDataLength;
-        if (fieldData.Length > maximumFieldDataLength)
-        {
-            throw new ModelCreateException(CreateInvalidCharacterLengthExceptionMessage(nameof(fieldData), maximumFieldDataLength));
-        }
-
-        try
-        {
-            return new RecipeFieldModel(fieldName, fieldData);
-        }
-        catch (ArgumentException e)
-        {
-            throw new ModelCreateException(e.Message);
-        }
-    }
-
     private static string CreateInvalidCharacterLengthExceptionMessage(string parameterName, int maximumCharacterLength)
     {
         return string.Format(Resources.Argument_0_must_be_less_or_equal_to_number_of_1_characters, parameterName, maximumCharacterLength);
