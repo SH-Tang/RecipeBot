@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Common.Utils;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Exceptions;
@@ -90,7 +91,7 @@ public class RecipeModelFactory
     /// could not be successfully created.</exception>
     private RecipeModel CreateRecipe(RecipeData recipeData)
     {
-        IEnumerable<RecipeFieldModel> recipeFields = CreateRecipeFields(recipeData);
+        IEnumerable<RecipeFieldModel> recipeFields = recipeData.RecipeFields.Select(recipeFieldModelFactory.Create).ToArray();
 
         RecipeModelMetaData metaData = CreateMetaData(recipeData.AuthorData, recipeData.Tags, recipeData.Category);
 
@@ -124,28 +125,5 @@ public class RecipeModelFactory
         RecipeTagsModel tagModel = recipeTagsModelFactory.Create(tagData);
 
         return new RecipeModelMetaData(authorModel, tagModel, recipeCategory);
-    }
-
-    /// <summary>
-    /// Creates a collection of <see cref="RecipeFieldModel"/> based on its input argument.
-    /// </summary>
-    /// <param name="recipeData">The <see cref="RecipeData"/> to create the collection with.</param>
-    /// <returns>A collection of <see cref="RecipeFieldModel"/>.</returns>
-    /// <exception cref="ModelCreateException">Thrown when the collection of <see cref="RecipeFieldModel"/>
-    /// could not be successfully created.</exception>
-    private IEnumerable<RecipeFieldModel> CreateRecipeFields(RecipeData recipeData)
-    {
-        var recipeFields = new List<RecipeFieldModel>
-        {
-            recipeFieldModelFactory.Create(Resources.Recipe_FieldName_Ingredients, recipeData.RecipeIngredients),
-            recipeFieldModelFactory.Create(Resources.Recipe_FieldName_CookingSteps, recipeData.CookingSteps)
-        };
-
-        if (!string.IsNullOrWhiteSpace(recipeData.AdditionalNotes))
-        {
-            recipeFields.Add(recipeFieldModelFactory.Create(Resources.Recipe_FieldName_AdditionalNotes, recipeData.AdditionalNotes));
-        }
-
-        return recipeFields;
     }
 }
