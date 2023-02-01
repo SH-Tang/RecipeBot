@@ -24,7 +24,7 @@ env:
 
 jobs:
   build:
-    name: Build and analyze SonarCloud
+    name: Build, run test and analyse SonarCloud
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
