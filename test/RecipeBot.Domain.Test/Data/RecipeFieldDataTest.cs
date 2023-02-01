@@ -16,8 +16,6 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.ComponentModel;
-using System.Linq;
 using AutoFixture;
 using FluentAssertions;
 using RecipeBot.Domain.Data;
@@ -26,43 +24,33 @@ using Xunit;
 
 namespace RecipeBot.Domain.Test.Data;
 
-public class RecipeDataTest
+public class RecipeFieldDataTest
 {
-    [Fact]
-    public void Given_recipe_data_with_invalid_recipe_category_throws_exception()
-    {
-        // Setup
-        var fixture = new Fixture();
-        AuthorData authorData = CreateValidAuthorData(fixture);
-
-        const RecipeCategory category = (RecipeCategory)(-1);
-
-        // Call
-        Action call = () => new RecipeData(authorData, Enumerable.Empty<RecipeFieldData>(), fixture.Create<string>(), category);
-
-        // Assert
-        call.Should().Throw<InvalidEnumArgumentException>();
-    }
-
     [Theory]
     [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
-    public void Given_recipe_data_with_invalid_recipe_title_throws_exception(string invalidRecipeTitle)
+    public void Given_recipe_field_data_with_invalid_field_name_throws_exception(string invalidFieldName)
     {
         // Setup
         var fixture = new Fixture();
-        AuthorData authorData = CreateValidAuthorData(fixture);
 
         // Call
-        Action call = () => new RecipeData(authorData, Enumerable.Empty<RecipeFieldData>(), invalidRecipeTitle, fixture.Create<RecipeCategory>());
+        Action call = () => new RecipeFieldData(invalidFieldName, fixture.Create<string>());
 
         // Assert
         call.Should().ThrowExactly<ArgumentException>();
     }
 
-    private static AuthorData CreateValidAuthorData(Fixture fixture)
+    [Theory]
+    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
+    public void Given_recipe_field_data_with_invalid_field_data_throws_exception(string invalidFieldData)
     {
-        return fixture.Build<AuthorData>()
-                      .FromFactory<string>(name => new AuthorData(name, "http://www.recipeBotImage.com"))
-                      .Create();
+        // Setup
+        var fixture = new Fixture();
+
+        // Call
+        Action call = () => new RecipeFieldData(fixture.Create<string>(), invalidFieldData);
+
+        // Assert
+        call.Should().ThrowExactly<ArgumentException>();
     }
 }

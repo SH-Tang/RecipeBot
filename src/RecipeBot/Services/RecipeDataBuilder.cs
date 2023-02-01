@@ -16,12 +16,14 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Common.Utils;
 using Discord;
 using Discord.Common.Utils;
 using RecipeBot.Discord.Data;
 using RecipeBot.Domain.Data;
+using RecipeBot.Properties;
 
 namespace RecipeBot.Services;
 
@@ -30,7 +32,13 @@ namespace RecipeBot.Services;
 /// </summary>
 internal class RecipeDataBuilder
 {
-    private readonly RecipeData data;
+    private readonly AuthorData authorData;
+    private readonly string recipeTitle;
+    private string? imageUrl;
+    private string? tags;
+
+    private readonly RecipeCategory recipeCategory;
+    private readonly List<RecipeFieldData> recipeFields;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeDataBuilder"/>.
@@ -47,7 +55,18 @@ internal class RecipeDataBuilder
     public RecipeDataBuilder(AuthorData authorData, DiscordRecipeCategory category,
                              string recipeTitle, string recipeIngredients, string cookingSteps)
     {
-        data = new RecipeData(authorData, RecipeCategoryConverter.ConvertFrom(category), recipeTitle, recipeIngredients, cookingSteps);
+        authorData.IsNotNull(nameof(authorData));
+        recipeTitle.IsNotNullOrWhiteSpaces(nameof(recipeTitle));
+
+        this.authorData = authorData;
+        this.recipeTitle = recipeTitle;
+        recipeCategory = RecipeCategoryConverter.ConvertFrom(category);
+
+        recipeFields = new List<RecipeFieldData>
+        {
+            new RecipeFieldData(Resources.RecipeFieldName_Ingredients_DisplayName, recipeIngredients),
+            new RecipeFieldData(Resources.RecipeFieldName_Cooking_Steps_DisplayName, cookingSteps),
+        };
     }
 
     /// <summary>
@@ -61,7 +80,7 @@ internal class RecipeDataBuilder
         if (attachment != null)
         {
             attachment.IsValidArgument(x => x.IsImage(), "Attachment must be an image.", nameof(attachment));
-            data.ImageUrl = attachment.Url;
+            imageUrl = attachment.Url;
         }
 
         return this;
@@ -74,7 +93,11 @@ internal class RecipeDataBuilder
     /// <returns>The <see cref="RecipeDataBuilder"/>.</returns>
     public RecipeDataBuilder AddNotes(string? notes)
     {
-        data.AdditionalNotes = notes;
+        if (!string.IsNullOrWhiteSpace(notes))
+        {
+            recipeFields.Add(new RecipeFieldData(Resources.RecipeFieldName_Additional_Notes_DisplayName, notes));
+        }
+
         return this;
     }
 
@@ -85,7 +108,7 @@ internal class RecipeDataBuilder
     /// <returns>The <see cref="RecipeDataBuilder"/>.</returns>
     public RecipeDataBuilder AddTags(string? tags)
     {
-        data.Tags = tags;
+        this.tags = tags;
         return this;
     }
 
@@ -95,6 +118,10 @@ internal class RecipeDataBuilder
     /// <returns>A configured <see cref="RecipeData"/>.</returns>
     public RecipeData Build()
     {
-        return data;
+        return new RecipeData(authorData, recipeFields, recipeTitle, recipeCategory)
+        {
+            Tags = tags,
+            ImageUrl = imageUrl
+        };
     }
 }

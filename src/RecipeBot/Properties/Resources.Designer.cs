@@ -114,5 +114,32 @@ namespace RecipeBot.Properties {
                         "ory", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Additional notes.
+        /// </summary>
+        internal static string RecipeFieldName_Additional_Notes_DisplayName {
+            get {
+                return ResourceManager.GetString("RecipeFieldName_Additional_Notes_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cooking steps.
+        /// </summary>
+        internal static string RecipeFieldName_Cooking_Steps_DisplayName {
+            get {
+                return ResourceManager.GetString("RecipeFieldName_Cooking_Steps_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ingredients.
+        /// </summary>
+        internal static string RecipeFieldName_Ingredients_DisplayName {
+            get {
+                return ResourceManager.GetString("RecipeFieldName_Ingredients_DisplayName", resourceCulture);
+            }
+        }
     }
 }

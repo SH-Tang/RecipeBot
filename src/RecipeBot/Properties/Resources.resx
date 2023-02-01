@@ -129,4 +129,13 @@
   <data name="RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted" xml:space="preserve">
     <value>Recipe titled '{0}' with Id '{1}' and author '{2}' was successfully deleted.</value>
   </data>
+  <data name="RecipeFieldName_Additional_Notes_DisplayName" xml:space="preserve">
+    <value>Additional notes</value>
+  </data>
+  <data name="RecipeFieldName_Ingredients_DisplayName" xml:space="preserve">
+    <value>Ingredients</value>
+  </data>
+  <data name="RecipeFieldName_Cooking_Steps_DisplayName" xml:space="preserve">
+    <value>Cooking steps</value>
+  </data>
 </root>

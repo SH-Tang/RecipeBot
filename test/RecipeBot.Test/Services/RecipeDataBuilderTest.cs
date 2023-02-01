@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using AutoFixture;
 using Discord;
 using Discord.Common.Utils;
@@ -101,8 +102,9 @@ public class RecipeDataBuilderTest
         RecipeData result = builder.Build();
 
         // Assert
-        AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
-        result.AdditionalNotes.Should().BeNull();
+        result.RecipeFields.Should().HaveCount(2);
+        AssertMandatoryRecipeFields(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
+
         result.ImageUrl.Should().BeNull();
         result.Tags.Should().BeNull();
     }
@@ -111,8 +113,7 @@ public class RecipeDataBuilderTest
     [InlineData(null)]
     [InlineData("    ")]
     [InlineData("")]
-    [InlineData("Notes")]
-    public void Builder_when_adding_notes_then_build_recipe_data_with_notes(string notes)
+    public void Builder_when_adding_empty_notes_then_build_recipe_data_without_notes(string notes)
     {
         // Setup
         var fixture = new Fixture();
@@ -130,8 +131,36 @@ public class RecipeDataBuilderTest
                                    .Build();
 
         // Assert
-        AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
-        result.AdditionalNotes.Should().Be(notes);
+        result.RecipeFields.Should().HaveCount(2);
+        AssertMandatoryRecipeFields(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
+    }
+
+    [Fact]
+    public void Builder_when_adding_non_empty_notes_then_build_recipe_data_with_notes()
+    {
+        // Setup
+        var fixture = new Fixture();
+
+        var authorData = fixture.Create<AuthorData>();
+        var discordCategory = fixture.Create<DiscordRecipeCategory>();
+        var recipeTitle = fixture.Create<string>();
+        var recipeIngredients = fixture.Create<string>();
+        var cookingSteps = fixture.Create<string>();
+        var notes = fixture.Create<string>();
+
+        var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
+
+        // Call
+        RecipeData result = builder.AddNotes(notes)
+                                   .Build();
+
+        // Assert
+        result.RecipeFields.Should().HaveCount(3);
+        AssertMandatoryRecipeFields(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
+
+        RecipeFieldData notesField = result.RecipeFields.ElementAt(2);
+        notesField.FieldName.Should().Be("Additional notes");
+        notesField.FieldData.Should().Be(notes);
     }
 
     [Theory]
@@ -155,7 +184,6 @@ public class RecipeDataBuilderTest
                                    .Build();
 
         // Assert
-        AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
         result.ImageUrl.Should().Be(expectedRecipeImageUrl);
     }
 
@@ -182,7 +210,6 @@ public class RecipeDataBuilderTest
                                    .Build();
 
         // Assert
-        AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
         result.Tags.Should().Be(tags);
     }
 
@@ -214,8 +241,13 @@ public class RecipeDataBuilderTest
                                    .Build();
 
         // Assert
-        AssertMandatoryRecipeProperties(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
-        result.AdditionalNotes.Should().Be(notes);
+        result.RecipeFields.Should().HaveCount(3);
+        AssertMandatoryRecipeFields(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
+
+        RecipeFieldData notesField = result.RecipeFields.ElementAt(2);
+        notesField.FieldName.Should().Be("Additional notes");
+        notesField.FieldData.Should().Be(notes);
+
         result.ImageUrl.Should().Be(recipeImageUrl);
         result.Tags.Should().Be(tags);
     }
@@ -269,14 +301,19 @@ public class RecipeDataBuilderTest
         };
     }
 
-    private static void AssertMandatoryRecipeProperties(
+    private static void AssertMandatoryRecipeFields(
         string expectedRecipeTitle, string expectedRecipeIngredients, string expectedCookingSteps, AuthorData expectedAuthorData,
         RecipeData actualRecipeData)
     {
         actualRecipeData.RecipeTitle.Should().Be(expectedRecipeTitle);
-        actualRecipeData.RecipeIngredients.Should().Be(expectedRecipeIngredients);
-        actualRecipeData.CookingSteps.Should().Be(expectedCookingSteps);
-
         actualRecipeData.AuthorData.Should().BeSameAs(expectedAuthorData);
+
+        RecipeFieldData firstField = actualRecipeData.RecipeFields.ElementAt(0);
+        firstField.FieldName.Should().Be("Ingredients");
+        firstField.FieldData.Should().Be(expectedRecipeIngredients);
+
+        RecipeFieldData secondField = actualRecipeData.RecipeFields.ElementAt(1);
+        secondField.FieldName.Should().Be("Cooking steps");
+        secondField.FieldData.Should().Be(expectedCookingSteps);
     }
 }

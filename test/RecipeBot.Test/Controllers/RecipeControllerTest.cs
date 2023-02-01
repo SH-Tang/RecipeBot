@@ -321,7 +321,7 @@ public class RecipeControllerTest
 
         // Assert
         RecipeModel savedModel = savedModels.Single();
-        RecipeModelTestHelper.AssertCommonModelProperties(user, category, modal, savedModel);
+        RecipeModelTestHelper.AssertFullRecipeProperties(user, category, modal, savedModel);
         savedModel.RecipeImageUrl.Should().BeNull();
     }
 
@@ -371,7 +371,7 @@ public class RecipeControllerTest
 
         // Assert
         RecipeModel savedModel = savedModels.Single();
-        RecipeModelTestHelper.AssertCommonModelProperties(user, category, modal, savedModel);
+        RecipeModelTestHelper.AssertFullRecipeProperties(user, category, modal, savedModel);
         savedModel.RecipeImageUrl.Should().Be(recipeImageUrl);
     }
 

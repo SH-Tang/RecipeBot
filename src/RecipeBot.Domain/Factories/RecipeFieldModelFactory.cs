@@ -17,6 +17,7 @@
 
 using System;
 using Common.Utils;
+using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Properties;
@@ -43,27 +44,28 @@ internal class RecipeFieldModelFactory
     }
 
     /// <summary>
-    /// Creates a <see cref="RecipeFieldModel"/> based on its input arguments.
+    /// Creates a <see cref="RecipeFieldModel"/> based on its input argument.
     /// </summary>
-    /// <param name="fieldName">The name of the field.</param>
-    /// <param name="fieldData">The data of the field.</param>
-    /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
+    /// <param name="recipeFieldData">The <see cref="RecipeFieldData"/> to create a <see cref="RecipeFieldModel"/> with.</param>
+    /// <returns>A <see cref="RecipeFieldModel"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="recipeFieldData"/> is <c>null</c>.</exception>
     /// <exception cref="ModelCreateException">Thrown when the model could not be successfully created.</exception>
-    public RecipeFieldModel Create(string fieldName, string fieldData)
+    public RecipeFieldModel Create(RecipeFieldData recipeFieldData)
     {
-        fieldName.IsNotNull(nameof(fieldName));
-        fieldData.IsNotNull(nameof(fieldData));
+        recipeFieldData.IsNotNull(nameof(recipeFieldData));
 
         int maximumFieldNameLength = limitProvider.MaximumFieldNameLength;
+        string fieldName = recipeFieldData.FieldName;
         if (fieldName.Length > maximumFieldNameLength)
         {
-            throw new ModelCreateException(CreateInvalidCharacterLengthExceptionMessage(nameof(fieldName), maximumFieldNameLength));
+            throw new ModelCreateException(CreateInvalidCharacterLengthExceptionMessage(nameof(RecipeFieldData.FieldName), maximumFieldNameLength));
         }
 
         int maximumFieldDataLength = limitProvider.MaximumFieldDataLength;
+        string fieldData = recipeFieldData.FieldData;
         if (fieldData.Length > maximumFieldDataLength)
         {
-            throw new ModelCreateException(CreateInvalidCharacterLengthExceptionMessage(nameof(fieldData), maximumFieldDataLength));
+            throw new ModelCreateException(CreateInvalidCharacterLengthExceptionMessage(nameof(RecipeFieldData.FieldData), maximumFieldDataLength));
         }
 
         try

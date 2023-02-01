@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using AutoFixture;
 using FluentAssertions;
 using NSubstitute;
@@ -41,7 +40,6 @@ public class RecipeModelFactoryTest
         IRecipeModelCharacterLimitProvider recipeCharacterLimitProvider = CreateDefaultRecipeCharacterLimitProvider();
 
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
-        recipeData.AdditionalNotes = emptyValueString;
         recipeData.Tags = emptyValueString;
 
         var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
@@ -53,10 +51,8 @@ public class RecipeModelFactoryTest
         model.RecipeImageUrl.Should().BeNull();
 
         model.Author.Should().BeEquivalentTo(recipeData.AuthorData);
-
-        model.RecipeFields.Should().HaveCount(2);
-        AssertMandatoryFields(recipeData, model.RecipeFields);
-
+        model.RecipeFields.Should().BeEquivalentTo(recipeData.RecipeFields, options => options.WithStrictOrdering());
+        
         AssertTags(recipeData, model.RecipeTags);
     }
 
@@ -77,13 +73,6 @@ public class RecipeModelFactoryTest
 
         // Assert
         model.RecipeImageUrl.Should().Be(recipeData.ImageUrl);
-
-        model.Author.Should().BeEquivalentTo(recipeData.AuthorData);
-
-        model.RecipeFields.Should().HaveCount(2);
-        AssertMandatoryFields(recipeData, model.RecipeFields);
-
-        AssertTags(recipeData, model.RecipeTags);
     }
 
     [Fact]
@@ -101,41 +90,6 @@ public class RecipeModelFactoryTest
         RecipeModel model = factory.Create(recipeData);
 
         // Assert
-        model.RecipeImageUrl.Should().BeNull();
-
-        model.Author.Should().BeEquivalentTo(recipeData.AuthorData);
-
-        model.RecipeFields.Should().HaveCount(2);
-        AssertMandatoryFields(recipeData, model.RecipeFields);
-
-        AssertTags(recipeData, model.RecipeTags);
-    }
-
-    [Fact]
-    public void Recipe_with_notes_returns_model_with_notes()
-    {
-        // Setup
-        IRecipeModelCharacterLimitProvider recipeCharacterLimitProvider = CreateDefaultRecipeCharacterLimitProvider();
-
-        RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
-        recipeData.AdditionalNotes = new string('%', recipeCharacterLimitProvider.MaximumFieldDataLength);
-
-        var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
-
-        // Call
-        RecipeModel model = factory.Create(recipeData);
-
-        // Assert
-        model.RecipeImageUrl.Should().BeNull();
-
-        model.Author.Should().BeEquivalentTo(recipeData.AuthorData);
-
-        IEnumerable<RecipeFieldModel> recipeFields = model.RecipeFields;
-        recipeFields.Should().HaveCount(3);
-        AssertMandatoryFields(recipeData, recipeFields);
-        recipeFields.ElementAt(2).Should().Match<RecipeFieldModel>(
-            s => s.FieldName == "Additional notes" && s.FieldData == recipeData.AdditionalNotes);
-
         AssertTags(recipeData, model.RecipeTags);
     }
 
@@ -148,7 +102,6 @@ public class RecipeModelFactoryTest
         const string imageUrl = "http://www.recipeBotImage.com";
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
         recipeData.ImageUrl = imageUrl;
-        recipeData.AdditionalNotes = new string('%', recipeCharacterLimitProvider.MaximumFieldDataLength);
         recipeData.Tags = "Tag1, TAG1, tag1, tag    1,      tag1, tag1      , tag2";
 
         var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
@@ -160,12 +113,7 @@ public class RecipeModelFactoryTest
         model.RecipeImageUrl.Should().Be(recipeData.ImageUrl);
 
         model.Author.Should().BeEquivalentTo(recipeData.AuthorData);
-
-        IEnumerable<RecipeFieldModel> recipeFields = model.RecipeFields;
-        recipeFields.Should().HaveCount(3);
-        AssertMandatoryFields(recipeData, recipeFields);
-        recipeFields.ElementAt(2).Should().Match<RecipeFieldModel>(
-            s => s.FieldName == "Additional notes" && s.FieldData == recipeData.AdditionalNotes);
+        model.RecipeFields.Should().BeEquivalentTo(recipeData.RecipeFields, options => options.WithStrictOrdering());
 
         AssertTags(recipeData, model.RecipeTags);
     }
@@ -261,7 +209,7 @@ public class RecipeModelFactoryTest
         recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
         recipeCharacterLimitProvider.MaximumRecipeLength.Returns(int.MaxValue);
         recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
-        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(int.MaxValue);
+        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(10);
         recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
 
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
@@ -289,15 +237,6 @@ public class RecipeModelFactoryTest
         return recipeCharacterLimitProvider;
     }
 
-    private static void AssertMandatoryFields(RecipeData data, IEnumerable<RecipeFieldModel> recipeFields)
-    {
-        recipeFields.ElementAt(0).Should().Match<RecipeFieldModel>(
-            s => s.FieldName == "Ingredients" && s.FieldData == data.RecipeIngredients);
-
-        recipeFields.ElementAt(1).Should().Match<RecipeFieldModel>(
-            s => s.FieldName == "Cooking steps" && s.FieldData == data.CookingSteps);
-    }
-
     private static void AssertTags(RecipeData data, RecipeTagsModelWrapper wrapper)
     {
         string? tagData = data.Tags;
@@ -315,27 +254,31 @@ public class RecipeModelFactoryTest
                                                int nrOfTitleCharactersOffSet)
     {
         var fixture = new Fixture();
-        fixture.Register(() => new string('o', limitProvider.MaximumFieldDataLength));
+        IEnumerable<RecipeFieldData>? fields = fixture.Build<RecipeFieldData>()
+                                                      .FromFactory(() => new RecipeFieldData(new string('o', limitProvider.MaximumFieldNameLength),
+                                                          new string('x', limitProvider.MaximumFieldDataLength)))
+                                                      .CreateMany(3);
+
         AuthorData authorData = CreateAuthorData(limitProvider, fixture);
 
         return fixture.Build<RecipeData>()
-                      .FromFactory<RecipeCategory, string>((category, field) => new RecipeData(authorData, category, new string('+', limitProvider.MaximumTitleLength + nrOfTitleCharactersOffSet),
-                                                                                               field, field))
+                      .FromFactory<RecipeCategory>(category => new RecipeData(authorData, fields, new string('+', limitProvider.MaximumTitleLength + nrOfTitleCharactersOffSet), category))
                       .Without(d => d.ImageUrl)
-                      .Without(d => d.AdditionalNotes)
                       .Create();
     }
 
     private static RecipeData CreateRecipeData(IRecipeModelCharacterLimitProvider limitProvider)
     {
         var fixture = new Fixture();
-        fixture.Register(() => new string('o', limitProvider.MaximumFieldDataLength));
+        IEnumerable<RecipeFieldData>? fields = fixture.Build<RecipeFieldData>()
+                                                      .FromFactory(() => new RecipeFieldData(new string('o', limitProvider.MaximumFieldNameLength),
+                                                          new string('x', limitProvider.MaximumFieldDataLength)))
+                                                      .CreateMany(3);
 
         AuthorData authorData = CreateAuthorData(limitProvider, fixture);
         return fixture.Build<RecipeData>()
-                      .FromFactory<RecipeCategory, string>((category, field) => new RecipeData(authorData, category, new string('+', limitProvider.MaximumTitleLength), field, field))
+                      .FromFactory<RecipeCategory>(category => new RecipeData(authorData, fields, new string('+', limitProvider.MaximumTitleLength), category))
                       .Without(d => d.ImageUrl)
-                      .Without(d => d.AdditionalNotes)
                       .Create();
     }
 
