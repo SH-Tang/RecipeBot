@@ -133,7 +133,7 @@ public class RecipeModelCreationServiceTest
         RecipeModel model = service.CreateRecipeModel(modal, user, category);
 
         // Assert
-        RecipeModelTestHelper.AssertCommonModelProperties(user, category, modal, model);
+        RecipeModelTestHelper.AssertFullRecipeProperties(user, category, modal, model);
         model.RecipeImageUrl.Should().BeNull();
     }
 
@@ -249,7 +249,7 @@ public class RecipeModelCreationServiceTest
         RecipeModel recipeModel = service.CreateRecipeModel(modal, user, category, attachment);
 
         // Assert
-        RecipeModelTestHelper.AssertCommonModelProperties(user, category, modal, recipeModel);
+        RecipeModelTestHelper.AssertFullRecipeProperties(user, category, modal, recipeModel);
         recipeModel.RecipeImageUrl.Should().Be(recipeImageUrl);
     }
 

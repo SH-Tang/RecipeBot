@@ -16,7 +16,6 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
-using System.Linq;
 using Discord;
 using FluentAssertions;
 using RecipeBot.Discord.Data;
@@ -38,8 +37,8 @@ public static class RecipeModelTestHelper
     /// <param name="category">The expected <see cref="DiscordRecipeCategory"/>.</param>
     /// <param name="modal">The expected <see cref="RecipeModal"/>.</param>
     /// <param name="actualRecipe">The <see cref="RecipeModel"/> to assert.</param>
-    public static void AssertCommonModelProperties(IUser user, DiscordRecipeCategory category,
-                                                   RecipeModal modal, RecipeModel actualRecipe)
+    public static void AssertFullRecipeProperties(IUser user, DiscordRecipeCategory category,
+                                                  RecipeModal modal, RecipeModel actualRecipe)
     {
         actualRecipe.Title.Should().Be(modal.RecipeTitle);
         actualRecipe.RecipeCategory.Should().Be(DiscordRecipeCategoryTestHelper.RecipeCategoryMapping[category]);
