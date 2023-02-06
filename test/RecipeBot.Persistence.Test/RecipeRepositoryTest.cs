@@ -57,6 +57,40 @@ public class RecipeRepositoryTest
         }
     }
 
+    [Theory]
+    [InlineData(RecipeCategory.Dessert, PersistentRecipeCategory.Dessert)]
+    [InlineData(RecipeCategory.Fish, PersistentRecipeCategory.Fish)]
+    [InlineData(RecipeCategory.Meat, PersistentRecipeCategory.Meat)]
+    [InlineData(RecipeCategory.Pastry, PersistentRecipeCategory.Pastry)]
+    [InlineData(RecipeCategory.Snack, PersistentRecipeCategory.Snack)]
+    [InlineData(RecipeCategory.Vegan, PersistentRecipeCategory.Vegan)]
+    [InlineData(RecipeCategory.Vegetarian, PersistentRecipeCategory.Vegetarian)]
+    [InlineData(RecipeCategory.Drinks, PersistentRecipeCategory.Drinks)]
+    [InlineData(RecipeCategory.Other, PersistentRecipeCategory.Other)]
+    public async Task Given_empty_database_when_saving_recipe_saves_recipe_with_expected_data(
+        RecipeCategory category,
+        PersistentRecipeCategory expectedCategory)
+    {
+        // Setup
+        var fixture = new Fixture();
+        RecipeModel recipeModel = testBuilder.SetCategory(category)
+                                             .Build();
+
+        Action<RecipeBotDbContext> assertPersistedDataAction =
+            context =>
+            {
+                RecipeEntity recipeEntity = context.RecipeEntities
+                                                   .AsNoTracking()
+                                                   .Single();
+
+                recipeEntity.RecipeCategory.Should().Be(expectedCategory);
+            };
+
+        // Call & Assert
+        var test = new RecipeRepositoryPersistDataTest(recipeModel, assertPersistedDataAction);
+        await test.ExecuteTest();
+    }
+
     [Fact]
     public async Task Given_empty_database_when_saving_basic_recipe_saves_expected_data()
     {
@@ -69,15 +103,14 @@ public class RecipeRepositoryTest
         Action<RecipeBotDbContext> assertPersistedDataAction =
             context =>
             {
-                RecipeEntity? recipeEntity = context.RecipeEntities
-                                                    .Include(e => e.Author)
-                                                    .Include(e => e.RecipeFields)
-                                                    .Include(e => e.Tags)
-                                                    .Single();
+                RecipeEntity recipeEntity = context.RecipeEntities
+                                                   .Include(e => e.Author)
+                                                   .Include(e => e.RecipeFields)
+                                                   .Include(e => e.Tags)
+                                                   .AsNoTracking()
+                                                   .Single();
 
                 recipeEntity.RecipeTitle.Should().Be(recipeModel.Title);
-                recipeEntity.RecipeCategory.Should().Be((PersistentRecipeCategory)category);
-
                 recipeEntity.Author.Should().NotBeNull().And.BeEquivalentTo(
                     recipeModel.Author,
                     options => options.Including(e => e.AuthorName)
@@ -97,8 +130,6 @@ public class RecipeRepositoryTest
     {
         // Setup
         var fixture = new Fixture();
-        var category = fixture.Create<RecipeCategory>();
-
         string[] tags =
         {
             fixture.Create<string>(),
@@ -106,8 +137,7 @@ public class RecipeRepositoryTest
         };
 
         const int nrOfFields = 3;
-        RecipeModel recipeModel = testBuilder.SetCategory(category)
-                                             .AddFields(nrOfFields)
+        RecipeModel recipeModel = testBuilder.AddFields(nrOfFields)
                                              .AddTags(tags)
                                              .Build();
 
@@ -119,11 +149,10 @@ public class RecipeRepositoryTest
                                                    .Include(e => e.RecipeFields)
                                                    .Include(e => e.Tags)
                                                    .ThenInclude(e => e.Tag)
+                                                   .AsNoTracking()
                                                    .Single();
 
                 recipeEntity.RecipeTitle.Should().Be(recipeModel.Title);
-                recipeEntity.RecipeCategory.Should().Be((PersistentRecipeCategory)category);
-
                 recipeEntity.Author.Should().NotBeNull().And.BeEquivalentTo(
                     recipeModel.Author,
                     options => options.Including(e => e.AuthorName)
@@ -165,6 +194,7 @@ public class RecipeRepositoryTest
             {
                 RecipeEntity recipeEntity = context.RecipeEntities
                                                    .Include(e => e.Author)
+                                                   .AsNoTracking()
                                                    .Single();
                 AuthorEntity expectedAuthorEntity = context.AuthorEntities.Single();
 
@@ -211,6 +241,7 @@ public class RecipeRepositoryTest
                 RecipeEntity recipeEntity = context.RecipeEntities
                                                    .Include(e => e.Tags)
                                                    .ThenInclude(e => e.Tag)
+                                                   .AsNoTracking()
                                                    .Single();
 
                 recipeEntity.Tags.OrderBy(t => t.Order).Should().Equal(tags, (s, e) => s.Tag.Tag == e);
@@ -382,6 +413,7 @@ public class RecipeRepositoryTest
             RecipeEntity recipeEntity = await context.RecipeEntities
                                                      .Include(e => e.Author)
                                                      .Include(e => e.Tags)
+                                                     .AsNoTracking()
                                                      .SingleAsync();
             recipeEntity.Should().BeEquivalentTo(unaffectedRecipe, options => options.Excluding(s => s.Author)
                                                                                      .Excluding(s => s.Tags)
