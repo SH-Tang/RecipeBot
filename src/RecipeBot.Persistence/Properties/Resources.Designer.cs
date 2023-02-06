@@ -80,9 +80,9 @@ namespace RecipeBot.Persistence.Properties {
         /// <summary>
         ///   Looks up a localized string similar to No recipe matches with Id &apos;{0}&apos;..
         /// </summary>
-        internal static string RecipeRepository_DeleteRecipeAsync_No_recipe_matches_with_Id_0 {
+        internal static string RecipeRepository_No_recipe_matches_with_Id_0 {
             get {
-                return ResourceManager.GetString("RecipeRepository_DeleteRecipeAsync_No_recipe_matches_with_Id_0", resourceCulture);
+                return ResourceManager.GetString("RecipeRepository_No_recipe_matches_with_Id_0", resourceCulture);
             }
         }
     }

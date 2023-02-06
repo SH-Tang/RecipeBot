@@ -426,6 +426,28 @@ public class RecipeRepositoryTest
         }
     }
 
+    [Fact]
+    public async Task Given_empty_database_when_retrieving_recipe_throws_exception()
+    {
+        // Setup
+        using(var provider = new RecipeBotDBContextProvider())
+        using(RecipeBotDbContext context = provider.CreateInMemoryContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var repository = new RecipeRepository(context);
+
+            var idToRetrieve = fixture.Create<long>();
+
+            // Call
+            Func<Task> call = () => repository.GetRecipe(idToRetrieve);
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataLoadException>()
+                      .WithMessage($"No recipe matches with Id '{idToRetrieve}'.");
+        }
+    }
     private class RecipeRepositoryPersistDataTest
     {
         private readonly Action<RecipeBotDbContext> assertPersistedDataAction;

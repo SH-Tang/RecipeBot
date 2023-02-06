@@ -98,7 +98,7 @@
 	<resheader name="writer">
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
-  <data name="RecipeRepository_DeleteRecipeAsync_No_recipe_matches_with_Id_0" xml:space="preserve">
+  <data name="RecipeRepository_No_recipe_matches_with_Id_0" xml:space="preserve">
     <value>No recipe matches with Id '{0}'.</value>
   </data>
 </root>

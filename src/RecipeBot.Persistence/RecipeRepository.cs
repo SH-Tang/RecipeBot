@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Microsoft.EntityFrameworkCore;
+using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Repositories;
@@ -81,7 +82,7 @@ public class RecipeRepository : IRecipeRepository
                                                         .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
             if (entityToDelete == null)
             {
-                throw new RepositoryDataDeleteException(string.Format(Resources.RecipeRepository_DeleteRecipeAsync_No_recipe_matches_with_Id_0, id));
+                throw new RepositoryDataDeleteException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_Id_0, id));
             }
 
             context.RecipeEntities.Remove(entityToDelete);
@@ -93,6 +94,22 @@ public class RecipeRepository : IRecipeRepository
         {
             throw new RepositoryDataSaveException(ex.Message, ex);
         }
+    }
+
+    public async Task<RecipeData> GetRecipe(long id)
+    {
+        RecipeEntity? entityToRetrieve = await context.RecipeEntities
+                                                      .Include(e => e.RecipeFields)
+                                                      .Include(e => e.Tags)
+                                                      .Include(e => e.Author)
+                                                      .AsNoTracking()
+                                                      .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
+        if (entityToRetrieve == null)
+        {
+            throw new RepositoryDataLoadException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_Id_0, id));
+        }
+
+        throw new NotImplementedException();
     }
 
     private async Task<ICollection<RecipeTagEntity>> CreateRecipeTagEntities(RecipeModel model)
