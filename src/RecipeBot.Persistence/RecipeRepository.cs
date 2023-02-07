@@ -52,23 +52,6 @@ public class RecipeRepository : IRecipeRepository
         this.context = context;
     }
 
-    public async Task<RecipeData> GetRecipe(long id)
-    {
-        RecipeEntity? entityToRetrieve = await context.RecipeEntities
-                                                      .Include(e => e.RecipeFields)
-                                                      .Include(e => e.Author)
-                                                      .Include(e => e.Tags)
-                                                      .ThenInclude(e => e.Tag)
-                                                      .AsNoTracking()
-                                                      .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
-        if (entityToRetrieve == null)
-        {
-            throw new RepositoryDataLoadException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_Id_0, id));
-        }
-
-        return RecipeDataReader.Read(entityToRetrieve);
-    }
-
     public async Task SaveRecipeAsync(RecipeModel model)
     {
         model.IsNotNull(nameof(model));
@@ -112,6 +95,23 @@ public class RecipeRepository : IRecipeRepository
         {
             throw new RepositoryDataSaveException(ex.Message, ex);
         }
+    }
+
+    public async Task<RecipeData> GetRecipe(long id)
+    {
+        RecipeEntity? entityToRetrieve = await context.RecipeEntities
+                                                      .Include(e => e.RecipeFields)
+                                                      .Include(e => e.Author)
+                                                      .Include(e => e.Tags)
+                                                      .ThenInclude(e => e.Tag)
+                                                      .AsNoTracking()
+                                                      .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
+        if (entityToRetrieve == null)
+        {
+            throw new RepositoryDataLoadException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_Id_0, id));
+        }
+
+        return RecipeDataReader.Read(entityToRetrieve);
     }
 
     private async Task<ICollection<RecipeTagEntity>> CreateRecipeTagEntities(RecipeModel model)
