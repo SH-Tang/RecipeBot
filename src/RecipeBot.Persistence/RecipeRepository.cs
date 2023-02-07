@@ -97,7 +97,7 @@ public class RecipeRepository : IRecipeRepository
         }
     }
 
-    public async Task<RecipeData> GetRecipe(long id)
+    public async Task<RecipeData> GetRecipeAsync(long id)
     {
         RecipeEntity? entityToRetrieve = await context.RecipeEntities
                                                       .Include(e => e.RecipeFields)

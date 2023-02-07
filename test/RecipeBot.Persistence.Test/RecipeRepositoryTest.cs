@@ -441,7 +441,7 @@ public class RecipeRepositoryTest
             var idToRetrieve = fixture.Create<long>();
 
             // Call
-            Func<Task> call = () => repository.GetRecipe(idToRetrieve);
+            Func<Task> call = () => repository.GetRecipeAsync(idToRetrieve);
 
             // Assert
             await call.Should().ThrowAsync<RepositoryDataLoadException>()
@@ -492,7 +492,7 @@ public class RecipeRepositoryTest
             var repository = new RecipeRepository(context);
 
             // Call
-            RecipeData data = await repository.GetRecipe(recipeToRetrieve.RecipeEntityId);
+            RecipeData data = await repository.GetRecipeAsync(recipeToRetrieve.RecipeEntityId);
 
             // Assert
             data.Category.Should().Be(expectedCategory);
@@ -579,7 +579,7 @@ public class RecipeRepositoryTest
             var repository = new RecipeRepository(context);
 
             // Call
-            RecipeData data = await repository.GetRecipe(recipeToRetrieve.RecipeEntityId);
+            RecipeData data = await repository.GetRecipeAsync(recipeToRetrieve.RecipeEntityId);
 
             // Assert
             data.RecipeTitle.Should().Be(recipeToRetrieve.RecipeTitle);
@@ -650,7 +650,7 @@ public class RecipeRepositoryTest
             var repository = new RecipeRepository(context);
 
             // Call
-            RecipeData data = await repository.GetRecipe(recipeToRetrieve.RecipeEntityId);
+            RecipeData data = await repository.GetRecipeAsync(recipeToRetrieve.RecipeEntityId);
 
             // Assert
             data.RecipeTitle.Should().Be(recipeToRetrieve.RecipeTitle);

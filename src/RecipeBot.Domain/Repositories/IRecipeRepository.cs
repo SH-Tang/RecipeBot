@@ -52,5 +52,5 @@ public interface IRecipeRepository
     /// <param name="id">The id of the recipe to retrieve.</param>
     /// <returns>A <see cref="RecipeData"/>.</returns>
     /// <exception cref="RepositoryDataLoadException">Thrown when the data could not be successfully loaded.</exception>
-    Task<RecipeData> GetRecipe(long id);
+    Task<RecipeData> GetRecipeAsync(long id);
 }
