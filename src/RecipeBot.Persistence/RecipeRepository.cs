@@ -29,6 +29,7 @@ using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.Persistence.Creators;
 using RecipeBot.Persistence.Entities;
 using RecipeBot.Persistence.Properties;
+using RecipeBot.Persistence.Readers;
 
 namespace RecipeBot.Persistence;
 
@@ -49,6 +50,23 @@ public class RecipeRepository : IRecipeRepository
         context.IsNotNull(nameof(context));
 
         this.context = context;
+    }
+
+    public async Task<RecipeData> GetRecipe(long id)
+    {
+        RecipeEntity? entityToRetrieve = await context.RecipeEntities
+                                                      .Include(e => e.RecipeFields)
+                                                      .Include(e => e.Author)
+                                                      .Include(e => e.Tags)
+                                                      .ThenInclude(e => e.Tag)
+                                                      .AsNoTracking()
+                                                      .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
+        if (entityToRetrieve == null)
+        {
+            throw new RepositoryDataLoadException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_Id_0, id));
+        }
+
+        return RecipeDataReader.Read(entityToRetrieve);
     }
 
     public async Task SaveRecipeAsync(RecipeModel model)
@@ -96,22 +114,6 @@ public class RecipeRepository : IRecipeRepository
         }
     }
 
-    public async Task<RecipeData> GetRecipe(long id)
-    {
-        RecipeEntity? entityToRetrieve = await context.RecipeEntities
-                                                      .Include(e => e.RecipeFields)
-                                                      .Include(e => e.Tags)
-                                                      .Include(e => e.Author)
-                                                      .AsNoTracking()
-                                                      .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
-        if (entityToRetrieve == null)
-        {
-            throw new RepositoryDataLoadException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_Id_0, id));
-        }
-
-        throw new NotImplementedException();
-    }
-
     private async Task<ICollection<RecipeTagEntity>> CreateRecipeTagEntities(RecipeModel model)
     {
         byte i = 0;
@@ -130,8 +132,7 @@ public class RecipeRepository : IRecipeRepository
 
         return new RecipeTagEntity
         {
-            Tag = tagEntity,
-            Order = i
+            Tag = tagEntity, Order = i
         };
     }
 
