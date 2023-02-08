@@ -132,7 +132,8 @@ public class RecipeRepository : IRecipeRepository
 
         return new RecipeTagEntity
         {
-            Tag = tagEntity, Order = i
+            Tag = tagEntity, 
+            Order = i
         };
     }
 
