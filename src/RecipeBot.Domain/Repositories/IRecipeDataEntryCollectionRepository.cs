@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using RecipeBot.Domain.Data;
-using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Repositories.Data;
 
 namespace RecipeBot.Domain.Repositories;
@@ -33,7 +32,6 @@ public interface IRecipeDataEntryCollectionRepository
     /// Gets all the recipes.
     /// </summary>
     /// <returns>A collection of recipe entries.</returns>
-    /// <exception cref="RepositoryDataLoadException">Thrown when the data could not be successfully loaded.</exception>
     Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesAsync();
 
     /// <summary>
@@ -42,6 +40,5 @@ public interface IRecipeDataEntryCollectionRepository
     /// <param name="category">The <see cref="RecipeCategory"/> the recipes belong to.</param>
     /// <returns>A collection of recipe entries belonging to the <see cref="RecipeCategory"/>.</returns>
     /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid <see cref="RecipeCategory"/>.</exception>
-    /// <exception cref="RepositoryDataLoadException">Thrown when the data could not be successfully loaded.</exception>
     Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesAsync(RecipeCategory category);
 }
