@@ -100,8 +100,7 @@ public class RecipeControllerTest
 
         var repository = Substitute.For<IRecipeRepository>();
         var exception = new RepositoryDataSaveException("Saving failed");
-        repository.SaveRecipeAsync(Arg.Any<RecipeModel>())
-                  .ReturnsForAnyArgs(Task.FromException<RepositoryDataSaveException>(exception));
+        repository.SaveRecipeAsync(Arg.Any<RecipeModel>()).ThrowsAsyncForAnyArgs(exception);
 
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
         var logger = Substitute.For<ILoggingService>();
@@ -426,14 +425,15 @@ public class RecipeControllerTest
     }
 
     [Fact]
-    public async Task Retrieving_recipe_and_exception_thrown_when_retrieving_return_result_with_error()
+    public async Task Retrieving_recipe_and_exception_thrown_when_retrieving_logs_and_returns_result_with_error()
     {
         // Setup
         var fixture = new Fixture();
         var exceptionMessage = fixture.Create<string>();
 
         var repository = Substitute.For<IRecipeRepository>();
-        repository.GetRecipeAsync(Arg.Any<long>()).ThrowsAsyncForAnyArgs(new RepositoryDataLoadException(exceptionMessage));
+        var exception = new RepositoryDataLoadException(exceptionMessage);
+        repository.GetRecipeAsync(Arg.Any<long>()).ThrowsAsyncForAnyArgs(exception);
 
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
         var logger = Substitute.For<ILoggingService>();
@@ -445,6 +445,8 @@ public class RecipeControllerTest
         // Assert
         result.HasError.Should().BeTrue();
         result.ErrorMessage.Should().Be(exceptionMessage);
+
+        await logger.Received(1).LogErrorAsync(exception);
     }
 
     [Fact]
@@ -524,11 +526,7 @@ public class RecipeControllerTest
         IEnumerable<RecipeFieldData> recipeFieldsData = fixture.CreateMany<RecipeFieldData>(3);
 
         var recipeTitle = fixture.Create<string>();
-        const string tags = "Tag1, TAG1, tag1, tag    1,      tag1, tag1      , tag2";
-        var recipeData = new RecipeData(authorData, recipeFieldsData, recipeTitle, fixture.Create<RecipeCategory>())
-        {
-            Tags = tags
-        };
+        var recipeData = new RecipeData(authorData, recipeFieldsData, recipeTitle, fixture.Create<RecipeCategory>());
 
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
         var repository = Substitute.For<IRecipeRepository>();
@@ -727,8 +725,16 @@ public class RecipeControllerTest
                                                                         .WithMapping<EmbedField, RecipeFieldData>(s => s.Value, e => e.FieldData));
 
         EmbedFooter? actualResponseFooter = actualResponse.Footer;
-        actualResponseFooter.Should().NotBeNull();
-        AssertTags(data.Category, data.Tags, actualResponseFooter!.Value);
+        if (!string.IsNullOrWhiteSpace(data.Tags))
+        {
+            actualResponseFooter.Should().NotBeNull();
+            AssertTags(data.Category, data.Tags, actualResponseFooter!.Value);
+        }
+        else
+        {
+            actualResponseFooter.Should().BeNull();
+        }
+
     }
 
     private static void AssertAuthor(string expectedAuthorName, string expectedAuthorImageUrl, EmbedAuthor actualAuthor)
