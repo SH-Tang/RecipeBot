@@ -68,8 +68,7 @@ public class RecipeRepositoryTest
     [InlineData(RecipeCategory.Drinks, PersistentRecipeCategory.Drinks)]
     [InlineData(RecipeCategory.Other, PersistentRecipeCategory.Other)]
     public async Task Given_empty_database_when_saving_recipe_saves_recipe_with_expected_data(
-        RecipeCategory category,
-        PersistentRecipeCategory expectedCategory)
+        RecipeCategory category, PersistentRecipeCategory expectedCategory)
     {
         // Setup
         var fixture = new Fixture();
@@ -463,8 +462,8 @@ public class RecipeRepositoryTest
         PersistentRecipeCategory category, RecipeCategory expectedCategory)
     {
         // Setup
-        using (var provider = new RecipeBotDBContextProvider())
-        using (RecipeBotDbContext context = provider.CreateInMemoryContext())
+        using(var provider = new RecipeBotDBContextProvider())
+        using(RecipeBotDbContext context = provider.CreateInMemoryContext())
         {
             await context.Database.EnsureCreatedAsync();
 
@@ -483,7 +482,7 @@ public class RecipeRepositoryTest
                 RecipeFields = Array.Empty<RecipeFieldEntity>(),
                 Tags = Array.Empty<RecipeTagEntity>()
             };
-            
+
             await context.RecipeEntities.AddRangeAsync(recipeToRetrieve);
 
             await context.SaveChangesAsync();
@@ -583,7 +582,7 @@ public class RecipeRepositoryTest
 
             // Assert
             data.RecipeTitle.Should().Be(recipeToRetrieve.RecipeTitle);
-            data.AuthorData.Should().Match<AuthorData>(s => s.AuthorName == recipeToRetrieve.Author.AuthorName 
+            data.AuthorData.Should().Match<AuthorData>(s => s.AuthorName == recipeToRetrieve.Author.AuthorName
                                                             && s.AuthorImageUrl == recipeToRetrieve.Author.AuthorImageUrl);
             data.RecipeFields.Should().BeEquivalentTo(recipeToRetrieve.RecipeFields, options => options.ExcludingMissingMembers()
                                                                                                        .WithStrictOrderingFor(e => e.Order)
@@ -664,6 +663,34 @@ public class RecipeRepositoryTest
         }
     }
 
+    /// <summary>
+    /// Test class for providing <see cref="RecipeBotDbContext"/>.
+    /// </summary>
+    private class RecipeBotDBContextProvider : IDisposable
+    {
+        private readonly SqliteConnection connection;
+
+        public RecipeBotDBContextProvider()
+        {
+            connection = new SqliteConnection("Filename=:memory:");
+            connection.Open();
+        }
+
+        public RecipeBotDbContext CreateInMemoryContext()
+        {
+            DbContextOptions<RecipeBotDbContext> contextOptions =
+                new DbContextOptionsBuilder<RecipeBotDbContext>().UseSqlite(connection)
+                                                                 .Options;
+            return new RecipeBotDbContext(contextOptions);
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            connection?.Dispose();
+        }
+    }
+
     private class RecipeRepositoryPersistDataTest
     {
         private readonly Action<RecipeBotDbContext> assertPersistedDataAction;
@@ -700,34 +727,6 @@ public class RecipeRepositoryTest
 
                 assertPersistedDataAction(context);
             }
-        }
-    }
-
-    /// <summary>
-    /// Test class for providing <see cref="RecipeBotDbContext"/>.
-    /// </summary>
-    private class RecipeBotDBContextProvider : IDisposable
-    {
-        private readonly SqliteConnection connection;
-
-        public RecipeBotDBContextProvider()
-        {
-            connection = new SqliteConnection("Filename=:memory:");
-            connection.Open();
-        }
-
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-            connection?.Dispose();
-        }
-
-        public RecipeBotDbContext CreateInMemoryContext()
-        {
-            DbContextOptions<RecipeBotDbContext> contextOptions =
-                new DbContextOptionsBuilder<RecipeBotDbContext>().UseSqlite(connection)
-                                                                 .Options;
-            return new RecipeBotDbContext(contextOptions);
         }
     }
 }
