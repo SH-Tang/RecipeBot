@@ -93,6 +93,34 @@ public class RecipeInteractionModuleTest
     }
 
     [Fact]
+    public void Get_recipe_command_has_expected_attributes()
+    {
+        // Call
+        SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeInteractionModule, SlashCommandAttribute>(
+            nameof(RecipeInteractionModule.GetRecipe), new[]
+            {
+                typeof(long)
+            });
+
+        DefaultMemberPermissionsAttribute? permissionAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeInteractionModule, DefaultMemberPermissionsAttribute>(
+            nameof(RecipeInteractionModule.GetRecipe), new[]
+            {
+                typeof(long)
+            });
+
+        // Assert
+        const string expectedName = "recipe-get";
+        const string expectedDescription = "Gets a recipe based on the id";
+
+        commandAttribute.Should().NotBeNull();
+        commandAttribute!.Name.Should().Be(expectedName);
+        commandAttribute.Description.Should().Be(expectedDescription);
+
+        permissionAttribute.Should().NotBeNull();
+        permissionAttribute!.Permissions.Should().Be(GuildPermission.Administrator | GuildPermission.ModerateMembers);
+    }
+
+    [Fact]
     public void Modal_response_responds_to_correct_modal_id()
     {
         // Call

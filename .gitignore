@@ -362,4 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /config.json
-*.DotSettings
+*.sln.DotSettings
+*.sln.DotSettings.user

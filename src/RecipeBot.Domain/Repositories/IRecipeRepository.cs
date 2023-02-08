@@ -17,6 +17,7 @@
 
 using System;
 using System.Threading.Tasks;
+using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Repositories.Data;
@@ -44,4 +45,12 @@ public interface IRecipeRepository
     /// <returns>A <see cref="RecipeEntryData"/> containing the information of the deleted recipe.</returns>
     /// <exception cref="RepositoryDataDeleteException">Thrown when the data could not be successfully deleted.</exception>
     Task<RecipeEntryData> DeleteRecipeAsync(long id);
+
+    /// <summary>
+    /// Gets a <see cref="RecipeData"/> based on its id.
+    /// </summary>
+    /// <param name="id">The id of the recipe to retrieve.</param>
+    /// <returns>A <see cref="RecipeData"/>.</returns>
+    /// <exception cref="RepositoryDataLoadException">Thrown when the data could not be successfully loaded.</exception>
+    Task<RecipeData> GetRecipeAsync(long id);
 }

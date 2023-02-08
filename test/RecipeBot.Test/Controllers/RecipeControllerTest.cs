@@ -30,6 +30,7 @@ using RecipeBot.Controllers;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Views;
+using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Models;
@@ -97,10 +98,9 @@ public class RecipeControllerTest
         user.Username.Returns("Recipe author");
         user.GetAvatarUrl().ReturnsForAnyArgs("https://AuthorImage.url");
 
-        const string exceptionMessage = "Saving failed";
         var repository = Substitute.For<IRecipeRepository>();
-        repository.SaveRecipeAsync(Arg.Any<RecipeModel>())
-                  .ReturnsForAnyArgs(Task.FromException<RepositoryDataSaveException>(new RepositoryDataSaveException(exceptionMessage)));
+        var exception = new RepositoryDataSaveException("Saving failed");
+        repository.SaveRecipeAsync(Arg.Any<RecipeModel>()).ThrowsAsyncForAnyArgs(exception);
 
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
         var logger = Substitute.For<ILoggingService>();
@@ -113,7 +113,7 @@ public class RecipeControllerTest
         controllerResult.HasError.Should().BeTrue();
         controllerResult.ErrorMessage.Should().NotBeNullOrWhiteSpace();
 
-        await logger.ReceivedWithAnyArgs().LogErrorAsync(Arg.Any<Exception>());
+        await logger.Received(1).LogErrorAsync(exception);
     }
 
     [Fact]
@@ -147,11 +147,11 @@ public class RecipeControllerTest
         controllerResult.ErrorMessage.Should().NotBeNullOrWhiteSpace();
 
         await repository.DidNotReceiveWithAnyArgs().SaveRecipeAsync(Arg.Any<RecipeModel>());
-        await logger.ReceivedWithAnyArgs().LogErrorAsync(Arg.Any<Exception>());
+        await logger.Received(1).LogErrorAsync(Arg.Any<ModelCreateException>());
     }
 
     [Theory]
-    [MemberData(nameof(GetRecipeCategoriesAndColor))]
+    [MemberData(nameof(GetDiscordRecipeCategoriesAndColor))]
     public async Task Recipe_with_valid_data_returns_result_with_embed(
         DiscordRecipeCategory category, Color expectedColor)
     {
@@ -232,7 +232,7 @@ public class RecipeControllerTest
     }
 
     [Theory]
-    [MemberData(nameof(GetRecipeCategoriesAndColor))]
+    [MemberData(nameof(GetDiscordRecipeCategoriesAndColor))]
     public async Task Recipe_with_valid_data_and_attachment_returns_result_with_embed(
         DiscordRecipeCategory category, Color expectedColor)
     {
@@ -400,14 +400,15 @@ public class RecipeControllerTest
     }
 
     [Fact]
-    public async Task Deleting_recipe_and_delete_unsuccessful_returns_result_with_error()
+    public async Task Deleting_recipe_and_delete_unsuccessful_logs_and_returns_result_with_error()
     {
         // Setup
         var fixture = new Fixture();
         var exceptionMessage = fixture.Create<string>();
 
         var repository = Substitute.For<IRecipeRepository>();
-        repository.DeleteRecipeAsync(Arg.Any<long>()).ThrowsAsyncForAnyArgs(new RepositoryDataDeleteException(exceptionMessage));
+        var exception = new RepositoryDataDeleteException(exceptionMessage);
+        repository.DeleteRecipeAsync(Arg.Any<long>()).ThrowsAsyncForAnyArgs(exception);
 
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
         var logger = Substitute.For<ILoggingService>();
@@ -419,9 +420,162 @@ public class RecipeControllerTest
         // Assert
         result.HasError.Should().BeTrue();
         result.ErrorMessage.Should().Be(exceptionMessage);
+
+        await logger.Received(1).LogErrorAsync(exception);
     }
 
-    public static IEnumerable<object[]> GetRecipeCategoriesAndColor()
+    [Fact]
+    public async Task Retrieving_recipe_and_exception_thrown_when_retrieving_logs_and_returns_result_with_error()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var exceptionMessage = fixture.Create<string>();
+
+        var repository = Substitute.For<IRecipeRepository>();
+        var exception = new RepositoryDataLoadException(exceptionMessage);
+        repository.GetRecipeAsync(Arg.Any<long>()).ThrowsAsyncForAnyArgs(exception);
+
+        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeController(limitProvider, repository, logger);
+
+        // Call
+        ControllerResult<Embed> result = await controller.GetRecipeAsync(fixture.Create<long>());
+
+        // Assert
+        result.HasError.Should().BeTrue();
+        result.ErrorMessage.Should().Be(exceptionMessage);
+
+        await logger.Received(1).LogErrorAsync(exception);
+    }
+
+    [Fact]
+    public async Task Retrieving_recipe_with_invalid_data_logs_and_returns_result_with_error()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var idToRetrieve = fixture.Create<long>();
+
+        var recipeData = fixture.Create<RecipeData>();
+
+        var limitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
+        limitProvider.MaximumTitleLength.Returns(EmbedBuilder.MaxTitleLength);
+        limitProvider.MaximumAuthorNameLength.Returns(EmbedAuthorBuilder.MaxAuthorNameLength);
+        limitProvider.MaximumFieldNameLength.Returns(EmbedFieldBuilder.MaxFieldNameLength);
+        limitProvider.MaximumFieldDataLength.Returns(EmbedFieldBuilder.MaxFieldValueLength);
+        limitProvider.MaximumRecipeTagsLength.Returns(EmbedFooterBuilder.MaxFooterTextLength);
+
+        var repository = Substitute.For<IRecipeRepository>();
+        repository.GetRecipeAsync(idToRetrieve).Returns(recipeData);
+
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeController(limitProvider, repository, logger);
+
+        // Call
+        ControllerResult<Embed> controllerResult = await controller.GetRecipeAsync(idToRetrieve);
+
+        // Assert
+        controllerResult.HasError.Should().BeTrue();
+        controllerResult.ErrorMessage.Should().NotBeNullOrWhiteSpace();
+
+        await logger.Received(1).LogErrorAsync(Arg.Any<ModelCreateException>());
+    }
+
+    [Fact]
+    public async Task Retrieving_recipe_with_valid_data_and_tags_returns_result_with_embed()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var idToRetrieve = fixture.Create<long>();
+
+        var authorData = new AuthorData("Recipe author", "https://AuthorImage.url");
+        IEnumerable<RecipeFieldData> recipeFieldsData = fixture.CreateMany<RecipeFieldData>(3);
+
+        var recipeTitle = fixture.Create<string>();
+        const string tags = "Tag1, TAG1, tag1, tag    1,      tag1, tag1      , tag2";
+        var recipeData = new RecipeData(authorData, recipeFieldsData, recipeTitle, fixture.Create<RecipeCategory>())
+        {
+            Tags = tags
+        };
+
+        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
+        var repository = Substitute.For<IRecipeRepository>();
+        repository.GetRecipeAsync(idToRetrieve).Returns(recipeData);
+
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeController(limitProvider, repository, logger);
+
+        // Call
+        ControllerResult<Embed> controllerResult = await controller.GetRecipeAsync(idToRetrieve);
+
+        // Assert
+        controllerResult.HasError.Should().BeFalse();
+
+        Embed embedResult = controllerResult.Result!;
+        AssertCommonEmbedResponseProperties(recipeData, embedResult);
+    }
+
+    [Fact]
+    public async Task Retrieving_recipe_with_valid_data_and_without_tags_returns_result_with_embed()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var idToRetrieve = fixture.Create<long>();
+
+        var authorData = new AuthorData(fixture.Create<string>(), "https://AuthorImage.url");
+        IEnumerable<RecipeFieldData> recipeFieldsData = fixture.CreateMany<RecipeFieldData>(3);
+
+        var recipeTitle = fixture.Create<string>();
+        var recipeData = new RecipeData(authorData, recipeFieldsData, recipeTitle, fixture.Create<RecipeCategory>());
+
+        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
+        var repository = Substitute.For<IRecipeRepository>();
+        repository.GetRecipeAsync(idToRetrieve).Returns(recipeData);
+
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeController(limitProvider, repository, logger);
+
+        // Call
+        ControllerResult<Embed> controllerResult = await controller.GetRecipeAsync(idToRetrieve);
+
+        // Assert
+        controllerResult.HasError.Should().BeFalse();
+
+        Embed embedResult = controllerResult.Result!;
+        AssertCommonEmbedResponseProperties(recipeData, embedResult);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetRecipeCategoriesAndColor))]
+    public async Task Retrieving_recipe_with_valid_data_returns_result_with_embed_in_correct_color(RecipeCategory category, Color expectedColor)
+    {
+        // Setup
+        var fixture = new Fixture();
+
+        var authorData = new AuthorData("Recipe author", "https://AuthorImage.url");
+        IEnumerable<RecipeFieldData> recipeFieldsData = fixture.CreateMany<RecipeFieldData>(3);
+
+        var recipeTitle = fixture.Create<string>();
+        var recipeData = new RecipeData(authorData, recipeFieldsData, recipeTitle, category);
+
+        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
+        var repository = Substitute.For<IRecipeRepository>();
+        repository.GetRecipeAsync(Arg.Any<long>()).ReturnsForAnyArgs(recipeData);
+
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeController(limitProvider, repository, logger);
+
+        // Call
+        ControllerResult<Embed> controllerResult = await controller.GetRecipeAsync(fixture.Create<long>());
+
+        // Assert
+        controllerResult.HasError.Should().BeFalse();
+
+        Embed embedResult = controllerResult.Result!;
+        embedResult.Color.Should().Be(expectedColor);
+    }
+
+    public static IEnumerable<object[]> GetDiscordRecipeCategoriesAndColor()
     {
         yield return new object[]
         {
@@ -472,6 +626,57 @@ public class RecipeControllerTest
         };
     }
 
+    public static IEnumerable<object[]> GetRecipeCategoriesAndColor()
+    {
+        yield return new object[]
+        {
+            RecipeCategory.Meat,
+            new Color(250, 85, 87)
+        };
+
+        yield return new object[]
+        {
+            RecipeCategory.Fish,
+            new Color(86, 153, 220)
+        };
+
+        yield return new object[]
+        {
+            RecipeCategory.Vegetarian,
+            new Color(206, 221, 85)
+        };
+        yield return new object[]
+        {
+            RecipeCategory.Vegan,
+            new Color(6, 167, 125)
+        };
+        yield return new object[]
+        {
+            RecipeCategory.Drinks,
+            new Color(175, 234, 224)
+        };
+        yield return new object[]
+        {
+            RecipeCategory.Pastry,
+            new Color(206, 132, 173)
+        };
+        yield return new object[]
+        {
+            RecipeCategory.Dessert,
+            new Color(176, 69, 162)
+        };
+        yield return new object[]
+        {
+            RecipeCategory.Snack,
+            new Color(249, 162, 114)
+        };
+        yield return new object[]
+        {
+            RecipeCategory.Other,
+            new Color(165, 161, 164)
+        };
+    }
+
     private static IRecipeModelCharacterLimitProvider CreateDiscordCharacterLimitProvider()
     {
         var limitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
@@ -504,6 +709,34 @@ public class RecipeControllerTest
         AssertTags(category, modal.Tags, actualResponseFooter!.Value);
     }
 
+    private static void AssertCommonEmbedResponseProperties(RecipeData data, IEmbed actualResponse)
+    {
+        actualResponse.Title.Should().Be(data.RecipeTitle);
+
+        EmbedAuthor? actualResponseAuthor = actualResponse.Author;
+        actualResponseAuthor.Should().NotBeNull();
+
+        AuthorData authorData = data.AuthorData;
+        AssertAuthor(authorData.AuthorName, authorData.AuthorImageUrl, actualResponseAuthor!.Value);
+
+        actualResponse.Fields.Should().BeEquivalentTo(data.RecipeFields,
+                                                      options => options.ExcludingMissingMembers()
+                                                                        .WithMapping<EmbedField, RecipeFieldData>(s => s.Name, e => e.FieldName)
+                                                                        .WithMapping<EmbedField, RecipeFieldData>(s => s.Value, e => e.FieldData));
+
+        EmbedFooter? actualResponseFooter = actualResponse.Footer;
+        if (!string.IsNullOrWhiteSpace(data.Tags))
+        {
+            actualResponseFooter.Should().NotBeNull();
+            AssertTags(data.Category, data.Tags, actualResponseFooter!.Value);
+        }
+        else
+        {
+            actualResponseFooter.Should().BeNull();
+        }
+
+    }
+
     private static void AssertAuthor(string expectedAuthorName, string expectedAuthorImageUrl, EmbedAuthor actualAuthor)
     {
         actualAuthor.Name.Should().Be(expectedAuthorName);
@@ -522,6 +755,22 @@ public class RecipeControllerTest
         var expectedTags = new List<string>
         {
             DiscordRecipeCategoryTestHelper.CategoryStringMapping[category]
+        };
+
+        if (!string.IsNullOrWhiteSpace(tags))
+        {
+            expectedTags.AddRange(TagTestHelper.GetParsedTags(tags));
+        }
+
+        string expectedFooterText = string.Join(", ", expectedTags);
+        actualFooter.Text.Should().Be(expectedFooterText);
+    }
+
+    private static void AssertTags(RecipeCategory category, string? tags, EmbedFooter actualFooter)
+    {
+        var expectedTags = new List<string>
+        {
+            RecipeCategoryTestHelper.CategoryStringMapping[category]
         };
 
         if (!string.IsNullOrWhiteSpace(tags))

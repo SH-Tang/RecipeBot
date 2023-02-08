@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Microsoft.EntityFrameworkCore;
+using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Repositories;
@@ -28,6 +29,7 @@ using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.Persistence.Creators;
 using RecipeBot.Persistence.Entities;
 using RecipeBot.Persistence.Properties;
+using RecipeBot.Persistence.Readers;
 
 namespace RecipeBot.Persistence;
 
@@ -81,13 +83,10 @@ public class RecipeRepository : IRecipeRepository
                                                         .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
             if (entityToDelete == null)
             {
-                throw new RepositoryDataDeleteException(string.Format(Resources.RecipeRepository_DeleteRecipeAsync_No_recipe_matches_with_Id_0, id));
+                throw new RepositoryDataDeleteException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_Id_0, id));
             }
 
             context.RecipeEntities.Remove(entityToDelete);
-            context.RecipeFieldEntities.RemoveRange(entityToDelete.RecipeFields);
-            context.RecipeTagEntities.RemoveRange(entityToDelete.Tags);
-
             await context.SaveChangesAsync();
 
             return new RecipeEntryData(entityToDelete.RecipeEntityId, entityToDelete.RecipeTitle, entityToDelete.Author.AuthorName);
@@ -96,6 +95,23 @@ public class RecipeRepository : IRecipeRepository
         {
             throw new RepositoryDataSaveException(ex.Message, ex);
         }
+    }
+
+    public async Task<RecipeData> GetRecipeAsync(long id)
+    {
+        RecipeEntity? entityToRetrieve = await context.RecipeEntities
+                                                      .Include(e => e.RecipeFields)
+                                                      .Include(e => e.Author)
+                                                      .Include(e => e.Tags)
+                                                      .ThenInclude(e => e.Tag)
+                                                      .AsNoTracking()
+                                                      .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
+        if (entityToRetrieve == null)
+        {
+            throw new RepositoryDataLoadException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_Id_0, id));
+        }
+
+        return RecipeDataReader.Read(entityToRetrieve);
     }
 
     private async Task<ICollection<RecipeTagEntity>> CreateRecipeTagEntities(RecipeModel model)
@@ -116,7 +132,7 @@ public class RecipeRepository : IRecipeRepository
 
         return new RecipeTagEntity
         {
-            Tag = tagEntity,
+            Tag = tagEntity, 
             Order = i
         };
     }

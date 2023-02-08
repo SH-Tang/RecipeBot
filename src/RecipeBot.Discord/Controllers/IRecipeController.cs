@@ -47,4 +47,11 @@ public interface IRecipeController
     /// <param name="idToDelete">The id of the recipe to delete.</param>
     /// <returns>The result of the delete action.</returns>
     Task<ControllerResult<string>> DeleteRecipeAsync(long idToDelete);
+
+    /// <summary>
+    /// Gets a recipe based on its input arguments.
+    /// </summary>
+    /// <param name="idToRetrieve">The id of the recipe to retrieve.</param>
+    /// <returns>The result of the get action.</returns>
+    Task<ControllerResult<Embed>> GetRecipeAsync(long idToRetrieve);
 }

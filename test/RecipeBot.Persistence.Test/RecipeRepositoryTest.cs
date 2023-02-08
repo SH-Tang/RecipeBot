@@ -57,6 +57,39 @@ public class RecipeRepositoryTest
         }
     }
 
+    [Theory]
+    [InlineData(RecipeCategory.Dessert, PersistentRecipeCategory.Dessert)]
+    [InlineData(RecipeCategory.Fish, PersistentRecipeCategory.Fish)]
+    [InlineData(RecipeCategory.Meat, PersistentRecipeCategory.Meat)]
+    [InlineData(RecipeCategory.Pastry, PersistentRecipeCategory.Pastry)]
+    [InlineData(RecipeCategory.Snack, PersistentRecipeCategory.Snack)]
+    [InlineData(RecipeCategory.Vegan, PersistentRecipeCategory.Vegan)]
+    [InlineData(RecipeCategory.Vegetarian, PersistentRecipeCategory.Vegetarian)]
+    [InlineData(RecipeCategory.Drinks, PersistentRecipeCategory.Drinks)]
+    [InlineData(RecipeCategory.Other, PersistentRecipeCategory.Other)]
+    public async Task Given_empty_database_when_saving_recipe_saves_recipe_with_expected_data(
+        RecipeCategory category, PersistentRecipeCategory expectedCategory)
+    {
+        // Setup
+        var fixture = new Fixture();
+        RecipeModel recipeModel = testBuilder.SetCategory(category)
+                                             .Build();
+
+        Action<RecipeBotDbContext> assertPersistedDataAction =
+            context =>
+            {
+                RecipeEntity recipeEntity = context.RecipeEntities
+                                                   .AsNoTracking()
+                                                   .Single();
+
+                recipeEntity.RecipeCategory.Should().Be(expectedCategory);
+            };
+
+        // Call & Assert
+        var test = new RecipeRepositoryPersistDataTest(recipeModel, assertPersistedDataAction);
+        await test.ExecuteTest();
+    }
+
     [Fact]
     public async Task Given_empty_database_when_saving_basic_recipe_saves_expected_data()
     {
@@ -69,15 +102,14 @@ public class RecipeRepositoryTest
         Action<RecipeBotDbContext> assertPersistedDataAction =
             context =>
             {
-                RecipeEntity? recipeEntity = context.RecipeEntities
-                                                    .Include(e => e.Author)
-                                                    .Include(e => e.RecipeFields)
-                                                    .Include(e => e.Tags)
-                                                    .Single();
+                RecipeEntity recipeEntity = context.RecipeEntities
+                                                   .Include(e => e.Author)
+                                                   .Include(e => e.RecipeFields)
+                                                   .Include(e => e.Tags)
+                                                   .AsNoTracking()
+                                                   .Single();
 
                 recipeEntity.RecipeTitle.Should().Be(recipeModel.Title);
-                recipeEntity.RecipeCategory.Should().Be((PersistentRecipeCategory)category);
-
                 recipeEntity.Author.Should().NotBeNull().And.BeEquivalentTo(
                     recipeModel.Author,
                     options => options.Including(e => e.AuthorName)
@@ -97,8 +129,6 @@ public class RecipeRepositoryTest
     {
         // Setup
         var fixture = new Fixture();
-        var category = fixture.Create<RecipeCategory>();
-
         string[] tags =
         {
             fixture.Create<string>(),
@@ -106,8 +136,7 @@ public class RecipeRepositoryTest
         };
 
         const int nrOfFields = 3;
-        RecipeModel recipeModel = testBuilder.SetCategory(category)
-                                             .AddFields(nrOfFields)
+        RecipeModel recipeModel = testBuilder.AddFields(nrOfFields)
                                              .AddTags(tags)
                                              .Build();
 
@@ -119,11 +148,10 @@ public class RecipeRepositoryTest
                                                    .Include(e => e.RecipeFields)
                                                    .Include(e => e.Tags)
                                                    .ThenInclude(e => e.Tag)
+                                                   .AsNoTracking()
                                                    .Single();
 
                 recipeEntity.RecipeTitle.Should().Be(recipeModel.Title);
-                recipeEntity.RecipeCategory.Should().Be((PersistentRecipeCategory)category);
-
                 recipeEntity.Author.Should().NotBeNull().And.BeEquivalentTo(
                     recipeModel.Author,
                     options => options.Including(e => e.AuthorName)
@@ -211,6 +239,7 @@ public class RecipeRepositoryTest
                 RecipeEntity recipeEntity = context.RecipeEntities
                                                    .Include(e => e.Tags)
                                                    .ThenInclude(e => e.Tag)
+                                                   .AsNoTracking()
                                                    .Single();
 
                 recipeEntity.Tags.OrderBy(t => t.Order).Should().Equal(tags, (s, e) => s.Tag.Tag == e);
@@ -241,7 +270,7 @@ public class RecipeRepositoryTest
 
             // Assert
             await call.Should().ThrowAsync<RepositoryDataDeleteException>()
-                      .WithMessage($"No recipe matches with Id '{idToDelete}'.");
+                      .WithMessage($"No recipe matches with id '{idToDelete}'.");
         }
     }
 
@@ -375,19 +404,290 @@ public class RecipeRepositoryTest
             }, options => options.Excluding(s => s.Recipes));
 
             context.TagEntities.Should().BeEquivalentTo(tagEntities, options => options.Excluding(s => s.Recipes));
-            context.RecipeFieldEntities.Should().BeEquivalentTo(unaffectedRecipe.RecipeFields);
+            context.RecipeFieldEntities.Should().BeEquivalentTo(unaffectedRecipe.RecipeFields, options => options.Excluding(s => s.Recipe));
             context.RecipeTagEntities.Should().BeEquivalentTo(unaffectedRecipe.Tags, options => options.Excluding(s => s.Recipe)
                                                                                                        .Excluding(s => s.Tag));
 
             RecipeEntity recipeEntity = await context.RecipeEntities
                                                      .Include(e => e.Author)
+                                                     .Include(e => e.RecipeFields)
                                                      .Include(e => e.Tags)
+                                                     .AsNoTracking()
                                                      .SingleAsync();
             recipeEntity.Should().BeEquivalentTo(unaffectedRecipe, options => options.Excluding(s => s.Author)
-                                                                                     .Excluding(s => s.Tags));
+                                                                                     .Excluding(s => s.Tags)
+                                                                                     .Excluding(s => s.RecipeFields));
             recipeEntity.Author.Should().BeEquivalentTo(unaffectedRecipe.Author, options => options.Excluding(s => s.Recipes));
             recipeEntity.Tags.Should().BeEquivalentTo(unaffectedRecipe.Tags, options => options.Excluding(s => s.Recipe)
                                                                                                .Excluding(s => s.Tag));
+
+            recipeEntity.RecipeFields.Should().BeEquivalentTo(unaffectedRecipe.RecipeFields, options => options.Excluding(s => s.Recipe));
+        }
+    }
+
+    [Fact]
+    public async Task Given_empty_database_when_retrieving_recipe_throws_exception()
+    {
+        // Setup
+        using(var provider = new RecipeBotDBContextProvider())
+        using(RecipeBotDbContext context = provider.CreateInMemoryContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var repository = new RecipeRepository(context);
+
+            var idToRetrieve = fixture.Create<long>();
+
+            // Call
+            Func<Task> call = () => repository.GetRecipeAsync(idToRetrieve);
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataLoadException>()
+                      .WithMessage($"No recipe matches with id '{idToRetrieve}'.");
+        }
+    }
+
+    [Theory]
+    [InlineData(PersistentRecipeCategory.Dessert, RecipeCategory.Dessert)]
+    [InlineData(PersistentRecipeCategory.Fish, RecipeCategory.Fish)]
+    [InlineData(PersistentRecipeCategory.Meat, RecipeCategory.Meat)]
+    [InlineData(PersistentRecipeCategory.Pastry, RecipeCategory.Pastry)]
+    [InlineData(PersistentRecipeCategory.Snack, RecipeCategory.Snack)]
+    [InlineData(PersistentRecipeCategory.Vegan, RecipeCategory.Vegan)]
+    [InlineData(PersistentRecipeCategory.Vegetarian, RecipeCategory.Vegetarian)]
+    [InlineData(PersistentRecipeCategory.Drinks, RecipeCategory.Drinks)]
+    [InlineData(PersistentRecipeCategory.Other, RecipeCategory.Other)]
+    public async Task Given_seeded_database_when_retrieving_recipe_returns_expected_recipe_with_category(
+        PersistentRecipeCategory category, RecipeCategory expectedCategory)
+    {
+        // Setup
+        using(var provider = new RecipeBotDBContextProvider())
+        using(RecipeBotDbContext context = provider.CreateInMemoryContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var authorEntity = new AuthorEntity
+            {
+                AuthorName = fixture.Create<string>(),
+                AuthorImageUrl = fixture.Create<string>()
+            };
+
+            var recipeToRetrieve = new RecipeEntity
+            {
+                RecipeTitle = fixture.Create<string>(),
+                Author = authorEntity,
+                RecipeCategory = category,
+                RecipeFields = Array.Empty<RecipeFieldEntity>(),
+                Tags = Array.Empty<RecipeTagEntity>()
+            };
+
+            await context.RecipeEntities.AddRangeAsync(recipeToRetrieve);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeRepository(context);
+
+            // Call
+            RecipeData data = await repository.GetRecipeAsync(recipeToRetrieve.RecipeEntityId);
+
+            // Assert
+            data.Category.Should().Be(expectedCategory);
+        }
+    }
+
+    [Fact]
+    public async Task Given_seeded_database_when_retrieving_recipe_containing_tags_returns_expected_recipe_data()
+    {
+        // Setup
+        using(var provider = new RecipeBotDBContextProvider())
+        using(RecipeBotDbContext context = provider.CreateInMemoryContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var authorEntity = new AuthorEntity
+            {
+                AuthorName = fixture.Create<string>(),
+                AuthorImageUrl = fixture.Create<string>()
+            };
+
+            IReadOnlyList<TagEntity> tagEntities = new[]
+            {
+                new TagEntity
+                {
+                    Tag = fixture.Create<string>()
+                },
+                new TagEntity
+                {
+                    Tag = fixture.Create<string>()
+                }
+            };
+
+            var recipeToRetrieve = new RecipeEntity
+            {
+                RecipeEntityId = fixture.Create<long>(),
+                RecipeTitle = fixture.Create<string>(),
+                Author = authorEntity,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeFields = new[]
+                {
+                    new RecipeFieldEntity
+                    {
+                        RecipeFieldData = fixture.Create<string>(),
+                        RecipeFieldName = fixture.Create<string>(),
+                        Order = fixture.Create<byte>()
+                    },
+                    new RecipeFieldEntity
+                    {
+                        RecipeFieldData = fixture.Create<string>(),
+                        RecipeFieldName = fixture.Create<string>(),
+                        Order = fixture.Create<byte>()
+                    }
+                },
+                Tags = new[]
+                {
+                    new RecipeTagEntity
+                    {
+                        Tag = tagEntities[0],
+                        Order = 2
+                    },
+                    new RecipeTagEntity
+                    {
+                        Tag = tagEntities[1],
+                        Order = 1
+                    }
+                }
+            };
+
+            var unaffectedRecipe = new RecipeEntity
+            {
+                RecipeEntityId = fixture.Create<long>(),
+                RecipeTitle = fixture.Create<string>(),
+                Author = authorEntity,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>()
+            };
+
+            await context.RecipeEntities.AddRangeAsync(recipeToRetrieve, unaffectedRecipe);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeRepository(context);
+
+            // Call
+            RecipeData data = await repository.GetRecipeAsync(recipeToRetrieve.RecipeEntityId);
+
+            // Assert
+            data.RecipeTitle.Should().Be(recipeToRetrieve.RecipeTitle);
+            data.AuthorData.Should().Match<AuthorData>(s => s.AuthorName == recipeToRetrieve.Author.AuthorName
+                                                            && s.AuthorImageUrl == recipeToRetrieve.Author.AuthorImageUrl);
+            data.RecipeFields.Should().BeEquivalentTo(recipeToRetrieve.RecipeFields, options => options.ExcludingMissingMembers()
+                                                                                                       .WithStrictOrderingFor(e => e.Order)
+                                                                                                       .WithMapping<RecipeFieldEntity, RecipeFieldData>(e => e.RecipeFieldName, s => s.FieldName)
+                                                                                                       .WithMapping<RecipeFieldEntity, RecipeFieldData>(e => e.RecipeFieldData, s => s.FieldData));
+
+            data.Tags.Should().Be($"{recipeToRetrieve.Tags.ElementAt(1).Tag.Tag}, {recipeToRetrieve.Tags.ElementAt(0).Tag.Tag}");
+        }
+    }
+
+    [Fact]
+    public async Task Given_seeded_database_when_retrieving_recipe_without_tags_returns_expected_recipe_data()
+    {
+        // Setup
+        using(var provider = new RecipeBotDBContextProvider())
+        using(RecipeBotDbContext context = provider.CreateInMemoryContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var authorEntity = new AuthorEntity
+            {
+                AuthorName = fixture.Create<string>(),
+                AuthorImageUrl = fixture.Create<string>()
+            };
+
+            var recipeToRetrieve = new RecipeEntity
+            {
+                RecipeEntityId = fixture.Create<long>(),
+                RecipeTitle = fixture.Create<string>(),
+                Author = authorEntity,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeFields = new[]
+                {
+                    new RecipeFieldEntity
+                    {
+                        RecipeFieldData = fixture.Create<string>(),
+                        RecipeFieldName = fixture.Create<string>(),
+                        Order = fixture.Create<byte>()
+                    },
+                    new RecipeFieldEntity
+                    {
+                        RecipeFieldData = fixture.Create<string>(),
+                        RecipeFieldName = fixture.Create<string>(),
+                        Order = fixture.Create<byte>()
+                    }
+                },
+                Tags = Array.Empty<RecipeTagEntity>()
+            };
+
+            var unaffectedRecipe = new RecipeEntity
+            {
+                RecipeEntityId = fixture.Create<long>(),
+                RecipeTitle = fixture.Create<string>(),
+                Author = authorEntity,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>()
+            };
+
+            await context.RecipeEntities.AddRangeAsync(recipeToRetrieve, unaffectedRecipe);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeRepository(context);
+
+            // Call
+            RecipeData data = await repository.GetRecipeAsync(recipeToRetrieve.RecipeEntityId);
+
+            // Assert
+            data.RecipeTitle.Should().Be(recipeToRetrieve.RecipeTitle);
+            data.AuthorData.Should().Match<AuthorData>(s => s.AuthorName == recipeToRetrieve.Author.AuthorName
+                                                            && s.AuthorImageUrl == recipeToRetrieve.Author.AuthorImageUrl);
+            data.RecipeFields.Should().BeEquivalentTo(recipeToRetrieve.RecipeFields, options => options.ExcludingMissingMembers()
+                                                                                                       .WithStrictOrderingFor(e => e.Order)
+                                                                                                       .WithMapping<RecipeFieldEntity, RecipeFieldData>(e => e.RecipeFieldName, s => s.FieldName)
+                                                                                                       .WithMapping<RecipeFieldEntity, RecipeFieldData>(e => e.RecipeFieldData, s => s.FieldData));
+            data.Tags.Should().BeNullOrWhiteSpace();
+        }
+    }
+
+    /// <summary>
+    /// Test class for providing <see cref="RecipeBotDbContext"/>.
+    /// </summary>
+    private class RecipeBotDBContextProvider : IDisposable
+    {
+        private readonly SqliteConnection connection;
+
+        public RecipeBotDBContextProvider()
+        {
+            connection = new SqliteConnection("Filename=:memory:");
+            connection.Open();
+        }
+
+        public RecipeBotDbContext CreateInMemoryContext()
+        {
+            DbContextOptions<RecipeBotDbContext> contextOptions =
+                new DbContextOptionsBuilder<RecipeBotDbContext>().UseSqlite(connection)
+                                                                 .Options;
+            return new RecipeBotDbContext(contextOptions);
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            connection?.Dispose();
         }
     }
 
@@ -427,34 +727,6 @@ public class RecipeRepositoryTest
 
                 assertPersistedDataAction(context);
             }
-        }
-    }
-
-    /// <summary>
-    /// Test class for providing <see cref="RecipeBotDbContext"/>.
-    /// </summary>
-    private class RecipeBotDBContextProvider : IDisposable
-    {
-        private readonly SqliteConnection connection;
-
-        public RecipeBotDBContextProvider()
-        {
-            connection = new SqliteConnection("Filename=:memory:");
-            connection.Open();
-        }
-
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-            connection?.Dispose();
-        }
-
-        public RecipeBotDbContext CreateInMemoryContext()
-        {
-            DbContextOptions<RecipeBotDbContext> contextOptions =
-                new DbContextOptionsBuilder<RecipeBotDbContext>().UseSqlite(connection)
-                                                                 .Options;
-            return new RecipeBotDbContext(contextOptions);
         }
     }
 }

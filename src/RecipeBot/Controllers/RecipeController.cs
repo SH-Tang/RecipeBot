@@ -23,6 +23,7 @@ using Discord.Common;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Views;
+using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Models;
@@ -42,6 +43,7 @@ public class RecipeController : IRecipeController
     private readonly IRecipeRepository repository;
     private readonly ILoggingService logger;
     private readonly RecipeModelCreationService modelCreationService;
+    private readonly RecipeModelFactory modelFactory;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeController"/>.
@@ -58,6 +60,7 @@ public class RecipeController : IRecipeController
         logger.IsNotNull(nameof(logger));
 
         modelCreationService = new RecipeModelCreationService(limitProvider);
+        modelFactory = new RecipeModelFactory(limitProvider);
 
         this.repository = repository;
         this.logger = logger;
@@ -101,7 +104,6 @@ public class RecipeController : IRecipeController
         }
     }
 
-
     public async Task<ControllerResult<string>> DeleteRecipeAsync(long idToDelete)
     {
         try
@@ -109,13 +111,37 @@ public class RecipeController : IRecipeController
             RecipeEntryData deletedRecipe = await repository.DeleteRecipeAsync(idToDelete);
 
             return ControllerResult<string>.CreateControllerResultWithValidResult(string.Format(Resources.RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted,
-                deletedRecipe.Title, deletedRecipe.Id, deletedRecipe.AuthorName));
+                                                                                                deletedRecipe.Title, deletedRecipe.Id, deletedRecipe.AuthorName));
         }
         catch (RepositoryDataDeleteException e)
         {
             return await HandleException<string>(e);
         }
     }
+
+    public async Task<ControllerResult<Embed>> GetRecipeAsync(long idToRetrieve)
+    {
+        try
+        {
+            RecipeData recipeData = await repository.GetRecipeAsync(idToRetrieve);
+            RecipeModel modelData = modelFactory.Create(recipeData);
+
+            return ControllerResult<Embed>.CreateControllerResultWithValidResult(RecipeEmbedFactory.Create(modelData));
+        }
+        catch (ModelCreateException e)
+        {
+            return await HandleException<Embed>(e);
+        }
+        catch (EmbedCreateException e)
+        {
+            return await HandleException<Embed>(e);
+        }
+        catch (RepositoryDataLoadException e)
+        {
+            return await HandleException<Embed>(e);
+        }
+    }
+
 
     private async Task<ControllerResult<TResult>> HandleException<TResult>(Exception e) where TResult : class
     {

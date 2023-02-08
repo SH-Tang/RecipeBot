@@ -37,4 +37,8 @@ public class RecipeFieldEntity
 
     [Required]
     public byte Order { get; set; }
+
+    public long RecipeEntityId { get; set; }
+
+    public RecipeEntity Recipe { get; set; } = null!;
 }
