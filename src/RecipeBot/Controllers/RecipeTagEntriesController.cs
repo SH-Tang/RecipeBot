@@ -33,7 +33,6 @@ namespace RecipeBot.Controllers;
 public class RecipeTagEntriesController : IRecipeTagEntriesController
 {
     private static readonly string header = $"{"Id",-3} {"Tag",-50} ";
-    private static readonly string emptyMessage = Resources.RecipeTagEntriesController_No_saved_tags_are_found;
 
     private readonly DataEntryCollectionMessageFormattingService<RecipeTagEntryData> messageFormattingService;
     private readonly IRecipeTagEntryDataRepository repository;
@@ -51,13 +50,15 @@ public class RecipeTagEntriesController : IRecipeTagEntriesController
         repository.IsNotNull(nameof(repository));
 
         messageFormattingService = new DataEntryCollectionMessageFormattingService<RecipeTagEntryData>(
-            limitProvider, header, emptyMessage, entry => $"{entry.Id,-3} {entry.Tag,-50}");
+            limitProvider, header, entry => $"{entry.Id,-3} {entry.Tag,-50}");
         this.repository = repository;
     }
 
     public async Task<ControllerResult<IReadOnlyList<string>>> ListAllTagsAsync()
     {
         IReadOnlyList<RecipeTagEntryData> tags = await repository.LoadRecipeTagEntriesAsync();
-        return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(messageFormattingService.CreateMessages(tags));
+
+        return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
+            messageFormattingService.CreateMessages(tags, Resources.RecipeTagEntriesController_No_saved_tags_are_found));
     }
 }

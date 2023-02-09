@@ -17,11 +17,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Common.Utils;
-using Discord;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
 using RecipeBot.Domain.Data;
@@ -37,7 +34,9 @@ namespace RecipeBot.Controllers;
 /// </summary>
 public class RecipeEntriesController : IRecipeEntriesController
 {
-    private readonly IMessageCharacterLimitProvider limitProvider;
+    private static readonly string header = $"{"Id",-3} {"Title",-50} {"Author",-50} ";
+
+    private readonly DataEntryCollectionMessageFormattingService<RecipeEntryData> messageFormattingService;
     private readonly IRecipeDataEntryCollectionRepository repository;
 
     /// <summary>
@@ -47,12 +46,13 @@ public class RecipeEntriesController : IRecipeEntriesController
     /// <param name="repository">The repository to handle with the persistence of recipe entries.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     public RecipeEntriesController(IMessageCharacterLimitProvider limitProvider,
-        IRecipeDataEntryCollectionRepository repository)
+                                   IRecipeDataEntryCollectionRepository repository)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
         repository.IsNotNull(nameof(repository));
 
-        this.limitProvider = limitProvider;
+        messageFormattingService = new DataEntryCollectionMessageFormattingService<RecipeEntryData>(
+            limitProvider, header, entry => $"{entry.Id,-3} {entry.Title,-50} {entry.AuthorName,-50}");
         this.repository = repository;
     }
 
@@ -60,7 +60,8 @@ public class RecipeEntriesController : IRecipeEntriesController
     {
         IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesAsync();
 
-        return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(CreateMessages(entries, Resources.RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found));
+        return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
+            messageFormattingService.CreateMessages(entries, Resources.RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found));
     }
 
     public async Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync(DiscordRecipeCategory category)
@@ -71,53 +72,7 @@ public class RecipeEntriesController : IRecipeEntriesController
         IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesAsync(repositoryCategory);
 
 
-        return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(CreateMessages(entries, Resources.RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found_with_category));
-    }
-
-    private IReadOnlyList<string> CreateMessages(IReadOnlyList<RecipeEntryData> entries, string emptyMessage)
-    {
-        if (!entries.Any())
-        {
-            return new[]
-            {
-                emptyMessage
-            };
-        }
-        
-        var messages = new List<string>();
-        StringBuilder messageBuilder = new StringBuilder().AppendLine(CreateHeader());
-        string formattedCurrentMessage = Format.Code(messageBuilder.ToString());
-
-        foreach (RecipeEntryData currentEntry in entries)
-        {
-            string formattedEntry = CreateFormattedEntry(currentEntry);
-
-            var messageWithCurrentEntry = $"{messageBuilder}{formattedEntry}";
-            if (Format.Code(messageWithCurrentEntry).Length > limitProvider.MaxMessageLength)
-            {
-                messages.Add(formattedCurrentMessage);
-                messageBuilder.Clear();
-                messageBuilder.AppendLine(CreateHeader());
-            }
-
-            messageBuilder.AppendLine(formattedEntry);
-
-            var currentMessage = messageBuilder.ToString();
-            formattedCurrentMessage = Format.Code(currentMessage);
-        }
-
-        messages.Add(formattedCurrentMessage);
-        return messages;
-    }
-
-    private static string CreateHeader()
-    {
-        var header = $"{"Id",-3} {"Title",-50} {"Author",-50} ";
-        return header;
-    }
-
-    private static string CreateFormattedEntry(RecipeEntryData recipeEntry)
-    {
-        return $"{recipeEntry.Id,-3} {recipeEntry.Title,-50} {recipeEntry.AuthorName,-50}";
+        return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
+            messageFormattingService.CreateMessages(entries, Resources.RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found_with_category));
     }
 }

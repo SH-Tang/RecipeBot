@@ -31,7 +31,6 @@ namespace RecipeBot.Services;
 /// <typeparam name="TDataEntry">The data entry object to format.</typeparam>
 internal class DataEntryCollectionMessageFormattingService<TDataEntry>
 {
-    private readonly string emptyMessage;
     private readonly Func<TDataEntry, string> getEntryFormatFunc;
     private readonly string header;
     private readonly IMessageCharacterLimitProvider limitProvider;
@@ -41,25 +40,36 @@ internal class DataEntryCollectionMessageFormattingService<TDataEntry>
     /// </summary>
     /// <param name="limitProvider">The limit provider to retrieve the message character limits from.</param>
     /// <param name="header">The header of each code block.</param>
-    /// <param name="emptyMessage">The empty message when there is nothing to format.</param>
     /// <param name="getEntryFormatFunc">The function to format individual lines in the block.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="limitProvider"/>
+    /// or <paramref name="getEntryFormatFunc"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="header"/> is <c>null</c> or
+    /// consists of whitespaces.</exception>
     public DataEntryCollectionMessageFormattingService(IMessageCharacterLimitProvider limitProvider,
-                                             string header, string emptyMessage, Func<TDataEntry, string> getEntryFormatFunc)
+                                                       string header, Func<TDataEntry, string> getEntryFormatFunc)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
         header.IsNotNullOrWhiteSpaces(nameof(header));
-        emptyMessage.IsNotNullOrWhiteSpaces(nameof(emptyMessage));
         getEntryFormatFunc.IsNotNull(nameof(getEntryFormatFunc));
 
         this.limitProvider = limitProvider;
         this.header = header;
         this.getEntryFormatFunc = getEntryFormatFunc;
-        this.emptyMessage = emptyMessage;
     }
 
-    public IReadOnlyList<string> CreateMessages(IReadOnlyList<TDataEntry> entries)
+    /// <summary>
+    /// Creates a collection of formatted messages based on its input arguments.
+    /// </summary>
+    /// <param name="entries">The collection of data entries to format.</param>
+    /// <param name="emptyMessage">The message to display when <paramref name="entries"/> is empty.</param>
+    /// <returns>A collection of formatted messages.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="entries"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="emptyMessage"/> is <c>null</c> or
+    /// consists of whitespaces.</exception>
+    public IReadOnlyList<string> CreateMessages(IReadOnlyList<TDataEntry> entries , string emptyMessage)
     {
         entries.IsNotNull(nameof(entries));
+        emptyMessage.IsNotNullOrWhiteSpaces(nameof(emptyMessage));
 
         if (!entries.Any())
         {
