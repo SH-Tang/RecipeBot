@@ -102,7 +102,8 @@ public class RecipeBotApplication
         {
             typeof(InfoInteractionModule),
             typeof(RecipeInteractionModule),
-            typeof(RecipeEntriesInteractionModule)
+            typeof(RecipeEntriesInteractionModule),
+            typeof(RecipeTagEntriesInteractionModule)
         });
     }
 
