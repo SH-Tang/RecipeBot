@@ -38,7 +38,7 @@ public class RecipeTagEntriesController : IRecipeTagEntriesController
     private readonly IRecipeTagEntryDataRepository repository;
 
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeEntriesController"/>.
+    /// Creates a new instance of <see cref="RecipeTagEntriesController"/>.
     /// </summary>
     /// <param name="limitProvider">The limit provider to retrieve the message character limits from.</param>
     /// <param name="repository">The repository to handle with the persistence of recipe entries.</param>
