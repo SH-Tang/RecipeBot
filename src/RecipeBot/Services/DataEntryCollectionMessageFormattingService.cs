@@ -61,21 +61,21 @@ internal class DataEntryCollectionMessageFormattingService<TDataEntry>
     /// Creates a collection of formatted messages based on its input arguments.
     /// </summary>
     /// <param name="entries">The collection of data entries to format.</param>
-    /// <param name="emptyMessage">The message to display when <paramref name="entries"/> is empty.</param>
+    /// <param name="emptyCollectionMessage">The message to display when <paramref name="entries"/> is empty.</param>
     /// <returns>A collection of formatted messages.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="entries"/> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="emptyMessage"/> is <c>null</c> or
+    /// <exception cref="ArgumentException">Thrown when <paramref name="emptyCollectionMessage"/> is <c>null</c> or
     /// consists of whitespaces.</exception>
-    public IReadOnlyList<string> CreateMessages(IEnumerable<TDataEntry> entries , string emptyMessage)
+    public IReadOnlyList<string> CreateMessages(IEnumerable<TDataEntry> entries , string emptyCollectionMessage)
     {
         entries.IsNotNull(nameof(entries));
-        emptyMessage.IsNotNullOrWhiteSpaces(nameof(emptyMessage));
+        emptyCollectionMessage.IsNotNullOrWhiteSpaces(nameof(emptyCollectionMessage));
 
         if (!entries.Any())
         {
             return new[]
             {
-                emptyMessage
+                emptyCollectionMessage
             };
         }
 
