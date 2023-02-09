@@ -141,5 +141,14 @@ namespace RecipeBot.Properties {
                 return ResourceManager.GetString("RecipeFieldName_Ingredients_DisplayName", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No saved tags are found..
+        /// </summary>
+        internal static string RecipeTagEntriesController_No_saved_tags_are_found {
+            get {
+                return ResourceManager.GetString("RecipeTagEntriesController_No_saved_tags_are_found", resourceCulture);
+            }
+        }
     }
 }

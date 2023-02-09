@@ -24,26 +24,25 @@ using Discord.Common;
 using Discord.Interactions;
 using Microsoft.Extensions.DependencyInjection;
 using RecipeBot.Discord.Controllers;
-using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Properties;
 
 namespace RecipeBot.Discord;
 
 /// <summary>
-/// Module containing commands to interact with recipe entries.
+/// Module containing commands to interact with recipe tag entries.
 /// </summary>
-public class RecipeEntriesInteractionModule : InteractionModuleBase<SocketInteractionContext>
+public class RecipeTagEntriesInteractionModule : InteractionModuleBase<SocketInteractionContext>
 {
-    private readonly IServiceScopeFactory scopeFactory;
     private readonly ILoggingService logger;
+    private readonly IServiceScopeFactory scopeFactory;
 
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeEntriesInteractionModule"/>.
+    /// Creates a new instance of <see cref="RecipeTagEntriesInteractionModule"/>.
     /// </summary>
     /// <param name="scopeFactory">The <see cref="IServiceScopeFactory"/> to resolve dependencies with.</param>
     /// <param name="logger">The logger to use.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public RecipeEntriesInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger)
+    public RecipeTagEntriesInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger)
     {
         scopeFactory.IsNotNull(nameof(scopeFactory));
         logger.IsNotNull(nameof(logger));
@@ -52,24 +51,16 @@ public class RecipeEntriesInteractionModule : InteractionModuleBase<SocketIntera
         this.logger = logger;
     }
 
-    [SlashCommand("recipe-list", "Lists all the saved user recipes")]
-    public async Task ListRecipes([Summary("category", "The category to filter the recipes with")] DiscordRecipeCategory? category = null)
+    [SlashCommand("tag-list", "Lists all the saved tags")]
+    public async Task ListTags()
     {
         try
         {
-            using (IServiceScope scope = scopeFactory.CreateScope())
+            using(IServiceScope scope = scopeFactory.CreateScope())
             {
-                var controller = scope.ServiceProvider.GetRequiredService<IRecipeEntriesController>();
-                IEnumerable<Task> tasks;
-                if (category == null)
-                {
-                    tasks = await GetTasksAsync(controller.ListAllRecipesAsync());
-                }
-                else
-                {
-                    tasks = await GetTasksAsync(controller.ListAllRecipesAsync(category.Value));
-                }
+                var controller = scope.ServiceProvider.GetRequiredService<IRecipeTagEntriesController>();
 
+                IEnumerable<Task> tasks = await GetTasksAsync(controller.ListAllTagsAsync());
                 await Task.WhenAll(tasks);
             }
         }
@@ -101,9 +92,9 @@ public class RecipeEntriesInteractionModule : InteractionModuleBase<SocketIntera
         {
             return new[]
             {
-                RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, 
-                                           Resources.Controller_should_not_have_returned_an_empty_collection_when_querying),
-                             ephemeral: true)
+                RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_,
+                        Resources.Controller_should_not_have_returned_an_empty_collection_when_querying),
+                    ephemeral: true)
             };
         }
 

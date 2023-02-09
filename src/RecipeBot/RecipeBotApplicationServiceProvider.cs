@@ -92,7 +92,9 @@ public class RecipeBotApplicationServiceProvider
                 .AddScoped<IRecipeRepository, RecipeRepository>()
                 .AddScoped<IRecipeController, RecipeController>()
                 .AddScoped<IRecipeDataEntryCollectionRepository, RecipeDataEntryCollectionRepository>()
-                .AddScoped<IRecipeEntriesController, RecipeEntriesController>();
+                .AddScoped<IRecipeEntriesController, RecipeEntriesController>()
+                .AddScoped<IRecipeTagEntryDataRepository, RecipeTagEntryRepository>()
+                .AddScoped<IRecipeTagEntriesController, RecipeTagEntriesController>();
     }
 
     private void ConfigureOptions(IServiceCollection services)

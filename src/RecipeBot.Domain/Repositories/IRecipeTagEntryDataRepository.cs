@@ -16,29 +16,19 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading.Tasks;
-using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Repositories.Data;
 
 namespace RecipeBot.Domain.Repositories;
 
 /// <summary>
-/// Interface for describing a repository for handling data persistence of collections of recipe entries.
+/// Interface for describing a repository for handling with data persistence of recipe tags.
 /// </summary>
-public interface IRecipeDataEntryCollectionRepository
+public interface IRecipeTagEntryDataRepository
 {
     /// <summary>
-    /// Gets all the recipes.
+    /// Gets all the tags.
     /// </summary>
-    /// <returns>A collection of recipe entries.</returns>
-    Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesAsync();
-
-    /// <summary>
-    /// Gets all the recipes belonging to a <see cref="RecipeCategory"/>.
-    /// </summary>
-    /// <param name="category">The <see cref="RecipeCategory"/> the recipes belong to.</param>
-    /// <returns>A collection of recipe entries belonging to the <see cref="RecipeCategory"/>.</returns>
-    /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid <see cref="RecipeCategory"/>.</exception>
-    Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesAsync(RecipeCategory category);
+    /// <returns>A collection of recipe tag entries.</returns>
+    Task<IReadOnlyList<RecipeTagEntryData>> LoadRecipeTagEntriesAsync();
 }

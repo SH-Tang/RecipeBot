@@ -138,4 +138,7 @@
   <data name="RecipeFieldName_Cooking_Steps_DisplayName" xml:space="preserve">
     <value>Cooking steps</value>
   </data>
+  <data name="RecipeTagEntriesController_No_saved_tags_are_found" xml:space="preserve">
+    <value>No saved tags are found.</value>
+  </data>
 </root>

@@ -16,28 +16,18 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading.Tasks;
-using RecipeBot.Discord.Data;
 
 namespace RecipeBot.Discord.Controllers;
 
 /// <summary>
-/// Interface for describing a controller dealing with interactions with recipe entries.
+/// Interface for describing a controller dealing with interactions with recipe tag entries.
 /// </summary>
-public interface IRecipeEntriesController
+public interface IRecipeTagEntriesController
 {
     /// <summary>
-    /// Lists all recipes.
+    /// Lists all tags.
     /// </summary>
-    /// <returns>A collection of messages containing formatted recipe entries.</returns>
-    Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync();
-
-    /// <summary>
-    /// Lists all recipes filtered by category.
-    /// </summary>
-    /// <param name="category">The category to filter the recipes on.</param>
-    /// <returns>A collection of messages containing formatted recipe entries.</returns>
-    /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid value of <see cref="DiscordRecipeCategory"/>.</exception>
-    Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync(DiscordRecipeCategory category);
+    /// <returns>A collection of messages containing formatted recipe tag entries.</returns>
+    Task<ControllerResult<IReadOnlyList<string>>> ListAllTagsAsync();
 }

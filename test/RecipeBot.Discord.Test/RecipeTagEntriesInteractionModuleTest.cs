@@ -20,13 +20,12 @@ using Discord.Interactions;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
-using RecipeBot.Discord.Data;
 using RecipeBot.TestUtils;
 using Xunit;
 
 namespace RecipeBot.Discord.Test;
 
-public class RecipeEntriesInteractionModuleTest
+public class RecipeTagEntriesInteractionModuleTest
 {
     [Fact]
     public void Module_is_interactive_module()
@@ -36,25 +35,22 @@ public class RecipeEntriesInteractionModuleTest
         var loggingService = Substitute.For<ILoggingService>();
 
         // Call
-        var module = new RecipeEntriesInteractionModule(scopeFactory, loggingService);
+        var module = new RecipeTagEntriesInteractionModule(scopeFactory, loggingService);
 
         // Assert
         module.Should().BeAssignableTo<InteractionModuleBase<SocketInteractionContext>>();
     }
 
     [Fact]
-    public void List_recipes_command_has_expected_attributes()
+    public void List_tags_command_has_expected_attributes()
     {
         // Call
-        SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeEntriesInteractionModule, SlashCommandAttribute>(
-            nameof(RecipeEntriesInteractionModule.ListRecipes), new[]
-            {
-                typeof(DiscordRecipeCategory)
-            });
+        SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeTagEntriesInteractionModule, SlashCommandAttribute>(
+            nameof(RecipeTagEntriesInteractionModule.ListTags));
 
         // Assert
-        const string expectedName = "recipe-list";
-        const string expectedDescription = "Lists all the saved user recipes";
+        const string expectedName = "tag-list";
+        const string expectedDescription = "Lists all the saved tags";
 
         commandAttribute.Should().NotBeNull();
         commandAttribute!.Name.Should().Be(expectedName);
