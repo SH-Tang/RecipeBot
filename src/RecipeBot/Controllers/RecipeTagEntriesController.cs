@@ -17,14 +17,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Common.Utils;
-using Discord;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Domain.Repositories;
 using RecipeBot.Domain.Repositories.Data;
+using RecipeBot.Properties;
+using RecipeBot.Services;
 
 namespace RecipeBot.Controllers;
 
@@ -33,7 +32,10 @@ namespace RecipeBot.Controllers;
 /// </summary>
 public class RecipeTagEntriesController : IRecipeTagEntriesController
 {
-    private readonly IMessageCharacterLimitProvider limitProvider;
+    private static readonly string header = $"{"Id",-3} {"Tag",-50} ";
+    private static readonly string emptyMessage = Resources.RecipeTagEntriesController_No_saved_tags_are_found;
+
+    private readonly DataEntryCollectionMessageFormattingService<RecipeTagEntryData> messageFormattingService;
     private readonly IRecipeTagEntryDataRepository repository;
 
     /// <summary>
@@ -48,59 +50,14 @@ public class RecipeTagEntriesController : IRecipeTagEntriesController
         limitProvider.IsNotNull(nameof(limitProvider));
         repository.IsNotNull(nameof(repository));
 
-        this.limitProvider = limitProvider;
+        messageFormattingService = new DataEntryCollectionMessageFormattingService<RecipeTagEntryData>(
+            limitProvider, header, emptyMessage, entry => $"{entry.Id,-3} {entry.Tag,-50}");
         this.repository = repository;
     }
 
     public async Task<ControllerResult<IReadOnlyList<string>>> ListAllTagsAsync()
     {
         IReadOnlyList<RecipeTagEntryData> tags = await repository.LoadRecipeTagEntriesAsync();
-        return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(CreateMessages(tags));
-    }
-
-    private IReadOnlyList<string> CreateMessages(IReadOnlyList<RecipeTagEntryData> entries)
-    {
-        if (!entries.Any())
-        {
-            return new[]
-            {
-                "No saved tags are found."
-            };
-        }
-
-        var messages = new List<string>();
-        StringBuilder messageBuilder = new StringBuilder().AppendLine(CreateHeader());
-        string formattedCurrentMessage = Format.Code(messageBuilder.ToString());
-
-        foreach (RecipeTagEntryData currentEntry in entries)
-        {
-            string formattedEntry = CreateFormattedEntry(currentEntry);
-
-            var messageWithCurrentEntry = $"{messageBuilder}{formattedEntry}";
-            if (Format.Code(messageWithCurrentEntry).Length > limitProvider.MaxMessageLength)
-            {
-                messages.Add(formattedCurrentMessage);
-                messageBuilder.Clear();
-                messageBuilder.AppendLine(CreateHeader());
-            }
-
-            messageBuilder.AppendLine(formattedEntry);
-
-            var currentMessage = messageBuilder.ToString();
-            formattedCurrentMessage = Format.Code(currentMessage);
-        }
-
-        messages.Add(formattedCurrentMessage);
-        return messages;
-    }
-
-    private static string CreateHeader()
-    {
-        return $"{"Id",-3} {"Tag",-50} ";
-    }
-
-    private static string CreateFormattedEntry(RecipeTagEntryData recipeEntry)
-    {
-        return $"{recipeEntry.Id,-3} {recipeEntry.Tag,-50}";
+        return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(messageFormattingService.CreateMessages(tags));
     }
 }
