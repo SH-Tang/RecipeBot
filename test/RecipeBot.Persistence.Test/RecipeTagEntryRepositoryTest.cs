@@ -28,11 +28,11 @@ using Xunit;
 
 namespace RecipeBot.Persistence.Test;
 
-public class RecipeTagRepositoryTest : IDisposable
+public class RecipeTagEntryRepositoryTest : IDisposable
 {
     private readonly SqliteConnection connection;
 
-    public RecipeTagRepositoryTest()
+    public RecipeTagEntryRepositoryTest()
     {
         connection = new SqliteConnection("Filename=:memory:");
         connection.Open();
@@ -52,7 +52,7 @@ public class RecipeTagRepositoryTest : IDisposable
         {
             await context.Database.EnsureCreatedAsync();
 
-            var repository = new RecipeEntryRepository(context);
+            var repository = new RecipeTagEntryRepository(context);
 
             // Call
             IReadOnlyList<RecipeTagEntryData> entries = await repository.LoadRecipeTagEntriesAsync();
@@ -88,7 +88,7 @@ public class RecipeTagRepositoryTest : IDisposable
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeEntryRepository(context);
+            var repository = new RecipeTagEntryRepository(context);
 
             // Call
             IReadOnlyList<RecipeTagEntryData> entries = await repository.LoadRecipeTagEntriesAsync();
