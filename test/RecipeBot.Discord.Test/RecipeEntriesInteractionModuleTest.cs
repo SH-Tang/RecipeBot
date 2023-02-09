@@ -43,7 +43,7 @@ public class RecipeEntriesInteractionModuleTest
     }
 
     [Fact]
-    public void Format_recipe_command_has_expected_attributes()
+    public void List_recipes_command_has_expected_attributes()
     {
         // Call
         SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeEntriesInteractionModule, SlashCommandAttribute>(
@@ -54,7 +54,7 @@ public class RecipeEntriesInteractionModuleTest
 
         // Assert
         const string expectedName = "recipe-list";
-        const string expectedDescription = "Lists all the user recipes";
+        const string expectedDescription = "Lists all the saved user recipes";
 
         commandAttribute.Should().NotBeNull();
         commandAttribute!.Name.Should().Be(expectedName);

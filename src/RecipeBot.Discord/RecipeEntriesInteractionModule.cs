@@ -52,7 +52,7 @@ public class RecipeEntriesInteractionModule : InteractionModuleBase<SocketIntera
         this.logger = logger;
     }
 
-    [SlashCommand("recipe-list", "Lists all the user recipes")]
+    [SlashCommand("recipe-list", "Lists all the saved user recipes")]
     public async Task ListRecipes([Summary("category", "The category to filter the recipes with")] DiscordRecipeCategory? category = null)
     {
         try
@@ -102,7 +102,7 @@ public class RecipeEntriesInteractionModule : InteractionModuleBase<SocketIntera
             return new[]
             {
                 RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, 
-                                           Resources.IRecipeCollectionController_should_not_have_returned_an_empty_collection_when_querying),
+                                           Resources.Controller_should_not_have_returned_an_empty_collection_when_querying),
                              ephemeral: true)
             };
         }
