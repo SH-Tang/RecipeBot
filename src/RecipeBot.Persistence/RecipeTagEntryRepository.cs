@@ -58,15 +58,22 @@ public class RecipeTagEntryRepository : IRecipeTagEntryDataRepository
 
     public async Task<RecipeTagEntryData> DeleteTagAsync(long id)
     {
-        TagEntity? tagToDelete = await context.TagEntities.SingleOrDefaultAsync(e => e.TagEntityId == id);
-        if (tagToDelete == null)
+        try
         {
-            throw new RepositoryDataDeleteException(string.Format(Resources.RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_id_0_, id));
-        }
-        
-        context.TagEntities.Remove(tagToDelete);
-        await context.SaveChangesAsync();
+            TagEntity? tagToDelete = await context.TagEntities.SingleOrDefaultAsync(e => e.TagEntityId == id);
+            if (tagToDelete == null)
+            {
+                throw new RepositoryDataDeleteException(string.Format(Resources.RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_id_0_, id));
+            }
 
-        return new RecipeTagEntryData(tagToDelete.TagEntityId, tagToDelete.Tag);
+            context.TagEntities.Remove(tagToDelete);
+            await context.SaveChangesAsync();
+
+            return new RecipeTagEntryData(tagToDelete.TagEntityId, tagToDelete.Tag);
+        }
+        catch (DbUpdateException ex)
+        {
+            throw new RepositoryDataDeleteException(ex.Message, ex);
+        }
     }
 }
