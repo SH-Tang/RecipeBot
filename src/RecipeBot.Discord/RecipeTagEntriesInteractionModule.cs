@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
+using Discord;
 using Discord.Common;
 using Discord.Interactions;
 using Microsoft.Extensions.DependencyInjection;
@@ -75,6 +76,40 @@ public class RecipeTagEntriesInteractionModule : InteractionModuleBase<SocketInt
             await Task.WhenAll(tasks);
         }
     }
+
+
+    [SlashCommand("tag-delete", "Deletes a tag based on the id")]
+    [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ModerateMembers)]
+    public async Task DeleteTag([Summary("TagId", "The id of the tag to delete")] long tagIdToDelete)
+    {
+        try
+        {
+            using (IServiceScope scope = scopeFactory.CreateScope())
+            {
+                var controller = scope.ServiceProvider.GetRequiredService<IRecipeTagEntriesController>();
+                ControllerResult<string> response = await controller.DeleteTagAsync(tagIdToDelete);
+                if (response.HasError)
+                {
+                    await RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, response.ErrorMessage), ephemeral: true);
+                }
+                else
+                {
+                    await RespondAsync(response.Result, ephemeral: true);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Task[] tasks =
+            {
+                RespondAsync(e.Message, ephemeral: true),
+                logger.LogErrorAsync(e)
+            };
+
+            await Task.WhenAll(tasks);
+        }
+    }
+
 
     private async Task<IEnumerable<Task>> GetTasksAsync(Task<ControllerResult<IReadOnlyList<string>>> getControllerResultTask)
     {

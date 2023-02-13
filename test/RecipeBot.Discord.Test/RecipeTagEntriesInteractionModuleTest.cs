@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using Discord;
 using Discord.Common;
 using Discord.Interactions;
 using FluentAssertions;
@@ -55,5 +56,34 @@ public class RecipeTagEntriesInteractionModuleTest
         commandAttribute.Should().NotBeNull();
         commandAttribute!.Name.Should().Be(expectedName);
         commandAttribute.Description.Should().Be(expectedDescription);
+    }
+
+    [Fact]
+    public void Delete_tag_command_has_expected_attributes()
+    {
+        // Call
+        SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeTagEntriesInteractionModule, SlashCommandAttribute>(
+            nameof(RecipeTagEntriesInteractionModule.DeleteTag), new []
+            {
+                typeof(long)
+            });
+
+        DefaultMemberPermissionsAttribute? permissionAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeTagEntriesInteractionModule, DefaultMemberPermissionsAttribute>(
+            nameof(RecipeTagEntriesInteractionModule.DeleteTag), new[]
+            {
+                typeof(long)
+            });
+
+
+        // Assert
+        const string expectedName = "tag-delete";
+        const string expectedDescription = "Deletes a tag based on the id";
+
+        commandAttribute.Should().NotBeNull();
+        commandAttribute!.Name.Should().Be(expectedName);
+        commandAttribute.Description.Should().Be(expectedDescription);
+
+        permissionAttribute.Should().NotBeNull();
+        permissionAttribute!.Permissions.Should().Be(GuildPermission.Administrator | GuildPermission.ModerateMembers);
     }
 }
