@@ -17,11 +17,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.Persistence.Entities;
 using Xunit;
@@ -65,6 +67,7 @@ public class RecipeTagEntryRepositoryTest : IDisposable
     [Fact]
     public async Task Given_seeded_database_when_loading_tags_returns_expected_tag_entries()
     {
+        // Setup
         using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
@@ -98,6 +101,142 @@ public class RecipeTagEntryRepositoryTest : IDisposable
                                                                            .WithStrictOrderingFor(e => e.TagEntityId)
                                                                            .WithMapping<TagEntity, RecipeTagEntryData>(s => s.TagEntityId, e => e.Id)
                                                                            .WithMapping<TagEntity, RecipeTagEntryData>(s => s.Tag, e => e.Tag));
+        }
+    }
+
+    [Fact]
+    public async Task Given_empty_database_when_deleting_tags_throws_exception()
+    {
+        // Setup
+        using(RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var repository = new RecipeTagEntryRepository(context);
+
+            var fixture = new Fixture();
+            var idToDelete = fixture.Create<long>();
+
+            // Call
+            Func<Task> call = () => repository.DeleteTagAsync(idToDelete);
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataDeleteException>()
+                      .WithMessage($"No tag matches with id '{idToDelete}'.");
+        }
+    }
+
+    [Fact]
+    public async Task Given_seeded_database_when_deleting_tag_only_deletes_affected_data_and_returns_result()
+    {
+        // Setup
+        using(RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var authorEntity = new AuthorEntity
+            {
+                AuthorName = fixture.Create<string>(),
+                AuthorImageUrl = fixture.Create<string>()
+            };
+
+            var tagToDelete = new TagEntity
+            {
+                TagEntityId = fixture.Create<long>(),
+                Tag = fixture.Create<string>()
+            };
+            var unaffectedTag = new TagEntity
+            {
+                Tag = fixture.Create<string>()
+            };
+
+            var recipe = new RecipeEntity
+            {
+                RecipeEntityId = fixture.Create<long>(),
+                RecipeTitle = fixture.Create<string>(),
+                Author = authorEntity,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeFields = new[]
+                {
+                    new RecipeFieldEntity
+                    {
+                        RecipeFieldData = fixture.Create<string>(),
+                        RecipeFieldName = fixture.Create<string>(),
+                        Order = fixture.Create<byte>()
+                    },
+                    new RecipeFieldEntity
+                    {
+                        RecipeFieldData = fixture.Create<string>(),
+                        RecipeFieldName = fixture.Create<string>(),
+                        Order = fixture.Create<byte>()
+                    }
+                },
+                Tags = new[]
+                {
+                    new RecipeTagEntity
+                    {
+                        Tag = tagToDelete,
+                        Order = fixture.Create<byte>()
+                    },
+                    new RecipeTagEntity
+                    {
+                        Tag = unaffectedTag,
+                        Order = fixture.Create<byte>()
+                    }
+                }
+            };
+
+            context.RecipeEntities.Add(recipe);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeTagEntryRepository(context);
+
+            // Call
+            RecipeTagEntryData result = await repository.DeleteTagAsync(tagToDelete.TagEntityId);
+            context.ChangeTracker.Clear();
+
+            // Assert
+            result.Id.Should().Be(tagToDelete.TagEntityId);
+            result.Tag.Should().Be(tagToDelete.Tag);
+
+            context.AuthorEntities.Should().BeEquivalentTo(new[]
+            {
+                authorEntity
+            }, options => options.Excluding(s => s.Recipes));
+
+            context.TagEntities.Should().BeEquivalentTo(new[]
+            {
+                unaffectedTag
+            }, options => options.Excluding(s => s.Recipes));
+
+
+            context.RecipeFieldEntities.Should().BeEquivalentTo(recipe.RecipeFields, options => options.Excluding(s => s.Recipe));
+            context.RecipeTagEntities.Should().BeEquivalentTo(new[]
+            {
+                recipe.Tags.ElementAt(1)
+            }, options => options.Excluding(s => s.Recipe)
+                                 .Excluding(s => s.Tag));
+
+            RecipeEntity recipeEntity = await context.RecipeEntities
+                                                     .Include(e => e.Author)
+                                                     .Include(e => e.RecipeFields)
+                                                     .Include(e => e.Tags)
+                                                     .AsNoTracking()
+                                                     .SingleAsync();
+            recipeEntity.Should().BeEquivalentTo(recipe, options => options.Excluding(s => s.Author)
+                                                                           .Excluding(s => s.Tags)
+                                                                           .Excluding(s => s.RecipeFields));
+            recipeEntity.Author.Should().BeEquivalentTo(recipe.Author, options => options.Excluding(s => s.Recipes));
+            recipeEntity.Tags.Should().BeEquivalentTo(new[]
+            {
+                recipe.Tags.ElementAt(1)
+            }, options => options.Excluding(s => s.Recipe)
+                                 .Excluding(s => s.Tag));
+
+            recipeEntity.RecipeFields.Should().BeEquivalentTo(recipe.RecipeFields, options => options.Excluding(s => s.Recipe));
         }
     }
 

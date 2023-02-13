@@ -21,9 +21,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Microsoft.EntityFrameworkCore;
+using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Repositories;
 using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.Persistence.Entities;
+using RecipeBot.Persistence.Properties;
 
 namespace RecipeBot.Persistence;
 
@@ -52,5 +54,19 @@ public class RecipeTagEntryRepository : IRecipeTagEntryDataRepository
         return tagEntities.OrderBy(e => e.TagEntityId)
                           .Select(e => new RecipeTagEntryData(e.TagEntityId, e.Tag))
                           .ToArray();
+    }
+
+    public async Task<RecipeTagEntryData> DeleteTagAsync(long idToDelete)
+    {
+        TagEntity? tagToDelete = await context.TagEntities.SingleOrDefaultAsync(e => e.TagEntityId == idToDelete);
+        if (tagToDelete == null)
+        {
+            throw new RepositoryDataDeleteException(string.Format(Resources.RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_id_0_, idToDelete));
+        }
+        
+        context.TagEntities.Remove(tagToDelete);
+        await context.SaveChangesAsync();
+
+        return new RecipeTagEntryData(tagToDelete.TagEntityId, tagToDelete.Tag);
     }
 }

@@ -120,4 +120,7 @@
   <data name="RecipeRepository_No_recipe_matches_with_Id_0" xml:space="preserve">
     <value>No recipe matches with id '{0}'.</value>
   </data>
+  <data name="RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_id_0_" xml:space="preserve">
+    <value>No tag matches with id '{0}'.</value>
+  </data>
 </root>
