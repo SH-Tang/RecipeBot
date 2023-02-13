@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Repositories.Data;
 
 namespace RecipeBot.Domain.Repositories;
@@ -31,4 +32,12 @@ public interface IRecipeTagEntryDataRepository
     /// </summary>
     /// <returns>A collection of recipe tag entries.</returns>
     Task<IReadOnlyList<RecipeTagEntryData>> LoadRecipeTagEntriesAsync();
+
+    /// <summary>
+    /// Deletes a tag based on its id.
+    /// </summary>
+    /// <param name="id">The id of the tag to delete.</param>
+    /// <returns>A <see cref="RecipeTagEntryData"/> containing the information of the deleted tag.</returns>
+    /// <exception cref="RepositoryDataDeleteException">Thrown when the data could not be successfully deleted.</exception>
+    Task<RecipeTagEntryData> DeleteTagAsync(long id);
 }

@@ -56,12 +56,12 @@ public class RecipeTagEntryRepository : IRecipeTagEntryDataRepository
                           .ToArray();
     }
 
-    public async Task<RecipeTagEntryData> DeleteTagAsync(long idToDelete)
+    public async Task<RecipeTagEntryData> DeleteTagAsync(long id)
     {
-        TagEntity? tagToDelete = await context.TagEntities.SingleOrDefaultAsync(e => e.TagEntityId == idToDelete);
+        TagEntity? tagToDelete = await context.TagEntities.SingleOrDefaultAsync(e => e.TagEntityId == id);
         if (tagToDelete == null)
         {
-            throw new RepositoryDataDeleteException(string.Format(Resources.RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_id_0_, idToDelete));
+            throw new RepositoryDataDeleteException(string.Format(Resources.RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_id_0_, id));
         }
         
         context.TagEntities.Remove(tagToDelete);
