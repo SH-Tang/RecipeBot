@@ -141,4 +141,7 @@
   <data name="RecipeTagEntriesController_No_saved_tags_are_found" xml:space="preserve">
     <value>No saved tags are found.</value>
   </data>
+  <data name="RecipeTagEntriesController_DeleteTagAsync_Tag_0_with_id_1_was_successfully_deleted" xml:space="preserve">
+    <value>Tag '{0}' with Id '{1}' was successfully deleted.</value>
+  </data>
 </root>
