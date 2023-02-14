@@ -170,7 +170,7 @@ public class RecipeTagEntriesControllerTest
         // Assert
         result.HasError.Should().BeFalse();
 
-        result.Result.Should().Be($"Tag '{deletedTag.Tag}' with Id '{deletedTag.Id}' was successfully deleted.");
+        result.Result.Should().Be($"Tag '{deletedTag.Tag}' with id '{deletedTag.Id}' was successfully deleted.");
     }
 
     [Fact]
