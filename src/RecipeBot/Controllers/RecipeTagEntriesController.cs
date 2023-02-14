@@ -74,7 +74,7 @@ public class RecipeTagEntriesController : IRecipeTagEntriesController
         {
             RecipeTagEntryData deletedTag = await repository.DeleteTagAsync(idToDelete);
 
-            return ControllerResult<string>.CreateControllerResultWithValidResult(string.Format(Resources.RecipeTagEntriesController_DeleteTagAsync_Tag_0_with_id_1_was_successfully_deleted,
+            return ControllerResult<string>.CreateControllerResultWithValidResult(string.Format(Resources.RecipeTagEntriesController_DeleteTagAsync_Tag_0_with_Id_1_was_successfully_deleted,
                 deletedTag.Tag, deletedTag.Id));
         }
         catch (RepositoryDataDeleteException e)

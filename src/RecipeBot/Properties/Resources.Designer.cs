@@ -145,9 +145,9 @@ namespace RecipeBot.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Tag &apos;{0}&apos; with Id &apos;{1}&apos; was successfully deleted..
         /// </summary>
-        internal static string RecipeTagEntriesController_DeleteTagAsync_Tag_0_with_id_1_was_successfully_deleted {
+        internal static string RecipeTagEntriesController_DeleteTagAsync_Tag_0_with_Id_1_was_successfully_deleted {
             get {
-                return ResourceManager.GetString("RecipeTagEntriesController_DeleteTagAsync_Tag_0_with_id_1_was_successfully_delete" +
+                return ResourceManager.GetString("RecipeTagEntriesController_DeleteTagAsync_Tag_0_with_Id_1_was_successfully_delete" +
                         "d", resourceCulture);
             }
         }
