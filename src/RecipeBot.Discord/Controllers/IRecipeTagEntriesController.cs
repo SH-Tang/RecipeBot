@@ -30,4 +30,11 @@ public interface IRecipeTagEntriesController
     /// </summary>
     /// <returns>A collection of messages containing formatted recipe tag entries.</returns>
     Task<ControllerResult<IReadOnlyList<string>>> ListAllTagsAsync();
+
+    /// <summary>
+    /// Deletes a tag based on its input arguments.
+    /// </summary>
+    /// <param name="idToDelete">The id of the tag to delete.</param>
+    /// <returns>The result of the delete action.</returns>
+    Task<ControllerResult<string>> DeleteTagAsync(long idToDelete);
 }

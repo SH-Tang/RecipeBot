@@ -21,12 +21,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using Discord;
+using Discord.Common;
 using FluentAssertions;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using RecipeBot.Controllers;
 using RecipeBot.Discord.Controllers;
+using RecipeBot.Discord.Data;
+using RecipeBot.Discord.Views;
+using RecipeBot.Domain.Exceptions;
+using RecipeBot.Domain.Factories;
+using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Repositories;
 using RecipeBot.Domain.Repositories.Data;
+using RecipeBot.TestUtils;
 using Xunit;
 
 namespace RecipeBot.Test.Controllers;
@@ -39,9 +47,10 @@ public class RecipeTagEntriesControllerTest
         // Setup
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var repository = Substitute.For<IRecipeTagEntryDataRepository>();
-
+        var logger = Substitute.For<ILoggingService>();
+        
         // Call
-        var controller = new RecipeTagEntriesController(limitProvider, repository);
+        var controller = new RecipeTagEntriesController(limitProvider, repository, logger);
 
         // Assert
         controller.Should().BeAssignableTo<IRecipeTagEntriesController>();
@@ -56,7 +65,8 @@ public class RecipeTagEntriesControllerTest
         var repository = Substitute.For<IRecipeTagEntryDataRepository>();
         repository.LoadRecipeTagEntriesAsync().ReturnsForAnyArgs(Array.Empty<RecipeTagEntryData>());
 
-        var controller = new RecipeTagEntriesController(limitProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeTagEntriesController(limitProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.ListAllTagsAsync();
@@ -80,7 +90,8 @@ public class RecipeTagEntriesControllerTest
         var repository = Substitute.For<IRecipeTagEntryDataRepository>();
         repository.LoadRecipeTagEntriesAsync().ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeTagEntriesController(limitProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeTagEntriesController(limitProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.ListAllTagsAsync();
@@ -112,7 +123,8 @@ public class RecipeTagEntriesControllerTest
         var repository = Substitute.For<IRecipeTagEntryDataRepository>();
         repository.LoadRecipeTagEntriesAsync().ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeTagEntriesController(limitProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeTagEntriesController(limitProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.ListAllTagsAsync();
@@ -134,5 +146,56 @@ public class RecipeTagEntriesControllerTest
             Format.Code(expectedMessageOne),
             Format.Code(expectedMessageTwo)
         }, options => options.WithStrictOrdering());
+    }
+    
+    [Fact]
+    public async Task Deleting_tag_and_delete_successful_returns_result()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var idToDelete = fixture.Create<long>();
+
+        var deletedTag = fixture.Create<RecipeTagEntryData>();
+        var repository = Substitute.For<IRecipeTagEntryDataRepository>();
+        repository.DeleteTagAsync(idToDelete).Returns(deletedTag);
+
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        limitProvider.MaxMessageLength.Returns(int.MaxValue);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeTagEntriesController(limitProvider, repository, logger);
+
+        // Call
+        ControllerResult<string> result = await controller.DeleteTagAsync(idToDelete);
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        result.Result.Should().Be($"Tag '{deletedTag.Tag}' with id '{deletedTag.Id}' was successfully deleted.");
+    }
+
+    [Fact]
+    public async Task Deleting_recipe_and_delete_unsuccessful_logs_and_returns_result_with_error()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var exceptionMessage = fixture.Create<string>();
+
+        var repository = Substitute.For<IRecipeTagEntryDataRepository>();
+        var exception = new RepositoryDataDeleteException(exceptionMessage);
+        repository.DeleteTagAsync(Arg.Any<long>()).ThrowsAsyncForAnyArgs(exception);
+
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        limitProvider.MaxMessageLength.Returns(int.MaxValue);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeTagEntriesController(limitProvider, repository, logger);
+
+        // Call
+        ControllerResult<string> result = await controller.DeleteTagAsync(fixture.Create<long>());
+
+        // Assert
+        result.HasError.Should().BeTrue();
+        result.ErrorMessage.Should().Be(exceptionMessage);
+
+        await logger.Received(1).LogErrorAsync(exception);
     }
 }

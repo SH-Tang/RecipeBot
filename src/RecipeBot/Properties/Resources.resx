@@ -127,7 +127,7 @@
     <value>No saved recipes are found with the given category.</value>
   </data>
   <data name="RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted" xml:space="preserve">
-    <value>Recipe titled '{0}' with Id '{1}' and author '{2}' was successfully deleted.</value>
+    <value>Recipe titled '{0}' with id '{1}' and author '{2}' was successfully deleted.</value>
   </data>
   <data name="RecipeFieldName_Additional_Notes_DisplayName" xml:space="preserve">
     <value>Additional notes</value>
@@ -140,5 +140,8 @@
   </data>
   <data name="RecipeTagEntriesController_No_saved_tags_are_found" xml:space="preserve">
     <value>No saved tags are found.</value>
+  </data>
+  <data name="RecipeTagEntriesController_DeleteTagAsync_Tag_0_with_Id_1_was_successfully_deleted" xml:space="preserve">
+    <value>Tag '{0}' with id '{1}' was successfully deleted.</value>
   </data>
 </root>
