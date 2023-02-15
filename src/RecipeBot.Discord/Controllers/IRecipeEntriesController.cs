@@ -40,4 +40,18 @@ public interface IRecipeEntriesController
     /// <returns>A collection of messages containing formatted recipe entries.</returns>
     /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid value of <see cref="DiscordRecipeCategory"/>.</exception>
     Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByCategoryAsync(DiscordRecipeCategory category);
+
+    /// <summary>
+    /// Gets all recipes filtered by tag.
+    /// </summary>
+    /// <param name="tag">The category to filter the recipes on.</param>
+    /// <returns>A collection of messages containing formatted recipe entries.</returns>
+    Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByTagAsync(string tag);
+
+    /// <summary>
+    /// Gets all recipes filtered by tag id.
+    /// </summary>
+    /// <param name="tagId">The tag id to filter the recipes on.</param>
+    /// <returns>A collection of messages containing formatted recipe entries.</returns>
+    Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByTagIdAsync(long tagId);
 }

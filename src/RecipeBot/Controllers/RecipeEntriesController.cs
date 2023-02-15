@@ -85,11 +85,11 @@ public class RecipeEntriesController : IRecipeEntriesController
             messageFormattingService.CreateMessages(entries, string.Format(Resources.RecipeEntriesController_GetAllRecipesByTagAsync_No_saved_recipes_are_found_with_Tag_0_, tag)));
     }
 
-    public async Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByTagIdAsync(long tag)
+    public async Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByTagIdAsync(long tagId)
     {
-        IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByTagIdAsync(tag);
+        IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByTagIdAsync(tagId);
 
         return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
-            messageFormattingService.CreateMessages(entries, string.Format(Resources.RecipeEntriesController_GetAllRecipesByTagAsync_No_saved_recipes_are_found_with_Tag_0_, tag)));
+            messageFormattingService.CreateMessages(entries, string.Format(Resources.RecipeEntriesController_GetAllRecipesByTagAsync_No_saved_recipes_are_found_with_Tag_0_, tagId)));
     }
 }
