@@ -275,6 +275,50 @@ public class RecipeRepositoryTest
     }
 
     [Fact]
+    public async Task Given_seeded_database_when_deleting_no_matching_recipe_throws_exception()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var idToDelete = fixture.Create<long>();
+
+        using(var provider = new RecipeBotDBContextProvider())
+        using(RecipeBotDbContext context = provider.CreateInMemoryContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var authorEntity = new AuthorEntity
+            {
+                AuthorName = fixture.Create<string>(),
+                AuthorImageUrl = fixture.Create<string>()
+            };
+
+            var recipe = new RecipeEntity
+            {
+                RecipeEntityId = fixture.Create<long>(),
+                RecipeTitle = fixture.Create<string>(),
+                Author = authorEntity,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeFields = Array.Empty<RecipeFieldEntity>(),
+                Tags = Array.Empty<RecipeTagEntity>()
+            };
+
+            await context.RecipeEntities.AddRangeAsync(recipe);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeRepository(context);
+
+            // Call
+            Func<Task> call = () => repository.DeleteRecipeAsync(idToDelete);
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataDeleteException>()
+                      .WithMessage($"No recipe matches with id '{idToDelete}'.");
+        }
+    }
+
+    [Fact]
     public async Task Given_seeded_database_when_deleting_recipe_only_deletes_affected_data_and_returns_result()
     {
         // Setup

@@ -127,6 +127,62 @@ public class RecipeTagEntryRepositoryTest : IDisposable
     }
 
     [Fact]
+    public async Task Given_seeded_database_when_deleting_no_matching_tag_throws_exception()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var idToDelete = fixture.Create<long>();
+
+        using(RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var authorEntity = new AuthorEntity
+            {
+                AuthorName = fixture.Create<string>(),
+                AuthorImageUrl = fixture.Create<string>()
+            };
+
+            var tagEntity = new TagEntity
+            {
+                TagEntityId = fixture.Create<long>(),
+                Tag = fixture.Create<string>()
+            };
+
+            var recipe = new RecipeEntity
+            {
+                RecipeEntityId = fixture.Create<long>(),
+                RecipeTitle = fixture.Create<string>(),
+                Author = authorEntity,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeFields = Array.Empty<RecipeFieldEntity>(),
+                Tags = new[]
+                {
+                    new RecipeTagEntity
+                    {
+                        Tag = tagEntity,
+                        Order = fixture.Create<byte>()
+                    }
+                }
+            };
+
+            context.RecipeEntities.Add(recipe);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeTagEntryRepository(context);
+
+            // Call
+            Func<Task> call = () => repository.DeleteTagAsync(idToDelete);
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataDeleteException>()
+                      .WithMessage($"No tag matches with id '{idToDelete}'.");
+        }
+    }
+
+    [Fact]
     public async Task Given_seeded_database_when_deleting_tag_only_deletes_affected_data_and_returns_result()
     {
         // Setup
