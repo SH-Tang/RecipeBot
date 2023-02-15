@@ -84,6 +84,42 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
         return CreateRecipeEntryDataCollection(recipeEntities);
     }
 
+    public async Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesByTagAsync(string tag)
+    {
+        IEnumerable<RecipeDatabaseEntry> recipeDatabaseEntries = await context.RecipeTagEntities
+                                                                              .Include(te => te.Tag)
+                                                                              .Where(te => te.Tag.Tag == tag)
+                                                                              .Include(te => te.Recipe)
+                                                                              .ThenInclude(r => r.Author)
+                                                                              .Select(e => new RecipeDatabaseEntry
+                                                                              {
+                                                                                  Id = e.RecipeEntityId,
+                                                                                  Title = e.Recipe.RecipeTitle,
+                                                                                  AuthorName = e.Recipe.Author.AuthorName
+                                                                              })
+                                                                              .AsNoTracking()
+                                                                              .ToArrayAsync();
+        return CreateRecipeEntryDataCollection(recipeDatabaseEntries);
+    }
+
+    public async Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesByTagIdAsync(long tagId)
+    {
+        IEnumerable<RecipeDatabaseEntry> recipeDatabaseEntries = await context.RecipeTagEntities
+                                                                              .Include(te => te.Tag)
+                                                                              .Where(te => te.Tag.TagEntityId== tagId)
+                                                                              .Include(te => te.Recipe)
+                                                                              .ThenInclude(r => r.Author)
+                                                                              .Select(e => new RecipeDatabaseEntry
+                                                                              {
+                                                                                  Id = e.RecipeEntityId,
+                                                                                  Title = e.Recipe.RecipeTitle,
+                                                                                  AuthorName = e.Recipe.Author.AuthorName
+                                                                              })
+                                                                              .AsNoTracking()
+                                                                              .ToArrayAsync();
+        return CreateRecipeEntryDataCollection(recipeDatabaseEntries);
+    }
+
     private static RecipeEntryData[] CreateRecipeEntryDataCollection(IEnumerable<RecipeDatabaseEntry> recipeDatabaseEntries)
     {
         return recipeDatabaseEntries.Select(r => new RecipeEntryData(r.Id, r.Title, r.AuthorName))

@@ -240,6 +240,336 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
         }
     }
 
+    [Fact]
+    public async Task Given_empty_database_when_loading_entries_by_tag_id_returns_empty_collection()
+    {
+        // Setup
+        var fixture = new Fixture();
+        using (RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var repository = new RecipeDataEntryCollectionRepository(context);
+
+            // Call
+            IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByTagIdAsync(fixture.Create<long>());
+
+            // Assert
+            entries.Should().BeEmpty();
+        }
+    }
+
+    [Fact]
+    public async Task Given_seeded_database_when_loading_entries_by_tag_id_and_no_match_found_returns_empty_collection()
+    {
+        // Setup
+        using (RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var author = new AuthorEntity
+            {
+                AuthorName = fixture.Create<string>(),
+                AuthorImageUrl = fixture.Create<string>()
+            };
+
+            var tagEntity = new TagEntity
+            {
+                TagEntityId = fixture.Create<long>(),
+                Tag = fixture.Create<string>()
+            };
+
+            var recipe = new RecipeEntity
+            {
+                RecipeEntityId = 3,
+                Author = author,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeTitle = fixture.Create<string>(),
+                Tags = new[]
+                {
+                    new RecipeTagEntity
+                    {
+                        Tag = tagEntity,
+                        Order = fixture.Create<byte>()
+                    }
+                }
+            };
+
+            await context.RecipeEntities.AddRangeAsync(recipe);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeDataEntryCollectionRepository(context);
+
+            // Call
+            IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByTagIdAsync(fixture.Create<long>());
+
+            // Assert
+            entries.Should().BeEmpty();
+        }
+    }
+
+    [Fact]
+    public async Task Given_seeded_database_when_loading_entries_by_tag_id_and_match_found_returns_filtered_data_and_sorted_by_id()
+    {
+        // Setup
+        using (RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var author = new AuthorEntity
+            {
+                AuthorName = fixture.Create<string>(),
+                AuthorImageUrl = fixture.Create<string>()
+            };
+
+            var tagToFilter = new TagEntity
+            {
+                TagEntityId = fixture.Create<long>(),
+                Tag = fixture.Create<string>()
+            };
+            var tagEntity = new TagEntity
+            {
+                TagEntityId = fixture.Create<long>(),
+                Tag = fixture.Create<string>()
+            };
+
+            var recipeOne = new RecipeEntity
+            {
+                RecipeEntityId = 3,
+                Author = author,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeTitle = fixture.Create<string>(),
+                Tags = new[]
+                {
+                    new RecipeTagEntity
+                    {
+                        Tag = tagToFilter,
+                        Order = fixture.Create<byte>()
+                    }
+                }
+            };
+            var recipeTwo = new RecipeEntity
+            {
+                RecipeEntityId = 2,
+                Author = author,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeTitle = fixture.Create<string>(),
+                Tags = new[]
+                {
+                    new RecipeTagEntity
+                    {
+                        Tag = tagEntity,
+                        Order = fixture.Create<byte>()
+                    }
+                }
+            };
+            var recipeThree = new RecipeEntity
+            {
+                RecipeEntityId = 1,
+                Author = author,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeTitle = fixture.Create<string>(),
+                Tags = new[]
+                {
+                    new RecipeTagEntity
+                    {
+                        Tag = tagToFilter,
+                        Order = fixture.Create<byte>()
+                    }
+                }
+            };
+
+            await context.RecipeEntities.AddRangeAsync(recipeOne, recipeTwo, recipeThree);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeDataEntryCollectionRepository(context);
+
+            // Call
+            IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByTagIdAsync(tagToFilter.TagEntityId);
+
+            // Assert
+            entries.Should().BeInAscendingOrder(s => s.Id).And.BeEquivalentTo(
+                new[]
+                {
+                    recipeOne,
+                    recipeThree
+                },
+                options => options.ExcludingMissingMembers()
+                                  .WithMapping<RecipeEntryData>(e => e.RecipeEntityId, s => s.Id)
+                                  .WithMapping<RecipeEntryData>(e => e.RecipeTitle, s => s.Title)
+                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorName, s => s.AuthorName));
+        }
+    }
+
+    [Fact]
+    public async Task Given_empty_database_when_loading_entries_by_tag_returns_empty_collection()
+    {
+        // Setup
+        var fixture = new Fixture();
+        using (RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var repository = new RecipeDataEntryCollectionRepository(context);
+
+            // Call
+            IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByTagAsync(fixture.Create<string>());
+
+            // Assert
+            entries.Should().BeEmpty();
+        }
+    }
+
+    [Fact]
+    public async Task Given_seeded_database_when_loading_entries_by_tag_and_no_match_found_returns_empty_collection()
+    {
+        // Setup
+        using (RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var author = new AuthorEntity
+            {
+                AuthorName = fixture.Create<string>(),
+                AuthorImageUrl = fixture.Create<string>()
+            };
+
+            var tagEntity = new TagEntity
+            {
+                TagEntityId = fixture.Create<long>(),
+                Tag = fixture.Create<string>()
+            };
+
+            var recipe = new RecipeEntity
+            {
+                RecipeEntityId = 3,
+                Author = author,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeTitle = fixture.Create<string>(),
+                Tags = new[]
+                {
+                    new RecipeTagEntity
+                    {
+                        Tag = tagEntity,
+                        Order = fixture.Create<byte>()
+                    }
+                }
+            };
+
+            await context.RecipeEntities.AddRangeAsync(recipe);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeDataEntryCollectionRepository(context);
+
+            // Call
+            IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByTagAsync(fixture.Create<string>());
+
+            // Assert
+            entries.Should().BeEmpty();
+        }
+    }
+
+    [Fact]
+    public async Task Given_seeded_database_when_loading_entries_by_tag_and_match_found_returns_filtered_data_and_sorted_by_id()
+    {
+        // Setup
+        using (RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var author = new AuthorEntity
+            {
+                AuthorName = fixture.Create<string>(),
+                AuthorImageUrl = fixture.Create<string>()
+            };
+
+            var tagToFilter = new TagEntity
+            {
+                TagEntityId = fixture.Create<long>(),
+                Tag = fixture.Create<string>()
+            };
+            var tagEntity = new TagEntity
+            {
+                TagEntityId = fixture.Create<long>(),
+                Tag = fixture.Create<string>()
+            };
+
+            var recipeOne = new RecipeEntity
+            {
+                RecipeEntityId = 3,
+                Author = author,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeTitle = fixture.Create<string>(),
+                Tags = new[]
+                {
+                    new RecipeTagEntity
+                    {
+                        Tag = tagToFilter,
+                        Order = fixture.Create<byte>()
+                    }
+                }
+            };
+            var recipeTwo = new RecipeEntity
+            {
+                RecipeEntityId = 2,
+                Author = author,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeTitle = fixture.Create<string>(),
+                Tags = new[]
+                {
+                    new RecipeTagEntity
+                    {
+                        Tag = tagEntity,
+                        Order = fixture.Create<byte>()
+                    }
+                }
+            };
+            var recipeThree = new RecipeEntity
+            {
+                RecipeEntityId = 1,
+                Author = author,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeTitle = fixture.Create<string>(),
+                Tags = new[]
+                {
+                    new RecipeTagEntity
+                    {
+                        Tag = tagToFilter,
+                        Order = fixture.Create<byte>()
+                    }
+                }
+            };
+
+            await context.RecipeEntities.AddRangeAsync(recipeOne, recipeTwo, recipeThree);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeDataEntryCollectionRepository(context);
+
+            // Call
+            IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByTagAsync(tagToFilter.Tag);
+
+            // Assert
+            entries.Should().BeInAscendingOrder(s => s.Id).And.BeEquivalentTo(
+                new[]
+                {
+                    recipeOne,
+                    recipeThree
+                },
+                options => options.ExcludingMissingMembers()
+                                  .WithMapping<RecipeEntryData>(e => e.RecipeEntityId, s => s.Id)
+                                  .WithMapping<RecipeEntryData>(e => e.RecipeTitle, s => s.Title)
+                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorName, s => s.AuthorName));
+        }
+    }
+
     public void Dispose()
     {
         GC.SuppressFinalize(this);
