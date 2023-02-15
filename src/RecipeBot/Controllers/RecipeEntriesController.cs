@@ -69,7 +69,7 @@ public class RecipeEntriesController : IRecipeEntriesController
         category.IsValidEnum(nameof(category));
 
         RecipeCategory repositoryCategory = RecipeCategoryConverter.ConvertFrom(category);
-        IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesAsync(repositoryCategory);
+        IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByCategoryAsync(repositoryCategory);
 
 
         return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(

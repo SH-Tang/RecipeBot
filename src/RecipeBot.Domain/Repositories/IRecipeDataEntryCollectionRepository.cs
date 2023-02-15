@@ -40,5 +40,5 @@ public interface IRecipeDataEntryCollectionRepository
     /// <param name="category">The <see cref="RecipeCategory"/> the recipes belong to.</param>
     /// <returns>A collection of recipe entries belonging to the <see cref="RecipeCategory"/>.</returns>
     /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid <see cref="RecipeCategory"/>.</exception>
-    Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesAsync(RecipeCategory category);
+    Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesByCategoryAsync(RecipeCategory category);
 }

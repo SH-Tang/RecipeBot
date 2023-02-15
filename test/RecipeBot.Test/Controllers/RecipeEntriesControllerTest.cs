@@ -140,13 +140,13 @@ public class RecipeEntriesControllerTest
     }
 
     [Fact]
-    public async Task Given_repository_returning_empty_collection_when_listing_recipes_with_category_filter_returns_expected_message()
+    public async Task Given_repository_returning_empty_collection_when_getting_recipes_by_category_returns_expected_message()
     {
         // Setup
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
 
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
-        repository.LoadRecipeEntriesAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+        repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
 
         var controller = new RecipeEntriesController(limitProvider, repository);
 
@@ -171,13 +171,13 @@ public class RecipeEntriesControllerTest
     [InlineData(DiscordRecipeCategory.Dessert)]
     [InlineData(DiscordRecipeCategory.Snack)]
     [InlineData(DiscordRecipeCategory.Other)]
-    public async Task Listing_recipes_with_category_filter_repository_receives_correct_category_filter(DiscordRecipeCategory category)
+    public async Task Getting_recipes_by_category_repository_receives_correct_category(DiscordRecipeCategory category)
     {
         // Setup
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
 
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
-        repository.LoadRecipeEntriesAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+        repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
 
         var controller = new RecipeEntriesController(limitProvider, repository);
 
@@ -185,11 +185,11 @@ public class RecipeEntriesControllerTest
         await controller.ListAllRecipesAsync(category);
 
         // Assert
-        await repository.Received(1).LoadRecipeEntriesAsync(DiscordRecipeCategoryTestHelper.RecipeCategoryMapping[category]);
+        await repository.Received(1).LoadRecipeEntriesByCategoryAsync(DiscordRecipeCategoryTestHelper.RecipeCategoryMapping[category]);
     }
 
     [Fact]
-    public async Task Given_repository_returning_collection_and_message_within_limits_when_listing_recipes_with_category_filter_returns_expected_message()
+    public async Task Given_repository_returning_collection_and_message_within_limits_when_getting_recipes_by_category_returns_expected_message()
     {
         // Setup
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
@@ -199,7 +199,7 @@ public class RecipeEntriesControllerTest
         RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
 
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
-        repository.LoadRecipeEntriesAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(entries);
+        repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(entries);
 
         var controller = new RecipeEntriesController(limitProvider, repository);
 
@@ -220,7 +220,7 @@ public class RecipeEntriesControllerTest
     [Theory]
     [InlineData(328)] // Exactly intersects with 2 entries
     [InlineData(340)]
-    public async Task Given_repository_returning_collection_and_message_exceeding_limits_when_listing_recipes_with_categroy_filter_returns_expected_messages(
+    public async Task Given_repository_returning_collection_and_message_exceeding_limits_when_getting_recipes_with_category_returns_expected_messages(
         int maxMessageLength)
     {
         // Setup
@@ -231,7 +231,7 @@ public class RecipeEntriesControllerTest
         RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
 
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
-        repository.LoadRecipeEntriesAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(entries);
+        repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(entries);
 
         var controller = new RecipeEntriesController(limitProvider, repository);
 

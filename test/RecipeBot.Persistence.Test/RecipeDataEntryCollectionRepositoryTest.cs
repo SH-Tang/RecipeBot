@@ -126,7 +126,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
     }
 
     [Fact]
-    public async Task Given_empty_database_when_loading_entries_with_category_returns_empty_collection()
+    public async Task Given_empty_database_when_loading_entries_by_category_returns_empty_collection()
     {
         // Setup
         var fixture = new Fixture();
@@ -137,7 +137,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             var repository = new RecipeDataEntryCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesAsync(fixture.Create<RecipeCategory>());
+            IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByCategoryAsync(fixture.Create<RecipeCategory>());
 
             // Assert
             entries.Should().BeEmpty();
@@ -196,7 +196,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             var repository = new RecipeDataEntryCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesAsync(RecipeCategory.Dessert);
+            IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByCategoryAsync(RecipeCategory.Dessert);
 
             // Assert
             entries.Should().BeEmpty();
@@ -228,7 +228,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             var repository = new RecipeDataEntryCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesAsync(categoryToFilter);
+            IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByCategoryAsync(categoryToFilter);
 
             // Assert
             entries.Should().BeInAscendingOrder(s => s.Id).And.BeEquivalentTo(
