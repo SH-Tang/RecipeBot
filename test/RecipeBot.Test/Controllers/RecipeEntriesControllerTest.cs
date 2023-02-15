@@ -62,7 +62,7 @@ public class RecipeEntriesControllerTest
         var controller = new RecipeEntriesController(limitProvider, repository);
 
         // Call
-        ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync();
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesAsync();
 
         // Assert
         result.HasError.Should().BeFalse();
@@ -86,7 +86,7 @@ public class RecipeEntriesControllerTest
         var controller = new RecipeEntriesController(limitProvider, repository);
 
         // Call
-        ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync();
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesAsync();
 
         // Assert
         result.HasError.Should().BeFalse();
@@ -118,7 +118,7 @@ public class RecipeEntriesControllerTest
         var controller = new RecipeEntriesController(limitProvider, repository);
 
         // Call
-        ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync();
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesAsync();
 
         // Assert
         result.HasError.Should().BeFalse();
@@ -153,7 +153,7 @@ public class RecipeEntriesControllerTest
         var fixture = new Fixture();
 
         // Call
-        ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync(fixture.Create<DiscordRecipeCategory>());
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByCategoryAsync(fixture.Create<DiscordRecipeCategory>());
 
         // Assert
         result.HasError.Should().BeFalse();
@@ -182,7 +182,7 @@ public class RecipeEntriesControllerTest
         var controller = new RecipeEntriesController(limitProvider, repository);
 
         // Call
-        await controller.ListAllRecipesAsync(category);
+        await controller.GetAllRecipesByCategoryAsync(category);
 
         // Assert
         await repository.Received(1).LoadRecipeEntriesByCategoryAsync(DiscordRecipeCategoryTestHelper.RecipeCategoryMapping[category]);
@@ -204,7 +204,7 @@ public class RecipeEntriesControllerTest
         var controller = new RecipeEntriesController(limitProvider, repository);
 
         // Call
-        ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync(fixture.Create<DiscordRecipeCategory>());
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByCategoryAsync(fixture.Create<DiscordRecipeCategory>());
 
         // Assert
         result.HasError.Should().BeFalse();
@@ -236,7 +236,7 @@ public class RecipeEntriesControllerTest
         var controller = new RecipeEntriesController(limitProvider, repository);
 
         // Call
-        ControllerResult<IReadOnlyList<string>> result = await controller.ListAllRecipesAsync(fixture.Create<DiscordRecipeCategory>());
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByCategoryAsync(fixture.Create<DiscordRecipeCategory>());
 
         // Assert
         result.HasError.Should().BeFalse();

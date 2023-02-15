@@ -56,7 +56,7 @@ public class RecipeEntriesController : IRecipeEntriesController
         this.repository = repository;
     }
 
-    public async Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync()
+    public async Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesAsync()
     {
         IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesAsync();
 
@@ -64,7 +64,7 @@ public class RecipeEntriesController : IRecipeEntriesController
             messageFormattingService.CreateMessages(entries, Resources.RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found));
     }
 
-    public async Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync(DiscordRecipeCategory category)
+    public async Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByCategoryAsync(DiscordRecipeCategory category)
     {
         category.IsValidEnum(nameof(category));
 

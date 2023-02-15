@@ -63,11 +63,11 @@ public class RecipeEntriesInteractionModule : InteractionModuleBase<SocketIntera
                 IEnumerable<Task> tasks;
                 if (category == null)
                 {
-                    tasks = await GetTasksAsync(controller.ListAllRecipesAsync());
+                    tasks = await GetTasksAsync(controller.GetAllRecipesAsync());
                 }
                 else
                 {
-                    tasks = await GetTasksAsync(controller.ListAllRecipesAsync(category.Value));
+                    tasks = await GetTasksAsync(controller.GetAllRecipesByCategoryAsync(category.Value));
                 }
 
                 await Task.WhenAll(tasks);
