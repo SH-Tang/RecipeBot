@@ -87,7 +87,7 @@ namespace RecipeBot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Recipe titled &apos;{0}&apos; with Id &apos;{1}&apos; and author &apos;{2}&apos; was successfully deleted..
+        ///   Looks up a localized string similar to Recipe titled &apos;{0}&apos; with id &apos;{1}&apos; and author &apos;{2}&apos; was successfully deleted..
         /// </summary>
         internal static string RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted {
             get {
@@ -99,19 +99,29 @@ namespace RecipeBot.Properties {
         /// <summary>
         ///   Looks up a localized string similar to No saved recipes are found..
         /// </summary>
-        internal static string RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found {
+        internal static string RecipeEntriesController_GetAllRecipesAsync_No_saved_recipes_are_found {
             get {
-                return ResourceManager.GetString("RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found", resourceCulture);
+                return ResourceManager.GetString("RecipeEntriesController_GetAllRecipesAsync_No_saved_recipes_are_found", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to No saved recipes are found with the given category..
         /// </summary>
-        internal static string RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found_with_category {
+        internal static string RecipeEntriesController_GetAllRecipesAsync_No_saved_recipes_are_found_with_category {
             get {
-                return ResourceManager.GetString("RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found_with_categ" +
-                        "ory", resourceCulture);
+                return ResourceManager.GetString("RecipeEntriesController_GetAllRecipesAsync_No_saved_recipes_are_found_with_catego" +
+                        "ry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No saved recipes are found with the tag &apos;{0}&apos;..
+        /// </summary>
+        internal static string RecipeEntriesController_GetAllRecipesByTagAsync_No_saved_recipes_are_found_with_Tag_0_ {
+            get {
+                return ResourceManager.GetString("RecipeEntriesController_GetAllRecipesByTagAsync_No_saved_recipes_are_found_with_T" +
+                        "ag_0_", resourceCulture);
             }
         }
         
@@ -143,7 +153,7 @@ namespace RecipeBot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tag &apos;{0}&apos; with Id &apos;{1}&apos; was successfully deleted..
+        ///   Looks up a localized string similar to Tag &apos;{0}&apos; with id &apos;{1}&apos; was successfully deleted..
         /// </summary>
         internal static string RecipeTagEntriesController_DeleteTagAsync_Tag_0_with_Id_1_was_successfully_deleted {
             get {

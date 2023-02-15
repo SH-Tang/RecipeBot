@@ -120,10 +120,10 @@
   <data name="Embed_could_not_be_created_reason_0_" xml:space="preserve">
     <value>Recipe could not be successfully formatted: {0}.</value>
   </data>
-  <data name="RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found" xml:space="preserve">
+  <data name="RecipeEntriesController_GetAllRecipesAsync_No_saved_recipes_are_found" xml:space="preserve">
     <value>No saved recipes are found.</value>
   </data>
-  <data name="RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found_with_category" xml:space="preserve">
+  <data name="RecipeEntriesController_GetAllRecipesAsync_No_saved_recipes_are_found_with_category" xml:space="preserve">
     <value>No saved recipes are found with the given category.</value>
   </data>
   <data name="RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted" xml:space="preserve">
@@ -143,5 +143,8 @@
   </data>
   <data name="RecipeTagEntriesController_DeleteTagAsync_Tag_0_with_Id_1_was_successfully_deleted" xml:space="preserve">
     <value>Tag '{0}' with id '{1}' was successfully deleted.</value>
+  </data>
+  <data name="RecipeEntriesController_GetAllRecipesByTagAsync_No_saved_recipes_are_found_with_Tag_0_" xml:space="preserve">
+    <value>No saved recipes are found with the tag '{0}'.</value>
   </data>
 </root>

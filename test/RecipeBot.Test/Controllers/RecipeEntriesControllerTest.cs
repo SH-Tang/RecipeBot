@@ -140,7 +140,7 @@ public class RecipeEntriesControllerTest
     }
 
     [Fact]
-    public async Task Given_repository_returning_empty_collection_when_getting_recipes_by_category_returns_expected_message()
+    public async Task Given_repository_returning_empty_collection_when_filtering_recipes_by_category_returns_expected_message()
     {
         // Setup
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
@@ -189,7 +189,7 @@ public class RecipeEntriesControllerTest
     }
 
     [Fact]
-    public async Task Given_repository_returning_collection_and_message_within_limits_when_getting_recipes_by_category_returns_expected_message()
+    public async Task Given_repository_returning_collection_and_message_within_limits_when_filtering_recipes_by_category_returns_expected_message()
     {
         // Setup
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
@@ -220,7 +220,7 @@ public class RecipeEntriesControllerTest
     [Theory]
     [InlineData(328)] // Exactly intersects with 2 entries
     [InlineData(340)]
-    public async Task Given_repository_returning_collection_and_message_exceeding_limits_when_getting_recipes_with_category_returns_expected_messages(
+    public async Task Given_repository_returning_collection_and_message_exceeding_limits_when_filtering_recipes_by_category_returns_expected_messages(
         int maxMessageLength)
     {
         // Setup
@@ -237,6 +237,233 @@ public class RecipeEntriesControllerTest
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByCategoryAsync(fixture.Create<DiscordRecipeCategory>());
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        string expectedMessageOne =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorName,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorName,-50}{Environment.NewLine}";
+
+        string expectedMessageTwo =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorName,-50}{Environment.NewLine}";
+
+        result.Result.Should().BeEquivalentTo(new[]
+        {
+            Format.Code(expectedMessageOne),
+            Format.Code(expectedMessageTwo)
+        }, options => options.WithStrictOrdering());
+    }
+
+    [Fact]
+    public async Task Given_repository_returning_empty_collection_when_filtering_recipes_by_tag_returns_expected_message()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var tagToFilter = fixture.Create<string>();
+
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesByTagAsync(Arg.Any<string>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+
+        var controller = new RecipeEntriesController(limitProvider, repository);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByTagAsync(tagToFilter);
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        result.Result.Should().HaveCount(1).And.Contain($"No saved recipes are found with the tag '{tagToFilter}'.");
+    }
+
+    [Theory]
+    [InlineData("Tag to filter")]
+    [InlineData("tagToFilter")]
+    [InlineData("  TagToFilter")]
+    [InlineData("TagToFilter      ")]
+    public async Task Filtering_recipes_by_tag_repository_receives_correct_tag(string tag)
+    {
+        // Setup
+        const string expectedTagArgument = "tagtofilter";
+        
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesByTagAsync(expectedTagArgument).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+
+        var controller = new RecipeEntriesController(limitProvider, repository);
+
+        // Call
+        await controller.GetAllRecipesByTagAsync(tag);
+
+        // Assert
+        await repository.Received(1).LoadRecipeEntriesByTagAsync(expectedTagArgument);
+    }
+
+    [Fact]
+    public async Task Given_repository_returning_collection_and_message_within_limits_when_filtering_recipes_by_tag_returns_expected_message()
+    {
+        // Setup
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        limitProvider.MaxMessageLength.Returns(int.MaxValue);
+
+        var fixture = new Fixture();
+        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesByTagAsync(Arg.Any<string>()).ReturnsForAnyArgs(entries);
+
+        var controller = new RecipeEntriesController(limitProvider, repository);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByTagAsync(fixture.Create<string>());
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        string expectedMessage =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorName,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorName,-50}{Environment.NewLine}" +
+            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorName,-50}{Environment.NewLine}";
+        result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
+    }
+
+    [Theory]
+    [InlineData(328)] // Exactly intersects with 2 entries
+    [InlineData(340)]
+    public async Task Given_repository_returning_collection_and_message_exceeding_limits_when_filtering_recipes_by_tag_returns_expected_messages(
+        int maxMessageLength)
+    {
+        // Setup
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        limitProvider.MaxMessageLength.Returns(maxMessageLength);
+
+        var fixture = new Fixture();
+        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesByTagAsync(Arg.Any<string>()).ReturnsForAnyArgs(entries);
+
+        var controller = new RecipeEntriesController(limitProvider, repository);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByTagAsync(fixture.Create<string>());
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        string expectedMessageOne =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorName,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorName,-50}{Environment.NewLine}";
+
+        string expectedMessageTwo =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorName,-50}{Environment.NewLine}";
+
+        result.Result.Should().BeEquivalentTo(new[]
+        {
+            Format.Code(expectedMessageOne),
+            Format.Code(expectedMessageTwo)
+        }, options => options.WithStrictOrdering());
+    }
+
+    [Fact]
+    public async Task Given_repository_returning_empty_collection_when_filtering_recipes_by_tag_id_returns_expected_message()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var idToFilter = fixture.Create<long>();
+
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+
+        var controller = new RecipeEntriesController(limitProvider, repository);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByTagIdAsync(idToFilter);
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        result.Result.Should().HaveCount(1).And.Contain($"No saved recipes are found with the tag '{idToFilter}'.");
+    }
+
+    [Fact]
+    public async Task Filtering_recipes_by_tag_id_repository_receives_correct_tag_id()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var idToFilter = fixture.Create<long>();
+
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesByTagIdAsync(idToFilter).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+
+        var controller = new RecipeEntriesController(limitProvider, repository);
+
+        // Call
+        await controller.GetAllRecipesByTagIdAsync(idToFilter);
+
+        // Assert
+        await repository.Received(1).LoadRecipeEntriesByTagIdAsync(idToFilter);
+    }
+
+    [Fact]
+    public async Task Given_repository_returning_collection_and_message_within_limits_when_filtering_recipes_by_tag_id_returns_expected_message()
+    {
+        // Setup
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        limitProvider.MaxMessageLength.Returns(int.MaxValue);
+
+        var fixture = new Fixture();
+        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(entries);
+
+        var controller = new RecipeEntriesController(limitProvider, repository);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByTagIdAsync(fixture.Create<long>());
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        string expectedMessage =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorName,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorName,-50}{Environment.NewLine}" +
+            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorName,-50}{Environment.NewLine}";
+        result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
+    }
+
+    [Theory]
+    [InlineData(328)] // Exactly intersects with 2 entries
+    [InlineData(340)]
+    public async Task Given_repository_returning_collection_and_message_exceeding_limits_when_filtering_recipes_by_tag_id_returns_expected_messages(
+        int maxMessageLength)
+    {
+        // Setup
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        limitProvider.MaxMessageLength.Returns(maxMessageLength);
+
+        var fixture = new Fixture();
+        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(entries);
+
+        var controller = new RecipeEntriesController(limitProvider, repository);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByTagIdAsync(fixture.Create<long>());
 
         // Assert
         result.HasError.Should().BeFalse();
