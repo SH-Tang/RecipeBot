@@ -64,6 +64,18 @@ public class RecipeEntriesInteractionModule : InteractionModuleBase<SocketIntera
         await Task.WhenAll(GetRecipeResponseTasks(c => c.GetAllRecipesByCategoryAsync(category)));
     }
 
+    [SlashCommand("recipe-list-by-tag-id", "Lists all the saved user recipes filtered by tag id")]
+    public async Task GetAllRecipeByTagId([Summary("tagId", "The tag id to filter the recipes with")] long tagId)
+    {
+        await Task.WhenAll(GetRecipeResponseTasks(c => c.GetAllRecipesByTagIdAsync(tagId)));
+    }
+
+    [SlashCommand("recipe-list-by-tag", "Lists all the saved user recipes filtered by tag")]
+    public async Task GetAllRecipeByTag([Summary("tag", "The tag to filter the recipes with")] string tag)
+    {
+        await Task.WhenAll(GetRecipeResponseTasks(c => c.GetAllRecipesByTagAsync(tag)));
+    }
+
     private IEnumerable<Task> GetRecipeResponseTasks(Func<IRecipeEntriesController, Task<ControllerResult<IReadOnlyList<string>>>> getControllerResultTaskFunc)
     {
         try

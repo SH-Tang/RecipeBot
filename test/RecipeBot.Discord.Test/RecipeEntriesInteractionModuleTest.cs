@@ -76,4 +76,42 @@ public class RecipeEntriesInteractionModuleTest
         commandAttribute!.Name.Should().Be(expectedName);
         commandAttribute.Description.Should().Be(expectedDescription);
     }
+
+    [Fact]
+    public void List_recipes_by_tag_id_command_has_expected_attributes()
+    {
+        // Call
+        SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeEntriesInteractionModule, SlashCommandAttribute>(
+            nameof(RecipeEntriesInteractionModule.GetAllRecipeByTagId), new[]
+            {
+                typeof(long)
+            });
+
+        // Assert
+        const string expectedName = "recipe-list-by-tag-id";
+        const string expectedDescription = "Lists all the saved user recipes filtered by tag id";
+
+        commandAttribute.Should().NotBeNull();
+        commandAttribute!.Name.Should().Be(expectedName);
+        commandAttribute.Description.Should().Be(expectedDescription);
+    }
+
+    [Fact]
+    public void List_recipes_by_tag_command_has_expected_attributes()
+    {
+        // Call
+        SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeEntriesInteractionModule, SlashCommandAttribute>(
+            nameof(RecipeEntriesInteractionModule.GetAllRecipeByTag), new[]
+            {
+                typeof(string)
+            });
+
+        // Assert
+        const string expectedName = "recipe-list-by-tag";
+        const string expectedDescription = "Lists all the saved user recipes filtered by tag";
+
+        commandAttribute.Should().NotBeNull();
+        commandAttribute!.Name.Should().Be(expectedName);
+        commandAttribute.Description.Should().Be(expectedDescription);
+    }
 }
