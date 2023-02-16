@@ -118,8 +118,7 @@ public class RecipeEntriesInteractionModule : InteractionModuleBase<SocketIntera
         {
             return new[]
             {
-                RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_,
-                        Resources.Controller_should_not_have_returned_an_empty_collection_when_querying),
+                RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, Resources.Controller_should_not_have_returned_an_empty_collection_when_querying),
                     ephemeral: true)
             };
         }

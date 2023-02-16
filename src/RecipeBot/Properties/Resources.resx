@@ -147,4 +147,7 @@
   <data name="RecipeEntriesController_GetAllRecipesByTagAsync_No_saved_recipes_are_found_with_Tag_0_" xml:space="preserve">
     <value>No saved recipes are found with the tag '{0}'.</value>
   </data>
+  <data name="RecipeEntriesController_GetAllRecipesByTagAsync_No_saved_recipes_are_found_with_TagId_0_" xml:space="preserve">
+    <value>No saved recipes are found with the tag id '{0}'.</value>
+  </data>
 </root>

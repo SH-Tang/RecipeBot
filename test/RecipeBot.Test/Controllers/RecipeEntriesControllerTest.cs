@@ -171,7 +171,7 @@ public class RecipeEntriesControllerTest
     [InlineData(DiscordRecipeCategory.Dessert)]
     [InlineData(DiscordRecipeCategory.Snack)]
     [InlineData(DiscordRecipeCategory.Other)]
-    public async Task Getting_recipes_by_category_repository_receives_correct_category(DiscordRecipeCategory category)
+    public async Task Filtering_recipes_by_category_repository_receives_correct_category(DiscordRecipeCategory category)
     {
         // Setup
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
@@ -392,7 +392,7 @@ public class RecipeEntriesControllerTest
         // Assert
         result.HasError.Should().BeFalse();
 
-        result.Result.Should().HaveCount(1).And.Contain($"No saved recipes are found with the tag '{idToFilter}'.");
+        result.Result.Should().HaveCount(1).And.Contain($"No saved recipes are found with the tag id '{idToFilter}'.");
     }
 
     [Fact]
