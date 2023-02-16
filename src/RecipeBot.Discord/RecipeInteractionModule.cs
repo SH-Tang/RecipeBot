@@ -55,7 +55,6 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
     }
 
     [SlashCommand("recipe-get", "Gets a recipe based on the id")]
-    [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ModerateMembers)]
     public async Task GetRecipe([Summary("RecipeId", "The id of the recipe to retrieve")] long recipeIdToRetrieve)
     {
         try

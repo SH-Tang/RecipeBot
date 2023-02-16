@@ -85,5 +85,14 @@ namespace RecipeBot.Persistence.Properties {
                 return ResourceManager.GetString("RecipeRepository_No_recipe_matches_with_Id_0", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No tag matches with id &apos;{0}&apos;..
+        /// </summary>
+        internal static string RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_Id_0_ {
+            get {
+                return ResourceManager.GetString("RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_Id_0_", resourceCulture);
+            }
+        }
     }
 }

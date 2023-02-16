@@ -28,16 +28,30 @@ namespace RecipeBot.Discord.Controllers;
 public interface IRecipeEntriesController
 {
     /// <summary>
-    /// Lists all recipes.
+    /// Gets all recipes.
     /// </summary>
-    /// <returns>A collection of messages containing formatted recipe data entries.</returns>
-    Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync();
+    /// <returns>A collection of messages containing formatted recipe entries.</returns>
+    Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesAsync();
 
     /// <summary>
-    /// Lists all recipes filtered by category.
+    /// Gets all recipes filtered by category.
     /// </summary>
     /// <param name="category">The category to filter the recipes on.</param>
-    /// <returns>A collection of messages containing formatted recipe data entries.</returns>
+    /// <returns>A collection of messages containing formatted recipe entries.</returns>
     /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid value of <see cref="DiscordRecipeCategory"/>.</exception>
-    Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync(DiscordRecipeCategory category);
+    Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByCategoryAsync(DiscordRecipeCategory category);
+
+    /// <summary>
+    /// Gets all recipes filtered by tag.
+    /// </summary>
+    /// <param name="tag">The category to filter the recipes on.</param>
+    /// <returns>A collection of messages containing formatted recipe entries.</returns>
+    Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByTagAsync(string tag);
+
+    /// <summary>
+    /// Gets all recipes filtered by tag id.
+    /// </summary>
+    /// <param name="tagId">The tag id to filter the recipes on.</param>
+    /// <returns>A collection of messages containing formatted recipe entries.</returns>
+    Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByTagIdAsync(long tagId);
 }

@@ -102,12 +102,6 @@ public class RecipeInteractionModuleTest
                 typeof(long)
             });
 
-        DefaultMemberPermissionsAttribute? permissionAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeInteractionModule, DefaultMemberPermissionsAttribute>(
-            nameof(RecipeInteractionModule.GetRecipe), new[]
-            {
-                typeof(long)
-            });
-
         // Assert
         const string expectedName = "recipe-get";
         const string expectedDescription = "Gets a recipe based on the id";
@@ -115,9 +109,6 @@ public class RecipeInteractionModuleTest
         commandAttribute.Should().NotBeNull();
         commandAttribute!.Name.Should().Be(expectedName);
         commandAttribute.Description.Should().Be(expectedDescription);
-
-        permissionAttribute.Should().NotBeNull();
-        permissionAttribute!.Permissions.Should().Be(GuildPermission.Administrator | GuildPermission.ModerateMembers);
     }
 
     [Fact]

@@ -123,7 +123,7 @@
   <data name="InteractionModule_ERROR_0_" xml:space="preserve">
     <value>ERROR: {0}</value>
   </data>
-  <data name="IRecipeCollectionController_should_not_have_returned_an_empty_collection_when_querying" xml:space="preserve">
-    <value>IRecipeCollectionController should not have returned an empty collection when querying.</value>
+  <data name="Controller_should_not_have_returned_an_empty_collection_when_querying" xml:space="preserve">
+    <value>Controller should not have returned an empty collection when querying.</value>
   </data>
 </root>
