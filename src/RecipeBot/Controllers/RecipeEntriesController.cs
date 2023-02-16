@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Common.Utils;
 using RecipeBot.Discord.Controllers;
@@ -56,23 +57,39 @@ public class RecipeEntriesController : IRecipeEntriesController
         this.repository = repository;
     }
 
-    public async Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync()
+    public async Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesAsync()
     {
         IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesAsync();
 
         return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
-            messageFormattingService.CreateMessages(entries, Resources.RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found));
+            messageFormattingService.CreateMessages(entries, Resources.RecipeEntriesController_GetAllRecipesAsync_No_saved_recipes_are_found));
     }
 
-    public async Task<ControllerResult<IReadOnlyList<string>>> ListAllRecipesAsync(DiscordRecipeCategory category)
+    public async Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByCategoryAsync(DiscordRecipeCategory category)
     {
         category.IsValidEnum(nameof(category));
 
         RecipeCategory repositoryCategory = RecipeCategoryConverter.ConvertFrom(category);
-        IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesAsync(repositoryCategory);
-
+        IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByCategoryAsync(repositoryCategory);
 
         return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
-            messageFormattingService.CreateMessages(entries, Resources.RecipeEntriesController_ListAllRecipesAsync_No_saved_recipes_are_found_with_category));
+            messageFormattingService.CreateMessages(entries, Resources.RecipeEntriesController_GetAllRecipesAsync_No_saved_recipes_are_found_with_category));
+    }
+
+    public async Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByTagAsync(string tag)
+    {
+        string postProcessTag = Regex.Replace(tag, @"\s+", "", RegexOptions.None, TimeSpan.FromMilliseconds(100)).ToLower();
+        IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByTagAsync(postProcessTag);
+
+        return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
+            messageFormattingService.CreateMessages(entries, string.Format(Resources.RecipeEntriesController_GetAllRecipesByTagAsync_No_saved_recipes_are_found_with_Tag_0_, tag)));
+    }
+
+    public async Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByTagIdAsync(long tagId)
+    {
+        IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByTagIdAsync(tagId);
+
+        return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
+            messageFormattingService.CreateMessages(entries, string.Format(Resources.RecipeEntriesController_GetAllRecipesByTagAsync_No_saved_recipes_are_found_with_TagId_0_, tagId)));
     }
 }

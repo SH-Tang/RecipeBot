@@ -35,10 +35,24 @@ public interface IRecipeDataEntryCollectionRepository
     Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesAsync();
 
     /// <summary>
-    /// Gets all the recipes belonging to a <see cref="RecipeCategory"/>.
+    /// Gets all the recipes filtered by a <see cref="RecipeCategory"/>.
     /// </summary>
-    /// <param name="category">The <see cref="RecipeCategory"/> the recipes belong to.</param>
-    /// <returns>A collection of recipe entries belonging to the <see cref="RecipeCategory"/>.</returns>
+    /// <param name="category">The <see cref="RecipeCategory"/> to filter the recipes with.</param>
+    /// <returns>A collection of filtered recipe entries.</returns>
     /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid <see cref="RecipeCategory"/>.</exception>
-    Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesAsync(RecipeCategory category);
+    Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesByCategoryAsync(RecipeCategory category);
+
+    /// <summary>
+    /// Gets all the recipes filtered by a tag.
+    /// </summary>
+    /// <param name="tag">The tag to filter the recipes with.</param>
+    /// <returns>A collection of filtered recipe entries.</returns>
+    Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesByTagAsync(string tag);
+
+    /// <summary>
+    /// Gets all the recipes filtered by a tag id.
+    /// </summary>
+    /// <param name="tagId">The tag id to filter the recipes with.</param>
+    /// <returns>A collection of filtered recipe entries.</returns>
+    Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesByTagIdAsync(long tagId);
 }
