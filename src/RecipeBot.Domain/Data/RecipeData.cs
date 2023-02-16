@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Common.Utils;
 
@@ -30,28 +31,23 @@ public class RecipeData
     /// Creates a new instance of <see cref="RecipeData"/>.
     /// </summary>
     /// <param name="authorData">The <see cref="Data.AuthorData"/>.</param>
-    /// <param name="category">The <see cref="RecipeCategory"/> the recipe belongs to.</param>
+    /// <param name="recipeFields">The collection of fields to contain within the recipe.</param>
     /// <param name="recipeTitle">The title of the recipe.</param>
-    /// <param name="recipeIngredients">The ingredients of the recipe.</param>
-    /// <param name="cookingSteps">The cooking steps of the recipe.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="authorData"/> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="recipeTitle"/>, <paramref name="recipeIngredients"/>
-    /// or <paramref name="cookingSteps"/> is <c>null</c> or consists of whitespaces.</exception>
+    /// <param name="category">The <see cref="RecipeCategory"/> the recipe belongs to.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="authorData"/> or <paramref name="recipeFields"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="recipeTitle"/> is <c>null</c> or consists of whitespaces.</exception>
     /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid <see cref="RecipeCategory"/>.</exception>
-    public RecipeData(AuthorData authorData, RecipeCategory category, string recipeTitle, string recipeIngredients,
-                      string cookingSteps)
+    public RecipeData(AuthorData authorData, IEnumerable<RecipeFieldData> recipeFields, string recipeTitle, RecipeCategory category)
     {
         authorData.IsNotNull(nameof(authorData));
-        category.IsValidEnum(nameof(category));
+        recipeFields.IsNotNull(nameof(recipeFields));
         recipeTitle.IsNotNullOrWhiteSpaces(nameof(recipeTitle));
-        recipeIngredients.IsNotNullOrWhiteSpaces(nameof(recipeIngredients));
-        cookingSteps.IsNotNullOrWhiteSpaces(nameof(cookingSteps));
+        category.IsValidEnum(nameof(category));
 
         AuthorData = authorData;
-        Category = category;
+        RecipeFields = recipeFields;
         RecipeTitle = recipeTitle;
-        RecipeIngredients = recipeIngredients;
-        CookingSteps = cookingSteps;
+        Category = category;
     }
 
     /// <summary>
@@ -65,24 +61,14 @@ public class RecipeData
     public RecipeCategory Category { get; }
 
     /// <summary>
+    /// Gets the collection of <see cref="RecipeFieldData"/>.
+    /// </summary>
+    public IEnumerable<RecipeFieldData> RecipeFields { get; }
+
+    /// <summary>
     /// Gets the title of the recipe.
     /// </summary>
     public string RecipeTitle { get; }
-
-    /// <summary>
-    /// Gets the ingredients of the recipe.
-    /// </summary>
-    public string RecipeIngredients { get; }
-
-    /// <summary>
-    /// Gets the cooking steps of the recipe.
-    /// </summary>
-    public string CookingSteps { get; }
-
-    /// <summary>
-    /// Gets or sets the additional notes of the recipe.
-    /// </summary>
-    public string? AdditionalNotes { get; set; }
 
     /// <summary>
     /// Gets or sets the image url of the recipe.

@@ -1,25 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$(SolutionDir)\build\RecipeBot.targets" />
+  <Import Project="..\..\build\RecipeBot.targets" />
 
   <ItemGroup>
     <None Include="..\..\build\Copying.licenseheader" Link="Copying.licenseheader" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Discord.Net.Interactions" Version="3.8.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>$(AssemblyName).Test</_Parameter1>
-    </AssemblyAttribute>
+    <PackageReference Include="Discord.Net.Interactions" Version="3.9.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Common.Utils\Common.Utils.csproj" />
     <ProjectReference Include="..\Discord.Common\Discord.Common.csproj" />
-    <ProjectReference Include="..\RecipeBot.Domain\RecipeBot.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

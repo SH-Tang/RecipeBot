@@ -23,41 +23,104 @@ using Discord.Common;
 using Discord.Common.Utils;
 using Discord.Interactions;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
+using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
-using RecipeBot.Discord.Exceptions;
 using RecipeBot.Discord.Properties;
-using RecipeBot.Discord.Services;
 using RecipeBot.Discord.Views;
 
 namespace RecipeBot.Discord;
 
 /// <summary>
-/// Module containing commands for the recipe.
+/// Module containing commands to interact with individual recipes.
 /// </summary>
 public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionContext>
 {
+    private readonly IServiceScopeFactory scopeFactory;
     private readonly ILoggingService logger;
-    private readonly RecipeModalResponseService responseService;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeInteractionModule"/>.
     /// </summary>
+    /// <param name="scopeFactory">The <see cref="IServiceScopeFactory"/> to resolve dependencies with.</param>
     /// <param name="logger">The logger to use.</param>
-    /// <param name="responseService">The <see cref="RecipeModalResponseService"/> to retrieve the response with.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public RecipeInteractionModule(ILoggingService logger,
-                                   RecipeModalResponseService responseService)
+    public RecipeInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger)
     {
+        scopeFactory.IsNotNull(nameof(scopeFactory));
         logger.IsNotNull(nameof(logger));
-        responseService.IsNotNull(nameof(responseService));
+
+        this.scopeFactory = scopeFactory;
         this.logger = logger;
-        this.responseService = responseService;
     }
 
-    [SlashCommand("recipe", "Tell us about your recipe")]
-    public async Task FormatRecipe([Summary("category", "The category the recipe belongs to")] DiscordRecipeCategory category,
-                                   [Summary("image", "The image of the recipe result (optional)")]
-                                   IAttachment? attachment = null)
+    [SlashCommand("recipe-get", "Gets a recipe based on the id")]
+    public async Task GetRecipe([Summary("RecipeId", "The id of the recipe to retrieve")] long recipeIdToRetrieve)
+    {
+        try
+        {
+            using (IServiceScope scope = scopeFactory.CreateScope())
+            {
+                var controller = scope.ServiceProvider.GetRequiredService<IRecipeController>();
+                ControllerResult<Embed> response = await controller.GetRecipeAsync(recipeIdToRetrieve);
+                if (response.HasError)
+                {
+                    await RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, response.ErrorMessage), ephemeral: true);
+                }
+                else
+                {
+                    await RespondAsync(embed: response.Result, ephemeral: true);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Task[] tasks =
+            {
+                RespondAsync(e.Message, ephemeral: true),
+                logger.LogErrorAsync(e)
+            };
+
+            await Task.WhenAll(tasks);
+        }
+    }
+
+    [SlashCommand("recipe-delete", "Deletes a recipe based on the id")]
+    [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ModerateMembers)]
+    public async Task DeleteRecipe([Summary("RecipeId", "The id of the recipe to delete")] long recipeIdToDelete)
+    {
+        try
+        {
+            using(IServiceScope scope = scopeFactory.CreateScope())
+            {
+                var controller = scope.ServiceProvider.GetRequiredService<IRecipeController>();
+                ControllerResult<string> response = await controller.DeleteRecipeAsync(recipeIdToDelete);
+                if (response.HasError)
+                {
+                    await RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, response.ErrorMessage), ephemeral: true);
+                }
+                else
+                {
+                    await RespondAsync(response.Result, ephemeral: true);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Task[] tasks =
+            {
+                RespondAsync(e.Message, ephemeral: true),
+                logger.LogErrorAsync(e)
+            };
+
+            await Task.WhenAll(tasks);
+        }
+    }
+
+    [SlashCommand("recipe", "Formats and stores an user recipe")]
+    public async Task SaveRecipe([Summary("category", "The category the recipe belongs to")] DiscordRecipeCategory category,
+                                 [Summary("image", "The image of the recipe result (optional)")]
+                                 IAttachment? attachment = null)
     {
         if (attachment != null && !attachment.IsImage())
         {
@@ -92,13 +155,23 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
             DiscordRecipeCategory category = arguments.CategoryArgument;
 
             SocketUser? user = Context.User;
-            Embed response = attachment != null && attachment.IsImage()
-                                 ? responseService.GetRecipeModalResponse(modal, user, category, attachment)
-                                 : responseService.GetRecipeModalResponse(modal, user, category);
 
-            await RespondAsync(embed: response);
+            using(IServiceScope scope = scopeFactory.CreateScope())
+            {
+                var controller = scope.ServiceProvider.GetRequiredService<IRecipeController>();
+                ControllerResult<Embed> response = await controller.SaveRecipeAsync(modal, user, category, attachment);
+
+                if (response.HasError)
+                {
+                    await RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, response.ErrorMessage), ephemeral: true);
+                }
+                else
+                {
+                    await RespondAsync(embed: response.Result);
+                }
+            }
         }
-        catch (ModalResponseException e)
+        catch (Exception e)
         {
             Task[] tasks =
             {
@@ -106,11 +179,7 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
                 logger.LogErrorAsync(e)
             };
 
-            Task.WaitAll(tasks);
-        }
-        catch (Exception e)
-        {
-            await logger.LogErrorAsync(e);
+            await Task.WhenAll(tasks);
         }
         finally
         {

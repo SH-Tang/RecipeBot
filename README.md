@@ -59,6 +59,7 @@ In order to run the RecipeBot, a `config.json` file must be created next to the 
 * Microsoft.NET.Test.Sdk
 * AutoFixture
 * coverlet.collector
+* Fluent Assertions
 
 # License
 

@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using FluentAssertions;
 using RecipeBot.Domain.Data;
 using RecipeBot.TestUtils;
 using Xunit;
@@ -32,10 +33,10 @@ public class AuthorDataTest
         const string authorImageUrl = "Url";
 
         // Call
-        Func<AuthorData> call = () => new AuthorData(invalidAuthorName, authorImageUrl);
+        Action call = () => new AuthorData(invalidAuthorName, authorImageUrl);
 
         // Assert
-        Assert.Throws<ArgumentException>(call);
+        call.Should().ThrowExactly<ArgumentException>();
     }
 
     [Theory]
@@ -46,9 +47,9 @@ public class AuthorDataTest
         const string authorName = "Author name";
 
         // Call
-        Func<AuthorData> call = () => new AuthorData(authorName, invalidAuthorImageUrl);
+        Action call = () => new AuthorData(authorName, invalidAuthorImageUrl);
 
         // Assert
-        Assert.Throws<ArgumentException>(call);
+        call.Should().ThrowExactly<ArgumentException>();
     }
 }

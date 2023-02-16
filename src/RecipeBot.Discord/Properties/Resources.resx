@@ -117,10 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="RecipeModal_response_could_not_be_determined_reason_0_" xml:space="preserve">
-    <value>Recipe modal response could not be successfully determined: {0}.</value>
-  </data>
   <data name="Attachment_must_be_an_image" xml:space="preserve">
     <value>Attachment must be an image.</value>
+  </data>
+  <data name="InteractionModule_ERROR_0_" xml:space="preserve">
+    <value>ERROR: {0}</value>
+  </data>
+  <data name="Controller_should_not_have_returned_an_empty_collection_when_querying" xml:space="preserve">
+    <value>Controller should not have returned an empty collection when querying.</value>
   </data>
 </root>

@@ -29,6 +29,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RecipeBot.Discord;
+using RecipeBot.Persistence;
 
 namespace RecipeBot;
 
@@ -69,6 +70,7 @@ public class RecipeBotApplication
         var services = new RecipeBotApplicationServiceProvider(configurationRoot);
         using (ServiceProvider serviceProvider = services.GetServiceProvider())
         {
+            await SetupDatabase(serviceProvider);
             await ConfigureDiscordClient(serviceProvider);
             await ConfigureCommandService(serviceProvider);
             await ConfigureCommandHandlingService(serviceProvider);
@@ -82,7 +84,7 @@ public class RecipeBotApplication
         var discordClient = services.GetRequiredService<DiscordSocketClient>();
         discordClient.Log += message => LogAsync(services, message);
 
-        string token = configurationRoot["Token"];
+        string? token = configurationRoot["Token"];
         await discordClient.LoginAsync(TokenType.Bot, token);
         await discordClient.StartAsync();
     }
@@ -99,7 +101,9 @@ public class RecipeBotApplication
         await interactionCommandHandlingServices.InitializeHandlerAsync(new[]
         {
             typeof(InfoInteractionModule),
-            typeof(RecipeInteractionModule)
+            typeof(RecipeInteractionModule),
+            typeof(RecipeEntriesInteractionModule),
+            typeof(RecipeTagEntriesInteractionModule)
         });
     }
 
@@ -117,5 +121,14 @@ public class RecipeBotApplication
         logger.LogInfoAsync(msg.Message);
 
         return Task.CompletedTask;
+    }
+
+    private static async Task SetupDatabase(IServiceProvider services)
+    {
+        using (IServiceScope scope = services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<RecipeBotDbContext>();
+            await context.Database.EnsureCreatedAsync();
+        }
     }
 }

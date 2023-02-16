@@ -1,13 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$(SolutionDir)\build\RecipeBot.targets" />
+  <Import Project="..\..\build\RecipeBot.targets" />
 
   <ItemGroup>
     <None Include="..\..\build\Copying.licenseheader" Link="Copying.licenseheader" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="6.9.0" />
+    <PackageReference Include="xunit.assert" Version="2.4.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Common.Utils\Common.Utils.csproj" />
+    <ProjectReference Include="..\..\src\RecipeBot.Discord\RecipeBot.Discord.csproj" />
+    <ProjectReference Include="..\..\src\RecipeBot.Domain\RecipeBot.Domain.csproj" />
+    <ProjectReference Include="..\RecipeBot.Domain.TestUtils\RecipeBot.Domain.TestUtils.csproj" />
   </ItemGroup>
 
 </Project>

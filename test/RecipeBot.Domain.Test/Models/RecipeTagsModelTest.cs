@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using RecipeBot.Domain.Models;
 using Xunit;
 
@@ -41,7 +42,7 @@ public class RecipeTagsModelTest
         var stringRepresentation = model.ToString();
 
         // Assert
-        Assert.Equal("Tag 1, Tag 2, Tag 3", stringRepresentation);
+        stringRepresentation.Should().Be("Tag 1, Tag 2, Tag 3");
     }
 
     [Theory]
@@ -56,7 +57,7 @@ public class RecipeTagsModelTest
         int length = model.TotalLength;
 
         // Assert
-        Assert.Equal(expectedLength, length);
+        length.Should().Be(expectedLength);
     }
 
     public static IEnumerable<object[]> GetTagsLengthTestCases()

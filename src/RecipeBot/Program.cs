@@ -19,6 +19,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
 namespace RecipeBot
 {
@@ -39,6 +40,12 @@ namespace RecipeBot
                 Console.WriteLine(e);
                 await Task.Delay(Timeout.Infinite);
             }
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            Console.WriteLine(@"Default host builder created for Entity Framework commands");
+            return Host.CreateDefaultBuilder();
         }
     }
 }

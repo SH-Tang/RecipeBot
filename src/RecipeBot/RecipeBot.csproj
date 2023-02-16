@@ -3,31 +3,53 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
-  <Import Project="$(SolutionDir)\build\RecipeBot.targets" />
+  <Import Project="..\..\build\RecipeBot.targets" />
 
   <ItemGroup>
     <None Include="..\..\build\Copying.licenseheader" Link="Copying.licenseheader" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="3.8.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
-    <PackageReference Include="ReHackt.Extensions.Options.Validation" Version="6.0.3" />
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>$(AssemblyName).Test</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Discord.Net" Version="3.9.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
+    <PackageReference Include="ReHackt.Extensions.Options.Validation" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Discord.Common\Discord.Common.csproj" />
     <ProjectReference Include="..\RecipeBot.Discord\RecipeBot.Discord.csproj" />
     <ProjectReference Include="..\RecipeBot.Domain\RecipeBot.Domain.csproj" />
+    <ProjectReference Include="..\RecipeBot.Persistence\RecipeBot.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /f /d /y /i &quot;$(SolutionDir)\config.json&quot; &quot;$(OutDir)&quot; " />
+    <Exec Command="xcopy /f /d /y /i &quot;$(SolutionDir)\config.json&quot; &quot;$(OutputPath)&quot; " />
   </Target>
 
 </Project>

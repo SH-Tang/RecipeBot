@@ -17,7 +17,9 @@
 
 using System;
 using System.ComponentModel;
+using System.Linq;
 using AutoFixture;
+using FluentAssertions;
 using RecipeBot.Domain.Data;
 using RecipeBot.TestUtils;
 using Xunit;
@@ -36,10 +38,10 @@ public class RecipeDataTest
         const RecipeCategory category = (RecipeCategory)(-1);
 
         // Call
-        Action call = () => new RecipeData(authorData, category, fixture.Create<string>(), fixture.Create<string>(), fixture.Create<string>());
+        Action call = () => new RecipeData(authorData, Enumerable.Empty<RecipeFieldData>(), fixture.Create<string>(), category);
 
         // Assert
-        Assert.Throws<InvalidEnumArgumentException>(call);
+        call.Should().Throw<InvalidEnumArgumentException>();
     }
 
     [Theory]
@@ -51,40 +53,10 @@ public class RecipeDataTest
         AuthorData authorData = CreateValidAuthorData(fixture);
 
         // Call
-        Action call = () => new RecipeData(authorData, fixture.Create<RecipeCategory>(), invalidRecipeTitle, fixture.Create<string>(), fixture.Create<string>());
+        Action call = () => new RecipeData(authorData, Enumerable.Empty<RecipeFieldData>(), invalidRecipeTitle, fixture.Create<RecipeCategory>());
 
         // Assert
-        Assert.Throws<ArgumentException>(call);
-    }
-
-    [Theory]
-    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
-    public void Given_recipe_data_with_invalid_recipe_ingredients_throws_exception(string invalidRecipeIngredients)
-    {
-        // Setup
-        var fixture = new Fixture();
-        AuthorData authorData = CreateValidAuthorData(fixture);
-
-        // Call
-        Action call = () => new RecipeData(authorData, fixture.Create<RecipeCategory>(), fixture.Create<string>(), invalidRecipeIngredients, fixture.Create<string>());
-
-        // Assert
-        Assert.Throws<ArgumentException>(call);
-    }
-
-    [Theory]
-    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
-    public void Given_recipe_data_with_invalid_cooking_steps_throws_exception(string invalidCookingSteps)
-    {
-        // Setup
-        var fixture = new Fixture();
-        AuthorData authorData = CreateValidAuthorData(fixture);
-
-        // Call
-        Action call = () => new RecipeData(authorData, fixture.Create<RecipeCategory>(), fixture.Create<string>(), fixture.Create<string>(), invalidCookingSteps);
-
-        // Assert
-        Assert.Throws<ArgumentException>(call);
+        call.Should().ThrowExactly<ArgumentException>();
     }
 
     private static AuthorData CreateValidAuthorData(Fixture fixture)

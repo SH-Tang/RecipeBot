@@ -4,12 +4,13 @@
     <SolutionDir>$(MSBuildThisFileDirectory)</SolutionDir>
     <OutputPath Condition="$(OutputPath) == ''">$(SolutionDir)\bin\$(Configuration)\</OutputPath>
     <OutDir>$(OutputPath)</OutDir>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <Copyright>Copyright © Dennis Tang $([System.DateTime]::Today.ToString(yyyy))</Copyright>
     <Version>0.3.0</Version>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 </Project>

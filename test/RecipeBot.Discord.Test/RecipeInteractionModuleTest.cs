@@ -18,11 +18,11 @@
 using Discord;
 using Discord.Common;
 using Discord.Interactions;
+using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using RecipeBot.Discord.Data;
-using RecipeBot.Discord.Services;
 using RecipeBot.Discord.Views;
-using RecipeBot.Domain.Factories;
 using RecipeBot.TestUtils;
 using Xunit;
 
@@ -34,34 +34,81 @@ public class RecipeInteractionModuleTest
     public void Module_is_interactive_module()
     {
         // Setup
+        var scopeFactory = Substitute.For<IServiceScopeFactory>();
         var loggingService = Substitute.For<ILoggingService>();
-        var limitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
-        var responseService = new RecipeModalResponseService(limitProvider);
 
         // Call
-        var module = new RecipeInteractionModule(loggingService, responseService);
+        var module = new RecipeInteractionModule(scopeFactory, loggingService);
 
         // Assert
-        Assert.IsAssignableFrom<InteractionModuleBase<SocketInteractionContext>>(module);
+        module.Should().BeAssignableTo<InteractionModuleBase<SocketInteractionContext>>();
     }
 
     [Fact]
-    public void Format_recipe_command_has_expected_attributes()
+    public void Save_recipe_command_has_expected_attributes()
     {
         // Call
         SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeInteractionModule, SlashCommandAttribute>(
-            nameof(RecipeInteractionModule.FormatRecipe), new[]
+            nameof(RecipeInteractionModule.SaveRecipe), new[]
             {
                 typeof(DiscordRecipeCategory),
                 typeof(IAttachment)
             });
 
         // Assert
-        Assert.NotNull(commandAttribute);
-        Assert.Equal("recipe", commandAttribute!.Name);
+        const string expectedName = "recipe";
+        const string expectedDescription = "Formats and stores an user recipe";
 
-        const string expectedDescription = "Tell us about your recipe";
-        Assert.Equal(expectedDescription, commandAttribute.Description);
+        commandAttribute.Should().NotBeNull();
+        commandAttribute!.Name.Should().Be(expectedName);
+        commandAttribute.Description.Should().Be(expectedDescription);
+    }
+
+    [Fact]
+    public void Delete_recipe_command_has_expected_attributes()
+    {
+        // Call
+        SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeInteractionModule, SlashCommandAttribute>(
+            nameof(RecipeInteractionModule.DeleteRecipe), new []
+            {
+                typeof(long)
+            });
+
+        DefaultMemberPermissionsAttribute? permissionAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeInteractionModule, DefaultMemberPermissionsAttribute>(
+            nameof(RecipeInteractionModule.DeleteRecipe), new[]
+            {
+                typeof(long)
+            });
+
+        // Assert
+        const string expectedName = "recipe-delete";
+        const string expectedDescription = "Deletes a recipe based on the id";
+
+        commandAttribute.Should().NotBeNull();
+        commandAttribute!.Name.Should().Be(expectedName);
+        commandAttribute.Description.Should().Be(expectedDescription);
+
+        permissionAttribute.Should().NotBeNull();
+        permissionAttribute!.Permissions.Should().Be(GuildPermission.Administrator | GuildPermission.ModerateMembers);
+    }
+
+    [Fact]
+    public void Get_recipe_command_has_expected_attributes()
+    {
+        // Call
+        SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeInteractionModule, SlashCommandAttribute>(
+            nameof(RecipeInteractionModule.GetRecipe), new[]
+            {
+                typeof(long)
+            });
+
+        // Assert
+        const string expectedName = "recipe-get";
+        const string expectedDescription = "Gets a recipe based on the id";
+
+        commandAttribute.Should().NotBeNull();
+        commandAttribute!.Name.Should().Be(expectedName);
+        commandAttribute.Description.Should().Be(expectedDescription);
     }
 
     [Fact]
@@ -75,7 +122,7 @@ public class RecipeInteractionModuleTest
             });
 
         // Assert
-        Assert.NotNull(interactionAttribute);
-        Assert.Equal(RecipeModal.ModalId, interactionAttribute!.CustomId);
+        interactionAttribute.Should().NotBeNull();
+        interactionAttribute!.CustomId.Should().Be(RecipeModal.ModalId);
     }
 }

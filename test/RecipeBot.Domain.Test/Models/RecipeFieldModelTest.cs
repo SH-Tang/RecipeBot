@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using FluentAssertions;
 using RecipeBot.Domain.Models;
 using RecipeBot.TestUtils;
 using Xunit;
@@ -35,7 +36,7 @@ public class RecipeFieldModelTest
         Action call = () => new RecipeFieldModel(invalidFieldName, fieldData);
 
         // Assert
-        Assert.Throws<ArgumentException>(call);
+        call.Should().ThrowExactly<ArgumentException>();
     }
 
     [Theory]
@@ -49,7 +50,7 @@ public class RecipeFieldModelTest
         Action call = () => new RecipeFieldModel(fieldName, invalidFieldData);
 
         // Assert
-        Assert.Throws<ArgumentException>(call);
+        call.Should().ThrowExactly<ArgumentException>();
     }
 
     [Theory]
@@ -68,6 +69,6 @@ public class RecipeFieldModelTest
 
         // Assert
         int expectedLength = fieldName.Length + fieldData.Length;
-        Assert.Equal(expectedLength, totalLength);
+        totalLength.Should().Be(expectedLength);
     }
 }

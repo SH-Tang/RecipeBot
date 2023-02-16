@@ -87,33 +87,6 @@ namespace RecipeBot.Domain.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Additional notes.
-        /// </summary>
-        internal static string Recipe_FieldName_AdditionalNotes {
-            get {
-                return ResourceManager.GetString("Recipe_FieldName_AdditionalNotes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cooking steps.
-        /// </summary>
-        internal static string Recipe_FieldName_CookingSteps {
-            get {
-                return ResourceManager.GetString("Recipe_FieldName_CookingSteps", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ingredients.
-        /// </summary>
-        internal static string Recipe_FieldName_Ingredients {
-            get {
-                return ResourceManager.GetString("Recipe_FieldName_Ingredients", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Dessert.
         /// </summary>
         internal static string RecipeCategoryDessert_DisplayName {
