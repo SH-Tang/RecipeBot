@@ -17,16 +17,9 @@ The RecipeBot is intended to provide the following functionality in Discord as a
 At the moment of writing the bot is capable of:
 * Formatting user recipes according to a standard format
 * Adding tags and category for a recipe
+* Persisting and retrieving recipes
 
-# Supported bot commands
-
-* `help`
-
-   Provides a summary about all available commands in the bot.
-   
-* `recipe`
-
-   Spawns a modal with standard fields to allow the user to enter a recipe. The command can be invoked with or without an image of a recipe.
+For more information about the commands within the bot, see the [Wiki](https://github.com/SH-Tang/RecipeBot/wiki).
 
 # Deployment
 In order to run the RecipeBot, a `config.json` file must be created next to the executable with the following content. Note that only the key `Token` is mandatory. The remaining object literals and their attributes are all optional, unless specified otherwise.
@@ -41,6 +34,8 @@ In order to run the RecipeBot, a `config.json` file must be created next to the 
 }
 ```
 
+For more information about deploying the bot, see the [Wiki](https://github.com/SH-Tang/RecipeBot/wiki/Deployment).
+
 ## CommandOptions (optional)
 | Key | Description |
 |---|---|
@@ -51,6 +46,7 @@ In order to run the RecipeBot, a `config.json` file must be created next to the 
 ## Functionality
 * Discord.Net
 * ReHackt.Extensions.Options.Validations
+* Microsoft.Entity.Framework.Core
 
 ## Testing purposes
 * xUnit 
