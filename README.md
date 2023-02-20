@@ -22,19 +22,19 @@ At the moment of writing the bot is capable of:
 For more information about the commands within the bot, see the [Wiki](https://github.com/SH-Tang/RecipeBot/wiki).
 
 # Deployment
-In order to run the RecipeBot, a `config.json` file must be created next to the executable with the following content. Note that only the key `Token` is mandatory. The remaining object literals and their attributes are all optional, unless specified otherwise.
+In order to run the RecipeBot, a `config.json` file must be created next to the executable with the following content. The minimum content is listed below:
 
 ```json
 {
     "Token": "{Your Discord token for the Bot}",
-    "CommandOptions":
+    "ConnectionStrings":
     {
-        "TestGuildId": "{TestGuildId}"
+        "DefaultConnection": "Data Source={File path to the SQLite database}"
     }
 }
 ```
 
-For more information about deploying the bot, see the [Wiki](https://github.com/SH-Tang/RecipeBot/wiki/Deployment).
+For more information about deploying the bot with additional options, see the [Wiki](https://github.com/SH-Tang/RecipeBot/wiki/Deployment).
 
 ## CommandOptions (optional)
 | Key | Description |
