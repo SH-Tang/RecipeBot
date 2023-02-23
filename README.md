@@ -33,13 +33,13 @@ In order to run the RecipeBot, a `config.json` file must be created next to the 
     }
 }
 ```
+## Token (mandatory)
+This is the Discord token as provided by the Discord Developer portal.
 
-For more information about deploying the bot with additional options, see the [Wiki](https://github.com/SH-Tang/RecipeBot/wiki/Deployment).
-
-## CommandOptions (optional)
+## ConnectionString (mandatory)
 | Key | Description |
 |---|---|
-| TestGuildId | Set this to a Discord channel to immediately test the bot and its slash commands. Global commands take an hour to register |
+| DefaultConnection | Set this to the path of the SQLite database to store and retrieve the data from. In case the database does not exist, the database is created by the application. |
 
 # Used libraries
 
