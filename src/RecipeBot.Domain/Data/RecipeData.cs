@@ -30,6 +30,7 @@ public class RecipeData
     /// <summary>
     /// Creates a new instance of <see cref="RecipeData"/>.
     /// </summary>
+    /// <param name="authorId">The  id of the author.</param>
     /// <param name="authorData">The <see cref="Data.AuthorData"/>.</param>
     /// <param name="recipeFields">The collection of fields to contain within the recipe.</param>
     /// <param name="recipeTitle">The title of the recipe.</param>
@@ -37,13 +38,14 @@ public class RecipeData
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="authorData"/> or <paramref name="recipeFields"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="recipeTitle"/> is <c>null</c> or consists of whitespaces.</exception>
     /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid <see cref="RecipeCategory"/>.</exception>
-    public RecipeData(AuthorData authorData, IEnumerable<RecipeFieldData> recipeFields, string recipeTitle, RecipeCategory category)
+    public RecipeData(ulong authorId, AuthorData authorData, IEnumerable<RecipeFieldData> recipeFields, string recipeTitle, RecipeCategory category)
     {
         authorData.IsNotNull(nameof(authorData));
         recipeFields.IsNotNull(nameof(recipeFields));
         recipeTitle.IsNotNullOrWhiteSpaces(nameof(recipeTitle));
         category.IsValidEnum(nameof(category));
 
+        AuthorId = authorId;
         AuthorData = authorData;
         RecipeFields = recipeFields;
         RecipeTitle = recipeTitle;
@@ -79,4 +81,9 @@ public class RecipeData
     /// Gets or sets the tags of the recipe. 
     /// </summary>
     public string? Tags { get; set; }
+
+    /// <summary>
+    /// Gets the id of the author.
+    /// </summary>
+    public ulong AuthorId { get; }
 }
