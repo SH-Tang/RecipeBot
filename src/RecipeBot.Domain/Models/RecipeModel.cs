@@ -43,7 +43,7 @@ public class RecipeModel
         recipeFields.IsNotNull(nameof(recipeFields));
         title.IsNotNullOrWhiteSpaces(nameof(title));
 
-        Author = metaData.Author;
+        AuthorId = metaData.AuthorId;
         RecipeCategory = metaData.Category;
         RecipeFields = recipeFields;
         RecipeTags = new RecipeTagsModelWrapper(metaData.Tags, metaData.Category);
@@ -82,9 +82,9 @@ public class RecipeModel
     public string? RecipeImageUrl { get; }
 
     /// <summary>
-    /// Gets the author information.
+    /// Gets the author id.
     /// </summary>
-    public AuthorModel Author { get; }
+    public ulong AuthorId { get; }
 
     /// <summary>
     /// Gets the category the recipe is based on.
@@ -108,7 +108,7 @@ public class RecipeModel
     {
         get
         {
-            return Title.Length + Author.TotalLength + RecipeFields.Sum(f => f.TotalLength) + RecipeTags.TotalLength;
+            return Title.Length + RecipeFields.Sum(f => f.TotalLength) + RecipeTags.TotalLength;
         }
     }
 }

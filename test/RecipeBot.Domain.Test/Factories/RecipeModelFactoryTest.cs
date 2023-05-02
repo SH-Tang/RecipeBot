@@ -50,7 +50,7 @@ public class RecipeModelFactoryTest
         // Assert
         model.RecipeImageUrl.Should().BeNull();
 
-        model.Author.Should().BeEquivalentTo(recipeData.AuthorData);
+        model.AuthorId.Should().Be(recipeData.AuthorId);
         model.RecipeFields.Should().BeEquivalentTo(recipeData.RecipeFields, options => options.WithStrictOrdering());
         
         AssertTags(recipeData, model.RecipeTags);
@@ -112,7 +112,7 @@ public class RecipeModelFactoryTest
         // Assert
         model.RecipeImageUrl.Should().Be(recipeData.ImageUrl);
 
-        model.Author.Should().BeEquivalentTo(recipeData.AuthorData);
+        model.AuthorId.Should().Be(recipeData.AuthorId);
         model.RecipeFields.Should().BeEquivalentTo(recipeData.RecipeFields, options => options.WithStrictOrdering());
 
         AssertTags(recipeData, model.RecipeTags);
