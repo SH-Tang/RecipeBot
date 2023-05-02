@@ -55,9 +55,7 @@ internal static class RecipeEmbedFactory
 
     private static EmbedBuilder CreateConfiguredEmbedBuilder(RecipeModel recipeData)
     {
-        AuthorModel authorData = recipeData.Author;
-        EmbedBuilder embedBuilder = new EmbedBuilder().WithAuthor(authorData.AuthorName, authorData.AuthorImageUrl)
-                                                      .WithTitle(recipeData.Title)
+        EmbedBuilder embedBuilder = new EmbedBuilder().WithTitle(recipeData.Title)
                                                       .WithColor(RecipeCategoryConverter.ConvertTo(recipeData.RecipeCategory));
         RecipeTagsModelWrapper tagData = recipeData.RecipeTags;
         if (tagData.Tags.Any())

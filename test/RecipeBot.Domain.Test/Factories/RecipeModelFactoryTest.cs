@@ -125,7 +125,6 @@ public class RecipeModelFactoryTest
         var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
         recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
         recipeCharacterLimitProvider.MaximumRecipeLength.Returns(int.MaxValue);
-        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(50);
         recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(50);
         recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(50);
         recipeCharacterLimitProvider.MaximumRecipeTagsLength.Returns(50);
@@ -153,7 +152,6 @@ public class RecipeModelFactoryTest
         var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
         recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
         recipeCharacterLimitProvider.MaximumRecipeLength.Returns(700);
-        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(50);
         recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(50);
         recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(50);
         recipeCharacterLimitProvider.MaximumRecipeTagsLength.Returns(500);
@@ -176,7 +174,6 @@ public class RecipeModelFactoryTest
         var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
         recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
         recipeCharacterLimitProvider.MaximumRecipeLength.Returns(1);
-        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
         recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(30);
         recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
         recipeCharacterLimitProvider.MaximumRecipeTagsLength.Returns(50);
@@ -186,8 +183,7 @@ public class RecipeModelFactoryTest
         var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
 
         // Precondition
-        int totalCharacterLength = recipeCharacterLimitProvider.MaximumAuthorNameLength +
-                                   recipeCharacterLimitProvider.MaximumTitleLength +
+        int totalCharacterLength = recipeCharacterLimitProvider.MaximumTitleLength +
                                    recipeCharacterLimitProvider.MaximumFieldDataLength +
                                    recipeCharacterLimitProvider.MaximumRecipeTagsLength;
         recipeCharacterLimitProvider.MaximumRecipeLength.Should().BeLessOrEqualTo(totalCharacterLength);
@@ -208,7 +204,6 @@ public class RecipeModelFactoryTest
         var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
         recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
         recipeCharacterLimitProvider.MaximumRecipeLength.Returns(int.MaxValue);
-        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(10);
         recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(10);
         recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
 
@@ -228,7 +223,6 @@ public class RecipeModelFactoryTest
     {
         var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
         recipeCharacterLimitProvider.MaximumTitleLength.Returns(50);
-        recipeCharacterLimitProvider.MaximumAuthorNameLength.Returns(50);
         recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(50);
         recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(50);
         recipeCharacterLimitProvider.MaximumRecipeTagsLength.Returns(500);
@@ -276,13 +270,6 @@ public class RecipeModelFactoryTest
         return fixture.Build<RecipeData>()
                       .FromFactory<ulong, RecipeCategory>((authorId, category) => new RecipeData(authorId, fields, new string('+', limitProvider.MaximumTitleLength), category))
                       .Without(d => d.ImageUrl)
-                      .Create();
-    }
-
-    private static AuthorData CreateAuthorData(IRecipeModelCharacterLimitProvider limitProvider, Fixture fixture)
-    {
-        return fixture.Build<AuthorData>()
-                      .FromFactory(() => new AuthorData(new string('x', limitProvider.MaximumAuthorNameLength), "http://www.recipeBotImage.com"))
                       .Create();
     }
 }

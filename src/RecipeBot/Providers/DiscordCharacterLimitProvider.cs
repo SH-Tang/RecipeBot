@@ -26,7 +26,6 @@ namespace RecipeBot.Providers;
 /// </summary>
 public class DiscordCharacterLimitProvider : IRecipeModelCharacterLimitProvider, IMessageCharacterLimitProvider
 {
-    public int MaximumAuthorNameLength => EmbedAuthorBuilder.MaxAuthorNameLength;
     public int MaximumFieldNameLength => EmbedFieldBuilder.MaxFieldNameLength;
     public int MaximumFieldDataLength => EmbedFieldBuilder.MaxFieldValueLength;
     public int MaximumTitleLength => EmbedBuilder.MaxTitleLength;

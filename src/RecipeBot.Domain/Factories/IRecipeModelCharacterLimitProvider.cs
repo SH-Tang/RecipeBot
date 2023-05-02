@@ -20,8 +20,7 @@ namespace RecipeBot.Domain.Factories;
 /// <summary>
 /// Interface for describing providers of character limits for recipe models.
 /// </summary>
-public interface IRecipeModelCharacterLimitProvider : IAuthorModelCharacterLimitProvider,
-                                                      IRecipeFieldModelCharacterLimitProvider,
+public interface IRecipeModelCharacterLimitProvider : IRecipeFieldModelCharacterLimitProvider,
                                                       IRecipeTagModelCharacterLimitProvider
 {
     /// <summary>

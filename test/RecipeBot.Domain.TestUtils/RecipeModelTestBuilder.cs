@@ -126,17 +126,11 @@ public class RecipeModelTestBuilder
     public RecipeModel Build()
     {
         string title = GetStringWithRandomLength('x', maxTitleLength);
-        var metaData = new RecipeModelMetaData(CreateAuthorModel(), tags, category);
+        var metaData = new RecipeModelMetaData(1337, tags, category);
 
         return imageUrl == null
                    ? new RecipeModel(metaData, recipeFields, title)
                    : new RecipeModel(metaData, recipeFields, title, imageUrl);
-    }
-
-    private AuthorModel CreateAuthorModel()
-    {
-        string authorName = GetStringWithRandomLength('+', maxAuthorNameLength);
-        return new AuthorModel(authorName, "https://recipebot.author.image");
     }
 
     private RecipeFieldModel CreateRecipeFieldModel(int seed)

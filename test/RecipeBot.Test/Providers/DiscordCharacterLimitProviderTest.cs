@@ -34,8 +34,6 @@ public class DiscordCharacterLimitProviderTest
         limitProvider.MaximumRecipeLength.Should().Be(EmbedBuilder.MaxEmbedLength);
         limitProvider.MaximumTitleLength.Should().Be(EmbedBuilder.MaxTitleLength);
 
-        limitProvider.MaximumAuthorNameLength.Should().Be(EmbedAuthorBuilder.MaxAuthorNameLength);
-
         limitProvider.MaximumFieldNameLength.Should().Be(EmbedFieldBuilder.MaxFieldNameLength);
         limitProvider.MaximumFieldDataLength.Should().Be(EmbedFieldBuilder.MaxFieldValueLength);
 
