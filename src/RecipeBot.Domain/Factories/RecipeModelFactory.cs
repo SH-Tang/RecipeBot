@@ -93,7 +93,7 @@ public class RecipeModelFactory
     {
         IEnumerable<RecipeFieldModel> recipeFields = recipeData.RecipeFields.Select(recipeFieldModelFactory.Create).ToArray();
 
-        RecipeModelMetaData metaData = CreateMetaData(recipeData.AuthorData, recipeData.Tags, recipeData.Category);
+        RecipeModelMetaData metaData = CreateMetaData(recipeData.AuthorId, recipeData.AuthorData, recipeData.Tags, recipeData.Category);
 
         string recipeTitle = recipeData.RecipeTitle;
         RecipeModel recipe = recipeData.ImageUrl == null
@@ -113,17 +113,18 @@ public class RecipeModelFactory
     /// <summary>
     /// Creates an <see cref="RecipeModelMetaData"/> based on its input arguments.
     /// </summary>
+    /// <param name="authorId">The id of the author</param>
     /// <param name="authorData">The <see cref="AuthorData"/> to create the metadata with.</param>
     /// <param name="tagData">The tags to create the metadata with.</param>
     /// <param name="recipeCategory">The <see cref="RecipeCategory"/> to create the metadata with.</param>
     /// <returns>A <see cref="RecipeModelMetaData"/>.</returns>
     /// <exception cref="ModelCreateException">Thrown when the <see cref="RecipeModelMetaData"/>
     /// could not be successfully created.</exception>
-    private RecipeModelMetaData CreateMetaData(AuthorData authorData, string? tagData, RecipeCategory recipeCategory)
+    private RecipeModelMetaData CreateMetaData(ulong authorId, AuthorData authorData, string? tagData, RecipeCategory recipeCategory)
     {
         AuthorModel authorModel = authorModelFactory.Create(authorData);
         RecipeTagsModel tagModel = recipeTagsModelFactory.Create(tagData);
 
-        return new RecipeModelMetaData(authorModel, tagModel, recipeCategory);
+        return new RecipeModelMetaData(authorId, authorModel, tagModel, recipeCategory);
     }
 }

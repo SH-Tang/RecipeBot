@@ -262,7 +262,7 @@ public class RecipeModelFactoryTest
         AuthorData authorData = CreateAuthorData(limitProvider, fixture);
 
         return fixture.Build<RecipeData>()
-                      .FromFactory<RecipeCategory>(category => new RecipeData(authorData, fields, new string('+', limitProvider.MaximumTitleLength + nrOfTitleCharactersOffSet), category))
+                      .FromFactory<ulong, RecipeCategory>((authorId, category) => new RecipeData(authorId, authorData, fields, new string('+', limitProvider.MaximumTitleLength + nrOfTitleCharactersOffSet), category))
                       .Without(d => d.ImageUrl)
                       .Create();
     }
@@ -277,7 +277,7 @@ public class RecipeModelFactoryTest
 
         AuthorData authorData = CreateAuthorData(limitProvider, fixture);
         return fixture.Build<RecipeData>()
-                      .FromFactory<RecipeCategory>(category => new RecipeData(authorData, fields, new string('+', limitProvider.MaximumTitleLength), category))
+                      .FromFactory<ulong, RecipeCategory>((authorId, category) => new RecipeData(authorId, authorData, fields, new string('+', limitProvider.MaximumTitleLength), category))
                       .Without(d => d.ImageUrl)
                       .Create();
     }

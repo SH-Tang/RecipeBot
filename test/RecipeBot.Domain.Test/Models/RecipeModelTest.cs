@@ -199,6 +199,7 @@ public class RecipeModelTest
 
     private static RecipeModelMetaData CreateMetaData(Fixture fixture)
     {
+        var authorId = fixture.Create<ulong>();
         AuthorModel authorModel = fixture.Build<AuthorModel>()
                                          .FromFactory<string>(author => new AuthorModel(author, imageUrl))
                                          .Create();
@@ -209,6 +210,6 @@ public class RecipeModelTest
                                            .Create();
         var category = fixture.Create<RecipeCategory>();
 
-        return new RecipeModelMetaData(authorModel, tagsModel, category);
+        return new RecipeModelMetaData(authorId, authorModel, tagsModel, category);
     }
 }
