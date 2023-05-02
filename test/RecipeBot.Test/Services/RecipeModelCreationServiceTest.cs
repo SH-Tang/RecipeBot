@@ -39,11 +39,12 @@ public class RecipeModelCreationServiceTest
     public void Recipe_with_valid_data_and_invalid_category_throws_exception()
     {
         // Setup
+        var fixture = new Fixture();
+
         const DiscordRecipeCategory category = (DiscordRecipeCategory)(-1);
 
         var user = Substitute.For<IUser>();
-        user.Username.Returns("Recipe author");
-        user.GetAvatarUrl().ReturnsForAnyArgs("https://AuthorImage.url");
+        user.Id.Returns(fixture.Create<ulong>());
 
         var modal = new RecipeModal
         {
@@ -73,8 +74,8 @@ public class RecipeModelCreationServiceTest
         var category = fixture.Create<DiscordRecipeCategory>();
 
         var user = Substitute.For<IUser>();
-        user.Username.Returns("Recipe author");
-        user.GetAvatarUrl().ReturnsForAnyArgs("https://AuthorImage.url");
+        user.Id.Returns(fixture.Create<ulong>());
+
 
         var modal = new RecipeModal
         {
@@ -106,11 +107,10 @@ public class RecipeModelCreationServiceTest
     public void Recipe_with_valid_data_returns_expected_model(DiscordRecipeCategory category)
     {
         // Setup
-        const string authorName = "Recipe author";
-        const string authorImageUrl = "https://AuthorImage.url";
+        var fixture = new Fixture();
         var user = Substitute.For<IUser>();
-        user.Username.Returns(authorName);
-        user.GetAvatarUrl().ReturnsForAnyArgs(authorImageUrl);
+        user.Id.Returns(fixture.Create<ulong>());
+
 
         const string recipeTitle = "Recipe title";
         const string recipeIngredients = "My ingredients";
@@ -145,8 +145,7 @@ public class RecipeModelCreationServiceTest
         var category = fixture.Create<DiscordRecipeCategory>();
 
         var user = Substitute.For<IUser>();
-        user.Username.Returns("Recipe author");
-        user.GetAvatarUrl().ReturnsForAnyArgs("https://AuthorImage.url");
+        user.Id.Returns(fixture.Create<ulong>());
 
         var attachment = Substitute.For<IAttachment>();
         attachment.ContentType.Returns("image/");
@@ -184,9 +183,9 @@ public class RecipeModelCreationServiceTest
         // Setup
         const DiscordRecipeCategory category = (DiscordRecipeCategory)(-1);
 
+        var fixture = new Fixture();
         var user = Substitute.For<IUser>();
-        user.Username.Returns("Recipe author");
-        user.GetAvatarUrl().ReturnsForAnyArgs("https://AuthorImage.url");
+        user.Id.Returns(fixture.Create<ulong>());
 
         var attachment = Substitute.For<IAttachment>();
         attachment.ContentType.Returns("image/");
@@ -217,11 +216,9 @@ public class RecipeModelCreationServiceTest
     public void Recipe_with_valid_data_and_attachment_returns_expected_model(DiscordRecipeCategory category)
     {
         // Setup
-        const string authorName = "Recipe author";
-        const string authorImageUrl = "https://AuthorImage.url";
+        var fixture = new Fixture();
         var user = Substitute.For<IUser>();
-        user.Username.Returns(authorName);
-        user.GetAvatarUrl().ReturnsForAnyArgs(authorImageUrl);
+        user.Id.Returns(fixture.Create<ulong>());
 
         const string recipeImageUrl = "https://RecipeImage.url";
         var attachment = Substitute.For<IAttachment>();

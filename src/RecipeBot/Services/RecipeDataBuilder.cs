@@ -33,6 +33,7 @@ namespace RecipeBot.Services;
 internal class RecipeDataBuilder
 {
     private readonly AuthorData authorData;
+    private readonly ulong authorId;
     private readonly string recipeTitle;
     private string? imageUrl;
     private string? tags;
@@ -59,6 +60,33 @@ internal class RecipeDataBuilder
         recipeTitle.IsNotNullOrWhiteSpaces(nameof(recipeTitle));
 
         this.authorData = authorData;
+        this.recipeTitle = recipeTitle;
+        recipeCategory = RecipeCategoryConverter.ConvertFrom(category);
+
+        recipeFields = new List<RecipeFieldData>
+        {
+            new RecipeFieldData(Resources.RecipeFieldName_Ingredients_DisplayName, recipeIngredients),
+            new RecipeFieldData(Resources.RecipeFieldName_Cooking_Steps_DisplayName, cookingSteps),
+        };
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="RecipeDataBuilder"/>.
+    /// </summary>
+    /// <param name="authorId">The id of the author.</param>
+    /// <param name="category">The <see cref="DiscordRecipeCategory"/>.</param>
+    /// <param name="recipeTitle">The title of the recipe.</param>
+    /// <param name="recipeIngredients">The ingredients of the recipe.</param>
+    /// <param name="cookingSteps">The cooking steps of the recipe.</param>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="recipeTitle"/>, <paramref name="recipeIngredients"/>
+    /// or <paramref name="cookingSteps"/> is <c>null</c> or consists of whitespaces.</exception>
+    /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is invalid.</exception>
+    public RecipeDataBuilder(ulong authorId, DiscordRecipeCategory category,
+                             string recipeTitle, string recipeIngredients, string cookingSteps)
+    {
+        recipeTitle.IsNotNullOrWhiteSpaces(nameof(recipeTitle));
+
+        this.authorId = authorId;
         this.recipeTitle = recipeTitle;
         recipeCategory = RecipeCategoryConverter.ConvertFrom(category);
 
@@ -118,7 +146,7 @@ internal class RecipeDataBuilder
     /// <returns>A configured <see cref="RecipeData"/>.</returns>
     public RecipeData Build()
     {
-        return new RecipeData(authorData, recipeFields, recipeTitle, recipeCategory)
+        return new RecipeData(authorId, authorData, recipeFields, recipeTitle, recipeCategory)
         {
             Tags = tags,
             ImageUrl = imageUrl
