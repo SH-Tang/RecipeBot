@@ -32,7 +32,6 @@ namespace RecipeBot.Services;
 /// </summary>
 internal class RecipeDataBuilder
 {
-    private readonly AuthorData authorData;
     private readonly ulong authorId;
     private readonly string recipeTitle;
     private string? imageUrl;
@@ -40,35 +39,6 @@ internal class RecipeDataBuilder
 
     private readonly RecipeCategory recipeCategory;
     private readonly List<RecipeFieldData> recipeFields;
-
-    /// <summary>
-    /// Creates a new instance of <see cref="RecipeDataBuilder"/>.
-    /// </summary>
-    /// <param name="authorData">The <see cref="AuthorData"/>.</param>
-    /// <param name="category">The <see cref="DiscordRecipeCategory"/>.</param>
-    /// <param name="recipeTitle">The title of the recipe.</param>
-    /// <param name="recipeIngredients">The ingredients of the recipe.</param>
-    /// <param name="cookingSteps">The cooking steps of the recipe.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="authorData"/> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="recipeTitle"/>, <paramref name="recipeIngredients"/>
-    /// or <paramref name="cookingSteps"/> is <c>null</c> or consists of whitespaces.</exception>
-    /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is invalid.</exception>
-    public RecipeDataBuilder(AuthorData authorData, DiscordRecipeCategory category,
-                             string recipeTitle, string recipeIngredients, string cookingSteps)
-    {
-        authorData.IsNotNull(nameof(authorData));
-        recipeTitle.IsNotNullOrWhiteSpaces(nameof(recipeTitle));
-
-        this.authorData = authorData;
-        this.recipeTitle = recipeTitle;
-        recipeCategory = RecipeCategoryConverter.ConvertFrom(category);
-
-        recipeFields = new List<RecipeFieldData>
-        {
-            new RecipeFieldData(Resources.RecipeFieldName_Ingredients_DisplayName, recipeIngredients),
-            new RecipeFieldData(Resources.RecipeFieldName_Cooking_Steps_DisplayName, cookingSteps),
-        };
-    }
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeDataBuilder"/>.

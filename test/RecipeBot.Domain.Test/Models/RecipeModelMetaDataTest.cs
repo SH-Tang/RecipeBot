@@ -34,9 +34,6 @@ public class RecipeModelMetaDataTest
         // Setup
         var fixture = new Fixture();
         var authorId = fixture.Create<ulong>();
-        AuthorModel author = fixture.Build<AuthorModel>()
-                                    .FromFactory<string>(authorName => new AuthorModel(authorName, "http://www.recipeBotImage.com"))
-                                    .Create();
         RecipeTagsModel tags = fixture.Build<RecipeTagsModel>()
                                       .FromFactory(() => new RecipeTagsModel(Enumerable.Empty<string>()))
                                       .Create();

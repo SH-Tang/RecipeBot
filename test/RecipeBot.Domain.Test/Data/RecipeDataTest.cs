@@ -58,11 +58,4 @@ public class RecipeDataTest
         // Assert
         call.Should().ThrowExactly<ArgumentException>();
     }
-
-    private static AuthorData CreateValidAuthorData(Fixture fixture)
-    {
-        return fixture.Build<AuthorData>()
-                      .FromFactory<string>(name => new AuthorData(name, "http://www.recipeBotImage.com"))
-                      .Create();
-    }
 }

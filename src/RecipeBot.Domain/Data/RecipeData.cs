@@ -50,11 +50,6 @@ public class RecipeData
     }
 
     /// <summary>
-    /// Gets the <see cref="Data.AuthorData"/>.
-    /// </summary>
-    public AuthorData AuthorData { get; }
-
-    /// <summary>
     /// Gets the <see cref="RecipeCategory"/>.
     /// </summary>
     public RecipeCategory Category { get; }

@@ -709,7 +709,7 @@ public class RecipeControllerTest
         EmbedAuthor? actualResponseAuthor = actualResponse.Author;
         actualResponseAuthor.Should().NotBeNull();
 
-        AuthorData authorData = data.AuthorData;
+        var authorData = data.AuthorData;
         AssertAuthor(authorData.AuthorName, authorData.AuthorImageUrl, actualResponseAuthor!.Value);
 
         actualResponse.Fields.Should().BeEquivalentTo(data.RecipeFields,
