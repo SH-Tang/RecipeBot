@@ -31,27 +31,19 @@ internal class RecipeModelMetaData
     /// Creates a new instance of a <see cref="RecipeModelMetaData"/>.
     /// </summary>
     /// <param name="authorId">The id of the author</param>
-    /// <param name="author">The author information.</param>
     /// <param name="tags">The tags.</param>
     /// <param name="category">The <see cref="RecipeCategory"/>.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="tags"/> is <c>null</c>.</exception>
     /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid <see cref="RecipeCategory"/>.</exception>
-    public RecipeModelMetaData(ulong authorId, AuthorModel author, RecipeTagsModel tags, RecipeCategory category)
+    public RecipeModelMetaData(ulong authorId, RecipeTagsModel tags, RecipeCategory category)
     {
-        author.IsNotNull(nameof(author));
         tags.IsNotNull(nameof(tags));
         category.IsValidEnum(nameof(category));
 
         AuthorId = authorId;
-        Author = author;
         Tags = tags;
         Category = category;
     }
-
-    /// <summary>
-    /// Gets the author information.
-    /// </summary>
-    public AuthorModel Author { get; }
 
     /// <summary>
     /// Gets the tags belonging to the recipe.
@@ -64,7 +56,7 @@ internal class RecipeModelMetaData
     public RecipeCategory Category { get; }
 
     /// <summary>
-    /// Gets the id of the authpr
+    /// Gets the id of the author.
     /// </summary>
     public ulong AuthorId { get; }
 }

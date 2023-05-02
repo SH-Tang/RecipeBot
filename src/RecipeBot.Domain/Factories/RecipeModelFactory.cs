@@ -125,6 +125,6 @@ public class RecipeModelFactory
         AuthorModel authorModel = authorModelFactory.Create(authorData);
         RecipeTagsModel tagModel = recipeTagsModelFactory.Create(tagData);
 
-        return new RecipeModelMetaData(authorId, authorModel, tagModel, recipeCategory);
+        return new RecipeModelMetaData(authorId, tagModel, recipeCategory);
     }
 }

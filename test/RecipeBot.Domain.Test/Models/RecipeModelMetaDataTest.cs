@@ -44,7 +44,7 @@ public class RecipeModelMetaDataTest
         const RecipeCategory invalidCategory = (RecipeCategory)(-1);
 
         // Call
-        Action call = () => new RecipeModelMetaData(authorId, author, tags, invalidCategory);
+        Action call = () => new RecipeModelMetaData(authorId, tags, invalidCategory);
 
         // Assert
         call.Should().Throw<InvalidEnumArgumentException>();
