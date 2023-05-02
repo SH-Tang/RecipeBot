@@ -146,7 +146,7 @@ internal class RecipeDataBuilder
     /// <returns>A configured <see cref="RecipeData"/>.</returns>
     public RecipeData Build()
     {
-        return new RecipeData(authorId, authorData, recipeFields, recipeTitle, recipeCategory)
+        return new RecipeData(authorId, recipeFields, recipeTitle, recipeCategory)
         {
             Tags = tags,
             ImageUrl = imageUrl

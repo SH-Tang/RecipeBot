@@ -488,12 +488,11 @@ public class RecipeControllerTest
         var fixture = new Fixture();
         var idToRetrieve = fixture.Create<long>();
 
-        var authorData = new AuthorData("Recipe author", "https://AuthorImage.url");
         IEnumerable<RecipeFieldData> recipeFieldsData = fixture.CreateMany<RecipeFieldData>(3);
 
         var recipeTitle = fixture.Create<string>();
         const string tags = "Tag1, TAG1, tag1, tag    1,      tag1, tag1      , tag2";
-        var recipeData = new RecipeData(authorData, recipeFieldsData, recipeTitle, fixture.Create<RecipeCategory>())
+        var recipeData = new RecipeData(TODO, recipeFieldsData, recipeTitle, fixture.Create<RecipeCategory>())
         {
             Tags = tags
         };
@@ -522,11 +521,10 @@ public class RecipeControllerTest
         var fixture = new Fixture();
         var idToRetrieve = fixture.Create<long>();
 
-        var authorData = new AuthorData(fixture.Create<string>(), "https://AuthorImage.url");
         IEnumerable<RecipeFieldData> recipeFieldsData = fixture.CreateMany<RecipeFieldData>(3);
 
         var recipeTitle = fixture.Create<string>();
-        var recipeData = new RecipeData(authorData, recipeFieldsData, recipeTitle, fixture.Create<RecipeCategory>());
+        var recipeData = new RecipeData(TODO, recipeFieldsData, recipeTitle, fixture.Create<RecipeCategory>());
 
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
         var repository = Substitute.For<IRecipeRepository>();
@@ -552,11 +550,10 @@ public class RecipeControllerTest
         // Setup
         var fixture = new Fixture();
 
-        var authorData = new AuthorData("Recipe author", "https://AuthorImage.url");
         IEnumerable<RecipeFieldData> recipeFieldsData = fixture.CreateMany<RecipeFieldData>(3);
 
         var recipeTitle = fixture.Create<string>();
-        var recipeData = new RecipeData(authorData, recipeFieldsData, recipeTitle, category);
+        var recipeData = new RecipeData(TODO, recipeFieldsData, recipeTitle, category);
 
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
         var repository = Substitute.For<IRecipeRepository>();
