@@ -27,12 +27,12 @@ public class RecipeEntryData
     /// </summary>
     /// <param name="id">The id of the recipe.</param>
     /// <param name="title">The title of the recipe.</param>
-    /// <param name="authorName">The name of the author of the recipe.</param>
-    public RecipeEntryData(long id, string title, string authorName)
+    /// <param name="authorId">The id of the author of the recipe.</param>
+    public RecipeEntryData(long id, string title, ulong authorId)
     {
         Id = id;
         Title = title;
-        AuthorName = authorName;
+        AuthorId = authorId;
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ public class RecipeEntryData
     public string Title { get; }
 
     /// <summary>
-    /// Gets the name of the author of the recipe.
+    /// Gets the id of the author of the recipe.
     /// </summary>
-    public string AuthorName { get; }
+    public ulong AuthorId { get; }
 }

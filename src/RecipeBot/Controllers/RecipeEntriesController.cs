@@ -53,7 +53,7 @@ public class RecipeEntriesController : IRecipeEntriesController
         repository.IsNotNull(nameof(repository));
 
         messageFormattingService = new DataEntryCollectionMessageFormattingService<RecipeEntryData>(
-            limitProvider, header, entry => $"{entry.Id,-3} {entry.Title,-50} {entry.AuthorName,-50}");
+            limitProvider, header, entry => $"{entry.Id,-3} {entry.Title,-50} {entry.AuthorId,-50}");
         this.repository = repository;
     }
 

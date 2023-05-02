@@ -89,7 +89,8 @@ public class RecipeRepository : IRecipeRepository
             context.RecipeEntities.Remove(entityToDelete);
             await context.SaveChangesAsync();
 
-            return new RecipeEntryData(entityToDelete.RecipeEntityId, entityToDelete.RecipeTitle, entityToDelete.Author.AuthorName);
+            // TODO Wrap the parse in an outer exception
+            return new RecipeEntryData(entityToDelete.RecipeEntityId, entityToDelete.RecipeTitle, ulong.Parse(entityToDelete.AuthorId));
         }
         catch (DbUpdateException ex)
         {

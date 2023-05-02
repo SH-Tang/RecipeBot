@@ -93,9 +93,9 @@ public class RecipeEntriesControllerTest
 
         string expectedMessage =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorName,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorName,-50}{Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorName,-50}{Environment.NewLine}";
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorId,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorId,-50}{Environment.NewLine}" +
+            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorId,-50}{Environment.NewLine}";
         result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
@@ -125,12 +125,12 @@ public class RecipeEntriesControllerTest
 
         string expectedMessageOne =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorName,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorName,-50}{Environment.NewLine}";
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorId,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorId,-50}{Environment.NewLine}";
 
         string expectedMessageTwo =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorName,-50}{Environment.NewLine}";
+            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorId,-50}{Environment.NewLine}";
 
         result.Result.Should().BeEquivalentTo(new[]
         {
@@ -211,9 +211,9 @@ public class RecipeEntriesControllerTest
 
         string expectedMessage =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorName,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorName,-50}{Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorName,-50}{Environment.NewLine}";
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorId,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorId,-50}{Environment.NewLine}" +
+            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorId,-50}{Environment.NewLine}";
         result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
@@ -243,12 +243,12 @@ public class RecipeEntriesControllerTest
 
         string expectedMessageOne =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorName,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorName,-50}{Environment.NewLine}";
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorId,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorId,-50}{Environment.NewLine}";
 
         string expectedMessageTwo =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorName,-50}{Environment.NewLine}";
+            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorId,-50}{Environment.NewLine}";
 
         result.Result.Should().BeEquivalentTo(new[]
         {
@@ -326,9 +326,9 @@ public class RecipeEntriesControllerTest
 
         string expectedMessage =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorName,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorName,-50}{Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorName,-50}{Environment.NewLine}";
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorId,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorId,-50}{Environment.NewLine}" +
+            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorId,-50}{Environment.NewLine}";
         result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
@@ -358,12 +358,12 @@ public class RecipeEntriesControllerTest
 
         string expectedMessageOne =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorName,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorName,-50}{Environment.NewLine}";
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorId,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorId,-50}{Environment.NewLine}";
 
         string expectedMessageTwo =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorName,-50}{Environment.NewLine}";
+            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorId,-50}{Environment.NewLine}";
 
         result.Result.Should().BeEquivalentTo(new[]
         {
@@ -438,9 +438,9 @@ public class RecipeEntriesControllerTest
 
         string expectedMessage =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorName,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorName,-50}{Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorName,-50}{Environment.NewLine}";
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorId,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorId,-50}{Environment.NewLine}" +
+            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorId,-50}{Environment.NewLine}";
         result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
@@ -470,12 +470,12 @@ public class RecipeEntriesControllerTest
 
         string expectedMessageOne =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorName,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorName,-50}{Environment.NewLine}";
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {entries[0].AuthorId,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {entries[1].AuthorId,-50}{Environment.NewLine}";
 
         string expectedMessageTwo =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorName,-50}{Environment.NewLine}";
+            $"{entries[2].Id,-3} {entries[2].Title,-50} {entries[2].AuthorId,-50}{Environment.NewLine}";
 
         result.Result.Should().BeEquivalentTo(new[]
         {

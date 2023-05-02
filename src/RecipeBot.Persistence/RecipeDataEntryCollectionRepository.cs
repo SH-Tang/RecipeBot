@@ -102,27 +102,29 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
 
     private static RecipeDatabaseEntry CreateRecipeDatabaseEntry(RecipeTagEntity entity)
     {
+        // TODO: Wrap the parse in an outer exception
         return new RecipeDatabaseEntry
         {
             Id = entity.RecipeEntityId,
             Title = entity.Recipe.RecipeTitle,
-            AuthorName = entity.Recipe.Author.AuthorName
+            AuthorId = ulong.Parse(entity.Recipe.AuthorId)
         };
     }
 
     private static RecipeDatabaseEntry CreateRecipeDatabaseEntry(RecipeEntity entity)
     {
+        // TODO: Wrap the parse in an outer exception
         return new RecipeDatabaseEntry
         {
             Id = entity.RecipeEntityId,
             Title = entity.RecipeTitle,
-            AuthorName = entity.Author.AuthorName
+            AuthorId = ulong.Parse(entity.AuthorId)
         };
     }
 
     private static RecipeEntryData[] CreateRecipeEntryDataCollection(IEnumerable<RecipeDatabaseEntry> recipeDatabaseEntries)
     {
-        return recipeDatabaseEntries.Select(r => new RecipeEntryData(r.Id, r.Title, r.AuthorName))
+        return recipeDatabaseEntries.Select(r => new RecipeEntryData(r.Id, r.Title, r.AuthorId))
                                     .OrderBy(r => r.Id)
                                     .ToArray();
     }
@@ -143,8 +145,8 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
         public string Title { get; init; } = null!;
 
         /// <summary>
-        /// Gets or sets the name of the author of the recipe.
+        /// Gets or sets the id of the author of the recipe.
         /// </summary>
-        public string AuthorName { get; init; } = null!;
+        public ulong AuthorId { get; init; }
     }
 }

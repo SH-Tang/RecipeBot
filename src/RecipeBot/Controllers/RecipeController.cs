@@ -111,7 +111,7 @@ public class RecipeController : IRecipeController
             RecipeEntryData deletedRecipe = await repository.DeleteRecipeAsync(idToDelete);
 
             return ControllerResult<string>.CreateControllerResultWithValidResult(string.Format(Resources.RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted,
-                                                                                                deletedRecipe.Title, deletedRecipe.Id, deletedRecipe.AuthorName));
+                                                                                                deletedRecipe.Title, deletedRecipe.Id, deletedRecipe.AuthorId));
         }
         catch (RepositoryDataDeleteException e)
         {
