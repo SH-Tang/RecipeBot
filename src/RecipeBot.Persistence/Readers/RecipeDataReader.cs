@@ -44,7 +44,8 @@ internal static class RecipeDataReader
                                                               .Select(CreateRecipeFieldData)
                                                               .ToArray();
 
-        var recipeData = new RecipeData(CreateAuthorData(entity.Author), recipeFieldsData, entity.RecipeTitle, RecipeCategoryReader.Read(entity.RecipeCategory));
+        // TODO: Wrap parse in outer exception
+        var recipeData = new RecipeData(ulong.Parse(entity.Author.AuthorId), recipeFieldsData, entity.RecipeTitle, RecipeCategoryReader.Read(entity.RecipeCategory));
         if (entity.Tags.Any())
         {
             string tags = string.Join(", ", entity.Tags.OrderBy(t => t.Order).Select(t => t.Tag.Tag));
@@ -57,11 +58,5 @@ internal static class RecipeDataReader
     private static RecipeFieldData CreateRecipeFieldData(RecipeFieldEntity f)
     {
         return new RecipeFieldData(f.RecipeFieldName, f.RecipeFieldData);
-    }
-
-    private static AuthorData CreateAuthorData(AuthorEntity retrievedAuthorEntity)
-    {
-        var authorData = new AuthorData(retrievedAuthorEntity.AuthorName, retrievedAuthorEntity.AuthorImageUrl);
-        return authorData;
     }
 }

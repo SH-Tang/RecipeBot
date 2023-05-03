@@ -110,10 +110,9 @@ public class RecipeRepositoryTest
                                                    .Single();
 
                 recipeEntity.RecipeTitle.Should().Be(recipeModel.Title);
-                recipeEntity.Author.Should().NotBeNull().And.BeEquivalentTo(
-                    recipeModel.Author,
-                    options => options.Including(e => e.AuthorName)
-                                      .Including(e => e.AuthorImageUrl));
+                recipeEntity.Author.Should().NotBeNull()
+                            .And.BeEquivalentTo(recipeModel, options => options.WithAutoConversion()
+                                                                               .Including(e => e.AuthorId));
 
                 recipeEntity.RecipeFields.Should().BeEmpty();
                 recipeEntity.Tags.Should().BeEmpty();
@@ -152,10 +151,9 @@ public class RecipeRepositoryTest
                                                    .Single();
 
                 recipeEntity.RecipeTitle.Should().Be(recipeModel.Title);
-                recipeEntity.Author.Should().NotBeNull().And.BeEquivalentTo(
-                    recipeModel.Author,
-                    options => options.Including(e => e.AuthorName)
-                                      .Including(e => e.AuthorImageUrl));
+                recipeEntity.Author.Should().NotBeNull()
+                            .And.BeEquivalentTo(recipeModel, options => options.WithAutoConversion()
+                                                                               .Including(e => e.AuthorId));
 
                 recipeEntity.RecipeFields.OrderBy(f => f.Order).Should().BeEquivalentTo(
                     recipeModel.RecipeFields,
@@ -183,8 +181,7 @@ public class RecipeRepositoryTest
             {
                 context.AuthorEntities.Add(new AuthorEntity
                 {
-                    AuthorName = recipeModel.Author.AuthorName,
-                    AuthorImageUrl = recipeModel.Author.AuthorImageUrl
+                    AuthorId = recipeModel.AuthorId.ToString()
                 });
             };
 
@@ -199,10 +196,8 @@ public class RecipeRepositoryTest
                 AuthorEntity authorEntity = recipeEntity.Author;
                 authorEntity.Should().NotBeNull()
                             .And.BeSameAs(expectedAuthorEntity)
-                            .And.BeEquivalentTo(
-                                recipeModel.Author,
-                                options => options.Including(e => e.AuthorName)
-                                                  .Including(e => e.AuthorImageUrl));
+                            .And.BeEquivalentTo(recipeModel, options => options.WithAutoConversion()
+                                                                               .Including(e => e.AuthorId));
             };
 
         // Call & Assert
@@ -286,10 +281,10 @@ public class RecipeRepositoryTest
         {
             await context.Database.EnsureCreatedAsync();
 
+            var authorId = fixture.Create<ulong>();
             var authorEntity = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = authorId.ToString()
             };
 
             var recipe = new RecipeEntity
@@ -328,10 +323,10 @@ public class RecipeRepositoryTest
             await context.Database.EnsureCreatedAsync();
 
             var fixture = new Fixture();
+            var authorId = fixture.Create<ulong>();
             var authorEntity = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = authorId.ToString()
             };
 
             IReadOnlyList<TagEntity> tagEntities = new[]
@@ -440,7 +435,7 @@ public class RecipeRepositoryTest
             // Assert
             result.Id.Should().Be(recipeToDelete.RecipeEntityId);
             result.Title.Should().Be(recipeToDelete.RecipeTitle);
-            result.AuthorName.Should().Be(authorEntity.AuthorName);
+            result.AuthorId.Should().Be(authorId);
 
             context.AuthorEntities.Should().BeEquivalentTo(new[]
             {
@@ -512,10 +507,10 @@ public class RecipeRepositoryTest
             await context.Database.EnsureCreatedAsync();
 
             var fixture = new Fixture();
+            var authorId = fixture.Create<ulong>();
             var authorEntity = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = authorId.ToString()
             };
 
             var recipeToRetrieve = new RecipeEntity
@@ -552,10 +547,10 @@ public class RecipeRepositoryTest
             await context.Database.EnsureCreatedAsync();
 
             var fixture = new Fixture();
+            var authorId = fixture.Create<ulong>();
             var authorEntity = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = authorId.ToString()
             };
 
             IReadOnlyList<TagEntity> tagEntities = new[]
@@ -626,8 +621,7 @@ public class RecipeRepositoryTest
 
             // Assert
             data.RecipeTitle.Should().Be(recipeToRetrieve.RecipeTitle);
-            data.AuthorData.Should().Match<AuthorData>(s => s.AuthorName == recipeToRetrieve.Author.AuthorName
-                                                            && s.AuthorImageUrl == recipeToRetrieve.Author.AuthorImageUrl);
+            data.AuthorId.Should().Be(authorId);
             data.RecipeFields.Should().BeEquivalentTo(recipeToRetrieve.RecipeFields, options => options.ExcludingMissingMembers()
                                                                                                        .WithStrictOrderingFor(e => e.Order)
                                                                                                        .WithMapping<RecipeFieldEntity, RecipeFieldData>(e => e.RecipeFieldName, s => s.FieldName)
@@ -647,10 +641,10 @@ public class RecipeRepositoryTest
             await context.Database.EnsureCreatedAsync();
 
             var fixture = new Fixture();
+            var authorId = fixture.Create<ulong>();
             var authorEntity = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = authorId.ToString()
             };
 
             var recipeToRetrieve = new RecipeEntity
@@ -697,8 +691,7 @@ public class RecipeRepositoryTest
 
             // Assert
             data.RecipeTitle.Should().Be(recipeToRetrieve.RecipeTitle);
-            data.AuthorData.Should().Match<AuthorData>(s => s.AuthorName == recipeToRetrieve.Author.AuthorName
-                                                            && s.AuthorImageUrl == recipeToRetrieve.Author.AuthorImageUrl);
+            data.AuthorId.Should().Be(authorId);
             data.RecipeFields.Should().BeEquivalentTo(recipeToRetrieve.RecipeFields, options => options.ExcludingMissingMembers()
                                                                                                        .WithStrictOrderingFor(e => e.Order)
                                                                                                        .WithMapping<RecipeFieldEntity, RecipeFieldData>(e => e.RecipeFieldName, s => s.FieldName)

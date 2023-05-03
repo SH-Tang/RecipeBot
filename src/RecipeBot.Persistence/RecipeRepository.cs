@@ -58,7 +58,7 @@ public class RecipeRepository : IRecipeRepository
 
         try
         {
-            AuthorEntity authorEntity = await GetAuthorEntityAsync(model.Author);
+            AuthorEntity authorEntity = await GetAuthorEntityAsync(model.AuthorId);
             ICollection<RecipeTagEntity> tagLinks = await CreateRecipeTagEntities(model);
 
             RecipeEntity recipeEntity = RecipeEntityCreator.Create(model, authorEntity, tagLinks);
@@ -90,7 +90,7 @@ public class RecipeRepository : IRecipeRepository
             await context.SaveChangesAsync();
 
             // TODO Wrap the parse in an outer exception
-            return new RecipeEntryData(entityToDelete.RecipeEntityId, entityToDelete.RecipeTitle, ulong.Parse(entityToDelete.AuthorId));
+            return new RecipeEntryData(entityToDelete.RecipeEntityId, entityToDelete.RecipeTitle, ulong.Parse(entityToDelete.Author.AuthorId));
         }
         catch (DbUpdateException ex)
         {
@@ -138,11 +138,13 @@ public class RecipeRepository : IRecipeRepository
         };
     }
 
-    private async Task<AuthorEntity> GetAuthorEntityAsync(AuthorModel authorModel)
+    private async Task<AuthorEntity> GetAuthorEntityAsync(ulong authorId)
     {
-        string authorName = authorModel.AuthorName;
-        AuthorEntity? foundEntity = await context.AuthorEntities.SingleOrDefaultAsync(e => e.AuthorName == authorName);
-        return foundEntity ?? AuthorEntityCreator.Create(authorModel);
+        AuthorEntity? foundEntity = await context.AuthorEntities.SingleOrDefaultAsync(e => e.AuthorId == authorId.ToString());
+        return foundEntity ?? new AuthorEntity
+        {
+            AuthorId = authorId.ToString()
+        };
     }
 
     private Task<TagEntity?> FindTagEntityAsync(string tag)
