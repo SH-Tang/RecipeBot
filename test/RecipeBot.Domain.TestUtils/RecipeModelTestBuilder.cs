@@ -69,7 +69,6 @@ public class RecipeModelTestBuilder
                                                                   nameof(constructionProperties.MaxFieldDataLength));
 
         maxTitleLength = constructionProperties.MaxTitleLength;
-        maxAuthorNameLength = constructionProperties.MaxAuthorNameLength;
         maxFieldNameLength = constructionProperties.MaxFieldNameLength;
         maxFieldDataLength = constructionProperties.MaxFieldDataLength;
     }
