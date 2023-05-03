@@ -29,7 +29,6 @@ namespace RecipeBot.Domain.TestUtils;
 /// </summary>
 public class RecipeModelTestBuilder
 {
-    private readonly int maxAuthorNameLength;
     private readonly int maxFieldDataLength;
     private readonly int maxFieldNameLength;
     private readonly int maxTitleLength;

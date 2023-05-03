@@ -133,7 +133,7 @@ public class RecipeEntriesController : IRecipeEntriesController
         };
     }
 
-    private record RecipeEntryRow
+    private sealed record RecipeEntryRow
     {
         /// <summary>
         /// Gets the id of the recipe.
@@ -151,7 +151,7 @@ public class RecipeEntriesController : IRecipeEntriesController
         public string AuthorName { get; init; } = null!;
     }
 
-    private record AuthorEntry
+    private sealed record AuthorEntry
     {
         public ulong Id { get; init; }
 
