@@ -139,8 +139,7 @@ public class RecipeTagEntryRepositoryTest : IDisposable
 
             var authorEntity = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = fixture.Create<string>()
             };
 
             var tagEntity = new TagEntity
@@ -193,8 +192,7 @@ public class RecipeTagEntryRepositoryTest : IDisposable
             var fixture = new Fixture();
             var authorEntity = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = fixture.Create<string>()
             };
 
             var tagToDelete = new TagEntity
