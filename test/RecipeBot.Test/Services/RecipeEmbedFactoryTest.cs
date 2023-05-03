@@ -246,7 +246,7 @@ public class RecipeEmbedFactoryTest
 
     private static UserData CreateAuthor()
     {
-        return new UserData("User", "www.recipebot.com");
+        return new UserData("User", "https://www.recipebot.com");
     }
 
     private static void AssertFields(IEnumerable<RecipeFieldModel> recipeFields, IEnumerable<EmbedField> embedFields)
