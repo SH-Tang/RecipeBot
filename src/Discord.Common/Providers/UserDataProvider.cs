@@ -21,7 +21,7 @@ public class UserDataProvider : IUserDataProvider
     {
         IUser? user =  await client.GetUserAsync(userId);
 
-        // TODO: Throw exception when user is null
+        // TODO: Throw exception when user is null / catch in outer exception
         return new UserData(user.Username, user.GetAvatarUrl());
     }
 }
