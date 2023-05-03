@@ -67,13 +67,11 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
 
         var authorOne = new AuthorEntity
         {
-            AuthorName = fixture.Create<string>(),
-            AuthorImageUrl = fixture.Create<string>()
+            AuthorId = fixture.Create<ulong>().ToString()
         };
         var authorTwo = new AuthorEntity
         {
-            AuthorName = fixture.Create<string>(),
-            AuthorImageUrl = fixture.Create<string>()
+            AuthorId = fixture.Create<ulong>().ToString()
         };
 
         var recipeOne = new RecipeEntity
@@ -119,9 +117,10 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             entries.Should().BeInAscendingOrder(s => s.Id).And.BeEquivalentTo(
                 recipes,
                 options => options.ExcludingMissingMembers()
+                                  .WithAutoConversion()
                                   .WithMapping<RecipeEntryData>(e => e.RecipeEntityId, s => s.Id)
                                   .WithMapping<RecipeEntryData>(e => e.RecipeTitle, s => s.Title)
-                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorName, s => s.AuthorName));
+                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorId, s => s.AuthorId));
         }
     }
 
@@ -152,8 +151,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
 
         var author = new AuthorEntity
         {
-            AuthorName = fixture.Create<string>(),
-            AuthorImageUrl = fixture.Create<string>()
+            AuthorId = fixture.Create<string>()
         };
 
         var recipeOne = new RecipeEntity
@@ -234,9 +232,10 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             entries.Should().BeInAscendingOrder(s => s.Id).And.BeEquivalentTo(
                 expectedRecipes,
                 options => options.ExcludingMissingMembers()
+                                  .WithAutoConversion()
                                   .WithMapping<RecipeEntryData>(e => e.RecipeEntityId, s => s.Id)
                                   .WithMapping<RecipeEntryData>(e => e.RecipeTitle, s => s.Title)
-                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorName, s => s.AuthorName));
+                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorId, s => s.AuthorId));
         }
     }
 
@@ -270,8 +269,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             var fixture = new Fixture();
             var author = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = fixture.Create<string>()
             };
 
             var tagEntity = new TagEntity
@@ -319,10 +317,10 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             await context.Database.EnsureCreatedAsync();
 
             var fixture = new Fixture();
+            var authorId = fixture.Create<ulong>();
             var author = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = authorId.ToString()
             };
 
             var tagToFilter = new TagEntity
@@ -399,9 +397,11 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
                     recipeThree
                 },
                 options => options.ExcludingMissingMembers()
+                                  .WithAutoConversion()
                                   .WithMapping<RecipeEntryData>(e => e.RecipeEntityId, s => s.Id)
                                   .WithMapping<RecipeEntryData>(e => e.RecipeTitle, s => s.Title)
-                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorName, s => s.AuthorName));
+                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorId, s => s.AuthorId));
+
         }
     }
 
@@ -435,8 +435,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             var fixture = new Fixture();
             var author = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = fixture.Create<string>()
             };
 
             var tagEntity = new TagEntity
@@ -484,10 +483,10 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             await context.Database.EnsureCreatedAsync();
 
             var fixture = new Fixture();
+            var authorId = fixture.Create<ulong>();
             var author = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = authorId.ToString()
             };
 
             var tagToFilter = new TagEntity
@@ -564,9 +563,10 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
                     recipeThree
                 },
                 options => options.ExcludingMissingMembers()
+                                  .WithAutoConversion()
                                   .WithMapping<RecipeEntryData>(e => e.RecipeEntityId, s => s.Id)
                                   .WithMapping<RecipeEntryData>(e => e.RecipeTitle, s => s.Title)
-                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorName, s => s.AuthorName));
+                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorId, s => s.AuthorId));
         }
     }
 
@@ -581,13 +581,11 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
         var fixture = new Fixture();
         var authorOne = new AuthorEntity
         {
-            AuthorName = fixture.Create<string>(),
-            AuthorImageUrl = fixture.Create<string>()
+            AuthorId = fixture.Create<ulong>().ToString()
         };
         var authorTwo = new AuthorEntity
         {
-            AuthorName = fixture.Create<string>(),
-            AuthorImageUrl = fixture.Create<string>()
+            AuthorId = fixture.Create<ulong>().ToString()
         };
 
         var recipeOne = new RecipeEntity

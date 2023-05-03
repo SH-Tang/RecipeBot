@@ -107,7 +107,7 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
         {
             Id = entity.RecipeEntityId,
             Title = entity.Recipe.RecipeTitle,
-            AuthorId = ulong.Parse(entity.Recipe.AuthorId)
+            AuthorId = ulong.Parse(entity.Recipe.Author.AuthorId)
         };
     }
 
@@ -118,7 +118,7 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
         {
             Id = entity.RecipeEntityId,
             Title = entity.RecipeTitle,
-            AuthorId = ulong.Parse(entity.AuthorId)
+            AuthorId = ulong.Parse(entity.Author.AuthorId)
         };
     }
 
