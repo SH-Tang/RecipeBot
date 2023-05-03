@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Common.Utils;
 using Discord;
+using Discord.Common.Providers;
 using RecipeBot.Domain.Models;
 using RecipeBot.Exceptions;
 using RecipeBot.Properties;
@@ -35,16 +36,18 @@ internal static class RecipeEmbedFactory
     /// Creates an <see cref="Embed"/> based on its input arguments.
     /// </summary>
     /// <param name="recipe">The <see cref="RecipeModel"/> to create the <see cref="Embed"/> with.</param>
+    /// <param name="author">The author associated with <paramref name="recipe"/>.</param>
     /// <returns>An <see cref="Embed"/>.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="recipe"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when any argument is <c>null</c>.</exception>
     /// <exception cref="EmbedCreateException">Thrown when the <see cref="Embed"/> could not be successfully created.</exception>
-    public static Embed Create(RecipeModel recipe)
+    public static Embed Create(RecipeModel recipe, UserData author)
     {
         recipe.IsNotNull(nameof(recipe));
+        author.IsNotNull(nameof(author));
 
         try
         {
-            EmbedBuilder embedBuilder = CreateConfiguredEmbedBuilder(recipe);
+            EmbedBuilder embedBuilder = CreateConfiguredEmbedBuilder(recipe, author);
             return embedBuilder.Build();
         }
         catch (InvalidOperationException e)
@@ -53,9 +56,10 @@ internal static class RecipeEmbedFactory
         }
     }
 
-    private static EmbedBuilder CreateConfiguredEmbedBuilder(RecipeModel recipeData)
+    private static EmbedBuilder CreateConfiguredEmbedBuilder(RecipeModel recipeData, UserData author)
     {
         EmbedBuilder embedBuilder = new EmbedBuilder().WithTitle(recipeData.Title)
+                                                      .WithAuthor(author.Username, author.UserImageUrl)
                                                       .WithColor(RecipeCategoryConverter.ConvertTo(recipeData.RecipeCategory));
         RecipeTagsModelWrapper tagData = recipeData.RecipeTags;
         if (tagData.Tags.Any())

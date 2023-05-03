@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
 using Discord;
+using Discord.Common.Providers;
 using FluentAssertions;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
@@ -53,7 +54,7 @@ public class RecipeEmbedFactoryTest
                                               .Build();
 
         // Call
-        Embed embed = RecipeEmbedFactory.Create(recipeModel);
+        Embed embed = RecipeEmbedFactory.Create(recipeModel, CreateAuthor());
 
         // Assert
         embed.Color.Should().Be(expectedColor);
@@ -64,15 +65,16 @@ public class RecipeEmbedFactoryTest
     {
         // Setup
         RecipeModel recipeModel = modelBuilder.Build();
+        UserData author = CreateAuthor();
 
         // Call
-        Embed embed = RecipeEmbedFactory.Create(recipeModel);
+        Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
 
         // Assert
         embed.Title.Should().Be(recipeModel.Title);
         embed.Image.Should().BeNull();
 
-        AssertAuthor(recipeModel.Author, embed.Author);
+        AssertAuthor(author, embed.Author);
         AssertFields(recipeModel.RecipeFields, embed.Fields);
 
         embed.Footer.Should().BeNull();
@@ -93,15 +95,16 @@ public class RecipeEmbedFactoryTest
                                               })
                                               .AddFields(3)
                                               .Build();
-
+        UserData author = CreateAuthor();
+        
         // Call
-        Embed embed = RecipeEmbedFactory.Create(recipeModel);
+        Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
 
         // Assert
         embed.Title.Should().Be(recipeModel.Title);
         embed.Image.Should().NotBeNull().And.Match<EmbedImage>(s => s.Url == recipeModel.RecipeImageUrl);
 
-        AssertAuthor(recipeModel.Author, embed.Author);
+        AssertAuthor(author, embed.Author);
         AssertFields(recipeModel.RecipeFields, embed.Fields);
 
         var expectedFooterText = $"{TagTestHelper.CategoryMapping[category]}, Tag1, Tag2";
@@ -115,15 +118,16 @@ public class RecipeEmbedFactoryTest
         // Setup
         RecipeModel recipeModel = modelBuilder.AddImage()
                                               .Build();
-
+        UserData author = CreateAuthor();
+        
         // Call
-        Embed embed = RecipeEmbedFactory.Create(recipeModel);
+        Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
 
         // Assert
         embed.Title.Should().Be(recipeModel.Title);
         embed.Image.Should().NotBeNull().And.Match<EmbedImage>(s => s.Url == recipeModel.RecipeImageUrl);
 
-        AssertAuthor(recipeModel.Author, embed.Author);
+        AssertAuthor(author, embed.Author);
         AssertFields(recipeModel.RecipeFields, embed.Fields);
 
         embed.Footer.Should().BeNull();
@@ -135,15 +139,16 @@ public class RecipeEmbedFactoryTest
         // Setup
         RecipeModel recipeModel = modelBuilder.AddFields(3)
                                               .Build();
-
+        UserData author = CreateAuthor();
+        
         // Call
-        Embed embed = RecipeEmbedFactory.Create(recipeModel);
+        Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
 
         // Assert
         embed.Title.Should().Be(recipeModel.Title);
         embed.Image.Should().BeNull();
 
-        AssertAuthor(recipeModel.Author, embed.Author);
+        AssertAuthor(author, embed.Author);
         AssertFields(recipeModel.RecipeFields, embed.Fields);
 
         embed.Footer.Should().BeNull();
@@ -162,15 +167,16 @@ public class RecipeEmbedFactoryTest
                                                   "Tag2"
                                               })
                                               .Build();
-
+        UserData author = CreateAuthor();
+        
         // Call
-        Embed embed = RecipeEmbedFactory.Create(recipeModel);
+        Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
 
         // Assert
         embed.Title.Should().Be(recipeModel.Title);
         embed.Image.Should().BeNull();
 
-        AssertAuthor(recipeModel.Author, embed.Author);
+        AssertAuthor(author, embed.Author);
         AssertFields(recipeModel.RecipeFields, embed.Fields);
 
         var expectedFooterText = $"{TagTestHelper.CategoryMapping[category]}, Tag1, Tag2";
@@ -229,13 +235,18 @@ public class RecipeEmbedFactoryTest
         };
     }
 
-    private static void AssertAuthor(AuthorModel authorData, EmbedAuthor? actualAuthor)
+    private static void AssertAuthor(UserData authorData, EmbedAuthor? actualAuthor)
     {
         actualAuthor.Should().NotBeNull().And.BeEquivalentTo(
             authorData,
             options => options.ExcludingMissingMembers()
-                              .WithMapping<EmbedAuthor>(e => e.AuthorName, s => s.Name)
-                              .WithMapping<EmbedAuthor>(e => e.AuthorImageUrl, s => s.IconUrl));
+                              .WithMapping<EmbedAuthor>(e => e.Username, s => s.Name)
+                              .WithMapping<EmbedAuthor>(e => e.UserImageUrl, s => s.IconUrl));
+    }
+
+    private static UserData CreateAuthor()
+    {
+        return new UserData("User", "www.recipebot.com");
     }
 
     private static void AssertFields(IEnumerable<RecipeFieldModel> recipeFields, IEnumerable<EmbedField> embedFields)
