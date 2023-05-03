@@ -24,6 +24,7 @@ using FluentAssertions;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using RecipeBot.Domain.Data;
+using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.Persistence.Creators;
 using RecipeBot.Persistence.Entities;
@@ -121,6 +122,43 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
                                   .WithMapping<RecipeEntryData>(e => e.RecipeEntityId, s => s.Id)
                                   .WithMapping<RecipeEntryData>(e => e.RecipeTitle, s => s.Title)
                                   .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorId, s => s.AuthorId));
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(GetInvalidAuthorId))]
+    public async Task Given_database_with_invalid_author_when_loading_entries_throws_exception(string invalidAuthorId)
+    {
+        // Setup
+        var invalidAuthorEntity = new AuthorEntity
+        {
+            AuthorId = invalidAuthorId
+        };
+
+        var fixture = new Fixture();
+        var recipe = new RecipeEntity
+        {
+            RecipeEntityId = fixture.Create<int>(),
+            Author = invalidAuthorEntity,
+            RecipeTitle = fixture.Create<string>()
+        };
+
+        using (RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+            await context.RecipeEntities.AddAsync(recipe);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeDataEntryCollectionRepository(context);
+
+            // Call
+            Func<Task> call = () => repository.LoadRecipeEntriesAsync();
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataLoadException>()
+                      .WithMessage($"AuthorId '{invalidAuthorId}' could not be successfully parsed.");
         }
     }
 
@@ -236,6 +274,44 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
                                   .WithMapping<RecipeEntryData>(e => e.RecipeEntityId, s => s.Id)
                                   .WithMapping<RecipeEntryData>(e => e.RecipeTitle, s => s.Title)
                                   .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorId, s => s.AuthorId));
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(GetInvalidAuthorId))]
+    public async Task Given_database_with_invalid_author_when_loading_entries_with_category_and_match_found_throws_exception(string invalidAuthorId)
+    {
+        // Setup
+        var invalidAuthorEntity = new AuthorEntity
+        {
+            AuthorId = invalidAuthorId
+        };
+
+        var fixture = new Fixture();
+        var recipe = new RecipeEntity
+        {
+            RecipeEntityId = fixture.Create<int>(),
+            Author = invalidAuthorEntity,
+            RecipeCategory = PersistentRecipeCategory.Other,
+            RecipeTitle = fixture.Create<string>()
+        };
+
+        using (RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+            await context.RecipeEntities.AddAsync(recipe);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeDataEntryCollectionRepository(context);
+
+            // Call
+            Func<Task> call = () => repository.LoadRecipeEntriesByCategoryAsync(RecipeCategory.Other);
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataLoadException>()
+                      .WithMessage($"AuthorId '{invalidAuthorId}' could not be successfully parsed.");
         }
     }
 
@@ -404,6 +480,58 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
         }
     }
 
+    [Theory]
+    [MemberData(nameof(GetInvalidAuthorId))]
+    public async Task Given_database_with_invalid_author_when_loading_entries_by_tag_id_and_match_found_throws_exception(string invalidAuthorId)
+    {
+        // Setup
+        using (RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var invalidAuthorEntity = new AuthorEntity
+            {
+                AuthorId = invalidAuthorId
+            };
+
+            var tagToFilter = new TagEntity
+            {
+                TagEntityId = fixture.Create<long>(),
+                Tag = fixture.Create<string>()
+            };
+
+            var recipe = new RecipeEntity
+            {
+                RecipeEntityId = 3,
+                Author = invalidAuthorEntity,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeTitle = fixture.Create<string>(),
+                Tags = new[]
+                {
+                    new RecipeTagEntity
+                    {
+                        Tag = tagToFilter,
+                        Order = fixture.Create<byte>()
+                    }
+                }
+            };
+
+            await context.RecipeEntities.AddAsync(recipe);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeDataEntryCollectionRepository(context);
+
+            // Call
+            Func<Task> call = () => repository.LoadRecipeEntriesByTagIdAsync(tagToFilter.TagEntityId);
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataLoadException>()
+                      .WithMessage($"AuthorId '{invalidAuthorId}' could not be successfully parsed.");
+        }
+    }
+
     [Fact]
     public async Task Given_empty_database_when_loading_entries_by_tag_returns_empty_collection()
     {
@@ -569,6 +697,58 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
         }
     }
 
+    [Theory]
+    [MemberData(nameof(GetInvalidAuthorId))]
+    public async Task Given_database_with_invalid_author_when_loading_entries_by_tag_and_match_found_throws_exception(string invalidAuthorId)
+    {
+        // Setup
+        using (RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var invalidAuthorEntity = new AuthorEntity
+            {
+                AuthorId = invalidAuthorId
+            };
+
+            var tagToFilter = new TagEntity
+            {
+                TagEntityId = fixture.Create<long>(),
+                Tag = fixture.Create<string>()
+            };
+
+            var recipe = new RecipeEntity
+            {
+                RecipeEntityId = 3,
+                Author = invalidAuthorEntity,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeTitle = fixture.Create<string>(),
+                Tags = new[]
+                {
+                    new RecipeTagEntity
+                    {
+                        Tag = tagToFilter,
+                        Order = fixture.Create<byte>()
+                    }
+                }
+            };
+
+            await context.RecipeEntities.AddAsync(recipe);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeDataEntryCollectionRepository(context);
+
+            // Call
+            Func<Task> call = () => repository.LoadRecipeEntriesByTagAsync(tagToFilter.Tag);
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataLoadException>()
+                      .WithMessage($"AuthorId '{invalidAuthorId}' could not be successfully parsed.");
+        }
+    }
+
     public static IEnumerable<object[]> GetCategoryTests(RecipeCategory categoryToFilter)
     {
         PersistentRecipeCategory persistentRecipeCategoryToFilter = PersistentRecipeCategoryCreator.Create(categoryToFilter);
@@ -578,6 +758,18 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             databaseEntries,
             categoryToFilter,
             databaseEntries.Where(e => e.RecipeCategory == persistentRecipeCategoryToFilter).OrderBy(e => e.RecipeEntityId)
+        };
+    }
+
+    public static IEnumerable<object[]> GetInvalidAuthorId()
+    {
+        yield return new object[]
+        {
+            "X"
+        };
+        yield return new object[]
+        {
+            "18446744073709551616"
         };
     }
 

@@ -94,5 +94,14 @@ namespace RecipeBot.Persistence.Properties {
                 return ResourceManager.GetString("RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_Id_0_", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AuthorId &apos;{0}&apos; could not be successfully parsed..
+        /// </summary>
+        internal static string Repository_invalid_AuthorId_0 {
+            get {
+                return ResourceManager.GetString("Repository_invalid_AuthorId_0", resourceCulture);
+            }
+        }
     }
 }

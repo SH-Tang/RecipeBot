@@ -123,4 +123,7 @@
   <data name="RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_Id_0_" xml:space="preserve">
     <value>No tag matches with id '{0}'.</value>
   </data>
+  <data name="Repository_invalid_AuthorId_0" xml:space="preserve">
+    <value>AuthorId '{0}' could not be successfully parsed.</value>
+  </data>
 </root>
