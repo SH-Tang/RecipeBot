@@ -83,8 +83,8 @@ public class RecipeController : IRecipeController
         try
         {
             RecipeModel recipeModel = attachment == null
-                ? modelCreationService.CreateRecipeModel(modal, user, category)
-                : modelCreationService.CreateRecipeModel(modal, user, category, attachment);
+                                          ? modelCreationService.CreateRecipeModel(modal, user, category)
+                                          : modelCreationService.CreateRecipeModel(modal, user, category, attachment);
 
             var author = new UserData(user.Username, user.GetAvatarUrl());
             Task<Embed> embedTask = Task.Run(() => RecipeEmbedFactory.Create(recipeModel, author));
@@ -119,8 +119,8 @@ public class RecipeController : IRecipeController
             RecipeEntryData deletedRecipe = await repository.DeleteRecipeAsync(idToDelete);
 
             UserData userData = await userDataProvider.GetUserDataAsync(deletedRecipe.AuthorId);
-            return ControllerResult<string>.CreateControllerResultWithValidResult(string.Format(Resources.RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted, 
-                deletedRecipe.Title, deletedRecipe.Id, userData.Username));
+            return ControllerResult<string>.CreateControllerResultWithValidResult(string.Format(Resources.RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted,
+                                                                                                deletedRecipe.Title, deletedRecipe.Id, userData.Username));
         }
         catch (RepositoryDataDeleteException e)
         {
@@ -151,7 +151,6 @@ public class RecipeController : IRecipeController
             return await HandleException<Embed>(e);
         }
     }
-
 
     private async Task<ControllerResult<TResult>> HandleException<TResult>(Exception e) where TResult : class
     {

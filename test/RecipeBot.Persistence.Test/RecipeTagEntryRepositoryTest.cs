@@ -40,12 +40,6 @@ public class RecipeTagEntryRepositoryTest : IDisposable
         connection.Open();
     }
 
-    public void Dispose()
-    {
-        GC.SuppressFinalize(this);
-        connection.Dispose();
-    }
-
     [Fact]
     public async Task Given_empty_database_when_loading_tags_returns_empty_collection()
     {
@@ -266,7 +260,6 @@ public class RecipeTagEntryRepositoryTest : IDisposable
                 unaffectedTag
             }, options => options.Excluding(s => s.Recipes));
 
-
             context.RecipeFieldEntities.Should().BeEquivalentTo(recipe.RecipeFields, options => options.Excluding(s => s.Recipe));
             context.RecipeTagEntities.Should().BeEquivalentTo(new[]
             {
@@ -292,6 +285,12 @@ public class RecipeTagEntryRepositoryTest : IDisposable
 
             recipeEntity.RecipeFields.Should().BeEquivalentTo(recipe.RecipeFields, options => options.Excluding(s => s.Recipe));
         }
+    }
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+        connection.Dispose();
     }
 
     private RecipeBotDbContext CreateContext()

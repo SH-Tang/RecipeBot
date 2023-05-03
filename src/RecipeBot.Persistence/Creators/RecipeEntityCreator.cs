@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Common.Utils;
-using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
 using RecipeBot.Persistence.Entities;
 

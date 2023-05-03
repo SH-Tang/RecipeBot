@@ -59,7 +59,7 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
     {
         try
         {
-            using (IServiceScope scope = scopeFactory.CreateScope())
+            using(IServiceScope scope = scopeFactory.CreateScope())
             {
                 var controller = scope.ServiceProvider.GetRequiredService<IRecipeController>();
                 ControllerResult<Embed> response = await controller.GetRecipeAsync(recipeIdToRetrieve);

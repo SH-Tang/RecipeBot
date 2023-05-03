@@ -133,7 +133,7 @@ public class RecipeRepository : IRecipeRepository
 
         return new RecipeTagEntity
         {
-            Tag = tagEntity, 
+            Tag = tagEntity,
             Order = i
         };
     }

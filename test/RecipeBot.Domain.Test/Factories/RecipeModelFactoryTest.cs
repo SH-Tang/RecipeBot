@@ -52,7 +52,7 @@ public class RecipeModelFactoryTest
 
         model.AuthorId.Should().Be(recipeData.AuthorId);
         model.RecipeFields.Should().BeEquivalentTo(recipeData.RecipeFields, options => options.WithStrictOrdering());
-        
+
         AssertTags(recipeData, model.RecipeTags);
     }
 
@@ -137,7 +137,7 @@ public class RecipeModelFactoryTest
         Action call = () => factory.Create(recipeData);
 
         // Assert
-        var expectedMessage = $"RecipeTitle must be less or equal to {recipeCharacterLimitProvider.MaximumTitleLength} characters.";
+        string expectedMessage = $"RecipeTitle must be less or equal to {recipeCharacterLimitProvider.MaximumTitleLength} characters.";
         call.Should().Throw<ModelCreateException>()
             .WithMessage(expectedMessage);
     }
@@ -192,7 +192,7 @@ public class RecipeModelFactoryTest
         Action call = () => factory.Create(recipeData);
 
         // Assert
-        var expectedMessage = $"recipeData must be less or equal to {recipeCharacterLimitProvider.MaximumRecipeLength} characters.";
+        string expectedMessage = $"recipeData must be less or equal to {recipeCharacterLimitProvider.MaximumRecipeLength} characters.";
         call.Should().Throw<ModelCreateException>()
             .WithMessage(expectedMessage);
     }
@@ -250,7 +250,7 @@ public class RecipeModelFactoryTest
         var fixture = new Fixture();
         IEnumerable<RecipeFieldData>? fields = fixture.Build<RecipeFieldData>()
                                                       .FromFactory(() => new RecipeFieldData(new string('o', limitProvider.MaximumFieldNameLength),
-                                                          new string('x', limitProvider.MaximumFieldDataLength)))
+                                                                                             new string('x', limitProvider.MaximumFieldDataLength)))
                                                       .CreateMany(3);
 
         return fixture.Build<RecipeData>()
@@ -264,7 +264,7 @@ public class RecipeModelFactoryTest
         var fixture = new Fixture();
         IEnumerable<RecipeFieldData>? fields = fixture.Build<RecipeFieldData>()
                                                       .FromFactory(() => new RecipeFieldData(new string('o', limitProvider.MaximumFieldNameLength),
-                                                          new string('x', limitProvider.MaximumFieldDataLength)))
+                                                                                             new string('x', limitProvider.MaximumFieldDataLength)))
                                                       .CreateMany(3);
 
         return fixture.Build<RecipeData>()

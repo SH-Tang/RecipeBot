@@ -34,11 +34,11 @@ internal class RecipeDataBuilder
 {
     private readonly ulong authorId;
     private readonly string recipeTitle;
-    private string? imageUrl;
-    private string? tags;
 
     private readonly RecipeCategory recipeCategory;
     private readonly List<RecipeFieldData> recipeFields;
+    private string? imageUrl;
+    private string? tags;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeDataBuilder"/>.

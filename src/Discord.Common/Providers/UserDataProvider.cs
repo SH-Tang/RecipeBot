@@ -17,9 +17,9 @@ public class UserDataProvider : IUserDataProvider
         client.IsNotNull(nameof(client));
     }
 
-    public async  Task<UserData> GetUserDataAsync(ulong userId)
+    public async Task<UserData> GetUserDataAsync(ulong userId)
     {
-        IUser? user =  await client.GetUserAsync(userId);
+        IUser? user = await client.GetUserAsync(userId);
 
         // TODO: Throw exception when user is null / catch in outer exception
         return new UserData(user.Username, user.GetAvatarUrl());

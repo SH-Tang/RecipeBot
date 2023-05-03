@@ -126,7 +126,7 @@ public class RecipeModelTest
 
         // Assert
         int expectedLength = recipeTitle.Length + recipeFields.Sum(f => f.TotalLength)
-                             + TagTestHelper.GetTotalTagsLength(metaData.Category, metaData.Tags);
+                                                + TagTestHelper.GetTotalTagsLength(metaData.Category, metaData.Tags);
         totalLength.Should().Be(expectedLength);
     }
 
@@ -153,7 +153,7 @@ public class RecipeModelTest
 
         // Assert
         int expectedLength = recipeTitle.Length + recipeFields.Sum(f => f.TotalLength)
-                             + TagTestHelper.GetTotalTagsLength(metaData.Category, metaData.Tags);
+                                                + TagTestHelper.GetTotalTagsLength(metaData.Category, metaData.Tags);
         totalLength.Should().Be(expectedLength);
     }
 
@@ -201,12 +201,12 @@ public class RecipeModelTest
     {
         var authorId = fixture.Create<ulong>();
         var category = fixture.Create<RecipeCategory>();
-        
+
         IEnumerable<string> tags = fixture.CreateMany<string>();
         RecipeTagsModel tagsModel = fixture.Build<RecipeTagsModel>()
                                            .FromFactory(() => new RecipeTagsModel(tags))
                                            .Create();
-        
+
         return new RecipeModelMetaData(authorId, tagsModel, category);
     }
 }

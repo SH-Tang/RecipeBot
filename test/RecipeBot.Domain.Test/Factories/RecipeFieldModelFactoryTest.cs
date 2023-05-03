@@ -50,7 +50,7 @@ public class RecipeFieldModelFactoryTest
         Action call = () => factory.Create(invalidFieldData);
 
         // Assert
-        var expectedMessage = $"{nameof(RecipeFieldData.FieldName)} must be less or equal to {maximumFieldNameLength} characters.";
+        string expectedMessage = $"{nameof(RecipeFieldData.FieldName)} must be less or equal to {maximumFieldNameLength} characters.";
         call.Should().Throw<ModelCreateException>()
             .WithMessage(expectedMessage);
     }
@@ -72,12 +72,12 @@ public class RecipeFieldModelFactoryTest
         var fieldData = new string('+', maximumFieldDataLength + 1);
 
         var invalidFieldData = new RecipeFieldData(fieldName, fieldData);
-        
+
         // Call
         Action call = () => factory.Create(invalidFieldData);
 
         // Assert
-        var expectedMessage = $"{nameof(RecipeFieldData.FieldData)} must be less or equal to {maximumFieldDataLength} characters.";
+        string expectedMessage = $"{nameof(RecipeFieldData.FieldData)} must be less or equal to {maximumFieldDataLength} characters.";
         call.Should().Throw<ModelCreateException>()
             .WithMessage(expectedMessage);
     }

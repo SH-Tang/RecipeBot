@@ -66,7 +66,7 @@ internal class DataEntryCollectionMessageFormattingService<TDataEntry>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="entries"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="emptyCollectionMessage"/> is <c>null</c> or
     /// consists of whitespaces.</exception>
-    public IReadOnlyList<string> CreateMessages(IEnumerable<TDataEntry> entries , string emptyCollectionMessage)
+    public IReadOnlyList<string> CreateMessages(IEnumerable<TDataEntry> entries, string emptyCollectionMessage)
     {
         entries.IsNotNull(nameof(entries));
         emptyCollectionMessage.IsNotNullOrWhiteSpaces(nameof(emptyCollectionMessage));

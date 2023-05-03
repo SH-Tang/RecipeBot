@@ -76,7 +76,6 @@ public class RecipeModelCreationServiceTest
         var user = Substitute.For<IUser>();
         user.Id.Returns(fixture.Create<ulong>());
 
-
         var modal = new RecipeModal
         {
             RecipeTitle = "Recipe title",
@@ -109,7 +108,6 @@ public class RecipeModelCreationServiceTest
         var fixture = new Fixture();
         var user = Substitute.For<IUser>();
         user.Id.Returns(fixture.Create<ulong>());
-
 
         const string recipeTitle = "Recipe title";
         const string recipeIngredients = "My ingredients";

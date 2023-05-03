@@ -26,28 +26,6 @@ namespace RecipeBot.Discord.Controllers;
 /// <typeparam name="TResult">The result to host.</typeparam>
 public class ControllerResult<TResult> where TResult : class
 {
-    /// <summary>
-    /// Creates a new instance of <see cref="ControllerResult{TResult}"/> with a valid result.
-    /// </summary>
-    /// <param name="result">The <typeparamref name="TResult"/> to host.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="result"/> is <c>null</c>.</exception>
-    public static ControllerResult<TResult> CreateControllerResultWithValidResult(TResult result)
-    {
-        result.IsNotNull(nameof(result));
-
-        return new ControllerResult<TResult>(result);
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="ControllerResult{TResult}"/> with an error message.
-    /// </summary>
-    /// <param name="errorMessage">The error message.</param>
-    public static ControllerResult<TResult> CreateControllerResultWithError(string errorMessage)
-    {
-        return new ControllerResult<TResult>(errorMessage);
-    }
-
-
     private ControllerResult(TResult result)
     {
         HasError = false;
@@ -74,4 +52,25 @@ public class ControllerResult<TResult> where TResult : class
     /// Gets the indicator whether an error has occurred.
     /// </summary>
     public bool HasError { get; init; }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="ControllerResult{TResult}"/> with a valid result.
+    /// </summary>
+    /// <param name="result">The <typeparamref name="TResult"/> to host.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="result"/> is <c>null</c>.</exception>
+    public static ControllerResult<TResult> CreateControllerResultWithValidResult(TResult result)
+    {
+        result.IsNotNull(nameof(result));
+
+        return new ControllerResult<TResult>(result);
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="ControllerResult{TResult}"/> with an error message.
+    /// </summary>
+    /// <param name="errorMessage">The error message.</param>
+    public static ControllerResult<TResult> CreateControllerResultWithError(string errorMessage)
+    {
+        return new ControllerResult<TResult>(errorMessage);
+    }
 }

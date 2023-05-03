@@ -134,7 +134,7 @@ public class RecipeEntriesControllerTest
 
         result.Result.Should().BeEquivalentTo(new[]
         {
-            Format.Code(expectedMessageOne), 
+            Format.Code(expectedMessageOne),
             Format.Code(expectedMessageTwo)
         }, options => options.WithStrictOrdering());
     }
@@ -289,7 +289,7 @@ public class RecipeEntriesControllerTest
     {
         // Setup
         const string expectedTagArgument = "tagtofilter";
-        
+
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesByTagAsync(expectedTagArgument).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());

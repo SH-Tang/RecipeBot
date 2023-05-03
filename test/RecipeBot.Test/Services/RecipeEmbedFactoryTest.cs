@@ -96,7 +96,7 @@ public class RecipeEmbedFactoryTest
                                               .AddFields(3)
                                               .Build();
         UserData author = CreateAuthor();
-        
+
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
 
@@ -119,7 +119,7 @@ public class RecipeEmbedFactoryTest
         RecipeModel recipeModel = modelBuilder.AddImage()
                                               .Build();
         UserData author = CreateAuthor();
-        
+
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
 
@@ -140,7 +140,7 @@ public class RecipeEmbedFactoryTest
         RecipeModel recipeModel = modelBuilder.AddFields(3)
                                               .Build();
         UserData author = CreateAuthor();
-        
+
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
 
@@ -168,7 +168,7 @@ public class RecipeEmbedFactoryTest
                                               })
                                               .Build();
         UserData author = CreateAuthor();
-        
+
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
 

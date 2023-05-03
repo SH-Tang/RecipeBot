@@ -56,7 +56,6 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
                                                                        .AsNoTracking()
                                                                        .ToArrayAsync();
 
-
         return CreateRecipeEntryDataCollection(recipeEntities);
     }
 

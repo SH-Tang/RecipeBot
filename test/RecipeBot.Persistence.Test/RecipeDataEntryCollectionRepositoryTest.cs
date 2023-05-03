@@ -45,7 +45,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
     public async Task Given_empty_database_when_loading_entries_returns_empty_collection()
     {
         // Setup
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
@@ -100,7 +100,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             recipeThree
         };
 
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
             await context.RecipeEntities.AddRangeAsync(recipes);
@@ -129,7 +129,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
     {
         // Setup
         var fixture = new Fixture();
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
@@ -183,7 +183,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             recipeThree
         };
 
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
             await context.RecipeEntities.AddRangeAsync(recipes);
@@ -215,7 +215,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
         IReadOnlyCollection<RecipeEntity> recipeEntries, RecipeCategory categoryToFilter, IEnumerable<RecipeEntity> expectedRecipes)
     {
         // Setup
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
             await context.RecipeEntities.AddRangeAsync(recipeEntries);
@@ -244,7 +244,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
     {
         // Setup
         var fixture = new Fixture();
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
@@ -262,7 +262,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
     public async Task Given_seeded_database_when_loading_entries_by_tag_id_and_no_match_found_returns_empty_collection()
     {
         // Setup
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
@@ -312,7 +312,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
     public async Task Given_seeded_database_when_loading_entries_by_tag_id_and_match_found_returns_filtered_data_and_sorted_by_id()
     {
         // Setup
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
@@ -401,7 +401,6 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
                                   .WithMapping<RecipeEntryData>(e => e.RecipeEntityId, s => s.Id)
                                   .WithMapping<RecipeEntryData>(e => e.RecipeTitle, s => s.Title)
                                   .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorId, s => s.AuthorId));
-
         }
     }
 
@@ -410,7 +409,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
     {
         // Setup
         var fixture = new Fixture();
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
@@ -428,7 +427,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
     public async Task Given_seeded_database_when_loading_entries_by_tag_and_no_match_found_returns_empty_collection()
     {
         // Setup
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
@@ -478,7 +477,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
     public async Task Given_seeded_database_when_loading_entries_by_tag_and_match_found_returns_filtered_data_and_sorted_by_id()
     {
         // Setup
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
@@ -570,6 +569,18 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
         }
     }
 
+    public static IEnumerable<object[]> GetCategoryTests(RecipeCategory categoryToFilter)
+    {
+        PersistentRecipeCategory persistentRecipeCategoryToFilter = PersistentRecipeCategoryCreator.Create(categoryToFilter);
+        IReadOnlyCollection<RecipeEntity> databaseEntries = GetDatabaseSeed(persistentRecipeCategoryToFilter);
+        yield return new object[]
+        {
+            databaseEntries,
+            categoryToFilter,
+            databaseEntries.Where(e => e.RecipeCategory == persistentRecipeCategoryToFilter).OrderBy(e => e.RecipeEntityId)
+        };
+    }
+
     public void Dispose()
     {
         GC.SuppressFinalize(this);
@@ -615,18 +626,6 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             recipeOne,
             recipeTwo,
             recipeThree
-        };
-    }
-
-    public static IEnumerable<object[]> GetCategoryTests(RecipeCategory categoryToFilter)
-    {
-        PersistentRecipeCategory persistentRecipeCategoryToFilter = PersistentRecipeCategoryCreator.Create(categoryToFilter);
-        IReadOnlyCollection<RecipeEntity> databaseEntries = GetDatabaseSeed(persistentRecipeCategoryToFilter);
-        yield return new object[]
-        {
-            databaseEntries,
-            categoryToFilter,
-            databaseEntries.Where(e => e.RecipeCategory == persistentRecipeCategoryToFilter).OrderBy(e => e.RecipeEntityId)
         };
     }
 
