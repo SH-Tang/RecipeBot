@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="RecipeEntityId_0_unsuccessfully_deleted_due_to_invalid_AuthorId_1" xml:space="preserve">
+    <value>Recipe with id '{0}' could not be deleted due to unreadable AuthorId '{1}'.</value>
+  </data>
+  <data name="RecipeEntityId_0_unsuccessfully_loaded_due_to_invalid_AuthorId_1" xml:space="preserve">
+    <value>Recipe with id '{0}' could not be loaded due to unreadable AuthorId '{1}'.</value>
+  </data>
   <data name="RecipeRepository_No_recipe_matches_with_Id_0" xml:space="preserve">
     <value>No recipe matches with id '{0}'.</value>
   </data>

@@ -269,6 +269,50 @@ public class RecipeRepositoryTest
         }
     }
 
+    [Theory]
+    [MemberData(nameof(GetInvalidAuthorId))]
+    public async Task Given_seeded_database_when_deleting_matching_recipe_with_invalid_author_throws_exception(string invalidAuthorId)
+    {
+        // Setup
+        var fixture = new Fixture();
+        var idToDelete = fixture.Create<long>();
+
+        using(var provider = new RecipeBotDBContextProvider())
+        using(RecipeBotDbContext context = provider.CreateInMemoryContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var invalidAuthorEntity = new AuthorEntity
+            {
+                AuthorId = invalidAuthorId
+            };
+
+            var recipe = new RecipeEntity
+            {
+                RecipeEntityId = idToDelete,
+                RecipeTitle = fixture.Create<string>(),
+                Author = invalidAuthorEntity,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeFields = Array.Empty<RecipeFieldEntity>(),
+                Tags = Array.Empty<RecipeTagEntity>()
+            };
+
+            await context.RecipeEntities.AddRangeAsync(recipe);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeRepository(context);
+
+            // Call
+            Func<Task> call = () => repository.DeleteRecipeAsync(idToDelete);
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataDeleteException>()
+                      .WithMessage($"Recipe with id '{idToDelete}' could not be deleted due to unreadable AuthorId '{invalidAuthorId}'.");
+        }
+    }
+
     [Fact]
     public async Task Given_seeded_database_when_deleting_no_matching_recipe_throws_exception()
     {
@@ -297,7 +341,7 @@ public class RecipeRepositoryTest
                 Tags = Array.Empty<RecipeTagEntity>()
             };
 
-            await context.RecipeEntities.AddRangeAsync(recipe);
+            await context.RecipeEntities.AddAsync(recipe);
 
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
@@ -698,6 +742,61 @@ public class RecipeRepositoryTest
                                                                                                        .WithMapping<RecipeFieldEntity, RecipeFieldData>(e => e.RecipeFieldData, s => s.FieldData));
             data.Tags.Should().BeNullOrWhiteSpace();
         }
+    }
+
+    [Theory]
+    [MemberData(nameof(GetInvalidAuthorId))]
+    public async Task Given_seeded_database_when_retrieving_recipe_with_invalid_author_throws_exception(string invalidAuthorId)
+    {
+        // Setup
+        using (var provider = new RecipeBotDBContextProvider())
+        using (RecipeBotDbContext context = provider.CreateInMemoryContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var recipeIdToRetrieve = fixture.Create<long>();
+            var invalidAuthorEntity = new AuthorEntity
+            {
+                AuthorId = invalidAuthorId
+            };
+
+            var recipeToRetrieve = new RecipeEntity
+            {
+                RecipeEntityId = recipeIdToRetrieve,
+                RecipeTitle = fixture.Create<string>(),
+                Author = invalidAuthorEntity,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeFields = Array.Empty<RecipeFieldEntity>(),
+                Tags = Array.Empty<RecipeTagEntity>()
+            };
+            
+            await context.RecipeEntities.AddAsync(recipeToRetrieve);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeRepository(context);
+
+            // Call
+            Func<Task> call = () => repository.GetRecipeAsync(recipeIdToRetrieve);
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataLoadException>()
+                      .WithMessage($"Recipe with id '{recipeIdToRetrieve}' could not be loaded due to unreadable AuthorId '{invalidAuthorId}'.");
+        }
+    }
+
+    public static IEnumerable<object[]> GetInvalidAuthorId()
+    {
+        yield return new object[]
+        {
+            "X"
+        };
+        yield return new object[]
+        {
+            "18446744073709551616"
+        };
     }
 
     /// <summary>
