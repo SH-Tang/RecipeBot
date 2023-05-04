@@ -584,9 +584,8 @@ public class RecipeControllerTest
         var repository = Substitute.For<IRecipeRepository>();
         repository.GetRecipeAsync(Arg.Any<long>()).ReturnsForAnyArgs(recipeData);
 
-        UserData authorData = UserDataTestFactory.Create();
         var userDataProvider = Substitute.For<IUserDataProvider>();
-        userDataProvider.GetUserDataAsync(authorId).Returns(authorData);
+        userDataProvider.GetUserDataAsync(authorId).Returns(UserDataTestFactory.Create());
 
         var logger = Substitute.For<ILoggingService>();
         var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
