@@ -21,6 +21,7 @@ using Common.Utils;
 using Discord;
 using Discord.Common;
 using Discord.Common.Providers;
+using Discord.Common.Utils;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
 using RecipeBot.Discord.Views;
@@ -86,7 +87,7 @@ public class RecipeController : IRecipeController
                                           ? modelCreationService.CreateRecipeModel(modal, user, category)
                                           : modelCreationService.CreateRecipeModel(modal, user, category, attachment);
 
-            var author = new UserData(user.Username, user.GetAvatarUrl());
+            UserData author = IUserHelper.Create(user);
             Task<Embed> embedTask = Task.Run(() => RecipeEmbedFactory.Create(recipeModel, author));
             Task[] tasks =
             {

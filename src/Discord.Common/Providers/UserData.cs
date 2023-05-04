@@ -31,7 +31,7 @@ public class UserData
     /// <param name="username">The name of the user.</param>
     /// <param name="userImageUrl">The image <see cref="Uri"/> of the user.</param>
     /// <exception cref="ArgumentException">Thrown when any parameter is <c>null</c>, empty or consists of whitespace only.</exception>
-    public UserData(string username, string userImageUrl)
+    internal UserData(string username, string userImageUrl)
     {
         username.IsNotNullOrWhiteSpaces(nameof(username));
         userImageUrl.IsNotNullOrWhiteSpaces(nameof(userImageUrl));

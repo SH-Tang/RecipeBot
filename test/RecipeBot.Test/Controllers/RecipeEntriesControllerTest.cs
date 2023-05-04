@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Discord;
 using Discord.Common.Providers;
+using Discord.Common.TestUtils;
 using FluentAssertions;
 using NSubstitute;
 using RecipeBot.Controllers;
@@ -58,7 +59,7 @@ public class RecipeEntriesControllerTest
         // Setup
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var userDataProvider = Substitute.For<IUserDataProvider>();
-        
+
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
 
@@ -86,7 +87,7 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(entries);
 
-        UserData[] userData = fixture.CreateMany<UserData>(3).ToArray();
+        IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(entries[0].AuthorId).Returns(userData[0]);
         userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
@@ -121,7 +122,7 @@ public class RecipeEntriesControllerTest
         var fixture = new Fixture();
         RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
 
-        UserData[] userData = fixture.CreateMany<UserData>(3).ToArray();
+        IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(entries[0].AuthorId).Returns(userData[0]);
         userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
@@ -160,7 +161,7 @@ public class RecipeEntriesControllerTest
         // Setup
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var userDataProvider = Substitute.For<IUserDataProvider>();
-        
+
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
 
@@ -215,7 +216,7 @@ public class RecipeEntriesControllerTest
         var fixture = new Fixture();
         RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
 
-        UserData[] userData = fixture.CreateMany<UserData>(3).ToArray();
+        IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(entries[0].AuthorId).Returns(userData[0]);
         userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
@@ -253,7 +254,7 @@ public class RecipeEntriesControllerTest
         var fixture = new Fixture();
         RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
 
-        UserData[] userData = fixture.CreateMany<UserData>(3).ToArray();
+        IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(entries[0].AuthorId).Returns(userData[0]);
         userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
@@ -295,7 +296,7 @@ public class RecipeEntriesControllerTest
 
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var userDataProvider = Substitute.For<IUserDataProvider>();
-        
+
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesByTagAsync(Arg.Any<string>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
 
@@ -345,7 +346,7 @@ public class RecipeEntriesControllerTest
         var fixture = new Fixture();
         RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
 
-        UserData[] userData = fixture.CreateMany<UserData>(3).ToArray();
+        IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(entries[0].AuthorId).Returns(userData[0]);
         userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
@@ -383,7 +384,7 @@ public class RecipeEntriesControllerTest
         var fixture = new Fixture();
         RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
 
-        UserData[] userData = fixture.CreateMany<UserData>(3).ToArray();
+        IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(entries[0].AuthorId).Returns(userData[0]);
         userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
@@ -472,7 +473,7 @@ public class RecipeEntriesControllerTest
         var fixture = new Fixture();
         RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
 
-        UserData[] userData = fixture.CreateMany<UserData>(3).ToArray();
+        IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(entries[0].AuthorId).Returns(userData[0]);
         userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
@@ -510,7 +511,7 @@ public class RecipeEntriesControllerTest
         var fixture = new Fixture();
         RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
 
-        UserData[] userData = fixture.CreateMany<UserData>(3).ToArray();
+        IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(entries[0].AuthorId).Returns(userData[0]);
         userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
@@ -541,5 +542,16 @@ public class RecipeEntriesControllerTest
             Format.Code(expectedMessageOne),
             Format.Code(expectedMessageTwo)
         }, options => options.WithStrictOrdering());
+    }
+
+    private IReadOnlyList<UserData> GetUsers(Fixture fixture, int nrOfUsers)
+    {
+        var users = new UserData[nrOfUsers];
+        for (var i = 0; i < nrOfUsers; i++)
+        {
+            users[i] = UserDataTestFactory.Create(fixture.Create<string>());
+        }
+
+        return users;
     }
 }

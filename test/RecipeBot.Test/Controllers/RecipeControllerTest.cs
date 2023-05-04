@@ -24,6 +24,7 @@ using AutoFixture;
 using Discord;
 using Discord.Common;
 using Discord.Common.Providers;
+using Discord.Common.TestUtils;
 using FluentAssertions;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
@@ -394,7 +395,7 @@ public class RecipeControllerTest
         var repository = Substitute.For<IRecipeRepository>();
         repository.DeleteRecipeAsync(idToDelete).Returns(deletedResult);
 
-        var userData = fixture.Create<UserData>();
+        var userData = UserDataTestFactory.Create();
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(deletedResult.AuthorId).Returns(userData);
 
@@ -544,7 +545,7 @@ public class RecipeControllerTest
         var repository = Substitute.For<IRecipeRepository>();
         repository.GetRecipeAsync(idToRetrieve).Returns(recipeData);
 
-        UserData authorData = CreateValidAuthor();
+        UserData authorData = UserDataTestFactory.Create();
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(authorId).Returns(authorData);
 
@@ -578,7 +579,7 @@ public class RecipeControllerTest
         var repository = Substitute.For<IRecipeRepository>();
         repository.GetRecipeAsync(idToRetrieve).Returns(recipeData);
 
-        UserData authorData = CreateValidAuthor();
+        UserData authorData = UserDataTestFactory.Create();
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(authorId).Returns(authorData);
 
@@ -612,7 +613,7 @@ public class RecipeControllerTest
         var repository = Substitute.For<IRecipeRepository>();
         repository.GetRecipeAsync(Arg.Any<long>()).ReturnsForAnyArgs(recipeData);
 
-        UserData authorData = CreateValidAuthor();
+        UserData authorData = UserDataTestFactory.Create();
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(authorId).Returns(authorData);
 
@@ -740,11 +741,6 @@ public class RecipeControllerTest
         limitProvider.MaximumFieldDataLength.Returns(EmbedFieldBuilder.MaxFieldValueLength);
         limitProvider.MaximumRecipeTagsLength.Returns(EmbedFooterBuilder.MaxFooterTextLength);
         return limitProvider;
-    }
-
-    private static UserData CreateValidAuthor()
-    {
-        return new UserData("User", "https://www.recipebot.com");
     }
 
     private static void AssertCommonEmbedResponseProperties(

@@ -20,6 +20,7 @@ using System.Linq;
 using AutoFixture;
 using Discord;
 using Discord.Common.Providers;
+using Discord.Common.TestUtils;
 using FluentAssertions;
 using RecipeBot.Domain.Data;
 using RecipeBot.Domain.Models;
@@ -54,7 +55,7 @@ public class RecipeEmbedFactoryTest
                                               .Build();
 
         // Call
-        Embed embed = RecipeEmbedFactory.Create(recipeModel, CreateAuthor());
+        Embed embed = RecipeEmbedFactory.Create(recipeModel, UserDataTestFactory.Create());
 
         // Assert
         embed.Color.Should().Be(expectedColor);
@@ -65,7 +66,7 @@ public class RecipeEmbedFactoryTest
     {
         // Setup
         RecipeModel recipeModel = modelBuilder.Build();
-        UserData author = CreateAuthor();
+        UserData author = UserDataTestFactory.Create();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
@@ -95,7 +96,7 @@ public class RecipeEmbedFactoryTest
                                               })
                                               .AddFields(3)
                                               .Build();
-        UserData author = CreateAuthor();
+        UserData author = UserDataTestFactory.Create();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
@@ -118,7 +119,7 @@ public class RecipeEmbedFactoryTest
         // Setup
         RecipeModel recipeModel = modelBuilder.AddImage()
                                               .Build();
-        UserData author = CreateAuthor();
+        UserData author = UserDataTestFactory.Create();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
@@ -139,7 +140,7 @@ public class RecipeEmbedFactoryTest
         // Setup
         RecipeModel recipeModel = modelBuilder.AddFields(3)
                                               .Build();
-        UserData author = CreateAuthor();
+        UserData author = UserDataTestFactory.Create();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
@@ -167,7 +168,7 @@ public class RecipeEmbedFactoryTest
                                                   "Tag2"
                                               })
                                               .Build();
-        UserData author = CreateAuthor();
+        UserData author = UserDataTestFactory.Create();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
@@ -242,11 +243,6 @@ public class RecipeEmbedFactoryTest
             options => options.ExcludingMissingMembers()
                               .WithMapping<EmbedAuthor>(e => e.Username, s => s.Name)
                               .WithMapping<EmbedAuthor>(e => e.UserImageUrl, s => s.IconUrl));
-    }
-
-    private static UserData CreateAuthor()
-    {
-        return new UserData("User", "https://www.recipebot.com");
     }
 
     private static void AssertFields(IEnumerable<RecipeFieldModel> recipeFields, IEnumerable<EmbedField> embedFields)
