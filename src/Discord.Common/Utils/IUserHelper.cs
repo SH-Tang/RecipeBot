@@ -27,7 +27,7 @@ namespace Discord.Common.Utils;
 public static class IUserHelper
 {
     /// <summary>
-    /// Creates a <see cref="UserData"/> based on an <see cref="IUser"/>.
+    /// Creates <see cref="UserData"/> based on an <see cref="IUser"/>.
     /// </summary>
     /// <param name="user">The user to create the user data with.</param>
     /// <returns>An <see cref="UserData"/>.</returns>
