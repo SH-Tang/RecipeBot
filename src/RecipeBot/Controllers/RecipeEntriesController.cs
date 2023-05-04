@@ -106,13 +106,10 @@ public class RecipeEntriesController : IRecipeEntriesController
 
     private async Task<IEnumerable<RecipeEntryRow>> CreateRows(IEnumerable<RecipeEntryData> entries)
     {
-        IEnumerable<Task<AuthorEntry>> authorEntryTasks = entries.Select(CreateAuthorEntry);
-        AuthorEntry[] authorEntries = await Task.WhenAll(authorEntryTasks);
-        var authorLookup = new Dictionary<ulong, string>();
-        foreach (AuthorEntry authorEntry in authorEntries)
-        {
-            authorLookup[authorEntry.Id] = authorEntry.AuthorName;
-        }
+        IEnumerable<Task<Tuple<ulong, string>>> authorEntryTasks = entries.Select(CreateAuthorEntry);
+        Tuple<ulong, string>[] authorEntries = await Task.WhenAll(authorEntryTasks);
+        Dictionary<ulong, string> authorLookup = 
+            authorEntries.ToDictionary(entry => entry.Item1, entry => entry.Item2);
 
         return entries.Select(e => new RecipeEntryRow
         {
@@ -122,15 +119,12 @@ public class RecipeEntriesController : IRecipeEntriesController
         }).ToArray();
     }
 
-    private async Task<AuthorEntry> CreateAuthorEntry(RecipeEntryData entry)
+    private async Task<Tuple<ulong, string>> CreateAuthorEntry(RecipeEntryData entry)
     {
         ulong authorId = entry.AuthorId;
         UserData userData = await userDataProvider.GetUserDataAsync(authorId);
-        return new AuthorEntry
-        {
-            Id = authorId,
-            AuthorName = userData.Username
-        };
+
+        return new Tuple<ulong, string>(authorId, userData.Username);
     }
 
     private sealed record RecipeEntryRow
@@ -148,13 +142,6 @@ public class RecipeEntriesController : IRecipeEntriesController
         /// <summary>
         /// Gets the id of the author of the recipe.
         /// </summary>
-        public string AuthorName { get; init; } = null!;
-    }
-
-    private sealed record AuthorEntry
-    {
-        public ulong Id { get; init; }
-
         public string AuthorName { get; init; } = null!;
     }
 }
