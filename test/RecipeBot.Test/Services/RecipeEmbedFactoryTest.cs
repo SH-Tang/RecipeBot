@@ -55,7 +55,7 @@ public class RecipeEmbedFactoryTest
                                               .Build();
 
         // Call
-        Embed embed = RecipeEmbedFactory.Create(recipeModel, UserDataTestFactory.Create());
+        Embed embed = RecipeEmbedFactory.Create(recipeModel, UserDataTestFactory.CreateFullyConfigured());
 
         // Assert
         embed.Color.Should().Be(expectedColor);
@@ -66,7 +66,7 @@ public class RecipeEmbedFactoryTest
     {
         // Setup
         RecipeModel recipeModel = modelBuilder.Build();
-        UserData author = UserDataTestFactory.Create();
+        UserData author = UserDataTestFactory.CreateFullyConfigured();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
@@ -96,7 +96,7 @@ public class RecipeEmbedFactoryTest
                                               })
                                               .AddFields(3)
                                               .Build();
-        UserData author = UserDataTestFactory.Create();
+        UserData author = UserDataTestFactory.CreateFullyConfigured();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
@@ -119,7 +119,7 @@ public class RecipeEmbedFactoryTest
         // Setup
         RecipeModel recipeModel = modelBuilder.AddImage()
                                               .Build();
-        UserData author = UserDataTestFactory.Create();
+        UserData author = UserDataTestFactory.CreateFullyConfigured();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
@@ -140,7 +140,7 @@ public class RecipeEmbedFactoryTest
         // Setup
         RecipeModel recipeModel = modelBuilder.AddFields(3)
                                               .Build();
-        UserData author = UserDataTestFactory.Create();
+        UserData author = UserDataTestFactory.CreateFullyConfigured();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
@@ -168,7 +168,7 @@ public class RecipeEmbedFactoryTest
                                                   "Tag2"
                                               })
                                               .Build();
-        UserData author = UserDataTestFactory.Create();
+        UserData author = UserDataTestFactory.CreateFullyConfigured();
 
         // Call
         Embed embed = RecipeEmbedFactory.Create(recipeModel, author);

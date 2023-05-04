@@ -395,7 +395,7 @@ public class RecipeControllerTest
         var repository = Substitute.For<IRecipeRepository>();
         repository.DeleteRecipeAsync(idToDelete).Returns(deletedResult);
 
-        var userData = UserDataTestFactory.Create();
+        var userData = UserDataTestFactory.CreateFullyConfigured();
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(deletedResult.AuthorId).Returns(userData);
 
@@ -516,7 +516,7 @@ public class RecipeControllerTest
         var repository = Substitute.For<IRecipeRepository>();
         repository.GetRecipeAsync(idToRetrieve).Returns(recipeData);
 
-        UserData authorData = UserDataTestFactory.Create();
+        UserData authorData = UserDataTestFactory.CreateFullyConfigured();
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(authorId).Returns(authorData);
 
@@ -550,7 +550,7 @@ public class RecipeControllerTest
         var repository = Substitute.For<IRecipeRepository>();
         repository.GetRecipeAsync(idToRetrieve).Returns(recipeData);
 
-        UserData authorData = UserDataTestFactory.Create();
+        UserData authorData = UserDataTestFactory.CreateFullyConfigured();
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(authorId).Returns(authorData);
 
@@ -585,7 +585,7 @@ public class RecipeControllerTest
         repository.GetRecipeAsync(Arg.Any<long>()).ReturnsForAnyArgs(recipeData);
 
         var userDataProvider = Substitute.For<IUserDataProvider>();
-        userDataProvider.GetUserDataAsync(authorId).Returns(UserDataTestFactory.Create());
+        userDataProvider.GetUserDataAsync(authorId).Returns(UserDataTestFactory.CreateFullyConfigured());
 
         var logger = Substitute.For<ILoggingService>();
         var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);

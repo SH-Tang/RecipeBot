@@ -25,10 +25,10 @@ namespace Discord.Common.TestUtils;
 public static class UserDataTestFactory
 {
     /// <summary>
-    /// Creates a valid configured <see cref="UserData"/>.
+    /// Creates a valid fully configured <see cref="UserData"/>.
     /// </summary>
-    /// <returns>A valid configured <see cref="UserData"/>.</returns>
-    public static UserData Create()
+    /// <returns>A valid fully configured <see cref="UserData"/>.</returns>
+    public static UserData CreateFullyConfigured()
     {
         return Create("User");
     }
