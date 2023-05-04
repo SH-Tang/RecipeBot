@@ -78,7 +78,16 @@ namespace RecipeBot.Persistence.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Recipe with id &apos;{0}&apos; could not be deleted due to unreadable AuthorId &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Recipe entries could not be loaded due to invalid AuthorId &apos;{0}&apos;..
+        /// </summary>
+        internal static string Recipe_entries_unsuccessfully_loaded_due_to_invalid_AuthorId_0 {
+            get {
+                return ResourceManager.GetString("Recipe_entries_unsuccessfully_loaded_due_to_invalid_AuthorId_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recipe with id &apos;{0}&apos; could not be deleted due to invalid AuthorId &apos;{1}&apos;..
         /// </summary>
         internal static string RecipeEntityId_0_unsuccessfully_deleted_due_to_invalid_AuthorId_1 {
             get {
@@ -87,7 +96,7 @@ namespace RecipeBot.Persistence.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Recipe with id &apos;{0}&apos; could not be loaded due to unreadable AuthorId &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Recipe with id &apos;{0}&apos; could not be loaded due to invalid AuthorId &apos;{1}&apos;..
         /// </summary>
         internal static string RecipeEntityId_0_unsuccessfully_loaded_due_to_invalid_AuthorId_1 {
             get {
@@ -110,15 +119,6 @@ namespace RecipeBot.Persistence.Properties {
         internal static string RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_Id_0_ {
             get {
                 return ResourceManager.GetString("RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_Id_0_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to AuthorId &apos;{0}&apos; could not be successfully parsed..
-        /// </summary>
-        internal static string Repository_invalid_AuthorId_0 {
-            get {
-                return ResourceManager.GetString("Repository_invalid_AuthorId_0", resourceCulture);
             }
         }
     }

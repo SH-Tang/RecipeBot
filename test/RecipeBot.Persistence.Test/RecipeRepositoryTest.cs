@@ -309,7 +309,7 @@ public class RecipeRepositoryTest
 
             // Assert
             await call.Should().ThrowAsync<RepositoryDataDeleteException>()
-                      .WithMessage($"Recipe with id '{idToDelete}' could not be deleted due to unreadable AuthorId '{invalidAuthorId}'.");
+                      .WithMessage($"Recipe with id '{idToDelete}' could not be deleted due to invalid AuthorId '{invalidAuthorId}'.");
         }
     }
 
@@ -783,7 +783,7 @@ public class RecipeRepositoryTest
 
             // Assert
             await call.Should().ThrowAsync<RepositoryDataLoadException>()
-                      .WithMessage($"Recipe with id '{recipeIdToRetrieve}' could not be loaded due to unreadable AuthorId '{invalidAuthorId}'.");
+                      .WithMessage($"Recipe with id '{recipeIdToRetrieve}' could not be loaded due to invalid AuthorId '{invalidAuthorId}'.");
         }
     }
 

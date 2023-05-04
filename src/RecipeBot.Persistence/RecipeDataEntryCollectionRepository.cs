@@ -121,7 +121,7 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
         }
         catch (Exception e) when (e is OverflowException || e is FormatException)
         {
-            throw new RepositoryDataLoadException(string.Format(Resources.Repository_invalid_AuthorId_0, authorId), e);
+            throw new RepositoryDataLoadException(string.Format(Resources.Recipe_entries_unsuccessfully_loaded_due_to_invalid_AuthorId_0, authorId), e);
         }
     }
 
@@ -145,7 +145,7 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
         }
         catch (Exception e) when (e is OverflowException || e is FormatException)
         {
-            throw new RepositoryDataLoadException(string.Format(Resources.Repository_invalid_AuthorId_0, authorId), e);
+            throw new RepositoryDataLoadException(string.Format(Resources.Recipe_entries_unsuccessfully_loaded_due_to_invalid_AuthorId_0, authorId), e);
         }
     }
 

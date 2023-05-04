@@ -158,7 +158,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
 
             // Assert
             await call.Should().ThrowAsync<RepositoryDataLoadException>()
-                      .WithMessage($"AuthorId '{invalidAuthorId}' could not be successfully parsed.");
+                      .WithMessage($"Recipe entries could not be loaded due to invalid AuthorId '{invalidAuthorId}'.");
         }
     }
 
@@ -311,7 +311,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
 
             // Assert
             await call.Should().ThrowAsync<RepositoryDataLoadException>()
-                      .WithMessage($"AuthorId '{invalidAuthorId}' could not be successfully parsed.");
+                      .WithMessage($"Recipe entries could not be loaded due to invalid AuthorId '{invalidAuthorId}'.");
         }
     }
 
@@ -528,7 +528,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
 
             // Assert
             await call.Should().ThrowAsync<RepositoryDataLoadException>()
-                      .WithMessage($"AuthorId '{invalidAuthorId}' could not be successfully parsed.");
+                      .WithMessage($"Recipe entries could not be loaded due to invalid AuthorId '{invalidAuthorId}'.");
         }
     }
 
@@ -745,7 +745,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
 
             // Assert
             await call.Should().ThrowAsync<RepositoryDataLoadException>()
-                      .WithMessage($"AuthorId '{invalidAuthorId}' could not be successfully parsed.");
+                      .WithMessage($"Recipe entries could not be loaded due to invalid AuthorId '{invalidAuthorId}'.");
         }
     }
 
