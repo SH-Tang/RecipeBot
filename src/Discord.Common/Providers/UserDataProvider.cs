@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Common.Utils;
 using Discord.WebSocket;
 
@@ -11,10 +12,16 @@ public class UserDataProvider : IUserDataProvider
 {
     private readonly DiscordSocketClient client;
 
+    /// <summary>
+    /// Creates a <see cref="UserDataProvider"/>.
+    /// </summary>
+    /// <param name="client">The <see cref="DiscordSocketClient"/>.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="client"/> is <c>null</c>.</exception>
     public UserDataProvider(DiscordSocketClient client)
     {
-        this.client = client;
         client.IsNotNull(nameof(client));
+
+        this.client = client;
     }
 
     public async Task<UserData> GetUserDataAsync(ulong userId)
