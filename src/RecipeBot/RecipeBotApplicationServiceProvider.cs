@@ -22,6 +22,7 @@ using Discord.Common;
 using Discord.Common.Handlers;
 using Discord.Common.InfoModule;
 using Discord.Common.Options;
+using Discord.Common.Providers;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
@@ -86,6 +87,7 @@ public class RecipeBotApplicationServiceProvider
                 .AddSingleton<IRecipeModelCharacterLimitProvider>(x => x.GetRequiredService<DiscordCharacterLimitProvider>())
                 .AddSingleton<IMessageCharacterLimitProvider>(x => x.GetRequiredService<DiscordCharacterLimitProvider>())
                 .AddTransient<ITimeProvider, TimeProvider>()
+                .AddTransient<IUserDataProvider, UserDataProvider>()
                 .AddTransient<DiscordCommandInfoFactory>()
                 .AddTransient<BotInformationService>()
                 .AddDbContext<RecipeBotDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")))
