@@ -125,7 +125,7 @@ public class RecipeEntriesController : IRecipeEntriesController
     private async Task<AuthorEntry> CreateAuthorEntry(RecipeEntryData entry)
     {
         ulong authorId = entry.AuthorId;
-        UserData userData = await userDataProvider.GetUserDataAsync(authorId); // TODO: Catch error when it occurs
+        UserData userData = await userDataProvider.GetUserDataAsync(authorId);
         return new AuthorEntry
         {
             Id = authorId,

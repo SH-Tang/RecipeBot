@@ -26,15 +26,19 @@ namespace Discord.Common.Providers;
 public class UserData
 {
     /// <summary>
+    /// Gets the default user.
+    /// </summary>
+    internal static readonly UserData UnknownUser = new UserData("Unknown user", null); 
+
+    /// <summary>
     /// Creates a new instance of <see cref="UserData"/>.
     /// </summary>
     /// <param name="username">The name of the user.</param>
     /// <param name="userImageUrl">The image <see cref="Uri"/> of the user.</param>
-    /// <exception cref="ArgumentException">Thrown when any parameter is <c>null</c>, empty or consists of whitespace only.</exception>
-    internal UserData(string username, string userImageUrl)
+    /// <exception cref="ArgumentException">Thrown when <paramref name="username"/> is <c>null</c>, empty or consists of whitespace only.</exception>
+    internal UserData(string username, string? userImageUrl)
     {
         username.IsNotNullOrWhiteSpaces(nameof(username));
-        userImageUrl.IsNotNullOrWhiteSpaces(nameof(userImageUrl));
 
         Username = username;
         UserImageUrl = userImageUrl;
@@ -48,5 +52,5 @@ public class UserData
     /// <summary>
     /// Gets the image url of the user.
     /// </summary>
-    public string UserImageUrl { get; }
+    public string? UserImageUrl { get; }
 }

@@ -437,36 +437,7 @@ public class RecipeControllerTest
 
         await logger.Received(1).LogErrorAsync(exception);
     }
-
-    [Fact]
-    public async Task Deleting_recipe_and_user_retrieved_unsuccessful_logs_and_returns_result_with_error()
-    {
-        // Setup
-        var fixture = new Fixture();
-        var exceptionMessage = fixture.Create<string>();
-
-        var deletedResult = fixture.Create<RecipeEntryData>();
-        var repository = Substitute.For<IRecipeRepository>();
-        repository.DeleteRecipeAsync(Arg.Any<long>()).ReturnsForAnyArgs(deletedResult);
-
-        var userDataProvider = Substitute.For<IUserDataProvider>();
-        var exception = new RepositoryDataDeleteException(exceptionMessage); // TODO: throw correct exception when wrapped and handle correctly.
-        userDataProvider.GetUserDataAsync(Arg.Any<ulong>()).ThrowsAsyncForAnyArgs(exception);
-
-        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
-        var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
-
-        // Call
-        ControllerResult<string> result = await controller.DeleteRecipeAsync(fixture.Create<long>());
-
-        // Assert
-        result.HasError.Should().BeTrue();
-        result.ErrorMessage.Should().Be(exceptionMessage);
-
-        await logger.Received(1).LogErrorAsync(exception);
-    }
-
+    
     [Fact]
     public async Task Retrieving_recipe_and_exception_thrown_when_retrieving_logs_and_returns_result_with_error()
     {

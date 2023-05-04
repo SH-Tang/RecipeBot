@@ -39,17 +39,14 @@ public class UserDataTest
         call.Should().ThrowExactly<ArgumentException>();
     }
 
-    [Theory]
-    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
-    public void AuthorData_with_invalid_user_image_url_throws_exception(string invalidUserImageUrl)
+    [Fact]
+    public void Default_UserData_returns_expected_properties()
     {
-        // Setup
-        const string username = "User name";
-
         // Call
-        Action call = () => new UserData(username, invalidUserImageUrl);
+        UserData userData = UserData.UnknownUser;
 
         // Assert
-        call.Should().ThrowExactly<ArgumentException>();
+        userData.Username.Should().Be("Unknown user");
+        userData.UserImageUrl.Should().BeNull();
     }
 }
