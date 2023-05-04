@@ -760,7 +760,7 @@ public class RecipeControllerTest
         }
     }
 
-    private static void AssertAuthor(string expectedAuthorName, string expectedAuthorImageUrl, EmbedAuthor actualAuthor)
+    private static void AssertAuthor(string expectedAuthorName, string? expectedAuthorImageUrl, EmbedAuthor actualAuthor)
     {
         actualAuthor.Name.Should().Be(expectedAuthorName);
         actualAuthor.IconUrl.Should().Be(expectedAuthorImageUrl);
