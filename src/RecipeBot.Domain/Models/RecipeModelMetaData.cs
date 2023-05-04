@@ -30,7 +30,7 @@ internal class RecipeModelMetaData
     /// <summary>
     /// Creates a new instance of a <see cref="RecipeModelMetaData"/>.
     /// </summary>
-    /// <param name="authorId">The id of the author</param>
+    /// <param name="authorId">The id of the author.</param>
     /// <param name="tags">The tags.</param>
     /// <param name="category">The <see cref="RecipeCategory"/>.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="tags"/> is <c>null</c>.</exception>

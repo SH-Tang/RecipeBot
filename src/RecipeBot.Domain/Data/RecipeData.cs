@@ -30,7 +30,7 @@ public class RecipeData
     /// <summary>
     /// Creates a new instance of <see cref="RecipeData"/>.
     /// </summary>
-    /// <param name="authorId">The  id of the author.</param>
+    /// <param name="authorId">The id of the author.</param>
     /// <param name="recipeFields">The collection of fields to contain within the recipe.</param>
     /// <param name="recipeTitle">The title of the recipe.</param>
     /// <param name="category">The <see cref="RecipeCategory"/> the recipe belongs to.</param>

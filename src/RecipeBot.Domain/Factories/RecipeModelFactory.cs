@@ -111,7 +111,7 @@ public class RecipeModelFactory
     /// <summary>
     /// Creates an <see cref="RecipeModelMetaData"/> based on its input arguments.
     /// </summary>
-    /// <param name="authorId">The id of the author</param>
+    /// <param name="authorId">The id of the author.</param>
     /// <param name="tagData">The tags to create the metadata with.</param>
     /// <param name="recipeCategory">The <see cref="RecipeCategory"/> to create the metadata with.</param>
     /// <returns>A <see cref="RecipeModelMetaData"/>.</returns>
