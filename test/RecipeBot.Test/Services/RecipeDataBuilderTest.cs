@@ -100,7 +100,6 @@ public class RecipeDataBuilderTest
         result.RecipeFields.Should().HaveCount(2);
         AssertMandatoryRecipeFields(recipeTitle, recipeIngredients, cookingSteps, authorId, result);
 
-        result.ImageUrl.Should().BeNull();
         result.Tags.Should().BeNull();
     }
 

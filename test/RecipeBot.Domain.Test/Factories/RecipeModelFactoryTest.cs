@@ -57,25 +57,6 @@ public class RecipeModelFactoryTest
     }
 
     [Fact]
-    public void Recipe_with_image_returns_model_with_image()
-    {
-        // Setup
-        IRecipeModelCharacterLimitProvider recipeCharacterLimitProvider = CreateDefaultRecipeCharacterLimitProvider();
-
-        const string imageUrl = "http://www.recipeBotImage.com";
-        RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
-        recipeData.ImageUrl = imageUrl;
-
-        var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
-
-        // Call
-        RecipeModel model = factory.Create(recipeData);
-
-        // Assert
-        model.RecipeImageUrl.Should().Be(recipeData.ImageUrl);
-    }
-
-    [Fact]
     public void Recipe_with_tags_returns_model_with_tags()
     {
         // Setup
@@ -99,9 +80,7 @@ public class RecipeModelFactoryTest
         // Setup
         IRecipeModelCharacterLimitProvider recipeCharacterLimitProvider = CreateDefaultRecipeCharacterLimitProvider();
 
-        const string imageUrl = "http://www.recipeBotImage.com";
         RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
-        recipeData.ImageUrl = imageUrl;
         recipeData.Tags = "Tag1, TAG1, tag1, tag    1,      tag1, tag1      , tag2";
 
         var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
@@ -110,8 +89,6 @@ public class RecipeModelFactoryTest
         RecipeModel model = factory.Create(recipeData);
 
         // Assert
-        model.RecipeImageUrl.Should().Be(recipeData.ImageUrl);
-
         model.AuthorId.Should().Be(recipeData.AuthorId);
         model.RecipeFields.Should().BeEquivalentTo(recipeData.RecipeFields, options => options.WithStrictOrdering());
 
@@ -197,28 +174,6 @@ public class RecipeModelFactoryTest
             .WithMessage(expectedMessage);
     }
 
-    [Fact]
-    public void Recipe_with_invalid_image_url_throws_exception()
-    {
-        // Setup
-        var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
-        recipeCharacterLimitProvider.MaximumTitleLength.Returns(10);
-        recipeCharacterLimitProvider.MaximumRecipeLength.Returns(int.MaxValue);
-        recipeCharacterLimitProvider.MaximumFieldNameLength.Returns(10);
-        recipeCharacterLimitProvider.MaximumFieldDataLength.Returns(20);
-
-        RecipeData recipeData = CreateRecipeData(recipeCharacterLimitProvider);
-        recipeData.ImageUrl = "invalid image url";
-
-        var factory = new RecipeModelFactory(recipeCharacterLimitProvider);
-
-        // Call                    
-        Action call = () => factory.Create(recipeData);
-
-        // Assert
-        call.Should().Throw<ModelCreateException>();
-    }
-
     private static IRecipeModelCharacterLimitProvider CreateDefaultRecipeCharacterLimitProvider()
     {
         var recipeCharacterLimitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
@@ -255,7 +210,6 @@ public class RecipeModelFactoryTest
 
         return fixture.Build<RecipeData>()
                       .FromFactory<ulong, RecipeCategory>((authorId, category) => new RecipeData(authorId, fields, new string('+', limitProvider.MaximumTitleLength + nrOfTitleCharactersOffSet), category))
-                      .Without(d => d.ImageUrl)
                       .Create();
     }
 
@@ -269,7 +223,6 @@ public class RecipeModelFactoryTest
 
         return fixture.Build<RecipeData>()
                       .FromFactory<ulong, RecipeCategory>((authorId, category) => new RecipeData(authorId, fields, new string('+', limitProvider.MaximumTitleLength), category))
-                      .Without(d => d.ImageUrl)
                       .Create();
     }
 }
