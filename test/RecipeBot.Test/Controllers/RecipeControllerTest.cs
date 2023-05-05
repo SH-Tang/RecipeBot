@@ -83,7 +83,7 @@ public class RecipeControllerTest
         var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
-        Func<Task> call = () => controller.SaveRecipeAsync(modal, user, category, null);
+        Func<Task> call = () => controller.SaveRecipeAsync(modal, user, category);
 
         // Assert
         await call.Should().ThrowAsync<InvalidEnumArgumentException>();
@@ -112,7 +112,7 @@ public class RecipeControllerTest
         var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
-        ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, null);
+        ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category);
 
         // Assert
         controllerResult.HasError.Should().BeTrue();
@@ -145,7 +145,7 @@ public class RecipeControllerTest
         var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
-        ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, null);
+        ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category);
 
         // Assert
         controllerResult.HasError.Should().BeTrue();
@@ -188,7 +188,7 @@ public class RecipeControllerTest
         var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
-        ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, null);
+        ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category);
 
         // Assert
         controllerResult.HasError.Should().BeFalse();
@@ -196,95 +196,6 @@ public class RecipeControllerTest
         Embed embedResult = controllerResult.Result!;
         AssertCommonEmbedResponseProperties(user, category, modal, expectedColor, embedResult);
         embedResult.Image.Should().BeNull();
-    }
-
-    [Fact]
-    public async Task Recipe_with_valid_attachment_and_category_and_invalid_data_logs_and_returns_result_with_error_and_does_not_save()
-    {
-        // Setup
-        var fixture = new Fixture();
-        var category = fixture.Create<DiscordRecipeCategory>();
-        var modal = fixture.Create<RecipeModal>();
-
-        var user = Substitute.For<IUser>();
-        user.Username.Returns("Recipe author");
-        user.GetAvatarUrl().ReturnsForAnyArgs("https://AuthorImage.url");
-
-        var attachment = Substitute.For<IAttachment>();
-        attachment.ContentType.Returns("image/");
-        attachment.Url.Returns("https://RecipeImage.url");
-
-        var limitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
-        limitProvider.MaximumTitleLength.Returns(EmbedBuilder.MaxTitleLength);
-        limitProvider.MaximumRecipeLength.Returns(0);
-        limitProvider.MaximumFieldNameLength.Returns(EmbedFieldBuilder.MaxFieldNameLength);
-        limitProvider.MaximumFieldDataLength.Returns(EmbedFieldBuilder.MaxFieldValueLength);
-        limitProvider.MaximumRecipeTagsLength.Returns(EmbedFooterBuilder.MaxFooterTextLength);
-
-        var repository = Substitute.For<IRecipeRepository>();
-        var userDataProvider = Substitute.For<IUserDataProvider>();
-        var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
-
-        // Call
-        ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, attachment);
-
-        // Assert
-        controllerResult.HasError.Should().BeTrue();
-        controllerResult.ErrorMessage.Should().NotBeNullOrWhiteSpace();
-
-        await repository.DidNotReceiveWithAnyArgs().SaveRecipeAsync(Arg.Any<RecipeModel>());
-        await logger.ReceivedWithAnyArgs().LogErrorAsync(Arg.Any<Exception>());
-    }
-
-    [Theory]
-    [MemberData(nameof(GetDiscordRecipeCategoriesAndColor))]
-    public async Task Recipe_with_valid_data_and_attachment_returns_result_with_embed(
-        DiscordRecipeCategory category, Color expectedColor)
-    {
-        // Setup
-        const string authorName = "Recipe author";
-        const string authorImageUrl = "https://AuthorImage.url";
-        var user = Substitute.For<IUser>();
-        user.Username.Returns(authorName);
-        user.GetAvatarUrl().ReturnsForAnyArgs(authorImageUrl);
-
-        const string recipeImageUrl = "https://RecipeImage.url";
-        var attachment = Substitute.For<IAttachment>();
-        attachment.ContentType.Returns("image/");
-        attachment.Url.Returns(recipeImageUrl);
-
-        const string recipeTitle = "Recipe title";
-        const string recipeIngredients = "My ingredients";
-        const string recipeSteps = "My recipe steps";
-        const string recipeNotes = "My notes";
-        const string tags = "Tag1, TAG1, tag1, tag    1,      tag1, tag1      , tag2";
-        var modal = new RecipeModal
-        {
-            RecipeTitle = recipeTitle,
-            Ingredients = recipeIngredients,
-            CookingSteps = recipeSteps,
-            Notes = recipeNotes,
-            Tags = tags
-        };
-
-        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
-        var repository = Substitute.For<IRecipeRepository>();
-        var userDataProvider = Substitute.For<IUserDataProvider>();
-        var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
-
-        // Call
-        ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, attachment);
-
-        // Assert
-        controllerResult.HasError.Should().BeFalse();
-
-        Embed embedResult = controllerResult.Result!;
-        AssertCommonEmbedResponseProperties(user, category, modal, expectedColor, embedResult);
-
-        EmbedImage? embedImage = embedResult.Image;
-        embedImage.Should().Match<EmbedImage?>(s => s.HasValue && s.Value.Url == recipeImageUrl);
     }
 
     [Fact]
@@ -325,63 +236,11 @@ public class RecipeControllerTest
         var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
-        await controller.SaveRecipeAsync(modal, user, category, null);
+        await controller.SaveRecipeAsync(modal, user, category);
 
         // Assert
         RecipeModel savedModel = savedModels.Single();
         RecipeModelTestHelper.AssertFullRecipeProperties(user, category, modal, savedModel);
-        savedModel.RecipeImageUrl.Should().BeNull();
-    }
-
-    [Fact]
-    public async Task Recipe_with_valid_data_and_attachment_saves_correct_model()
-    {
-        // Setup
-        var fixture = new Fixture();
-        var category = fixture.Create<DiscordRecipeCategory>();
-
-        const string authorName = "Recipe author";
-        const string authorImageUrl = "https://AuthorImage.url";
-        var user = Substitute.For<IUser>();
-        user.Username.Returns(authorName);
-        user.GetAvatarUrl().ReturnsForAnyArgs(authorImageUrl);
-
-        const string recipeImageUrl = "https://RecipeImage.url";
-        var attachment = Substitute.For<IAttachment>();
-        attachment.ContentType.Returns("image/");
-        attachment.Url.Returns(recipeImageUrl);
-
-        const string recipeTitle = "Recipe title";
-        const string recipeIngredients = "My ingredients";
-        const string recipeSteps = "My recipe steps";
-        const string recipeNotes = "My notes";
-        const string tags = "Tag1, TAG1, tag1, tag    1,      tag1, tag1      , tag2";
-        var modal = new RecipeModal
-        {
-            RecipeTitle = recipeTitle,
-            Ingredients = recipeIngredients,
-            CookingSteps = recipeSteps,
-            Notes = recipeNotes,
-            Tags = tags
-        };
-
-        var savedModels = new List<RecipeModel>();
-        var repository = Substitute.For<IRecipeRepository>();
-        repository.WhenForAnyArgs(r => r.SaveRecipeAsync(Arg.Any<RecipeModel>()))
-                  .Do(c => savedModels.Add(c.Arg<RecipeModel>()));
-
-        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
-        var userDataProvider = Substitute.For<IUserDataProvider>();
-        var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
-
-        // Call
-        await controller.SaveRecipeAsync(modal, user, category, attachment);
-
-        // Assert
-        RecipeModel savedModel = savedModels.Single();
-        RecipeModelTestHelper.AssertFullRecipeProperties(user, category, modal, savedModel);
-        savedModel.RecipeImageUrl.Should().Be(recipeImageUrl);
     }
 
     [Fact]
@@ -395,7 +254,7 @@ public class RecipeControllerTest
         var repository = Substitute.For<IRecipeRepository>();
         repository.DeleteRecipeAsync(idToDelete).Returns(deletedResult);
 
-        var userData = UserDataTestFactory.CreateFullyConfigured();
+        UserData userData = UserDataTestFactory.CreateFullyConfigured();
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(deletedResult.AuthorId).Returns(userData);
 
@@ -437,7 +296,7 @@ public class RecipeControllerTest
 
         await logger.Received(1).LogErrorAsync(exception);
     }
-    
+
     [Fact]
     public async Task Retrieving_recipe_and_exception_thrown_when_retrieving_logs_and_returns_result_with_error()
     {

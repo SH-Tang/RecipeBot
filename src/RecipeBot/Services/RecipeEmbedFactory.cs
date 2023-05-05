@@ -67,11 +67,6 @@ internal static class RecipeEmbedFactory
             embedBuilder.WithFooter(tagData.ToString());
         }
 
-        if (!string.IsNullOrWhiteSpace(recipeData.RecipeImageUrl))
-        {
-            embedBuilder.WithImageUrl(recipeData.RecipeImageUrl);
-        }
-
         ConfigureFields(embedBuilder, recipeData.RecipeFields);
 
         return embedBuilder;

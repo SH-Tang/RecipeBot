@@ -69,31 +69,4 @@ internal class RecipeModelCreationService
 
         return recipeModelFactory.Create(recipeData);
     }
-
-    /// <summary>
-    /// Gets the <see cref="RecipeModel"/> based on its input arguments.
-    /// </summary>
-    /// <param name="modal">The <see cref="RecipeModal"/> to create the model with.</param>
-    /// <param name="user">The <see cref="IUser"/> to create the model with.</param>
-    /// <param name="recipeCategory">The <see cref="DiscordRecipeCategory"/> the recipe belongs to.</param>
-    /// <param name="attachment">The <see cref="IAttachment"/> to create the model with.</param>
-    /// <returns>A <see cref="RecipeModel"/>.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    /// <exception cref="ArgumentException">Thrown when the <paramref name="attachment"/> is invalid.</exception>
-    /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="recipeCategory"/>
-    /// is an invalid <see cref="DiscordRecipeCategory"/>.</exception>
-    /// <exception cref="ModelCreateException">Thrown when the model could not be successfully created.</exception>
-    public RecipeModel CreateRecipeModel(RecipeModal modal, IUser user, DiscordRecipeCategory recipeCategory, IAttachment? attachment)
-    {
-        modal.IsNotNull(nameof(modal));
-        user.IsNotNull(nameof(user));
-
-        RecipeData recipeData = new RecipeDataBuilder(user.Id, recipeCategory, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
-                                .AddNotes(modal.Notes)
-                                .AddTags(modal.Tags)
-                                .AddImage(attachment)
-                                .Build();
-
-        return recipeModelFactory.Create(recipeData);
-    }
 }

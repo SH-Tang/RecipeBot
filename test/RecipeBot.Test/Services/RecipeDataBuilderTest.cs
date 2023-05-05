@@ -16,18 +16,13 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using AutoFixture;
-using Discord;
-using Discord.Common.Utils;
 using FluentAssertions;
-using NSubstitute;
 using RecipeBot.Discord.Data;
 using RecipeBot.Domain.Data;
 using RecipeBot.Services;
-using RecipeBot.TestUtils;
 using Xunit;
 
 namespace RecipeBot.Test.Services;
@@ -105,7 +100,6 @@ public class RecipeDataBuilderTest
         result.RecipeFields.Should().HaveCount(2);
         AssertMandatoryRecipeFields(recipeTitle, recipeIngredients, cookingSteps, authorId, result);
 
-        result.ImageUrl.Should().BeNull();
         result.Tags.Should().BeNull();
     }
 
@@ -164,30 +158,6 @@ public class RecipeDataBuilderTest
     }
 
     [Theory]
-    [MemberData(nameof(GetValidImageAttachments))]
-    public void Builder_when_adding_valid_image_attachment_then_build_recipe_data_with_image_url
-        (IAttachment attachment, string expectedRecipeImageUrl)
-    {
-        // Setup
-        var fixture = new Fixture();
-
-        var authorId = fixture.Create<ulong>();
-        var discordCategory = fixture.Create<DiscordRecipeCategory>();
-        var recipeTitle = fixture.Create<string>();
-        var recipeIngredients = fixture.Create<string>();
-        var cookingSteps = fixture.Create<string>();
-
-        var builder = new RecipeDataBuilder(authorId, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
-
-        // Call
-        RecipeData result = builder.AddImage(attachment)
-                                   .Build();
-
-        // Assert
-        result.ImageUrl.Should().Be(expectedRecipeImageUrl);
-    }
-
-    [Theory]
     [InlineData(null)]
     [InlineData("    ")]
     [InlineData("")]
@@ -227,17 +197,11 @@ public class RecipeDataBuilderTest
         var notes = fixture.Create<string>();
         var tags = fixture.Create<string>();
 
-        const string recipeImageUrl = "https://RecipeImage.url";
-        var attachment = Substitute.For<IAttachment>();
-        attachment.ContentType.Returns("image/");
-        attachment.Url.Returns(recipeImageUrl);
-
         var builder = new RecipeDataBuilder(authorId, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
 
         // Call
         RecipeData result = builder.AddNotes(notes)
                                    .AddTags(tags)
-                                   .AddImage(attachment)
                                    .Build();
 
         // Assert
@@ -248,57 +212,7 @@ public class RecipeDataBuilderTest
         notesField.FieldName.Should().Be("Additional notes");
         notesField.FieldData.Should().Be(notes);
 
-        result.ImageUrl.Should().Be(recipeImageUrl);
         result.Tags.Should().Be(tags);
-    }
-
-    [Theory]
-    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
-    [InlineData("notImage/")]
-    public void Builder_when_adding_invalid_image_attachment_then_throws_exception(string invalidContentType)
-    {
-        // Setup
-        var attachment = Substitute.For<IAttachment>();
-        attachment.ContentType.Returns(invalidContentType);
-
-        var fixture = new Fixture();
-
-        var authorId = fixture.Create<ulong>();
-        var discordCategory = fixture.Create<DiscordRecipeCategory>();
-        var recipeTitle = fixture.Create<string>();
-        var recipeIngredients = fixture.Create<string>();
-        var cookingSteps = fixture.Create<string>();
-
-        var builder = new RecipeDataBuilder(authorId, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
-
-        // Precondition
-        attachment.IsImage().Should().BeFalse();
-
-        // Call
-        Action call = () => builder.AddImage(attachment);
-
-        // Assert
-        call.Should().ThrowExactly<ArgumentException>();
-    }
-
-    public static IEnumerable<object?[]> GetValidImageAttachments()
-    {
-        yield return new object?[]
-        {
-            null,
-            null
-        };
-
-        const string recipeImageUrl = "https://RecipeImage.url";
-        var attachment = Substitute.For<IAttachment>();
-        attachment.ContentType.Returns("image/");
-        attachment.Url.Returns(recipeImageUrl);
-
-        yield return new object?[]
-        {
-            attachment,
-            recipeImageUrl
-        };
     }
 
     private static void AssertMandatoryRecipeFields(

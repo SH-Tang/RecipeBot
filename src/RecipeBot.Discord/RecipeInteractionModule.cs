@@ -20,7 +20,6 @@ using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
 using Discord.Common;
-using Discord.Common.Utils;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
@@ -118,21 +117,12 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
     }
 
     [SlashCommand("recipe", "Formats and stores an user recipe")]
-    public async Task SaveRecipe([Summary("category", "The category the recipe belongs to")] DiscordRecipeCategory category,
-                                 [Summary("image", "The image of the recipe result (optional)")]
-                                 IAttachment? attachment = null)
+    public async Task SaveRecipe([Summary("category", "The category the recipe belongs to")] DiscordRecipeCategory category)
     {
-        if (attachment != null && !attachment.IsImage())
-        {
-            await RespondAsync(Resources.Attachment_must_be_an_image, ephemeral: true);
-            return;
-        }
-
         var arguments = CommandArguments.Instance;
 
         try
         {
-            arguments.AttachmentArgument = attachment;
             arguments.CategoryArgument = category;
 
             await Context.Interaction.RespondWithModalAsync<RecipeModal>(RecipeModal.ModalId);
@@ -151,7 +141,6 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
 
         try
         {
-            IAttachment? attachment = arguments.AttachmentArgument;
             DiscordRecipeCategory category = arguments.CategoryArgument;
 
             SocketUser? user = Context.User;
@@ -159,7 +148,7 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
             using(IServiceScope scope = scopeFactory.CreateScope())
             {
                 var controller = scope.ServiceProvider.GetRequiredService<IRecipeController>();
-                ControllerResult<Embed> response = await controller.SaveRecipeAsync(modal, user, category, attachment);
+                ControllerResult<Embed> response = await controller.SaveRecipeAsync(modal, user, category);
 
                 if (response.HasError)
                 {
@@ -210,16 +199,10 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
         public DiscordRecipeCategory CategoryArgument { get; set; }
 
         /// <summary>
-        /// Gets ors sets the <see cref="IAttachment"/>.
-        /// </summary>
-        public IAttachment? AttachmentArgument { get; set; }
-
-        /// <summary>
         /// Resets the arguments to default arguments.
         /// </summary>
         public void ResetArguments()
         {
-            AttachmentArgument = null;
             CategoryArgument = (DiscordRecipeCategory)(-1);
         }
     }

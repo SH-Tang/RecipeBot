@@ -33,7 +33,6 @@ public class RecipeModelTestBuilder
     private readonly int maxFieldNameLength;
     private readonly int maxTitleLength;
 
-    private string? imageUrl;
     private RecipeTagsModel tags = new RecipeTagsModel(Enumerable.Empty<string>());
     private IEnumerable<RecipeFieldModel> recipeFields = Enumerable.Empty<RecipeFieldModel>();
     private RecipeCategory category = RecipeCategory.Other;
@@ -83,17 +82,7 @@ public class RecipeModelTestBuilder
         this.category = category;
         return this;
     }
-
-    /// <summary>
-    /// Adds an image to the <see cref="RecipeModel"/>.
-    /// </summary>
-    /// <returns>The <see cref="RecipeModelTestBuilder"/>.</returns>
-    public RecipeModelTestBuilder AddImage()
-    {
-        imageUrl = "https://recipeBot.recipe.image";
-        return this;
-    }
-
+    
     /// <summary>
     /// Adds a collection of tags to the <see cref="RecipeModel"/>.
     /// </summary>
@@ -126,9 +115,7 @@ public class RecipeModelTestBuilder
         string title = GetStringWithRandomLength('x', maxTitleLength);
         var metaData = new RecipeModelMetaData(1337, tags, category);
 
-        return imageUrl == null
-                   ? new RecipeModel(metaData, recipeFields, title)
-                   : new RecipeModel(metaData, recipeFields, title, imageUrl);
+        return new RecipeModel(metaData, recipeFields, title);
     }
 
     private RecipeFieldModel CreateRecipeFieldModel(int seed)

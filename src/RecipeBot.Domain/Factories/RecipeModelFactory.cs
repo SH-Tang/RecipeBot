@@ -94,9 +94,7 @@ public class RecipeModelFactory
         RecipeModelMetaData metaData = CreateMetaData(recipeData.AuthorId, recipeData.Tags, recipeData.Category);
 
         string recipeTitle = recipeData.RecipeTitle;
-        RecipeModel recipe = recipeData.ImageUrl == null
-                                 ? new RecipeModel(metaData, recipeFields, recipeTitle)
-                                 : new RecipeModel(metaData, recipeFields, recipeTitle, recipeData.ImageUrl);
+        var recipe = new RecipeModel(metaData, recipeFields, recipeTitle);
 
         int maximumRecipeLength = recipeModelCharacterLimitProvider.MaximumRecipeLength;
         if (recipe.TotalLength > maximumRecipeLength)

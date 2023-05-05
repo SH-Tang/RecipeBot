@@ -35,11 +35,10 @@ public interface IRecipeController
     /// <param name="modal">The <see cref="RecipeModal"/> to get the data from.</param>
     /// <param name="user">The <see cref="IUser"/> invoking the command.</param>
     /// <param name="category">The <see cref="DiscordRecipeCategory"/> the recipe belongs to.</param>
-    /// <param name="attachment">The <see cref="IAttachment"/> that belongs to the recipe.</param>
     /// <returns>The result of the save action.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="modal"/> and <paramref name="user"/> is <c>null</c>.</exception>
     /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid value of <see cref="DiscordRecipeCategory"/>.</exception>
-    Task<ControllerResult<Embed>> SaveRecipeAsync(RecipeModal modal, IUser user, DiscordRecipeCategory category, IAttachment? attachment);
+    Task<ControllerResult<Embed>> SaveRecipeAsync(RecipeModal modal, IUser user, DiscordRecipeCategory category);
 
     /// <summary>
     /// Deletes a recipe based on its input arguments.

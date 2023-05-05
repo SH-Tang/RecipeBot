@@ -19,8 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Common.Utils;
-using Discord;
-using Discord.Common.Utils;
 using RecipeBot.Discord.Data;
 using RecipeBot.Domain.Data;
 using RecipeBot.Properties;
@@ -37,7 +35,6 @@ internal class RecipeDataBuilder
 
     private readonly RecipeCategory recipeCategory;
     private readonly List<RecipeFieldData> recipeFields;
-    private string? imageUrl;
     private string? tags;
 
     /// <summary>
@@ -65,23 +62,6 @@ internal class RecipeDataBuilder
             new RecipeFieldData(Resources.RecipeFieldName_Ingredients_DisplayName, recipeIngredients),
             new RecipeFieldData(Resources.RecipeFieldName_Cooking_Steps_DisplayName, cookingSteps),
         };
-    }
-
-    /// <summary>
-    /// Adds an attachment image url to the <see cref="RecipeData"/>.
-    /// </summary>
-    /// <param name="attachment">The <see cref="IAttachment"/> to add the information from.</param>
-    /// <returns>The <see cref="RecipeDataBuilder"/>.</returns>
-    /// <exception cref="ArgumentException">Thrown when the attachment image url could not be added.</exception>
-    public RecipeDataBuilder AddImage(IAttachment? attachment)
-    {
-        if (attachment != null)
-        {
-            attachment.IsValidArgument(x => x.IsImage(), "Attachment must be an image.", nameof(attachment));
-            imageUrl = attachment.Url;
-        }
-
-        return this;
     }
 
     /// <summary>
@@ -118,8 +98,7 @@ internal class RecipeDataBuilder
     {
         return new RecipeData(authorId, recipeFields, recipeTitle, recipeCategory)
         {
-            Tags = tags,
-            ImageUrl = imageUrl
+            Tags = tags
         };
     }
 }
