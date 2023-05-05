@@ -243,7 +243,7 @@ public class RecipeControllerTest
         RecipeModelTestHelper.AssertFullRecipeProperties(user, category, modal, savedModel);
         savedModel.RecipeImageUrl.Should().BeNull();
     }
-    
+
     [Fact]
     public async Task Deleting_recipe_and_delete_successful_returns_result()
     {
@@ -255,7 +255,7 @@ public class RecipeControllerTest
         var repository = Substitute.For<IRecipeRepository>();
         repository.DeleteRecipeAsync(idToDelete).Returns(deletedResult);
 
-        var userData = UserDataTestFactory.CreateFullyConfigured();
+        UserData userData = UserDataTestFactory.CreateFullyConfigured();
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(deletedResult.AuthorId).Returns(userData);
 
@@ -297,7 +297,7 @@ public class RecipeControllerTest
 
         await logger.Received(1).LogErrorAsync(exception);
     }
-    
+
     [Fact]
     public async Task Retrieving_recipe_and_exception_thrown_when_retrieving_logs_and_returns_result_with_error()
     {
