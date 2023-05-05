@@ -75,7 +75,7 @@ public class RecipeController : IRecipeController
     }
 
     public async Task<ControllerResult<Embed>> SaveRecipeAsync(RecipeModal modal, IUser user,
-                                                               DiscordRecipeCategory category, IAttachment? attachment)
+                                                               DiscordRecipeCategory category)
     {
         modal.IsNotNull(nameof(modal));
         user.IsNotNull(nameof(user));
@@ -83,9 +83,7 @@ public class RecipeController : IRecipeController
 
         try
         {
-            RecipeModel recipeModel = attachment == null
-                                          ? modelCreationService.CreateRecipeModel(modal, user, category)
-                                          : modelCreationService.CreateRecipeModel(modal, user, category, attachment);
+            RecipeModel recipeModel = modelCreationService.CreateRecipeModel(modal, user, category);
 
             UserData author = IUserHelper.Create(user);
             Task<Embed> embedTask = Task.Run(() => RecipeEmbedFactory.Create(recipeModel, author));
