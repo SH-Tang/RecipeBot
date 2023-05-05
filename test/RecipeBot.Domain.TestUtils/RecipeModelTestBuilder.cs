@@ -83,17 +83,7 @@ public class RecipeModelTestBuilder
         this.category = category;
         return this;
     }
-
-    /// <summary>
-    /// Adds an image to the <see cref="RecipeModel"/>.
-    /// </summary>
-    /// <returns>The <see cref="RecipeModelTestBuilder"/>.</returns>
-    public RecipeModelTestBuilder AddImage()
-    {
-        imageUrl = "https://recipeBot.recipe.image";
-        return this;
-    }
-
+    
     /// <summary>
     /// Adds a collection of tags to the <see cref="RecipeModel"/>.
     /// </summary>
