@@ -297,7 +297,7 @@ public class RecipeRepositoryTest
                 Tags = Array.Empty<RecipeTagEntity>()
             };
 
-            await context.RecipeEntities.AddRangeAsync(recipe);
+            await context.RecipeEntities.AddAsync(recipe);
 
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
@@ -566,7 +566,7 @@ public class RecipeRepositoryTest
                 Tags = Array.Empty<RecipeTagEntity>()
             };
 
-            await context.RecipeEntities.AddRangeAsync(recipeToRetrieve);
+            await context.RecipeEntities.AddAsync(recipeToRetrieve);
 
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();

@@ -587,7 +587,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
                 }
             };
 
-            await context.RecipeEntities.AddRangeAsync(recipe);
+            await context.RecipeEntities.AddAsync(recipe);
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 

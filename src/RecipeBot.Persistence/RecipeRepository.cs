@@ -74,48 +74,17 @@ public class RecipeRepository : IRecipeRepository
 
     public async Task<RecipeEntryData> DeleteRecipeAsync(long id)
     {
-        try
+        RecipeEntity? entityToDelete = await context.RecipeEntities
+                                                    .Include(e => e.RecipeFields)
+                                                    .Include(e => e.Tags)
+                                                    .Include(e => e.Author)
+                                                    .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
+        if (entityToDelete == null)
         {
-            RecipeEntity? entityToDelete = await context.RecipeEntities
-                                                        .Include(e => e.RecipeFields)
-                                                        .Include(e => e.Tags)
-                                                        .Include(e => e.Author)
-                                                        .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
-            if (entityToDelete == null)
-            {
-                throw new RepositoryDataDeleteException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_Id_0, id));
-            }
-
-            ulong authorId = GetAuthorId(entityToDelete.Author.AuthorId, entityToDelete.RecipeEntityId);
-
-            context.RecipeEntities.Remove(entityToDelete);
-            await context.SaveChangesAsync();
-
-            return new RecipeEntryData(entityToDelete.RecipeEntityId, entityToDelete.RecipeTitle, authorId);
+            throw new RepositoryDataDeleteException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_Id_0, id));
         }
-        catch (DbUpdateException ex)
-        {
-            throw new RepositoryDataDeleteException(ex.Message, ex);
-        }
-    }
 
-    /// <summary>
-    /// Gets the author id based on its input arguments.
-    /// </summary>
-    /// <param name="authorId">The author id to parse.</param>
-    /// <param name="recipeId">The id of the recipe the author belongs to.</param>
-    /// <returns>An <see cref="ulong"/> representing the author id.</returns>
-    /// <exception cref="RepositoryDataDeleteException">Thrown when the author id could not be retrieved successfully.</exception>
-    private static ulong GetAuthorId(string authorId, long recipeId)
-    {
-        try
-        {
-            return ulong.Parse(authorId);
-        }
-        catch (Exception e) when (e is FormatException || e is OverflowException)
-        {
-            throw new RepositoryDataDeleteException(string.Format(Resources.RecipeEntityId_0_unsuccessfully_deleted_due_to_invalid_AuthorId_1, recipeId, authorId), e);
-        }
+        return await DeleteEntityAsync(entityToDelete);
     }
 
     public async Task<RecipeData> GetRecipeAsync(long id)
@@ -133,6 +102,35 @@ public class RecipeRepository : IRecipeRepository
         }
 
         return RecipeDataReader.Read(entityToRetrieve);
+    }
+
+    /// <summary>
+    /// Deletes the entity from the database.
+    /// </summary>
+    /// <param name="entityToDelete">The entity to delete.</param>
+    /// <returns>A <see cref="RecipeEntryData"/> containing the information of the deleted entity.</returns>
+    /// <exception cref="RepositoryDataDeleteException">Thrown when the entity could not be deleted successfully.</exception>
+    private async Task<RecipeEntryData> DeleteEntityAsync(RecipeEntity entityToDelete)
+    {
+        string authorId = entityToDelete.Author.AuthorId;
+
+        try
+        {
+            ulong parsedAuthorId = ulong.Parse(authorId);
+
+            context.RecipeEntities.Remove(entityToDelete);
+            await context.SaveChangesAsync();
+
+            return new RecipeEntryData(entityToDelete.RecipeEntityId, entityToDelete.RecipeTitle, parsedAuthorId);
+        }
+        catch (Exception e) when (e is FormatException || e is OverflowException)
+        {
+            throw new RepositoryDataDeleteException(string.Format(Resources.RecipeEntityId_0_unsuccessfully_deleted_due_to_invalid_AuthorId_1, entityToDelete.RecipeEntityId, authorId), e);
+        }
+        catch (DbUpdateException ex)
+        {
+            throw new RepositoryDataDeleteException(ex.Message, ex);
+        }
     }
 
     private async Task<ICollection<RecipeTagEntity>> CreateRecipeTagEntities(RecipeModel model)
