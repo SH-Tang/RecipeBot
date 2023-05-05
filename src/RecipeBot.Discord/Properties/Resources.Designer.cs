@@ -78,15 +78,6 @@ namespace RecipeBot.Discord.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attachment must be an image..
-        /// </summary>
-        internal static string Attachment_must_be_an_image {
-            get {
-                return ResourceManager.GetString("Attachment_must_be_an_image", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Controller should not have returned an empty collection when querying..
         /// </summary>
         internal static string Controller_should_not_have_returned_an_empty_collection_when_querying {
