@@ -33,7 +33,6 @@ public class RecipeModelTestBuilder
     private readonly int maxFieldNameLength;
     private readonly int maxTitleLength;
 
-    private string? imageUrl;
     private RecipeTagsModel tags = new RecipeTagsModel(Enumerable.Empty<string>());
     private IEnumerable<RecipeFieldModel> recipeFields = Enumerable.Empty<RecipeFieldModel>();
     private RecipeCategory category = RecipeCategory.Other;
