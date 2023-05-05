@@ -47,7 +47,7 @@ public class ControllerResultTest
         var errorMessage = fixture.Create<string>();
 
         // Call
-        var controllerResult = ControllerResult<object>.CreateControllerResultWithError(errorMessage);
+        ControllerResult<object> controllerResult = ControllerResult<object>.CreateControllerResultWithError(errorMessage);
 
         // Assert
         controllerResult.Result.Should().BeNull();

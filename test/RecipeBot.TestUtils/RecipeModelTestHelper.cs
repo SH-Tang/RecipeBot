@@ -43,8 +43,7 @@ public static class RecipeModelTestHelper
         actualRecipe.Title.Should().Be(modal.RecipeTitle);
         actualRecipe.RecipeCategory.Should().Be(DiscordRecipeCategoryTestHelper.RecipeCategoryMapping[category]);
 
-        string? expectedAvatarUrl = user.GetAvatarUrl();
-        actualRecipe.Author.Should().Match<AuthorModel>(s => s.AuthorName == user.Username && s.AuthorImageUrl == expectedAvatarUrl);
+        actualRecipe.AuthorId.Should().Be(user.Id);
 
         actualRecipe.RecipeFields.Should().SatisfyRespectively(
             firstField =>

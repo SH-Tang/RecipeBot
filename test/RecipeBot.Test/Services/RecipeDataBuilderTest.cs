@@ -50,12 +50,12 @@ public class RecipeDataBuilderTest
         // Setup
         var fixture = new Fixture();
 
-        var authorData = fixture.Create<AuthorData>();
+        var authorId = fixture.Create<ulong>();
         var recipeTitle = fixture.Create<string>();
         var recipeIngredients = fixture.Create<string>();
         var cookingSteps = fixture.Create<string>();
 
-        var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
+        var builder = new RecipeDataBuilder(authorId, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
 
         // Call
         RecipeData result = builder.Build();
@@ -70,7 +70,7 @@ public class RecipeDataBuilderTest
         // Setup
         var fixture = new Fixture();
 
-        var authorData = fixture.Create<AuthorData>();
+        var authorId = fixture.Create<ulong>();
         var recipeTitle = fixture.Create<string>();
         var recipeIngredients = fixture.Create<string>();
         var cookingSteps = fixture.Create<string>();
@@ -78,7 +78,7 @@ public class RecipeDataBuilderTest
         const DiscordRecipeCategory discordCategory = (DiscordRecipeCategory)(-1);
 
         // Call
-        Action call = () => new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
+        Action call = () => new RecipeDataBuilder(authorId, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
 
         // Assert
         call.Should().Throw<InvalidEnumArgumentException>();
@@ -90,20 +90,20 @@ public class RecipeDataBuilderTest
         // Setup
         var fixture = new Fixture();
 
-        var authorData = fixture.Create<AuthorData>();
+        var authorId = fixture.Create<ulong>();
         var discordCategory = fixture.Create<DiscordRecipeCategory>();
         var recipeTitle = fixture.Create<string>();
         var recipeIngredients = fixture.Create<string>();
         var cookingSteps = fixture.Create<string>();
 
-        var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
+        var builder = new RecipeDataBuilder(authorId, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
 
         // Call
         RecipeData result = builder.Build();
 
         // Assert
         result.RecipeFields.Should().HaveCount(2);
-        AssertMandatoryRecipeFields(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
+        AssertMandatoryRecipeFields(recipeTitle, recipeIngredients, cookingSteps, authorId, result);
 
         result.ImageUrl.Should().BeNull();
         result.Tags.Should().BeNull();
@@ -118,13 +118,13 @@ public class RecipeDataBuilderTest
         // Setup
         var fixture = new Fixture();
 
-        var authorData = fixture.Create<AuthorData>();
+        var authorId = fixture.Create<ulong>();
         var discordCategory = fixture.Create<DiscordRecipeCategory>();
         var recipeTitle = fixture.Create<string>();
         var recipeIngredients = fixture.Create<string>();
         var cookingSteps = fixture.Create<string>();
 
-        var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
+        var builder = new RecipeDataBuilder(authorId, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
 
         // Call
         RecipeData result = builder.AddNotes(notes)
@@ -132,7 +132,7 @@ public class RecipeDataBuilderTest
 
         // Assert
         result.RecipeFields.Should().HaveCount(2);
-        AssertMandatoryRecipeFields(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
+        AssertMandatoryRecipeFields(recipeTitle, recipeIngredients, cookingSteps, authorId, result);
     }
 
     [Fact]
@@ -141,14 +141,14 @@ public class RecipeDataBuilderTest
         // Setup
         var fixture = new Fixture();
 
-        var authorData = fixture.Create<AuthorData>();
+        var authorId = fixture.Create<ulong>();
         var discordCategory = fixture.Create<DiscordRecipeCategory>();
         var recipeTitle = fixture.Create<string>();
         var recipeIngredients = fixture.Create<string>();
         var cookingSteps = fixture.Create<string>();
         var notes = fixture.Create<string>();
 
-        var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
+        var builder = new RecipeDataBuilder(authorId, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
 
         // Call
         RecipeData result = builder.AddNotes(notes)
@@ -156,7 +156,7 @@ public class RecipeDataBuilderTest
 
         // Assert
         result.RecipeFields.Should().HaveCount(3);
-        AssertMandatoryRecipeFields(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
+        AssertMandatoryRecipeFields(recipeTitle, recipeIngredients, cookingSteps, authorId, result);
 
         RecipeFieldData notesField = result.RecipeFields.ElementAt(2);
         notesField.FieldName.Should().Be("Additional notes");
@@ -171,13 +171,13 @@ public class RecipeDataBuilderTest
         // Setup
         var fixture = new Fixture();
 
-        var authorData = fixture.Create<AuthorData>();
+        var authorId = fixture.Create<ulong>();
         var discordCategory = fixture.Create<DiscordRecipeCategory>();
         var recipeTitle = fixture.Create<string>();
         var recipeIngredients = fixture.Create<string>();
         var cookingSteps = fixture.Create<string>();
 
-        var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
+        var builder = new RecipeDataBuilder(authorId, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
 
         // Call
         RecipeData result = builder.AddImage(attachment)
@@ -197,13 +197,13 @@ public class RecipeDataBuilderTest
         // Setup
         var fixture = new Fixture();
 
-        var authorData = fixture.Create<AuthorData>();
+        var authorId = fixture.Create<ulong>();
         var discordCategory = fixture.Create<DiscordRecipeCategory>();
         var recipeTitle = fixture.Create<string>();
         var recipeIngredients = fixture.Create<string>();
         var cookingSteps = fixture.Create<string>();
 
-        var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
+        var builder = new RecipeDataBuilder(authorId, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
 
         // Call
         RecipeData result = builder.AddTags(tags)
@@ -219,7 +219,7 @@ public class RecipeDataBuilderTest
         // Setup
         var fixture = new Fixture();
 
-        var authorData = fixture.Create<AuthorData>();
+        var authorId = fixture.Create<ulong>();
         var discordCategory = fixture.Create<DiscordRecipeCategory>();
         var recipeTitle = fixture.Create<string>();
         var recipeIngredients = fixture.Create<string>();
@@ -232,7 +232,7 @@ public class RecipeDataBuilderTest
         attachment.ContentType.Returns("image/");
         attachment.Url.Returns(recipeImageUrl);
 
-        var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
+        var builder = new RecipeDataBuilder(authorId, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
 
         // Call
         RecipeData result = builder.AddNotes(notes)
@@ -242,7 +242,7 @@ public class RecipeDataBuilderTest
 
         // Assert
         result.RecipeFields.Should().HaveCount(3);
-        AssertMandatoryRecipeFields(recipeTitle, recipeIngredients, cookingSteps, authorData, result);
+        AssertMandatoryRecipeFields(recipeTitle, recipeIngredients, cookingSteps, authorId, result);
 
         RecipeFieldData notesField = result.RecipeFields.ElementAt(2);
         notesField.FieldName.Should().Be("Additional notes");
@@ -263,13 +263,13 @@ public class RecipeDataBuilderTest
 
         var fixture = new Fixture();
 
-        var authorData = fixture.Create<AuthorData>();
+        var authorId = fixture.Create<ulong>();
         var discordCategory = fixture.Create<DiscordRecipeCategory>();
         var recipeTitle = fixture.Create<string>();
         var recipeIngredients = fixture.Create<string>();
         var cookingSteps = fixture.Create<string>();
 
-        var builder = new RecipeDataBuilder(authorData, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
+        var builder = new RecipeDataBuilder(authorId, discordCategory, recipeTitle, recipeIngredients, cookingSteps);
 
         // Precondition
         attachment.IsImage().Should().BeFalse();
@@ -302,11 +302,11 @@ public class RecipeDataBuilderTest
     }
 
     private static void AssertMandatoryRecipeFields(
-        string expectedRecipeTitle, string expectedRecipeIngredients, string expectedCookingSteps, AuthorData expectedAuthorData,
+        string expectedRecipeTitle, string expectedRecipeIngredients, string expectedCookingSteps, ulong expectedAuthorId,
         RecipeData actualRecipeData)
     {
         actualRecipeData.RecipeTitle.Should().Be(expectedRecipeTitle);
-        actualRecipeData.AuthorData.Should().BeSameAs(expectedAuthorData);
+        actualRecipeData.AuthorId.Should().Be(expectedAuthorId);
 
         RecipeFieldData firstField = actualRecipeData.RecipeFields.ElementAt(0);
         firstField.FieldName.Should().Be("Ingredients");

@@ -29,7 +29,6 @@ namespace RecipeBot.Domain.TestUtils;
 /// </summary>
 public class RecipeModelTestBuilder
 {
-    private readonly int maxAuthorNameLength;
     private readonly int maxFieldDataLength;
     private readonly int maxFieldNameLength;
     private readonly int maxTitleLength;
@@ -70,7 +69,6 @@ public class RecipeModelTestBuilder
                                                                   nameof(constructionProperties.MaxFieldDataLength));
 
         maxTitleLength = constructionProperties.MaxTitleLength;
-        maxAuthorNameLength = constructionProperties.MaxAuthorNameLength;
         maxFieldNameLength = constructionProperties.MaxFieldNameLength;
         maxFieldDataLength = constructionProperties.MaxFieldDataLength;
     }
@@ -126,17 +124,11 @@ public class RecipeModelTestBuilder
     public RecipeModel Build()
     {
         string title = GetStringWithRandomLength('x', maxTitleLength);
-        var metaData = new RecipeModelMetaData(CreateAuthorModel(), tags, category);
+        var metaData = new RecipeModelMetaData(1337, tags, category);
 
         return imageUrl == null
                    ? new RecipeModel(metaData, recipeFields, title)
                    : new RecipeModel(metaData, recipeFields, title, imageUrl);
-    }
-
-    private AuthorModel CreateAuthorModel()
-    {
-        string authorName = GetStringWithRandomLength('+', maxAuthorNameLength);
-        return new AuthorModel(authorName, "https://recipebot.author.image");
     }
 
     private RecipeFieldModel CreateRecipeFieldModel(int seed)

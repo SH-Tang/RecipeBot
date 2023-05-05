@@ -68,7 +68,7 @@ public class RecipeBotApplication
     public async Task Run()
     {
         var services = new RecipeBotApplicationServiceProvider(configurationRoot);
-        using (ServiceProvider serviceProvider = services.GetServiceProvider())
+        using(ServiceProvider serviceProvider = services.GetServiceProvider())
         {
             await SetupDatabase(serviceProvider);
             await ConfigureDiscordClient(serviceProvider);
@@ -125,7 +125,7 @@ public class RecipeBotApplication
 
     private static async Task SetupDatabase(IServiceProvider services)
     {
-        using (IServiceScope scope = services.CreateScope())
+        using(IServiceScope scope = services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<RecipeBotDbContext>();
             await context.Database.EnsureCreatedAsync();

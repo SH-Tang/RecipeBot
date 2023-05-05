@@ -77,14 +77,13 @@ public class RecipeTagEntriesInteractionModule : InteractionModuleBase<SocketInt
         }
     }
 
-
     [SlashCommand("tag-delete", "Deletes a tag based on the id")]
     [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ModerateMembers)]
     public async Task DeleteTag([Summary("TagId", "The id of the tag to delete")] long tagIdToDelete)
     {
         try
         {
-            using (IServiceScope scope = scopeFactory.CreateScope())
+            using(IServiceScope scope = scopeFactory.CreateScope())
             {
                 var controller = scope.ServiceProvider.GetRequiredService<IRecipeTagEntriesController>();
                 ControllerResult<string> response = await controller.DeleteTagAsync(tagIdToDelete);
@@ -110,7 +109,6 @@ public class RecipeTagEntriesInteractionModule : InteractionModuleBase<SocketInt
         }
     }
 
-
     private async Task<IEnumerable<Task>> GetTasksAsync(Task<ControllerResult<IReadOnlyList<string>>> getControllerResultTask)
     {
         ControllerResult<IReadOnlyList<string>> result = await getControllerResultTask;
@@ -128,8 +126,8 @@ public class RecipeTagEntriesInteractionModule : InteractionModuleBase<SocketInt
             return new[]
             {
                 RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_,
-                        Resources.Controller_should_not_have_returned_an_empty_collection_when_querying),
-                    ephemeral: true)
+                                           Resources.Controller_should_not_have_returned_an_empty_collection_when_querying),
+                             ephemeral: true)
             };
         }
 

@@ -33,9 +33,7 @@ public class RecipeModelMetaDataTest
     {
         // Setup
         var fixture = new Fixture();
-        AuthorModel author = fixture.Build<AuthorModel>()
-                                    .FromFactory<string>(authorName => new AuthorModel(authorName, "http://www.recipeBotImage.com"))
-                                    .Create();
+        var authorId = fixture.Create<ulong>();
         RecipeTagsModel tags = fixture.Build<RecipeTagsModel>()
                                       .FromFactory(() => new RecipeTagsModel(Enumerable.Empty<string>()))
                                       .Create();
@@ -43,7 +41,7 @@ public class RecipeModelMetaDataTest
         const RecipeCategory invalidCategory = (RecipeCategory)(-1);
 
         // Call
-        Action call = () => new RecipeModelMetaData(author, tags, invalidCategory);
+        Action call = () => new RecipeModelMetaData(authorId, tags, invalidCategory);
 
         // Assert
         call.Should().Throw<InvalidEnumArgumentException>();

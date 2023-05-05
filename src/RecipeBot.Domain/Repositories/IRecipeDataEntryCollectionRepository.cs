@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using RecipeBot.Domain.Data;
+using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Repositories.Data;
 
 namespace RecipeBot.Domain.Repositories;
@@ -40,6 +41,7 @@ public interface IRecipeDataEntryCollectionRepository
     /// <param name="category">The <see cref="RecipeCategory"/> to filter the recipes with.</param>
     /// <returns>A collection of filtered recipe entries.</returns>
     /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid <see cref="RecipeCategory"/>.</exception>
+    /// <exception cref="RepositoryDataLoadException">Thrown when the entries could not be successfully loaded.</exception>
     Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesByCategoryAsync(RecipeCategory category);
 
     /// <summary>
@@ -47,6 +49,7 @@ public interface IRecipeDataEntryCollectionRepository
     /// </summary>
     /// <param name="tag">The tag to filter the recipes with.</param>
     /// <returns>A collection of filtered recipe entries.</returns>
+    /// <exception cref="RepositoryDataLoadException">Thrown when the entries could not be successfully loaded.</exception>
     Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesByTagAsync(string tag);
 
     /// <summary>
@@ -54,5 +57,6 @@ public interface IRecipeDataEntryCollectionRepository
     /// </summary>
     /// <param name="tagId">The tag id to filter the recipes with.</param>
     /// <returns>A collection of filtered recipe entries.</returns>
+    /// <exception cref="RepositoryDataLoadException">Thrown when the entries could not be successfully loaded.</exception>
     Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesByTagIdAsync(long tagId);
 }

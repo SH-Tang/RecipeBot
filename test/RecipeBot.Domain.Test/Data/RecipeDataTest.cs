@@ -33,12 +33,12 @@ public class RecipeDataTest
     {
         // Setup
         var fixture = new Fixture();
-        AuthorData authorData = CreateValidAuthorData(fixture);
+        var authorId = fixture.Create<ulong>();
 
         const RecipeCategory category = (RecipeCategory)(-1);
 
         // Call
-        Action call = () => new RecipeData(authorData, Enumerable.Empty<RecipeFieldData>(), fixture.Create<string>(), category);
+        Action call = () => new RecipeData(authorId, Enumerable.Empty<RecipeFieldData>(), fixture.Create<string>(), category);
 
         // Assert
         call.Should().Throw<InvalidEnumArgumentException>();
@@ -50,19 +50,12 @@ public class RecipeDataTest
     {
         // Setup
         var fixture = new Fixture();
-        AuthorData authorData = CreateValidAuthorData(fixture);
+        var authorId = fixture.Create<ulong>();
 
         // Call
-        Action call = () => new RecipeData(authorData, Enumerable.Empty<RecipeFieldData>(), invalidRecipeTitle, fixture.Create<RecipeCategory>());
+        Action call = () => new RecipeData(authorId, Enumerable.Empty<RecipeFieldData>(), invalidRecipeTitle, fixture.Create<RecipeCategory>());
 
         // Assert
         call.Should().ThrowExactly<ArgumentException>();
-    }
-
-    private static AuthorData CreateValidAuthorData(Fixture fixture)
-    {
-        return fixture.Build<AuthorData>()
-                      .FromFactory<string>(name => new AuthorData(name, "http://www.recipeBotImage.com"))
-                      .Create();
     }
 }

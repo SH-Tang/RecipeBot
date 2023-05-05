@@ -15,21 +15,31 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-namespace RecipeBot.Domain.Factories;
+using Discord.Common.Providers;
+
+namespace Discord.Common.TestUtils;
 
 /// <summary>
-/// Interface for describing providers of character limits for recipe models.
+/// Factory to create instances of <see cref="UserData"/> that can be used for testing.
 /// </summary>
-public interface IRecipeModelCharacterLimitProvider : IRecipeFieldModelCharacterLimitProvider,
-                                                      IRecipeTagModelCharacterLimitProvider
+public static class UserDataTestFactory
 {
     /// <summary>
-    /// Gets the maximum allowable length of the title.
+    /// Creates a valid fully configured <see cref="UserData"/>.
     /// </summary>
-    int MaximumTitleLength { get; }
+    /// <returns>A valid fully configured <see cref="UserData"/>.</returns>
+    public static UserData CreateFullyConfigured()
+    {
+        return Create("User");
+    }
 
     /// <summary>
-    /// Gets the maximum allowable length of the entire recipe.
+    /// Creates a valid configured <see cref="UserData"/> based on its input arguments.
     /// </summary>
-    int MaximumRecipeLength { get; }
+    /// <param name="name">The name to set.</param>
+    /// <returns>A valid configured <see cref="UserData"/>.</returns>
+    public static UserData Create(string name)
+    {
+        return new UserData(name, "https://www.recipebot.com");
+    }
 }

@@ -45,7 +45,7 @@ public class RecipeTagsModelFactoryTest
         Action call = () => factory.Create(tags);
 
         // Assert
-        var expectedMessage = $"The total tag character length must be less or equal to {maximumTagsLength} characters.";
+        string expectedMessage = $"The total tag character length must be less or equal to {maximumTagsLength} characters.";
         call.Should().Throw<ModelCreateException>()
             .WithMessage(expectedMessage);
     }

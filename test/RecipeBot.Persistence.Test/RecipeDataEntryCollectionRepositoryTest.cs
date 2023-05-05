@@ -24,6 +24,7 @@ using FluentAssertions;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using RecipeBot.Domain.Data;
+using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.Persistence.Creators;
 using RecipeBot.Persistence.Entities;
@@ -45,7 +46,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
     public async Task Given_empty_database_when_loading_entries_returns_empty_collection()
     {
         // Setup
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
@@ -67,13 +68,11 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
 
         var authorOne = new AuthorEntity
         {
-            AuthorName = fixture.Create<string>(),
-            AuthorImageUrl = fixture.Create<string>()
+            AuthorId = fixture.Create<ulong>().ToString()
         };
         var authorTwo = new AuthorEntity
         {
-            AuthorName = fixture.Create<string>(),
-            AuthorImageUrl = fixture.Create<string>()
+            AuthorId = fixture.Create<ulong>().ToString()
         };
 
         var recipeOne = new RecipeEntity
@@ -102,7 +101,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             recipeThree
         };
 
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
             await context.RecipeEntities.AddRangeAsync(recipes);
@@ -119,9 +118,47 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             entries.Should().BeInAscendingOrder(s => s.Id).And.BeEquivalentTo(
                 recipes,
                 options => options.ExcludingMissingMembers()
+                                  .WithAutoConversion()
                                   .WithMapping<RecipeEntryData>(e => e.RecipeEntityId, s => s.Id)
                                   .WithMapping<RecipeEntryData>(e => e.RecipeTitle, s => s.Title)
-                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorName, s => s.AuthorName));
+                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorId, s => s.AuthorId));
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(GetInvalidAuthorId))]
+    public async Task Given_database_with_invalid_author_when_loading_entries_throws_exception(string invalidAuthorId)
+    {
+        // Setup
+        var invalidAuthorEntity = new AuthorEntity
+        {
+            AuthorId = invalidAuthorId
+        };
+
+        var fixture = new Fixture();
+        var recipe = new RecipeEntity
+        {
+            RecipeEntityId = fixture.Create<int>(),
+            Author = invalidAuthorEntity,
+            RecipeTitle = fixture.Create<string>()
+        };
+
+        using (RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+            await context.RecipeEntities.AddAsync(recipe);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeDataEntryCollectionRepository(context);
+
+            // Call
+            Func<Task> call = () => repository.LoadRecipeEntriesAsync();
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataLoadException>()
+                      .WithMessage($"Recipe entries could not be loaded due to invalid AuthorId '{invalidAuthorId}'.");
         }
     }
 
@@ -130,7 +167,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
     {
         // Setup
         var fixture = new Fixture();
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
@@ -152,8 +189,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
 
         var author = new AuthorEntity
         {
-            AuthorName = fixture.Create<string>(),
-            AuthorImageUrl = fixture.Create<string>()
+            AuthorId = fixture.Create<string>()
         };
 
         var recipeOne = new RecipeEntity
@@ -185,7 +221,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             recipeThree
         };
 
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
             await context.RecipeEntities.AddRangeAsync(recipes);
@@ -217,7 +253,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
         IReadOnlyCollection<RecipeEntity> recipeEntries, RecipeCategory categoryToFilter, IEnumerable<RecipeEntity> expectedRecipes)
     {
         // Setup
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
             await context.RecipeEntities.AddRangeAsync(recipeEntries);
@@ -234,9 +270,48 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             entries.Should().BeInAscendingOrder(s => s.Id).And.BeEquivalentTo(
                 expectedRecipes,
                 options => options.ExcludingMissingMembers()
+                                  .WithAutoConversion()
                                   .WithMapping<RecipeEntryData>(e => e.RecipeEntityId, s => s.Id)
                                   .WithMapping<RecipeEntryData>(e => e.RecipeTitle, s => s.Title)
-                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorName, s => s.AuthorName));
+                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorId, s => s.AuthorId));
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(GetInvalidAuthorId))]
+    public async Task Given_database_with_invalid_author_when_loading_entries_with_category_and_match_found_throws_exception(string invalidAuthorId)
+    {
+        // Setup
+        var invalidAuthorEntity = new AuthorEntity
+        {
+            AuthorId = invalidAuthorId
+        };
+
+        var fixture = new Fixture();
+        var recipe = new RecipeEntity
+        {
+            RecipeEntityId = fixture.Create<int>(),
+            Author = invalidAuthorEntity,
+            RecipeCategory = PersistentRecipeCategory.Other,
+            RecipeTitle = fixture.Create<string>()
+        };
+
+        using (RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+            await context.RecipeEntities.AddAsync(recipe);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeDataEntryCollectionRepository(context);
+
+            // Call
+            Func<Task> call = () => repository.LoadRecipeEntriesByCategoryAsync(RecipeCategory.Other);
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataLoadException>()
+                      .WithMessage($"Recipe entries could not be loaded due to invalid AuthorId '{invalidAuthorId}'.");
         }
     }
 
@@ -245,7 +320,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
     {
         // Setup
         var fixture = new Fixture();
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
@@ -263,15 +338,14 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
     public async Task Given_seeded_database_when_loading_entries_by_tag_id_and_no_match_found_returns_empty_collection()
     {
         // Setup
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
             var fixture = new Fixture();
             var author = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = fixture.Create<string>()
             };
 
             var tagEntity = new TagEntity
@@ -314,15 +388,15 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
     public async Task Given_seeded_database_when_loading_entries_by_tag_id_and_match_found_returns_filtered_data_and_sorted_by_id()
     {
         // Setup
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
             var fixture = new Fixture();
+            var authorId = fixture.Create<ulong>();
             var author = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = authorId.ToString()
             };
 
             var tagToFilter = new TagEntity
@@ -399,9 +473,62 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
                     recipeThree
                 },
                 options => options.ExcludingMissingMembers()
+                                  .WithAutoConversion()
                                   .WithMapping<RecipeEntryData>(e => e.RecipeEntityId, s => s.Id)
                                   .WithMapping<RecipeEntryData>(e => e.RecipeTitle, s => s.Title)
-                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorName, s => s.AuthorName));
+                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorId, s => s.AuthorId));
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(GetInvalidAuthorId))]
+    public async Task Given_database_with_invalid_author_when_loading_entries_by_tag_id_and_match_found_throws_exception(string invalidAuthorId)
+    {
+        // Setup
+        using (RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var invalidAuthorEntity = new AuthorEntity
+            {
+                AuthorId = invalidAuthorId
+            };
+
+            var tagToFilter = new TagEntity
+            {
+                TagEntityId = fixture.Create<long>(),
+                Tag = fixture.Create<string>()
+            };
+
+            var recipe = new RecipeEntity
+            {
+                RecipeEntityId = 3,
+                Author = invalidAuthorEntity,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeTitle = fixture.Create<string>(),
+                Tags = new[]
+                {
+                    new RecipeTagEntity
+                    {
+                        Tag = tagToFilter,
+                        Order = fixture.Create<byte>()
+                    }
+                }
+            };
+
+            await context.RecipeEntities.AddAsync(recipe);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeDataEntryCollectionRepository(context);
+
+            // Call
+            Func<Task> call = () => repository.LoadRecipeEntriesByTagIdAsync(tagToFilter.TagEntityId);
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataLoadException>()
+                      .WithMessage($"Recipe entries could not be loaded due to invalid AuthorId '{invalidAuthorId}'.");
         }
     }
 
@@ -410,7 +537,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
     {
         // Setup
         var fixture = new Fixture();
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
@@ -428,15 +555,14 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
     public async Task Given_seeded_database_when_loading_entries_by_tag_and_no_match_found_returns_empty_collection()
     {
         // Setup
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
             var fixture = new Fixture();
             var author = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = fixture.Create<string>()
             };
 
             var tagEntity = new TagEntity
@@ -461,7 +587,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
                 }
             };
 
-            await context.RecipeEntities.AddRangeAsync(recipe);
+            await context.RecipeEntities.AddAsync(recipe);
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
@@ -479,15 +605,15 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
     public async Task Given_seeded_database_when_loading_entries_by_tag_and_match_found_returns_filtered_data_and_sorted_by_id()
     {
         // Setup
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
             var fixture = new Fixture();
+            var authorId = fixture.Create<ulong>();
             var author = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = authorId.ToString()
             };
 
             var tagToFilter = new TagEntity
@@ -564,10 +690,87 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
                     recipeThree
                 },
                 options => options.ExcludingMissingMembers()
+                                  .WithAutoConversion()
                                   .WithMapping<RecipeEntryData>(e => e.RecipeEntityId, s => s.Id)
                                   .WithMapping<RecipeEntryData>(e => e.RecipeTitle, s => s.Title)
-                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorName, s => s.AuthorName));
+                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorId, s => s.AuthorId));
         }
+    }
+
+    [Theory]
+    [MemberData(nameof(GetInvalidAuthorId))]
+    public async Task Given_database_with_invalid_author_when_loading_entries_by_tag_and_match_found_throws_exception(string invalidAuthorId)
+    {
+        // Setup
+        using (RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var invalidAuthorEntity = new AuthorEntity
+            {
+                AuthorId = invalidAuthorId
+            };
+
+            var tagToFilter = new TagEntity
+            {
+                TagEntityId = fixture.Create<long>(),
+                Tag = fixture.Create<string>()
+            };
+
+            var recipe = new RecipeEntity
+            {
+                RecipeEntityId = 3,
+                Author = invalidAuthorEntity,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeTitle = fixture.Create<string>(),
+                Tags = new[]
+                {
+                    new RecipeTagEntity
+                    {
+                        Tag = tagToFilter,
+                        Order = fixture.Create<byte>()
+                    }
+                }
+            };
+
+            await context.RecipeEntities.AddAsync(recipe);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeDataEntryCollectionRepository(context);
+
+            // Call
+            Func<Task> call = () => repository.LoadRecipeEntriesByTagAsync(tagToFilter.Tag);
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataLoadException>()
+                      .WithMessage($"Recipe entries could not be loaded due to invalid AuthorId '{invalidAuthorId}'.");
+        }
+    }
+
+    public static IEnumerable<object[]> GetCategoryTests(RecipeCategory categoryToFilter)
+    {
+        PersistentRecipeCategory persistentRecipeCategoryToFilter = PersistentRecipeCategoryCreator.Create(categoryToFilter);
+        IReadOnlyCollection<RecipeEntity> databaseEntries = GetDatabaseSeed(persistentRecipeCategoryToFilter);
+        yield return new object[]
+        {
+            databaseEntries,
+            categoryToFilter,
+            databaseEntries.Where(e => e.RecipeCategory == persistentRecipeCategoryToFilter).OrderBy(e => e.RecipeEntityId)
+        };
+    }
+
+    public static IEnumerable<object[]> GetInvalidAuthorId()
+    {
+        yield return new object[]
+        {
+            "X"
+        };
+        yield return new object[]
+        {
+            "18446744073709551616"
+        };
     }
 
     public void Dispose()
@@ -581,13 +784,11 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
         var fixture = new Fixture();
         var authorOne = new AuthorEntity
         {
-            AuthorName = fixture.Create<string>(),
-            AuthorImageUrl = fixture.Create<string>()
+            AuthorId = fixture.Create<ulong>().ToString()
         };
         var authorTwo = new AuthorEntity
         {
-            AuthorName = fixture.Create<string>(),
-            AuthorImageUrl = fixture.Create<string>()
+            AuthorId = fixture.Create<ulong>().ToString()
         };
 
         var recipeOne = new RecipeEntity
@@ -617,18 +818,6 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             recipeOne,
             recipeTwo,
             recipeThree
-        };
-    }
-
-    public static IEnumerable<object[]> GetCategoryTests(RecipeCategory categoryToFilter)
-    {
-        PersistentRecipeCategory persistentRecipeCategoryToFilter = PersistentRecipeCategoryCreator.Create(categoryToFilter);
-        IReadOnlyCollection<RecipeEntity> databaseEntries = GetDatabaseSeed(persistentRecipeCategoryToFilter);
-        yield return new object[]
-        {
-            databaseEntries,
-            categoryToFilter,
-            databaseEntries.Where(e => e.RecipeCategory == persistentRecipeCategoryToFilter).OrderBy(e => e.RecipeEntityId)
         };
     }
 

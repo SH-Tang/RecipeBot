@@ -22,10 +22,12 @@ using System.Threading.Tasks;
 using Common.Utils;
 using Microsoft.EntityFrameworkCore;
 using RecipeBot.Domain.Data;
+using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Repositories;
 using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.Persistence.Creators;
 using RecipeBot.Persistence.Entities;
+using RecipeBot.Persistence.Properties;
 
 namespace RecipeBot.Persistence;
 
@@ -55,7 +57,6 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
                                                                        .Select(e => CreateRecipeDatabaseEntry(e))
                                                                        .AsNoTracking()
                                                                        .ToArrayAsync();
-
 
         return CreateRecipeEntryDataCollection(recipeEntities);
     }
@@ -100,29 +101,57 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
         return CreateRecipeEntryDataCollection(recipeDatabaseEntries);
     }
 
+    /// <summary>
+    /// Creates a database entry based on the input arguments.
+    /// </summary>
+    /// <param name="entity">The entity to create the entry with.</param>
+    /// <returns>A <see cref="RecipeDatabaseEntry"/>.</returns>
+    /// <exception cref="RepositoryDataLoadException">Thrown when the entry could not be successfully created.</exception>
     private static RecipeDatabaseEntry CreateRecipeDatabaseEntry(RecipeTagEntity entity)
     {
-        return new RecipeDatabaseEntry
+        string authorId = entity.Recipe.Author.AuthorId;
+        try
         {
-            Id = entity.RecipeEntityId,
-            Title = entity.Recipe.RecipeTitle,
-            AuthorName = entity.Recipe.Author.AuthorName
-        };
+            return new RecipeDatabaseEntry
+            {
+                Id = entity.RecipeEntityId,
+                Title = entity.Recipe.RecipeTitle,
+                AuthorId = ulong.Parse(authorId)
+            };
+        }
+        catch (Exception e) when (e is OverflowException || e is FormatException)
+        {
+            throw new RepositoryDataLoadException(string.Format(Resources.Recipe_entries_unsuccessfully_loaded_due_to_invalid_AuthorId_0, authorId), e);
+        }
     }
 
+    /// <summary>
+    /// Creates a database entry based on the input arguments.
+    /// </summary>
+    /// <param name="entity">The entity to create the entry with.</param>
+    /// <returns>A <see cref="RecipeDatabaseEntry"/>.</returns>
+    /// <exception cref="RepositoryDataLoadException">Thrown when the entry could not be successfully created.</exception>
     private static RecipeDatabaseEntry CreateRecipeDatabaseEntry(RecipeEntity entity)
     {
-        return new RecipeDatabaseEntry
+        string authorId = entity.Author.AuthorId;
+        try
         {
-            Id = entity.RecipeEntityId,
-            Title = entity.RecipeTitle,
-            AuthorName = entity.Author.AuthorName
-        };
+            return new RecipeDatabaseEntry
+            {
+                Id = entity.RecipeEntityId,
+                Title = entity.RecipeTitle,
+                AuthorId = ulong.Parse(entity.Author.AuthorId)
+            };
+        }
+        catch (Exception e) when (e is OverflowException || e is FormatException)
+        {
+            throw new RepositoryDataLoadException(string.Format(Resources.Recipe_entries_unsuccessfully_loaded_due_to_invalid_AuthorId_0, authorId), e);
+        }
     }
 
     private static RecipeEntryData[] CreateRecipeEntryDataCollection(IEnumerable<RecipeDatabaseEntry> recipeDatabaseEntries)
     {
-        return recipeDatabaseEntries.Select(r => new RecipeEntryData(r.Id, r.Title, r.AuthorName))
+        return recipeDatabaseEntries.Select(r => new RecipeEntryData(r.Id, r.Title, r.AuthorId))
                                     .OrderBy(r => r.Id)
                                     .ToArray();
     }
@@ -130,7 +159,7 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
     /// <summary>
     /// Class representing a simplified recipe entry in the database.
     /// </summary>
-    private sealed class RecipeDatabaseEntry
+    private sealed record RecipeDatabaseEntry
     {
         /// <summary>
         /// Gets or sets the id of the recipe.
@@ -143,8 +172,8 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
         public string Title { get; init; } = null!;
 
         /// <summary>
-        /// Gets or sets the name of the author of the recipe.
+        /// Gets or sets the id of the author of the recipe.
         /// </summary>
-        public string AuthorName { get; init; } = null!;
+        public ulong AuthorId { get; init; }
     }
 }

@@ -62,8 +62,7 @@ internal class RecipeModelCreationService
         modal.IsNotNull(nameof(modal));
         user.IsNotNull(nameof(user));
 
-        var authorData = new AuthorData(user.Username, user.GetAvatarUrl());
-        RecipeData recipeData = new RecipeDataBuilder(authorData, recipeCategory, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
+        RecipeData recipeData = new RecipeDataBuilder(user.Id, recipeCategory, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
                                 .AddNotes(modal.Notes)
                                 .AddTags(modal.Tags)
                                 .Build();
@@ -89,8 +88,7 @@ internal class RecipeModelCreationService
         modal.IsNotNull(nameof(modal));
         user.IsNotNull(nameof(user));
 
-        var authorData = new AuthorData(user.Username, user.GetAvatarUrl());
-        RecipeData recipeData = new RecipeDataBuilder(authorData, recipeCategory, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
+        RecipeData recipeData = new RecipeDataBuilder(user.Id, recipeCategory, modal.RecipeTitle!, modal.Ingredients!, modal.CookingSteps!)
                                 .AddNotes(modal.Notes)
                                 .AddTags(modal.Tags)
                                 .AddImage(attachment)

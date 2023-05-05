@@ -78,6 +78,33 @@ namespace RecipeBot.Persistence.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Recipe entries could not be loaded due to invalid AuthorId &apos;{0}&apos;..
+        /// </summary>
+        internal static string Recipe_entries_unsuccessfully_loaded_due_to_invalid_AuthorId_0 {
+            get {
+                return ResourceManager.GetString("Recipe_entries_unsuccessfully_loaded_due_to_invalid_AuthorId_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recipe with id &apos;{0}&apos; could not be deleted due to invalid AuthorId &apos;{1}&apos;..
+        /// </summary>
+        internal static string RecipeEntityId_0_unsuccessfully_deleted_due_to_invalid_AuthorId_1 {
+            get {
+                return ResourceManager.GetString("RecipeEntityId_0_unsuccessfully_deleted_due_to_invalid_AuthorId_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recipe with id &apos;{0}&apos; could not be loaded due to invalid AuthorId &apos;{1}&apos;..
+        /// </summary>
+        internal static string RecipeEntityId_0_unsuccessfully_loaded_due_to_invalid_AuthorId_1 {
+            get {
+                return ResourceManager.GetString("RecipeEntityId_0_unsuccessfully_loaded_due_to_invalid_AuthorId_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No recipe matches with id &apos;{0}&apos;..
         /// </summary>
         internal static string RecipeRepository_No_recipe_matches_with_Id_0 {

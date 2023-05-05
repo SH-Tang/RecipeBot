@@ -69,7 +69,7 @@ public class RecipeInteractionModuleTest
     {
         // Call
         SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeInteractionModule, SlashCommandAttribute>(
-            nameof(RecipeInteractionModule.DeleteRecipe), new []
+            nameof(RecipeInteractionModule.DeleteRecipe), new[]
             {
                 typeof(long)
             });

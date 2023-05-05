@@ -23,6 +23,8 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Discord;
 using Discord.Common;
+using Discord.Common.Providers;
+using Discord.Common.TestUtils;
 using FluentAssertions;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
@@ -49,11 +51,12 @@ public class RecipeControllerTest
     {
         // Setup
         var limitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
         var repository = Substitute.For<IRecipeRepository>();
         var logger = Substitute.For<ILoggingService>();
 
         // Call
-        var controller = new RecipeController(limitProvider, repository, logger);
+        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Assert
         controller.Should().BeAssignableTo<IRecipeController>();
@@ -73,10 +76,11 @@ public class RecipeControllerTest
         user.GetAvatarUrl().ReturnsForAnyArgs("https://AuthorImage.url");
 
         var repository = Substitute.For<IRecipeRepository>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
         var logger = Substitute.For<ILoggingService>();
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
 
-        var controller = new RecipeController(limitProvider, repository, logger);
+        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         Func<Task> call = () => controller.SaveRecipeAsync(modal, user, category, null);
@@ -103,8 +107,9 @@ public class RecipeControllerTest
         repository.SaveRecipeAsync(Arg.Any<RecipeModel>()).ThrowsAsyncForAnyArgs(exception);
 
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
         var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, repository, logger);
+        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, null);
@@ -130,14 +135,14 @@ public class RecipeControllerTest
 
         var limitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
         limitProvider.MaximumTitleLength.Returns(EmbedBuilder.MaxTitleLength);
-        limitProvider.MaximumAuthorNameLength.Returns(EmbedAuthorBuilder.MaxAuthorNameLength);
         limitProvider.MaximumFieldNameLength.Returns(EmbedFieldBuilder.MaxFieldNameLength);
         limitProvider.MaximumFieldDataLength.Returns(EmbedFieldBuilder.MaxFieldValueLength);
         limitProvider.MaximumRecipeTagsLength.Returns(EmbedFooterBuilder.MaxFooterTextLength);
 
         var repository = Substitute.For<IRecipeRepository>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
         var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, repository, logger);
+        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, null);
@@ -178,8 +183,9 @@ public class RecipeControllerTest
 
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
         var repository = Substitute.For<IRecipeRepository>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
         var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, repository, logger);
+        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, null);
@@ -211,14 +217,14 @@ public class RecipeControllerTest
         var limitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
         limitProvider.MaximumTitleLength.Returns(EmbedBuilder.MaxTitleLength);
         limitProvider.MaximumRecipeLength.Returns(0);
-        limitProvider.MaximumAuthorNameLength.Returns(EmbedAuthorBuilder.MaxAuthorNameLength);
         limitProvider.MaximumFieldNameLength.Returns(EmbedFieldBuilder.MaxFieldNameLength);
         limitProvider.MaximumFieldDataLength.Returns(EmbedFieldBuilder.MaxFieldValueLength);
         limitProvider.MaximumRecipeTagsLength.Returns(EmbedFooterBuilder.MaxFooterTextLength);
 
         var repository = Substitute.For<IRecipeRepository>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
         var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, repository, logger);
+        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, attachment);
@@ -264,8 +270,9 @@ public class RecipeControllerTest
 
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
         var repository = Substitute.For<IRecipeRepository>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
         var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, repository, logger);
+        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<Embed> controllerResult = await controller.SaveRecipeAsync(modal, user, category, attachment);
@@ -313,8 +320,9 @@ public class RecipeControllerTest
                   .Do(c => savedModels.Add(c.Arg<RecipeModel>()));
 
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
         var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, repository, logger);
+        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         await controller.SaveRecipeAsync(modal, user, category, null);
@@ -363,8 +371,9 @@ public class RecipeControllerTest
                   .Do(c => savedModels.Add(c.Arg<RecipeModel>()));
 
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
         var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, repository, logger);
+        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         await controller.SaveRecipeAsync(modal, user, category, attachment);
@@ -386,9 +395,13 @@ public class RecipeControllerTest
         var repository = Substitute.For<IRecipeRepository>();
         repository.DeleteRecipeAsync(idToDelete).Returns(deletedResult);
 
+        var userData = UserDataTestFactory.CreateFullyConfigured();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        userDataProvider.GetUserDataAsync(deletedResult.AuthorId).Returns(userData);
+
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
         var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, repository, logger);
+        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<string> result = await controller.DeleteRecipeAsync(idToDelete);
@@ -396,7 +409,7 @@ public class RecipeControllerTest
         // Assert
         result.HasError.Should().BeFalse();
 
-        result.Result.Should().Be($"Recipe titled '{deletedResult.Title}' with id '{deletedResult.Id}' and author '{deletedResult.AuthorName}' was successfully deleted.");
+        result.Result.Should().Be($"Recipe titled '{deletedResult.Title}' with id '{deletedResult.Id}' and author '{userData.Username}' was successfully deleted.");
     }
 
     [Fact]
@@ -411,8 +424,9 @@ public class RecipeControllerTest
         repository.DeleteRecipeAsync(Arg.Any<long>()).ThrowsAsyncForAnyArgs(exception);
 
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
         var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, repository, logger);
+        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<string> result = await controller.DeleteRecipeAsync(fixture.Create<long>());
@@ -423,7 +437,7 @@ public class RecipeControllerTest
 
         await logger.Received(1).LogErrorAsync(exception);
     }
-
+    
     [Fact]
     public async Task Retrieving_recipe_and_exception_thrown_when_retrieving_logs_and_returns_result_with_error()
     {
@@ -436,8 +450,9 @@ public class RecipeControllerTest
         repository.GetRecipeAsync(Arg.Any<long>()).ThrowsAsyncForAnyArgs(exception);
 
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
         var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, repository, logger);
+        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<Embed> result = await controller.GetRecipeAsync(fixture.Create<long>());
@@ -460,8 +475,6 @@ public class RecipeControllerTest
 
         var limitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
         limitProvider.MaximumTitleLength.Returns(EmbedBuilder.MaxTitleLength);
-        limitProvider.MaximumAuthorNameLength.Returns(EmbedAuthorBuilder.MaxAuthorNameLength);
-        limitProvider.MaximumFieldNameLength.Returns(EmbedFieldBuilder.MaxFieldNameLength);
         limitProvider.MaximumFieldDataLength.Returns(EmbedFieldBuilder.MaxFieldValueLength);
         limitProvider.MaximumRecipeTagsLength.Returns(EmbedFooterBuilder.MaxFooterTextLength);
 
@@ -469,7 +482,8 @@ public class RecipeControllerTest
         repository.GetRecipeAsync(idToRetrieve).Returns(recipeData);
 
         var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, repository, logger);
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<Embed> controllerResult = await controller.GetRecipeAsync(idToRetrieve);
@@ -487,13 +501,13 @@ public class RecipeControllerTest
         // Setup
         var fixture = new Fixture();
         var idToRetrieve = fixture.Create<long>();
+        var authorId = fixture.Create<ulong>();
 
-        var authorData = new AuthorData("Recipe author", "https://AuthorImage.url");
         IEnumerable<RecipeFieldData> recipeFieldsData = fixture.CreateMany<RecipeFieldData>(3);
 
         var recipeTitle = fixture.Create<string>();
         const string tags = "Tag1, TAG1, tag1, tag    1,      tag1, tag1      , tag2";
-        var recipeData = new RecipeData(authorData, recipeFieldsData, recipeTitle, fixture.Create<RecipeCategory>())
+        var recipeData = new RecipeData(authorId, recipeFieldsData, recipeTitle, fixture.Create<RecipeCategory>())
         {
             Tags = tags
         };
@@ -502,8 +516,12 @@ public class RecipeControllerTest
         var repository = Substitute.For<IRecipeRepository>();
         repository.GetRecipeAsync(idToRetrieve).Returns(recipeData);
 
+        UserData authorData = UserDataTestFactory.CreateFullyConfigured();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        userDataProvider.GetUserDataAsync(authorId).Returns(authorData);
+
         var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, repository, logger);
+        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<Embed> controllerResult = await controller.GetRecipeAsync(idToRetrieve);
@@ -512,7 +530,7 @@ public class RecipeControllerTest
         controllerResult.HasError.Should().BeFalse();
 
         Embed embedResult = controllerResult.Result!;
-        AssertCommonEmbedResponseProperties(recipeData, embedResult);
+        AssertCommonEmbedResponseProperties(recipeData, authorData, embedResult);
     }
 
     [Fact]
@@ -521,19 +539,23 @@ public class RecipeControllerTest
         // Setup
         var fixture = new Fixture();
         var idToRetrieve = fixture.Create<long>();
+        var authorId = fixture.Create<ulong>();
 
-        var authorData = new AuthorData(fixture.Create<string>(), "https://AuthorImage.url");
         IEnumerable<RecipeFieldData> recipeFieldsData = fixture.CreateMany<RecipeFieldData>(3);
 
         var recipeTitle = fixture.Create<string>();
-        var recipeData = new RecipeData(authorData, recipeFieldsData, recipeTitle, fixture.Create<RecipeCategory>());
+        var recipeData = new RecipeData(authorId, recipeFieldsData, recipeTitle, fixture.Create<RecipeCategory>());
 
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
         var repository = Substitute.For<IRecipeRepository>();
         repository.GetRecipeAsync(idToRetrieve).Returns(recipeData);
 
+        UserData authorData = UserDataTestFactory.CreateFullyConfigured();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        userDataProvider.GetUserDataAsync(authorId).Returns(authorData);
+
         var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, repository, logger);
+        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<Embed> controllerResult = await controller.GetRecipeAsync(idToRetrieve);
@@ -542,7 +564,7 @@ public class RecipeControllerTest
         controllerResult.HasError.Should().BeFalse();
 
         Embed embedResult = controllerResult.Result!;
-        AssertCommonEmbedResponseProperties(recipeData, embedResult);
+        AssertCommonEmbedResponseProperties(recipeData, authorData, embedResult);
     }
 
     [Theory]
@@ -551,19 +573,22 @@ public class RecipeControllerTest
     {
         // Setup
         var fixture = new Fixture();
+        var authorId = fixture.Create<ulong>();
 
-        var authorData = new AuthorData("Recipe author", "https://AuthorImage.url");
         IEnumerable<RecipeFieldData> recipeFieldsData = fixture.CreateMany<RecipeFieldData>(3);
 
         var recipeTitle = fixture.Create<string>();
-        var recipeData = new RecipeData(authorData, recipeFieldsData, recipeTitle, category);
+        var recipeData = new RecipeData(authorId, recipeFieldsData, recipeTitle, category);
 
         IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
         var repository = Substitute.For<IRecipeRepository>();
         repository.GetRecipeAsync(Arg.Any<long>()).ReturnsForAnyArgs(recipeData);
 
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        userDataProvider.GetUserDataAsync(authorId).Returns(UserDataTestFactory.CreateFullyConfigured());
+
         var logger = Substitute.For<ILoggingService>();
-        var controller = new RecipeController(limitProvider, repository, logger);
+        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<Embed> controllerResult = await controller.GetRecipeAsync(fixture.Create<long>());
@@ -682,7 +707,6 @@ public class RecipeControllerTest
         var limitProvider = Substitute.For<IRecipeModelCharacterLimitProvider>();
         limitProvider.MaximumTitleLength.Returns(EmbedBuilder.MaxTitleLength);
         limitProvider.MaximumRecipeLength.Returns(EmbedBuilder.MaxEmbedLength);
-        limitProvider.MaximumAuthorNameLength.Returns(EmbedAuthorBuilder.MaxAuthorNameLength);
         limitProvider.MaximumFieldNameLength.Returns(EmbedFieldBuilder.MaxFieldNameLength);
         limitProvider.MaximumFieldDataLength.Returns(EmbedFieldBuilder.MaxFieldValueLength);
         limitProvider.MaximumRecipeTagsLength.Returns(EmbedFooterBuilder.MaxFooterTextLength);
@@ -709,35 +733,33 @@ public class RecipeControllerTest
         AssertTags(category, modal.Tags, actualResponseFooter!.Value);
     }
 
-    private static void AssertCommonEmbedResponseProperties(RecipeData data, IEmbed actualResponse)
+    private static void AssertCommonEmbedResponseProperties(RecipeData recipeData, UserData authorData, IEmbed actualResponse)
     {
-        actualResponse.Title.Should().Be(data.RecipeTitle);
+        actualResponse.Title.Should().Be(recipeData.RecipeTitle);
 
         EmbedAuthor? actualResponseAuthor = actualResponse.Author;
         actualResponseAuthor.Should().NotBeNull();
 
-        AuthorData authorData = data.AuthorData;
-        AssertAuthor(authorData.AuthorName, authorData.AuthorImageUrl, actualResponseAuthor!.Value);
+        AssertAuthor(authorData.Username, authorData.UserImageUrl, actualResponseAuthor!.Value);
 
-        actualResponse.Fields.Should().BeEquivalentTo(data.RecipeFields,
+        actualResponse.Fields.Should().BeEquivalentTo(recipeData.RecipeFields,
                                                       options => options.ExcludingMissingMembers()
                                                                         .WithMapping<EmbedField, RecipeFieldData>(s => s.Name, e => e.FieldName)
                                                                         .WithMapping<EmbedField, RecipeFieldData>(s => s.Value, e => e.FieldData));
 
         EmbedFooter? actualResponseFooter = actualResponse.Footer;
-        if (!string.IsNullOrWhiteSpace(data.Tags))
+        if (!string.IsNullOrWhiteSpace(recipeData.Tags))
         {
             actualResponseFooter.Should().NotBeNull();
-            AssertTags(data.Category, data.Tags, actualResponseFooter!.Value);
+            AssertTags(recipeData.Category, recipeData.Tags, actualResponseFooter!.Value);
         }
         else
         {
             actualResponseFooter.Should().BeNull();
         }
-
     }
 
-    private static void AssertAuthor(string expectedAuthorName, string expectedAuthorImageUrl, EmbedAuthor actualAuthor)
+    private static void AssertAuthor(string expectedAuthorName, string? expectedAuthorImageUrl, EmbedAuthor actualAuthor)
     {
         actualAuthor.Name.Should().Be(expectedAuthorName);
         actualAuthor.IconUrl.Should().Be(expectedAuthorImageUrl);

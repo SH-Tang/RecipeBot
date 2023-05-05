@@ -52,7 +52,7 @@ public class DataEntryCollectionMessageFormattingServiceTest
     {
         // Setup
         var fixture = new Fixture();
-        
+
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var service = new DataEntryCollectionMessageFormattingService<object>(limitProvider, fixture.Create<string>(), entry => string.Empty);
 
@@ -89,7 +89,7 @@ public class DataEntryCollectionMessageFormattingServiceTest
         var header = fixture.Create<string>();
 
         IEnumerable<Entry> entries = fixture.CreateMany<Entry>(3).ToArray();
-        
+
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         limitProvider.MaxMessageLength.Returns(int.MaxValue);
         var service = new DataEntryCollectionMessageFormattingService<Entry>(limitProvider, header, entry => entry.Property);
@@ -141,6 +141,7 @@ public class DataEntryCollectionMessageFormattingServiceTest
 
     private class Entry
     {
+        // Do not remove the setter
         public string Property { get; set; } = null!;
     }
 }

@@ -20,7 +20,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Common.Utils;
 using RecipeBot.Domain.Data;
+using RecipeBot.Domain.Exceptions;
 using RecipeBot.Persistence.Entities;
+using RecipeBot.Persistence.Properties;
 
 namespace RecipeBot.Persistence.Readers;
 
@@ -35,33 +37,36 @@ internal static class RecipeDataReader
     /// <param name="entity">The <see cref="RecipeEntity"/> to read from.</param>
     /// <returns>A <see cref="RecipeData"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="entity"/> is <c>null</c>.</exception>
+    /// <exception cref="RepositoryDataLoadException">Thrown when the <see cref="RecipeData"/> could not be successfully loaded.</exception>
     public static RecipeData Read(RecipeEntity entity)
     {
         entity.IsNotNull(nameof(entity));
 
-        IEnumerable<RecipeFieldData> recipeFieldsData = entity.RecipeFields
-                                                              .OrderBy(f => f.Order)
-                                                              .Select(CreateRecipeFieldData)
-                                                              .ToArray();
-
-        var recipeData = new RecipeData(CreateAuthorData(entity.Author), recipeFieldsData, entity.RecipeTitle, RecipeCategoryReader.Read(entity.RecipeCategory));
-        if (entity.Tags.Any())
+        string authorId = entity.Author.AuthorId;
+        try
         {
-            string tags = string.Join(", ", entity.Tags.OrderBy(t => t.Order).Select(t => t.Tag.Tag));
-            recipeData.Tags = tags;
-        }
+            IEnumerable<RecipeFieldData> recipeFieldsData = entity.RecipeFields
+                                                                  .OrderBy(f => f.Order)
+                                                                  .Select(CreateRecipeFieldData)
+                                                                  .ToArray();
 
-        return recipeData;
+            var recipeData = new RecipeData(ulong.Parse(authorId), recipeFieldsData, entity.RecipeTitle, RecipeCategoryReader.Read(entity.RecipeCategory));
+            if (entity.Tags.Any())
+            {
+                string tags = string.Join(", ", entity.Tags.OrderBy(t => t.Order).Select(t => t.Tag.Tag));
+                recipeData.Tags = tags;
+            }
+
+            return recipeData;
+        }
+        catch (Exception e) when (e is FormatException || e is OverflowException)
+        {
+            throw new RepositoryDataLoadException(string.Format(Resources.RecipeEntityId_0_unsuccessfully_loaded_due_to_invalid_AuthorId_1, entity.RecipeEntityId, authorId), e);
+        }
     }
 
     private static RecipeFieldData CreateRecipeFieldData(RecipeFieldEntity f)
     {
         return new RecipeFieldData(f.RecipeFieldName, f.RecipeFieldData);
-    }
-
-    private static AuthorData CreateAuthorData(AuthorEntity retrievedAuthorEntity)
-    {
-        var authorData = new AuthorData(retrievedAuthorEntity.AuthorName, retrievedAuthorEntity.AuthorImageUrl);
-        return authorData;
     }
 }

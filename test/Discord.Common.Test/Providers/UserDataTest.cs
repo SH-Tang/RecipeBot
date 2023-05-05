@@ -16,40 +16,37 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using Discord.Common.Providers;
 using FluentAssertions;
-using RecipeBot.Domain.Data;
 using RecipeBot.TestUtils;
 using Xunit;
 
-namespace RecipeBot.Domain.Test.Data;
+namespace Discord.Common.Test.Providers;
 
-public class AuthorDataTest
+public class UserDataTest
 {
     [Theory]
     [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
-    public void AuthorData_with_invalid_author_value_throws_exception(string invalidAuthorName)
+    public void Data_with_invalid_username_value_throws_exception(string invalidUsername)
     {
         // Setup
         const string authorImageUrl = "Url";
 
         // Call
-        Action call = () => new AuthorData(invalidAuthorName, authorImageUrl);
+        Action call = () => new UserData(invalidUsername, authorImageUrl);
 
         // Assert
         call.Should().ThrowExactly<ArgumentException>();
     }
 
-    [Theory]
-    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
-    public void AuthorData_with_invalid_author_image_url_throws_exception(string invalidAuthorImageUrl)
+    [Fact]
+    public void Default_UserData_returns_expected_properties()
     {
-        // Setup
-        const string authorName = "Author name";
-
         // Call
-        Action call = () => new AuthorData(authorName, invalidAuthorImageUrl);
+        UserData userData = UserData.UnknownUser;
 
         // Assert
-        call.Should().ThrowExactly<ArgumentException>();
+        userData.Username.Should().Be("Unknown user");
+        userData.UserImageUrl.Should().BeNull();
     }
 }

@@ -27,14 +27,9 @@ using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using RecipeBot.Controllers;
 using RecipeBot.Discord.Controllers;
-using RecipeBot.Discord.Data;
-using RecipeBot.Discord.Views;
 using RecipeBot.Domain.Exceptions;
-using RecipeBot.Domain.Factories;
-using RecipeBot.Domain.Models;
 using RecipeBot.Domain.Repositories;
 using RecipeBot.Domain.Repositories.Data;
-using RecipeBot.TestUtils;
 using Xunit;
 
 namespace RecipeBot.Test.Controllers;
@@ -48,7 +43,7 @@ public class RecipeTagEntriesControllerTest
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var repository = Substitute.For<IRecipeTagEntryDataRepository>();
         var logger = Substitute.For<ILoggingService>();
-        
+
         // Call
         var controller = new RecipeTagEntriesController(limitProvider, repository, logger);
 
@@ -147,7 +142,7 @@ public class RecipeTagEntriesControllerTest
             Format.Code(expectedMessageTwo)
         }, options => options.WithStrictOrdering());
     }
-    
+
     [Fact]
     public async Task Deleting_tag_and_delete_successful_returns_result()
     {

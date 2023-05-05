@@ -63,7 +63,7 @@ public class RecipeTagEntriesInteractionModuleTest
     {
         // Call
         SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeTagEntriesInteractionModule, SlashCommandAttribute>(
-            nameof(RecipeTagEntriesInteractionModule.DeleteTag), new []
+            nameof(RecipeTagEntriesInteractionModule.DeleteTag), new[]
             {
                 typeof(long)
             });
@@ -73,7 +73,6 @@ public class RecipeTagEntriesInteractionModuleTest
             {
                 typeof(long)
             });
-
 
         // Assert
         const string expectedName = "tag-delete";

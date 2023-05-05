@@ -110,10 +110,9 @@ public class RecipeRepositoryTest
                                                    .Single();
 
                 recipeEntity.RecipeTitle.Should().Be(recipeModel.Title);
-                recipeEntity.Author.Should().NotBeNull().And.BeEquivalentTo(
-                    recipeModel.Author,
-                    options => options.Including(e => e.AuthorName)
-                                      .Including(e => e.AuthorImageUrl));
+                recipeEntity.Author.Should().NotBeNull()
+                            .And.BeEquivalentTo(recipeModel, options => options.WithAutoConversion()
+                                                                               .Including(e => e.AuthorId));
 
                 recipeEntity.RecipeFields.Should().BeEmpty();
                 recipeEntity.Tags.Should().BeEmpty();
@@ -152,10 +151,9 @@ public class RecipeRepositoryTest
                                                    .Single();
 
                 recipeEntity.RecipeTitle.Should().Be(recipeModel.Title);
-                recipeEntity.Author.Should().NotBeNull().And.BeEquivalentTo(
-                    recipeModel.Author,
-                    options => options.Including(e => e.AuthorName)
-                                      .Including(e => e.AuthorImageUrl));
+                recipeEntity.Author.Should().NotBeNull()
+                            .And.BeEquivalentTo(recipeModel, options => options.WithAutoConversion()
+                                                                               .Including(e => e.AuthorId));
 
                 recipeEntity.RecipeFields.OrderBy(f => f.Order).Should().BeEquivalentTo(
                     recipeModel.RecipeFields,
@@ -183,8 +181,7 @@ public class RecipeRepositoryTest
             {
                 context.AuthorEntities.Add(new AuthorEntity
                 {
-                    AuthorName = recipeModel.Author.AuthorName,
-                    AuthorImageUrl = recipeModel.Author.AuthorImageUrl
+                    AuthorId = recipeModel.AuthorId.ToString()
                 });
             };
 
@@ -199,10 +196,8 @@ public class RecipeRepositoryTest
                 AuthorEntity authorEntity = recipeEntity.Author;
                 authorEntity.Should().NotBeNull()
                             .And.BeSameAs(expectedAuthorEntity)
-                            .And.BeEquivalentTo(
-                                recipeModel.Author,
-                                options => options.Including(e => e.AuthorName)
-                                                  .Including(e => e.AuthorImageUrl));
+                            .And.BeEquivalentTo(recipeModel, options => options.WithAutoConversion()
+                                                                               .Including(e => e.AuthorId));
             };
 
         // Call & Assert
@@ -274,6 +269,50 @@ public class RecipeRepositoryTest
         }
     }
 
+    [Theory]
+    [MemberData(nameof(GetInvalidAuthorId))]
+    public async Task Given_seeded_database_when_deleting_matching_recipe_with_invalid_author_throws_exception(string invalidAuthorId)
+    {
+        // Setup
+        var fixture = new Fixture();
+        var idToDelete = fixture.Create<long>();
+
+        using(var provider = new RecipeBotDBContextProvider())
+        using(RecipeBotDbContext context = provider.CreateInMemoryContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var invalidAuthorEntity = new AuthorEntity
+            {
+                AuthorId = invalidAuthorId
+            };
+
+            var recipe = new RecipeEntity
+            {
+                RecipeEntityId = idToDelete,
+                RecipeTitle = fixture.Create<string>(),
+                Author = invalidAuthorEntity,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeFields = Array.Empty<RecipeFieldEntity>(),
+                Tags = Array.Empty<RecipeTagEntity>()
+            };
+
+            await context.RecipeEntities.AddAsync(recipe);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeRepository(context);
+
+            // Call
+            Func<Task> call = () => repository.DeleteRecipeAsync(idToDelete);
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataDeleteException>()
+                      .WithMessage($"Recipe with id '{idToDelete}' could not be deleted due to invalid AuthorId '{invalidAuthorId}'.");
+        }
+    }
+
     [Fact]
     public async Task Given_seeded_database_when_deleting_no_matching_recipe_throws_exception()
     {
@@ -286,10 +325,10 @@ public class RecipeRepositoryTest
         {
             await context.Database.EnsureCreatedAsync();
 
+            var authorId = fixture.Create<ulong>();
             var authorEntity = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = authorId.ToString()
             };
 
             var recipe = new RecipeEntity
@@ -302,7 +341,7 @@ public class RecipeRepositoryTest
                 Tags = Array.Empty<RecipeTagEntity>()
             };
 
-            await context.RecipeEntities.AddRangeAsync(recipe);
+            await context.RecipeEntities.AddAsync(recipe);
 
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
@@ -328,10 +367,10 @@ public class RecipeRepositoryTest
             await context.Database.EnsureCreatedAsync();
 
             var fixture = new Fixture();
+            var authorId = fixture.Create<ulong>();
             var authorEntity = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = authorId.ToString()
             };
 
             IReadOnlyList<TagEntity> tagEntities = new[]
@@ -440,7 +479,7 @@ public class RecipeRepositoryTest
             // Assert
             result.Id.Should().Be(recipeToDelete.RecipeEntityId);
             result.Title.Should().Be(recipeToDelete.RecipeTitle);
-            result.AuthorName.Should().Be(authorEntity.AuthorName);
+            result.AuthorId.Should().Be(authorId);
 
             context.AuthorEntities.Should().BeEquivalentTo(new[]
             {
@@ -512,10 +551,10 @@ public class RecipeRepositoryTest
             await context.Database.EnsureCreatedAsync();
 
             var fixture = new Fixture();
+            var authorId = fixture.Create<ulong>();
             var authorEntity = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = authorId.ToString()
             };
 
             var recipeToRetrieve = new RecipeEntity
@@ -527,7 +566,7 @@ public class RecipeRepositoryTest
                 Tags = Array.Empty<RecipeTagEntity>()
             };
 
-            await context.RecipeEntities.AddRangeAsync(recipeToRetrieve);
+            await context.RecipeEntities.AddAsync(recipeToRetrieve);
 
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
@@ -552,10 +591,10 @@ public class RecipeRepositoryTest
             await context.Database.EnsureCreatedAsync();
 
             var fixture = new Fixture();
+            var authorId = fixture.Create<ulong>();
             var authorEntity = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = authorId.ToString()
             };
 
             IReadOnlyList<TagEntity> tagEntities = new[]
@@ -626,8 +665,7 @@ public class RecipeRepositoryTest
 
             // Assert
             data.RecipeTitle.Should().Be(recipeToRetrieve.RecipeTitle);
-            data.AuthorData.Should().Match<AuthorData>(s => s.AuthorName == recipeToRetrieve.Author.AuthorName
-                                                            && s.AuthorImageUrl == recipeToRetrieve.Author.AuthorImageUrl);
+            data.AuthorId.Should().Be(authorId);
             data.RecipeFields.Should().BeEquivalentTo(recipeToRetrieve.RecipeFields, options => options.ExcludingMissingMembers()
                                                                                                        .WithStrictOrderingFor(e => e.Order)
                                                                                                        .WithMapping<RecipeFieldEntity, RecipeFieldData>(e => e.RecipeFieldName, s => s.FieldName)
@@ -647,10 +685,10 @@ public class RecipeRepositoryTest
             await context.Database.EnsureCreatedAsync();
 
             var fixture = new Fixture();
+            var authorId = fixture.Create<ulong>();
             var authorEntity = new AuthorEntity
             {
-                AuthorName = fixture.Create<string>(),
-                AuthorImageUrl = fixture.Create<string>()
+                AuthorId = authorId.ToString()
             };
 
             var recipeToRetrieve = new RecipeEntity
@@ -697,14 +735,68 @@ public class RecipeRepositoryTest
 
             // Assert
             data.RecipeTitle.Should().Be(recipeToRetrieve.RecipeTitle);
-            data.AuthorData.Should().Match<AuthorData>(s => s.AuthorName == recipeToRetrieve.Author.AuthorName
-                                                            && s.AuthorImageUrl == recipeToRetrieve.Author.AuthorImageUrl);
+            data.AuthorId.Should().Be(authorId);
             data.RecipeFields.Should().BeEquivalentTo(recipeToRetrieve.RecipeFields, options => options.ExcludingMissingMembers()
                                                                                                        .WithStrictOrderingFor(e => e.Order)
                                                                                                        .WithMapping<RecipeFieldEntity, RecipeFieldData>(e => e.RecipeFieldName, s => s.FieldName)
                                                                                                        .WithMapping<RecipeFieldEntity, RecipeFieldData>(e => e.RecipeFieldData, s => s.FieldData));
             data.Tags.Should().BeNullOrWhiteSpace();
         }
+    }
+
+    [Theory]
+    [MemberData(nameof(GetInvalidAuthorId))]
+    public async Task Given_seeded_database_when_retrieving_recipe_with_invalid_author_throws_exception(string invalidAuthorId)
+    {
+        // Setup
+        using (var provider = new RecipeBotDBContextProvider())
+        using (RecipeBotDbContext context = provider.CreateInMemoryContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var recipeIdToRetrieve = fixture.Create<long>();
+            var invalidAuthorEntity = new AuthorEntity
+            {
+                AuthorId = invalidAuthorId
+            };
+
+            var recipeToRetrieve = new RecipeEntity
+            {
+                RecipeEntityId = recipeIdToRetrieve,
+                RecipeTitle = fixture.Create<string>(),
+                Author = invalidAuthorEntity,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeFields = Array.Empty<RecipeFieldEntity>(),
+                Tags = Array.Empty<RecipeTagEntity>()
+            };
+            
+            await context.RecipeEntities.AddAsync(recipeToRetrieve);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeRepository(context);
+
+            // Call
+            Func<Task> call = () => repository.GetRecipeAsync(recipeIdToRetrieve);
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataLoadException>()
+                      .WithMessage($"Recipe with id '{recipeIdToRetrieve}' could not be loaded due to invalid AuthorId '{invalidAuthorId}'.");
+        }
+    }
+
+    public static IEnumerable<object[]> GetInvalidAuthorId()
+    {
+        yield return new object[]
+        {
+            "X"
+        };
+        yield return new object[]
+        {
+            "18446744073709551616"
+        };
     }
 
     /// <summary>

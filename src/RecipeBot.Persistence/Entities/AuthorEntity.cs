@@ -31,10 +31,7 @@ public class AuthorEntity
     public long AuthorEntityId { get; set; }
 
     [Required]
-    public string AuthorName { get; set; } = null!;
-
-    [Required]
-    public string AuthorImageUrl { get; set; } = null!;
+    public string AuthorId { get; set; } = null!;
 
     public ICollection<RecipeEntity> Recipes { get; set; } = null!;
 }

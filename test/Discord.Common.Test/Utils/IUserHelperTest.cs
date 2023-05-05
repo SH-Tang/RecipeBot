@@ -15,30 +15,34 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using Discord;
+using AutoFixture;
+using Discord.Common.Providers;
+using Discord.Common.Utils;
 using FluentAssertions;
-using RecipeBot.Providers;
+using NSubstitute;
 using Xunit;
 
-namespace RecipeBot.Test.Providers;
+namespace Discord.Common.Test.Utils;
 
-public class DiscordCharacterLimitProviderTest
+public class IUserHelperTest
 {
     [Fact]
-    public void Limit_provider_always_provides_correct_character_limits()
+    public void Given_Discord_user_when_creating_return_expected_user_data()
     {
+        // Setup
+        var fixture = new Fixture();
+        var userName = fixture.Create<string>();
+        var userImageUrl = fixture.Create<string>();
+
+        var user = Substitute.For<IUser>();
+        user.Username.Returns(userName);
+        user.GetAvatarUrl().Returns(userImageUrl);
+
         // Call
-        var limitProvider = new DiscordCharacterLimitProvider();
+        UserData userData = IUserHelper.Create(user);
 
         // Assert
-        limitProvider.MaximumRecipeLength.Should().Be(EmbedBuilder.MaxEmbedLength);
-        limitProvider.MaximumTitleLength.Should().Be(EmbedBuilder.MaxTitleLength);
-
-        limitProvider.MaximumFieldNameLength.Should().Be(EmbedFieldBuilder.MaxFieldNameLength);
-        limitProvider.MaximumFieldDataLength.Should().Be(EmbedFieldBuilder.MaxFieldValueLength);
-
-        limitProvider.MaximumRecipeTagsLength.Should().Be(EmbedFooterBuilder.MaxFooterTextLength);
-
-        limitProvider.MaxMessageLength.Should().Be(DiscordConfig.MaxMessageSize);
+        userData.Username.Should().Be(userName);
+        userData.UserImageUrl.Should().Be(userImageUrl);
     }
 }

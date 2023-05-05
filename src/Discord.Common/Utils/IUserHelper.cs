@@ -15,15 +15,27 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-namespace RecipeBot.Domain.Factories;
+using System;
+using Common.Utils;
+using Discord.Common.Providers;
+
+namespace Discord.Common.Utils;
 
 /// <summary>
-/// Interface for describing providers of character limits for author models.
+/// Class containing helper methods for an <see cref="IUser"/>.
 /// </summary>
-public interface IAuthorModelCharacterLimitProvider
+public static class IUserHelper
 {
     /// <summary>
-    /// Gets the maximum allowable length of the author name.
+    /// Creates <see cref="UserData"/> based on an <see cref="IUser"/>.
     /// </summary>
-    int MaximumAuthorNameLength { get; }
+    /// <param name="user">The user to create the user data with.</param>
+    /// <returns>An <see cref="UserData"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="user"/> is <c>null</c>.</exception>
+    public static UserData Create(IUser user)
+    {
+        user.IsNotNull(nameof(user));
+
+        return new UserData(user.Username, user.GetAvatarUrl());
+    }
 }
