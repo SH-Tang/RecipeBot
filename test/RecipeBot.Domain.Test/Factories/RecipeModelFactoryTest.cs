@@ -48,8 +48,6 @@ public class RecipeModelFactoryTest
         RecipeModel model = factory.Create(recipeData);
 
         // Assert
-        model.RecipeImageUrl.Should().BeNull();
-
         model.AuthorId.Should().Be(recipeData.AuthorId);
         model.RecipeFields.Should().BeEquivalentTo(recipeData.RecipeFields, options => options.WithStrictOrdering());
 

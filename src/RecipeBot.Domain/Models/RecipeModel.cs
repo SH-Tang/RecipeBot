@@ -49,37 +49,11 @@ public class RecipeModel
         RecipeTags = new RecipeTagsModelWrapper(metaData.Tags, metaData.Category);
         Title = title;
     }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="RecipeModel"/>.
-    /// </summary>
-    /// <param name="metaData">The metadata of the recipe.</param>
-    /// <param name="recipeFields">The collection of recipe fields.</param>
-    /// <param name="title">The title of the recipe.</param>
-    /// <param name="recipeImageUrl">The image url of the recipe.</param>
-    /// <exception cref="ArgumentNullException">Thrown when any parameter except <paramref name="title"/> is <c>null</c>.</exception>
-    /// <exception cref="ArgumentException">Thrown when:
-    /// <list type="bullet">
-    /// <item><paramref name="title"/> is <c>null</c>, empty or consists of whitespaces; or</item>
-    /// <item><paramref name="recipeImageUrl"/> is an invalid url.</item>
-    /// </list>
-    /// </exception>
-    internal RecipeModel(RecipeModelMetaData metaData, IEnumerable<RecipeFieldModel> recipeFields, string title, string recipeImageUrl)
-        : this(metaData, recipeFields, title)
-    {
-        UrlValidationHelper.ValidateHttpUrl(recipeImageUrl);
-        RecipeImageUrl = recipeImageUrl;
-    }
-
+    
     /// <summary>
     /// Gets the title of the recipe.
     /// </summary>
     public string Title { get; }
-
-    /// <summary>
-    /// Gets the image url of the recipe.
-    /// </summary>
-    public string? RecipeImageUrl { get; }
 
     /// <summary>
     /// Gets the author id.

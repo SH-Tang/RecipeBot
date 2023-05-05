@@ -30,8 +30,6 @@ namespace RecipeBot.Domain.Test.Models;
 
 public class RecipeModelTest
 {
-    private const string imageUrl = "http://just.an.image";
-
     [Theory]
     [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
     public void Model_with_invalid_recipe_title_throws_exception(string invalidRecipeTitle)
@@ -41,63 +39,6 @@ public class RecipeModelTest
 
         // Call
         Action call = () => new RecipeModel(CreateMetaData(fixture), Enumerable.Empty<RecipeFieldModel>(), invalidRecipeTitle);
-
-        // Assert
-        call.Should().ThrowExactly<ArgumentException>();
-    }
-
-    [Theory]
-    [ClassData(typeof(NullOrWhitespacesStringValueGenerator))]
-    public void Model_with_image_url_and_invalid_title_throws_exception(string invalidRecipeTitle)
-    {
-        // Setup
-        var fixture = new Fixture();
-
-        // Call
-        Action call = () => new RecipeModel(CreateMetaData(fixture), Enumerable.Empty<RecipeFieldModel>(), invalidRecipeTitle, imageUrl);
-
-        // Assert
-        call.Should().ThrowExactly<ArgumentException>();
-    }
-
-    [Fact]
-    public void Model_without_image_url_sets_image_url_null()
-    {
-        // Setup
-        var fixture = new Fixture();
-        var recipeTitle = fixture.Create<string>();
-
-        // Call
-        var recipe = new RecipeModel(CreateMetaData(fixture), Enumerable.Empty<RecipeFieldModel>(), recipeTitle);
-
-        // Assert
-        recipe.RecipeImageUrl.Should().BeNull();
-    }
-
-    [Fact]
-    public void Model_with_valid_image_url_sets_image_url()
-    {
-        // Setup
-        var fixture = new Fixture();
-        var recipeTitle = fixture.Create<string>();
-
-        // Call
-        var recipe = new RecipeModel(CreateMetaData(fixture), Enumerable.Empty<RecipeFieldModel>(), recipeTitle, imageUrl);
-
-        // Assert
-        recipe.RecipeImageUrl.Should().Be(imageUrl);
-    }
-
-    [Theory]
-    [ClassData(typeof(InvalidHttpUrlDataGenerator))]
-    public void Model_with_invalid_image_url_throws_exception(string invalidImageUrl)
-    {
-        // Setup
-        var fixture = new Fixture();
-        var recipeTitle = fixture.Create<string>();
-
-        // Call
-        Action call = () => new RecipeModel(CreateMetaData(fixture), Enumerable.Empty<RecipeFieldModel>(), recipeTitle, invalidImageUrl);
 
         // Assert
         call.Should().ThrowExactly<ArgumentException>();
@@ -130,33 +71,6 @@ public class RecipeModelTest
         totalLength.Should().Be(expectedLength);
     }
 
-    [Theory]
-    [InlineData("recipeTitle")]
-    [InlineData("recipe title")]
-    [InlineData("recipe    title")]
-    [InlineData("     recipeTitle")]
-    [InlineData("recipeTitle     ")]
-    public void Model_with_valid_title_and_image_url_returns_total_length_of_properties(string recipeTitle)
-    {
-        // Setup
-        var fixture = new Fixture();
-        fixture.Register<string, RecipeFieldModel>(x => new RecipeFieldModel(x, x));
-
-        IEnumerable<RecipeFieldModel> recipeFields = fixture.CreateMany<RecipeFieldModel>();
-        RecipeModelMetaData metaData = CreateMetaData(fixture);
-        RecipeModel recipe = fixture.Build<RecipeModel>()
-                                    .FromFactory(() => new RecipeModel(metaData, recipeFields, recipeTitle, imageUrl))
-                                    .Create();
-
-        // Call
-        int totalLength = recipe.TotalLength;
-
-        // Assert
-        int expectedLength = recipeTitle.Length + recipeFields.Sum(f => f.TotalLength)
-                                                + TagTestHelper.GetTotalTagsLength(metaData.Category, metaData.Tags);
-        totalLength.Should().Be(expectedLength);
-    }
-
     [Fact]
     public void Model_with_empty_recipe_fields_returns_total_length_of_properties()
     {
@@ -174,26 +88,6 @@ public class RecipeModelTest
 
         // Assert
         int expectedLength = recipeTitle.Length + recipe.RecipeTags.TotalLength;
-        totalLength.Should().Be(expectedLength);
-    }
-
-    [Fact]
-    public void Model_with_image_url_and_empty_recipe_fields_returns_total_length_of_properties()
-    {
-        // Setup
-        var fixture = new Fixture();
-        var recipeTitle = fixture.Create<string>();
-
-        RecipeModelMetaData metaData = CreateMetaData(fixture);
-        RecipeModel recipe = fixture.Build<RecipeModel>()
-                                    .FromFactory(() => new RecipeModel(metaData, Enumerable.Empty<RecipeFieldModel>(), recipeTitle, imageUrl))
-                                    .Create();
-
-        // Call
-        int totalLength = recipe.TotalLength;
-
-        // Assert
-        int expectedLength = recipeTitle.Length + TagTestHelper.GetTotalTagsLength(metaData.Category, metaData.Tags);
         totalLength.Should().Be(expectedLength);
     }
 

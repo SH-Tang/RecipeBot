@@ -241,7 +241,6 @@ public class RecipeControllerTest
         // Assert
         RecipeModel savedModel = savedModels.Single();
         RecipeModelTestHelper.AssertFullRecipeProperties(user, category, modal, savedModel);
-        savedModel.RecipeImageUrl.Should().BeNull();
     }
 
     [Fact]

@@ -126,9 +126,7 @@ public class RecipeModelTestBuilder
         string title = GetStringWithRandomLength('x', maxTitleLength);
         var metaData = new RecipeModelMetaData(1337, tags, category);
 
-        return imageUrl == null
-                   ? new RecipeModel(metaData, recipeFields, title)
-                   : new RecipeModel(metaData, recipeFields, title, imageUrl);
+        return new RecipeModel(metaData, recipeFields, title);
     }
 
     private RecipeFieldModel CreateRecipeFieldModel(int seed)

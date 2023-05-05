@@ -88,7 +88,6 @@ public class RecipeEmbedFactoryTest
         var fixture = new Fixture();
         var category = fixture.Create<RecipeCategory>();
         RecipeModel recipeModel = modelBuilder.SetCategory(category)
-                                              .AddImage()
                                               .AddTags(new[]
                                               {
                                                   "Tag1",
@@ -103,7 +102,6 @@ public class RecipeEmbedFactoryTest
 
         // Assert
         embed.Title.Should().Be(recipeModel.Title);
-        embed.Image.Should().NotBeNull().And.Match<EmbedImage>(s => s.Url == recipeModel.RecipeImageUrl);
 
         AssertAuthor(author, embed.Author);
         AssertFields(recipeModel.RecipeFields, embed.Fields);
@@ -111,27 +109,6 @@ public class RecipeEmbedFactoryTest
         var expectedFooterText = $"{TagTestHelper.CategoryMapping[category]}, Tag1, Tag2";
         EmbedFooter? embedFooter = embed.Footer;
         embedFooter.Should().NotBeNull().And.Match<EmbedFooter>(s => s.Text == expectedFooterText);
-    }
-
-    [Fact]
-    public void Recipe_with_image_should_return_embed_with_image()
-    {
-        // Setup
-        RecipeModel recipeModel = modelBuilder.AddImage()
-                                              .Build();
-        UserData author = UserDataTestFactory.CreateFullyConfigured();
-
-        // Call
-        Embed embed = RecipeEmbedFactory.Create(recipeModel, author);
-
-        // Assert
-        embed.Title.Should().Be(recipeModel.Title);
-        embed.Image.Should().NotBeNull().And.Match<EmbedImage>(s => s.Url == recipeModel.RecipeImageUrl);
-
-        AssertAuthor(author, embed.Author);
-        AssertFields(recipeModel.RecipeFields, embed.Fields);
-
-        embed.Footer.Should().BeNull();
     }
 
     [Fact]

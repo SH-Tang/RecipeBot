@@ -131,7 +131,6 @@ public class RecipeModelCreationServiceTest
 
         // Assert
         RecipeModelTestHelper.AssertFullRecipeProperties(user, category, modal, model);
-        model.RecipeImageUrl.Should().BeNull();
     }
 
     public static IEnumerable<object[]> GetRecipeCategories()
