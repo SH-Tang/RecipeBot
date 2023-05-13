@@ -18,6 +18,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using Discord;
 using RecipeBot.Discord.Data;
 
 namespace RecipeBot.Discord.Controllers;
@@ -54,4 +55,11 @@ public interface IRecipeEntriesController
     /// <param name="tagId">The tag id to filter the recipes on.</param>
     /// <returns>A collection of messages containing formatted recipe entries.</returns>
     Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByTagIdAsync(long tagId);
+
+    /// <summary>
+    /// Gets all recipes filtered by Discord user.
+    /// </summary>
+    /// <param name="user">The user to filter the recipes on.</param>
+    /// <returns>A collection of messages containing formatted recipe entries.</returns>
+    Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByUserAsync(IUser user);
 }

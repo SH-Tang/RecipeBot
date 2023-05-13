@@ -544,6 +544,139 @@ public class RecipeEntriesControllerTest
         }, options => options.WithStrictOrdering());
     }
 
+    [Fact]
+    public async Task Given_repository_returning_empty_collection_when_filtering_recipes_by_author_returns_expected_message()
+    {
+        // Setup
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+
+        var user = Substitute.For<IUser>();
+
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByUserAsync(user);
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        result.Result.Should().HaveCount(1).And.Contain("No saved recipes are found.");
+    }
+
+    [Fact]
+    public async Task Filtering_recipes_by_user_repository_receives_correct_id()
+    {
+        // Setup
+        var fixture = new Fixture();
+
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+
+        var user = Substitute.For<IUser>();
+        var idToFilter = fixture.Create<ulong>();
+        user.Id.Returns(idToFilter);
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesByAuthorIdAsync(idToFilter).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+
+        // Call
+        await controller.GetAllRecipesByUserAsync(user);
+
+        // Assert
+        await repository.Received(1).LoadRecipeEntriesByAuthorIdAsync(idToFilter);
+    }
+
+    [Fact]
+    public async Task Given_repository_returning_collection_and_message_within_limits_when_filtering_recipes_by_user_returns_expected_message()
+    {
+        // Setup
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        limitProvider.MaxMessageLength.Returns(int.MaxValue);
+
+        var fixture = new Fixture();
+        var user = Substitute.For<IUser>();
+
+        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+
+        IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        userDataProvider.GetUserDataAsync(entries[0].AuthorId).Returns(userData[0]);
+        userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
+        userDataProvider.GetUserDataAsync(entries[2].AuthorId).Returns(userData[2]);
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesByAuthorIdAsync(Arg.Any<ulong>()).ReturnsForAnyArgs(entries);
+
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByUserAsync(user);
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        string expectedMessage =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}" +
+            $"{entries[2].Id,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
+        result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
+    }
+
+    [Theory]
+    [InlineData(328)] // Exactly intersects with 2 entries
+    [InlineData(340)]
+    public async Task Given_repository_returning_collection_and_message_exceeding_limits_when_filtering_recipes_by_user_returns_expected_messages(
+        int maxMessageLength)
+    {
+        // Setup
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        limitProvider.MaxMessageLength.Returns(maxMessageLength);
+
+        var fixture = new Fixture();
+        var user = Substitute.For<IUser>();
+        
+        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+
+        IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        userDataProvider.GetUserDataAsync(entries[0].AuthorId).Returns(userData[0]);
+        userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
+        userDataProvider.GetUserDataAsync(entries[2].AuthorId).Returns(userData[2]);
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesByAuthorIdAsync(Arg.Any<ulong>()).ReturnsForAnyArgs(entries);
+
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByUserAsync(user);
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        string expectedMessageOne =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}";
+
+        string expectedMessageTwo =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[2].Id,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
+
+        result.Result.Should().BeEquivalentTo(new[]
+        {
+            Format.Code(expectedMessageOne),
+            Format.Code(expectedMessageTwo)
+        }, options => options.WithStrictOrdering());
+    }
+
     private IReadOnlyList<UserData> GetUsers(Fixture fixture, int nrOfUsers)
     {
         var users = new UserData[nrOfUsers];
