@@ -15,9 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using Discord;
 using RecipeBot.Discord.Data;
 
 namespace RecipeBot.Discord.Controllers;
@@ -54,4 +56,12 @@ public interface IRecipeEntriesController
     /// <param name="tagId">The tag id to filter the recipes on.</param>
     /// <returns>A collection of messages containing formatted recipe entries.</returns>
     Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByTagIdAsync(long tagId);
+
+    /// <summary>
+    /// Gets all recipes filtered by Discord user.
+    /// </summary>
+    /// <param name="user">The user to filter the recipes on.</param>
+    /// <returns>A collection of messages containing formatted recipe entries.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="user"/> is <c>null</c>.</exception>
+    Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByUserAsync(IUser user);
 }

@@ -120,7 +120,7 @@
   <data name="Embed_could_not_be_created_reason_0_" xml:space="preserve">
     <value>Recipe could not be successfully formatted: {0}.</value>
   </data>
-  <data name="RecipeEntriesController_GetAllRecipesAsync_No_saved_recipes_are_found" xml:space="preserve">
+  <data name="RecipeEntriesController_GetRecipes_No_saved_recipes_are_found" xml:space="preserve">
     <value>No saved recipes are found.</value>
   </data>
   <data name="RecipeEntriesController_GetAllRecipesAsync_No_saved_recipes_are_found_with_category" xml:space="preserve">

@@ -97,15 +97,6 @@ namespace RecipeBot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No saved recipes are found..
-        /// </summary>
-        internal static string RecipeEntriesController_GetAllRecipesAsync_No_saved_recipes_are_found {
-            get {
-                return ResourceManager.GetString("RecipeEntriesController_GetAllRecipesAsync_No_saved_recipes_are_found", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No saved recipes are found with the given category..
         /// </summary>
         internal static string RecipeEntriesController_GetAllRecipesAsync_No_saved_recipes_are_found_with_category {
@@ -132,6 +123,15 @@ namespace RecipeBot.Properties {
             get {
                 return ResourceManager.GetString("RecipeEntriesController_GetAllRecipesByTagAsync_No_saved_recipes_are_found_with_T" +
                         "agId_0_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No saved recipes are found..
+        /// </summary>
+        internal static string RecipeEntriesController_GetRecipes_No_saved_recipes_are_found {
+            get {
+                return ResourceManager.GetString("RecipeEntriesController_GetRecipes_No_saved_recipes_are_found", resourceCulture);
             }
         }
         

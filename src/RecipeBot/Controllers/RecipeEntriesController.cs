@@ -21,6 +21,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Common.Utils;
+using Discord;
 using Discord.Common.Providers;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
@@ -70,7 +71,7 @@ public class RecipeEntriesController : IRecipeEntriesController
         IEnumerable<RecipeEntryRow> rows = await CreateRows(entries);
         
         return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
-            messageFormattingService.CreateMessages(rows, Resources.RecipeEntriesController_GetAllRecipesAsync_No_saved_recipes_are_found));
+            messageFormattingService.CreateMessages(rows, Resources.RecipeEntriesController_GetRecipes_No_saved_recipes_are_found));
     }
 
     public async Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByCategoryAsync(DiscordRecipeCategory category)
@@ -104,12 +105,26 @@ public class RecipeEntriesController : IRecipeEntriesController
             messageFormattingService.CreateMessages(rows, string.Format(Resources.RecipeEntriesController_GetAllRecipesByTagAsync_No_saved_recipes_are_found_with_TagId_0_, tagId)));
     }
 
+    public async Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByUserAsync(IUser user)
+    {
+        if (user == null)
+        {
+            throw new ArgumentNullException(nameof(user));
+        }
+
+        IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByAuthorIdAsync(user.Id);
+        IEnumerable<RecipeEntryRow> rows = await CreateRows(entries);
+
+        return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
+            messageFormattingService.CreateMessages(rows, Resources.RecipeEntriesController_GetRecipes_No_saved_recipes_are_found));
+    }
+
     private async Task<IEnumerable<RecipeEntryRow>> CreateRows(IEnumerable<RecipeEntryData> entries)
     {
         IEnumerable<Task<Tuple<ulong, string>>> authorEntryTasks = entries.Select(CreateAuthorEntry);
         Tuple<ulong, string>[] authorEntries = await Task.WhenAll(authorEntryTasks);
         Dictionary<ulong, string> authorLookup = 
-            authorEntries.ToDictionary(entry => entry.Item1, entry => entry.Item2);
+            authorEntries.DistinctBy(a => a.Item1).ToDictionary(entry => entry.Item1, entry => entry.Item2);
 
         return entries.Select(e => new RecipeEntryRow
         {
