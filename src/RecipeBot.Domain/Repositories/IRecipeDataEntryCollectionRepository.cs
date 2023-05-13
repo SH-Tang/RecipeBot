@@ -59,4 +59,12 @@ public interface IRecipeDataEntryCollectionRepository
     /// <returns>A collection of filtered recipe entries.</returns>
     /// <exception cref="RepositoryDataLoadException">Thrown when the entries could not be successfully loaded.</exception>
     Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesByTagIdAsync(long tagId);
+
+    /// <summary>
+    /// Gets all the recipes filtered by an author id.
+    /// </summary>
+    /// <param name="authorId">The author id to filter the recipes with.</param>
+    /// <returns>A collection of filtered recipe entries.</returns>
+    /// <exception cref="RepositoryDataLoadException">Thrown when the entries could not be successfully loaded.</exception>
+    Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesByAuthorIdAsync(ulong authorId);
 }

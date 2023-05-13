@@ -749,6 +749,97 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
         }
     }
 
+    [Fact]
+    public async Task Given_empty_database_when_loading_entries_by_author_id_returns_empty_collection()
+    {
+        // Given
+        using (RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var authorId = fixture.Create<ulong>();
+            
+
+            var repository = new RecipeDataEntryCollectionRepository(context);
+
+            // Call
+            IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByAuthorIdAsync(authorId);
+
+            // Assert
+            entries.Should().BeEmpty();
+        }
+    }
+
+    [Fact]
+    public async Task Given_seeded_database_when_loading_entries_by_author_id_and_match_found_returns_filtered_and_sorted_by_id()
+    {
+        // Given
+        using (RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var authorId = fixture.Create<ulong>();
+            var authorToRetrieve = new AuthorEntity
+            {
+                AuthorId = authorId.ToString()
+            };
+            var author = new AuthorEntity
+            {
+                AuthorId = fixture.Create<long>().ToString()
+            };
+
+            var recipeOne = new RecipeEntity
+            {
+                RecipeEntityId = 3,
+                Author = authorToRetrieve,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeTitle = fixture.Create<string>(),
+                Tags = Array.Empty<RecipeTagEntity>()
+            };
+            var recipeTwo = new RecipeEntity
+            {
+                RecipeEntityId = 2,
+                Author = author,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeTitle = fixture.Create<string>(),
+                Tags = Array.Empty<RecipeTagEntity>()
+            };
+            var recipeThree = new RecipeEntity
+            {
+                RecipeEntityId = 1,
+                Author = authorToRetrieve,
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
+                RecipeTitle = fixture.Create<string>(),
+                Tags = Array.Empty<RecipeTagEntity>()
+            };
+
+            await context.RecipeEntities.AddRangeAsync(recipeOne, recipeTwo, recipeThree);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new RecipeDataEntryCollectionRepository(context);
+
+            // Call
+            IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByAuthorIdAsync(authorId);
+
+            // Assert
+            entries.Should().BeInAscendingOrder(s => s.Id).And.BeEquivalentTo(
+                new[]
+                {
+                    recipeOne,
+                    recipeThree
+                },
+                options => options.ExcludingMissingMembers()
+                                  .WithAutoConversion()
+                                  .WithMapping<RecipeEntryData>(e => e.RecipeEntityId, s => s.Id)
+                                  .WithMapping<RecipeEntryData>(e => e.RecipeTitle, s => s.Title)
+                                  .WithMapping<AuthorEntity, RecipeEntryData>(e => e.AuthorId, s => s.AuthorId));
+        }
+
+    }
+
     public static IEnumerable<object[]> GetCategoryTests(RecipeCategory categoryToFilter)
     {
         PersistentRecipeCategory persistentRecipeCategoryToFilter = PersistentRecipeCategoryCreator.Create(categoryToFilter);

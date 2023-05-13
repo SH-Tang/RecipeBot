@@ -101,6 +101,20 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
         return CreateRecipeEntryDataCollection(recipeDatabaseEntries);
     }
 
+    public async Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesByAuthorIdAsync(ulong authorId)
+    {
+        IEnumerable<RecipeDatabaseEntry> recipeEntries = await context.AuthorEntities
+                                                                      .Where(a => a.AuthorId == authorId.ToString())
+                                                                      .Include(e => e.Recipes)
+                                                                      .ThenInclude(e => e.Author)
+                                                                      .SelectMany(e => e.Recipes)
+                                                                      .Select(e => CreateRecipeDatabaseEntry(e))
+                                                                      .AsNoTracking()
+                                                                      .ToArrayAsync();
+
+        return CreateRecipeEntryDataCollection(recipeEntries);
+    }
+
     /// <summary>
     /// Creates a database entry based on the input arguments.
     /// </summary>
