@@ -114,4 +114,20 @@ public class RecipeEntriesInteractionModuleTest
         commandAttribute!.Name.Should().Be(expectedName);
         commandAttribute.Description.Should().Be(expectedDescription);
     }
+
+    [Fact]
+    public void List_recipes_by_user_command_has_expected_attributes()
+    {
+        // Call
+        SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeEntriesInteractionModule, SlashCommandAttribute>(
+            nameof(RecipeEntriesInteractionModule.GetAllRecipeByUser));
+
+        // Assert
+        const string expectedName = "recipe-list-by-me";
+        const string expectedDescription = "Lists all your saved user recipes";
+
+        commandAttribute.Should().NotBeNull();
+        commandAttribute!.Name.Should().Be(expectedName);
+        commandAttribute.Description.Should().Be(expectedDescription);
+    }
 }
