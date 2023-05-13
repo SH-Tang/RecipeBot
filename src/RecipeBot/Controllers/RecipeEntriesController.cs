@@ -71,7 +71,7 @@ public class RecipeEntriesController : IRecipeEntriesController
         IEnumerable<RecipeEntryRow> rows = await CreateRows(entries);
         
         return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
-            messageFormattingService.CreateMessages(rows, Resources.RecipeEntriesController_GetAllRecipesAsync_No_saved_recipes_are_found));
+            messageFormattingService.CreateMessages(rows, Resources.RecipeEntriesController_GetRecipes_No_saved_recipes_are_found));
     }
 
     public async Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByCategoryAsync(DiscordRecipeCategory category)
@@ -116,7 +116,7 @@ public class RecipeEntriesController : IRecipeEntriesController
         IEnumerable<RecipeEntryRow> rows = await CreateRows(entries);
 
         return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
-            messageFormattingService.CreateMessages(rows, Resources.RecipeEntriesController_GetAllRecipesAsync_No_saved_recipes_are_found));
+            messageFormattingService.CreateMessages(rows, Resources.RecipeEntriesController_GetRecipes_No_saved_recipes_are_found));
     }
 
     private async Task<IEnumerable<RecipeEntryRow>> CreateRows(IEnumerable<RecipeEntryData> entries)
