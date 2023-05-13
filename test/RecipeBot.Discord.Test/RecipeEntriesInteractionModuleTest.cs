@@ -123,7 +123,7 @@ public class RecipeEntriesInteractionModuleTest
             nameof(RecipeEntriesInteractionModule.GetAllRecipeByUser));
 
         // Assert
-        const string expectedName = "recipe-list-by-me";
+        const string expectedName = "myrecipes-list";
         const string expectedDescription = "Lists all your saved user recipes";
 
         commandAttribute.Should().NotBeNull();

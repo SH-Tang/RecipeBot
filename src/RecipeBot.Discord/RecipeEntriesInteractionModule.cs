@@ -76,7 +76,7 @@ public class RecipeEntriesInteractionModule : InteractionModuleBase<SocketIntera
         await Task.WhenAll(GetRecipeResponseTasks(c => c.GetAllRecipesByTagAsync(tag)));
     }
 
-    [SlashCommand("recipe-list-by-me", "Lists all your saved user recipes")]
+    [SlashCommand("myrecipes-list", "Lists all your saved user recipes")]
     public async Task GetAllRecipeByUser()
     {
         await Task.WhenAll(GetRecipeResponseTasks(c => c.GetAllRecipesByUserAsync(Context.User)));
