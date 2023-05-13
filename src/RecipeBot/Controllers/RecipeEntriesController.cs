@@ -124,7 +124,7 @@ public class RecipeEntriesController : IRecipeEntriesController
         IEnumerable<Task<Tuple<ulong, string>>> authorEntryTasks = entries.Select(CreateAuthorEntry);
         Tuple<ulong, string>[] authorEntries = await Task.WhenAll(authorEntryTasks);
         Dictionary<ulong, string> authorLookup = 
-            authorEntries.ToDictionary(entry => entry.Item1, entry => entry.Item2);
+            authorEntries.DistinctBy(a => a.Item1).ToDictionary(entry => entry.Item1, entry => entry.Item2);
 
         return entries.Select(e => new RecipeEntryRow
         {

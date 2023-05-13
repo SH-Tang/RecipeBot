@@ -75,6 +75,44 @@ public class RecipeEntriesControllerTest
     }
 
     [Fact]
+    public async Task Given_repository_returning_collection_without_distinct_authors_when_listing_all_recipes_returns_expected_message()
+    {
+        // Setup
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        limitProvider.MaxMessageLength.Returns(int.MaxValue);
+
+        var fixture = new Fixture();
+        var authorId = fixture.Create<ulong>();
+
+        var entries = new[]
+        {
+            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
+            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
+        };
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(entries);
+
+        var userName = fixture.Create<string>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        userDataProvider.GetUserDataAsync(authorId).Returns(UserDataTestFactory.Create(userName));
+
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesAsync();
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        string expectedMessage =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {userName,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {userName,-50}{Environment.NewLine}";
+        result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
+    }
+
+    [Fact]
     public async Task Given_repository_returning_collection_and_message_within_limits_when_listing_all_recipes_returns_expected_message()
     {
         // Setup
@@ -204,6 +242,44 @@ public class RecipeEntriesControllerTest
 
         // Assert
         await repository.Received(1).LoadRecipeEntriesByCategoryAsync(DiscordRecipeCategoryTestHelper.RecipeCategoryMapping[category]);
+    }
+
+    [Fact]
+    public async Task Given_repository_returning_collection_without_distinct_author_when_filtering_recipes_by_category_returns_expected_message()
+    {
+        // Setup
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        limitProvider.MaxMessageLength.Returns(int.MaxValue);
+
+        var fixture = new Fixture();
+        var authorId = fixture.Create<ulong>();
+
+        var entries = new[]
+        {
+            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
+            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
+        };
+
+        var userName = fixture.Create<string>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        userDataProvider.GetUserDataAsync(authorId).Returns(UserDataTestFactory.Create(userName));
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(entries);
+
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByCategoryAsync(fixture.Create<DiscordRecipeCategory>());
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        string expectedMessage =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {userName,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {userName,-50}{Environment.NewLine}";
+        result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
     [Fact]
@@ -337,6 +413,44 @@ public class RecipeEntriesControllerTest
     }
 
     [Fact]
+    public async Task Given_repository_returning_collection_without_distinct_author_when_filtering_recipes_by_tag_returns_expected_message()
+    {
+        // Setup
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        limitProvider.MaxMessageLength.Returns(int.MaxValue);
+
+        var fixture = new Fixture();
+        var authorId = fixture.Create<ulong>();
+
+        var entries = new[]
+        {
+            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
+            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
+        };
+
+        var userName = fixture.Create<string>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        userDataProvider.GetUserDataAsync(authorId).Returns(UserDataTestFactory.Create(userName));
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesByTagAsync(Arg.Any<string>()).ReturnsForAnyArgs(entries);
+
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByTagAsync(fixture.Create<string>());
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        string expectedMessage =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {userName,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {userName,-50}{Environment.NewLine}";
+        result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
+    }
+
+    [Fact]
     public async Task Given_repository_returning_collection_and_message_within_limits_when_filtering_recipes_by_tag_returns_expected_message()
     {
         // Setup
@@ -461,6 +575,44 @@ public class RecipeEntriesControllerTest
 
         // Assert
         await repository.Received(1).LoadRecipeEntriesByTagIdAsync(idToFilter);
+    }
+
+    [Fact]
+    public async Task Given_repository_returning_collection_without_distinct_author_when_filtering_recipes_by_tag_id_returns_expected_message()
+    {
+        // Setup
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        limitProvider.MaxMessageLength.Returns(int.MaxValue);
+
+        var fixture = new Fixture();
+        var authorId = fixture.Create<ulong>();
+
+        var entries = new[]
+        {
+            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
+            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
+        };
+
+        var userName = fixture.Create<string>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        userDataProvider.GetUserDataAsync(authorId).Returns(UserDataTestFactory.Create(userName));
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(entries);
+
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByTagIdAsync(fixture.Create<long>());
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        string expectedMessage =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {userName,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {userName,-50}{Environment.NewLine}";
+        result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
     [Fact]
@@ -590,6 +742,44 @@ public class RecipeEntriesControllerTest
 
         // Assert
         await repository.Received(1).LoadRecipeEntriesByAuthorIdAsync(idToFilter);
+    }
+
+    [Fact]
+    public async Task Given_repository_returning_collection_without_distinct_author_when_filtering_recipes_by_user_returns_expected_message()
+    {
+        // Setup
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        limitProvider.MaxMessageLength.Returns(int.MaxValue);
+
+        var fixture = new Fixture();
+        var authorId = fixture.Create<ulong>();
+
+        var entries = new[]
+        {
+            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
+            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
+        };
+
+        var userName = fixture.Create<string>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        userDataProvider.GetUserDataAsync(authorId).Returns(UserDataTestFactory.Create(userName));
+
+        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        repository.LoadRecipeEntriesByAuthorIdAsync(Arg.Any<ulong>()).ReturnsForAnyArgs(entries);
+
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByUserAsync(Substitute.For<IUser>());
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        string expectedMessage =
+            $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
+            $"{entries[0].Id,-3} {entries[0].Title,-50} {userName,-50}{Environment.NewLine}" +
+            $"{entries[1].Id,-3} {entries[1].Title,-50} {userName,-50}{Environment.NewLine}";
+        result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
     [Fact]
