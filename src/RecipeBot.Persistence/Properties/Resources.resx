@@ -132,4 +132,7 @@
   <data name="Recipe_entries_unsuccessfully_loaded_due_to_invalid_AuthorId_0" xml:space="preserve">
     <value>Recipe entries could not be loaded due to invalid AuthorId '{0}'.</value>
   </data>
+  <data name="AuthorRepository_Delete_AuthorEntity_No_matching_author_found" xml:space="preserve">
+    <value>No matching author found.</value>
+  </data>
 </root>
