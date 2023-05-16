@@ -92,6 +92,25 @@ public class RecipeInteractionModuleTest
     }
 
     [Fact]
+    public void Delete_my_recipe_command_has_expected_attributes()
+    {
+        // Call
+        SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<RecipeInteractionModule, SlashCommandAttribute>(
+            nameof(RecipeInteractionModule.DeleteMyRecipe), new[]
+            {
+                typeof(long)
+            });
+
+        // Assert
+        const string expectedName = "myrecipes-delete";
+        const string expectedDescription = "Deletes a or all user recipes";
+
+        commandAttribute.Should().NotBeNull();
+        commandAttribute!.Name.Should().Be(expectedName);
+        commandAttribute.Description.Should().Be(expectedDescription);
+    }
+
+    [Fact]
     public void Get_recipe_command_has_expected_attributes()
     {
         // Call
