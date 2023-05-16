@@ -87,6 +87,19 @@ public class RecipeRepository : IRecipeRepository
         return await DeleteEntityAsync(entityToDelete);
     }
 
+    public async Task<RecipeEntryData> DeleteRecipeAsync(long id, ulong authorId)
+    {
+        RecipeEntity? entityToDelete = await context.RecipeEntities
+                                                    .Include(e => e.Author)
+                                                    .SingleOrDefaultAsync(e => e.RecipeEntityId == id && e.Author.AuthorId == authorId.ToString());
+        if (entityToDelete == null)
+        {
+            throw new RepositoryDataDeleteException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_Id_0, id));
+        }
+
+        return await DeleteEntityAsync(entityToDelete);
+    }
+
     public async Task<RecipeData> GetRecipeAsync(long id)
     {
         RecipeEntity? entityToRetrieve = await context.RecipeEntities
