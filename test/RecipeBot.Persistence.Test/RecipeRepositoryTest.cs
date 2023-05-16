@@ -71,7 +71,6 @@ public class RecipeRepositoryTest
         RecipeCategory category, PersistentRecipeCategory expectedCategory)
     {
         // Setup
-        var fixture = new Fixture();
         RecipeModel recipeModel = testBuilder.SetCategory(category)
                                              .Build();
 
@@ -823,7 +822,7 @@ public class RecipeRepositoryTest
         public void Dispose()
         {
             GC.SuppressFinalize(this);
-            connection?.Dispose();
+            connection.Dispose();
         }
     }
 
