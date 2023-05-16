@@ -75,8 +75,6 @@ public class RecipeRepository : IRecipeRepository
     public async Task<RecipeEntryData> DeleteRecipeAsync(long id)
     {
         RecipeEntity? entityToDelete = await context.RecipeEntities
-                                                    .Include(e => e.RecipeFields)
-                                                    .Include(e => e.Tags)
                                                     .Include(e => e.Author)
                                                     .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
         if (entityToDelete == null)
