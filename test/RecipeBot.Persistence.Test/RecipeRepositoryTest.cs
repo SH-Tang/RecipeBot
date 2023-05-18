@@ -826,7 +826,7 @@ public class RecipeRepositoryTest
 
             // Assert
             await call.Should().ThrowAsync<RepositoryDataDeleteException>()
-                      .WithMessage($"No recipe matches with id '{idToDelete}'.");
+                      .WithMessage($"Author has no recipe that matches with id '{idToDelete}'.");
         }
     }
 
@@ -869,7 +869,7 @@ public class RecipeRepositoryTest
 
             // Assert
             await call.Should().ThrowAsync<RepositoryDataDeleteException>()
-                      .WithMessage($"No recipe matches with id '{idToDelete}'.");
+                      .WithMessage($"Author has no recipe that matches with id '{idToDelete}'.");
         }
     }
 

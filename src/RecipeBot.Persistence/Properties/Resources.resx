@@ -135,4 +135,7 @@
   <data name="AuthorRepository_Delete_AuthorEntity_No_matching_author_found" xml:space="preserve">
     <value>No matching author found.</value>
   </data>
+  <data name="RecipeRepository_Author_has_no_recipe_matches_with_Id_0_" xml:space="preserve">
+    <value>Author has no recipe that matches with id '{0}'.</value>
+  </data>
 </root>

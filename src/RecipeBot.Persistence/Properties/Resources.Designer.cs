@@ -114,6 +114,15 @@ namespace RecipeBot.Persistence.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No recipe matches with id &apos;{0}&apos; for the author..
+        /// </summary>
+        internal static string RecipeRepository_Author_has_no_recipe_matches_with_Id_0_ {
+            get {
+                return ResourceManager.GetString("RecipeRepository_Author_has_no_recipe_matches_with_Id_0_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No recipe matches with id &apos;{0}&apos;..
         /// </summary>
         internal static string RecipeRepository_No_recipe_matches_with_Id_0 {

@@ -92,7 +92,7 @@ public class RecipeRepository : IRecipeRepository
                                                     .SingleOrDefaultAsync(e => e.RecipeEntityId == id && e.Author.AuthorId == authorId.ToString());
         if (entityToDelete == null)
         {
-            throw new RepositoryDataDeleteException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_Id_0, id));
+            throw new RepositoryDataDeleteException(string.Format(Resources.RecipeRepository_Author_has_no_recipe_matches_with_Id_0_, id));
         }
 
         return await DeleteEntityAsync(entityToDelete);
