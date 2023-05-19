@@ -298,6 +298,64 @@ public class RecipeControllerTest
     }
 
     [Fact]
+    public async Task Deleting_recipe_with_author_and_delete_successful_returns_result()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var idToDelete = fixture.Create<long>();
+        var authorId = fixture.Create<ulong>();
+
+        var author = Substitute.For<IUser>();
+        author.Id.Returns(authorId);
+
+        var deletedResult = fixture.Create<RecipeEntryData>();
+        var repository = Substitute.For<IRecipeRepository>();
+        repository.DeleteRecipeAsync(idToDelete, authorId).Returns(deletedResult);
+
+        UserData userData = UserDataTestFactory.CreateFullyConfigured();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        userDataProvider.GetUserDataAsync(authorId).Returns(userData);
+
+        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
+
+        // Call
+        ControllerResult<string> result = await controller.DeleteRecipeAsync(idToDelete, author);
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        result.Result.Should().Be($"Recipe titled '{deletedResult.Title}' with id '{deletedResult.Id}' and author '{userData.Username}' was successfully deleted.");
+    }
+
+    [Fact]
+    public async Task Deleting_recipe_with_author_and_delete_unsuccessful_logs_and_returns_result_with_error()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var exceptionMessage = fixture.Create<string>();
+
+        var repository = Substitute.For<IRecipeRepository>();
+        var exception = new RepositoryDataDeleteException(exceptionMessage);
+        repository.DeleteRecipeAsync(Arg.Any<long>(), Arg.Any<ulong>()).ThrowsAsyncForAnyArgs(exception);
+
+        IRecipeModelCharacterLimitProvider limitProvider = CreateDiscordCharacterLimitProvider();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeController(limitProvider, userDataProvider, repository, logger);
+
+        // Call
+        ControllerResult<string> result = await controller.DeleteRecipeAsync(fixture.Create<long>(), Substitute.For<IUser>());
+
+        // Assert
+        result.HasError.Should().BeTrue();
+        result.ErrorMessage.Should().Be(exceptionMessage);
+
+        await logger.Received(1).LogErrorAsync(exception);
+    }
+
+    [Fact]
     public async Task Retrieving_recipe_and_exception_thrown_when_retrieving_logs_and_returns_result_with_error()
     {
         // Setup

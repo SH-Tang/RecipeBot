@@ -127,6 +127,25 @@ public class RecipeController : IRecipeController
         }
     }
 
+    public async Task<ControllerResult<string>> DeleteRecipeAsync(long idToDelete, IUser user)
+    {
+        user.IsNotNull(nameof(user));
+
+        try
+        {
+            ulong authorId = user.Id;
+            RecipeEntryData deletedRecipe = await repository.DeleteRecipeAsync(idToDelete, authorId);
+
+            UserData userData = await userDataProvider.GetUserDataAsync(authorId);
+            return ControllerResult<string>.CreateControllerResultWithValidResult(string.Format(Resources.RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted,
+                                                                                                deletedRecipe.Title, deletedRecipe.Id, userData.Username));
+        }
+        catch (RepositoryDataDeleteException e)
+        {
+            return await HandleException<string>(e);
+        }
+    }
+
     public async Task<ControllerResult<Embed>> GetRecipeAsync(long idToRetrieve)
     {
         try

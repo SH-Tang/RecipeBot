@@ -134,6 +134,37 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
         }
     }
 
+    [SlashCommand("myrecipes-delete", "Deletes an user recipe based on the id")]
+    public async Task DeleteMyRecipe([Summary("RecipeId", "The id of the recipe to delete")] long recipeIdToDelete)
+    {
+        try
+        {
+            using(IServiceScope scope = scopeFactory.CreateScope())
+            {
+                var controller = scope.ServiceProvider.GetRequiredService<IRecipeController>();
+                ControllerResult<string> response = await controller.DeleteRecipeAsync(recipeIdToDelete, Context.User);
+                if (response.HasError)
+                {
+                    await RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, response.ErrorMessage), ephemeral: true);
+                }
+                else
+                {
+                    await RespondAsync(response.Result, ephemeral: true);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Task[] tasks =
+            {
+                RespondAsync(e.Message, ephemeral: true),
+                logger.LogErrorAsync(e)
+            };
+
+            await Task.WhenAll(tasks);
+        }
+    }
+
     [ModalInteraction(RecipeModal.ModalId)]
     public async Task OnModalResponse(RecipeModal modal)
     {

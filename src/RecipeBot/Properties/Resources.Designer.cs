@@ -78,6 +78,15 @@ namespace RecipeBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All data of &apos;{0}&apos; was successfully deleted..
+        /// </summary>
+        internal static string AuthorController_DeleteAuthor_All_data_of_Author_0_was_successfully_deleted {
+            get {
+                return ResourceManager.GetString("AuthorController_DeleteAuthor_All_data_of_Author_0_was_successfully_deleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Recipe could not be successfully formatted: {0}..
         /// </summary>
         internal static string Embed_could_not_be_created_reason_0_ {

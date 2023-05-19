@@ -48,6 +48,15 @@ public interface IRecipeController
     Task<ControllerResult<string>> DeleteRecipeAsync(long idToDelete);
 
     /// <summary>
+    /// Deletes a recipe based on its input arguments.
+    /// </summary>
+    /// <param name="idToDelete">The id of the recipe to delete.</param>
+    /// <param name="user">The user the recipe belongs to.</param>
+    /// <returns>The result of the delete action.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="user"/> is <c>null</c>.</exception>
+    Task<ControllerResult<string>> DeleteRecipeAsync(long idToDelete, IUser user);
+
+    /// <summary>
     /// Gets a recipe based on its input arguments.
     /// </summary>
     /// <param name="idToRetrieve">The id of the recipe to retrieve.</param>

@@ -47,6 +47,15 @@ public interface IRecipeRepository
     Task<RecipeEntryData> DeleteRecipeAsync(long id);
 
     /// <summary>
+    /// Deletes a recipe based on its input arguments.
+    /// </summary>
+    /// <param name="id">The id of the recipe to delete.</param>
+    /// <param name="authorId">The id of the author the recipe belongs to.</param>
+    /// <returns>A <see cref="RecipeEntryData"/> containing the information of the deleted recipe.</returns>
+    /// <exception cref="RepositoryDataDeleteException">Thrown when the data could not be successfully deleted.</exception>
+    Task<RecipeEntryData> DeleteRecipeAsync(long id, ulong authorId);
+
+    /// <summary>
     /// Gets a <see cref="RecipeData"/> based on its id.
     /// </summary>
     /// <param name="id">The id of the recipe to retrieve.</param>

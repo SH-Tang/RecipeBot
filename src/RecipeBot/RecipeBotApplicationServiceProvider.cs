@@ -90,13 +90,15 @@ public class RecipeBotApplicationServiceProvider
                 .AddTransient<IUserDataProvider, UserDataProvider>()
                 .AddTransient<DiscordCommandInfoFactory>()
                 .AddTransient<BotInformationService>()
+                .AddScoped<IRecipeController, RecipeController>()
+                .AddScoped<IRecipeEntriesController, RecipeEntriesController>()
+                .AddScoped<IRecipeTagEntriesController, RecipeTagEntriesController>()
+                .AddScoped<IAuthorController, AuthorController>()
                 .AddDbContext<RecipeBotDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")))
                 .AddScoped<IRecipeRepository, RecipeRepository>()
-                .AddScoped<IRecipeController, RecipeController>()
                 .AddScoped<IRecipeDataEntryCollectionRepository, RecipeDataEntryCollectionRepository>()
-                .AddScoped<IRecipeEntriesController, RecipeEntriesController>()
                 .AddScoped<IRecipeTagEntryDataRepository, RecipeTagEntryRepository>()
-                .AddScoped<IRecipeTagEntriesController, RecipeTagEntriesController>();
+                .AddScoped<IAuthorRepository, AuthorRepository>();
     }
 
     private void ConfigureOptions(IServiceCollection services)
