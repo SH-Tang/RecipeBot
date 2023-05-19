@@ -36,7 +36,7 @@ public class AuthorInteractionModule : InteractionModuleBase<SocketInteractionCo
     private readonly ILoggingService logger;
 
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeEntriesInteractionModule"/>.
+    /// Creates a new instance of <see cref="AuthorInteractionModule"/>.
     /// </summary>
     /// <param name="scopeFactory">The <see cref="IServiceScopeFactory"/> to resolve dependencies with.</param>
     /// <param name="logger">The logger to use.</param>
