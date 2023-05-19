@@ -28,7 +28,7 @@ using RecipeBot.Discord.Properties;
 namespace RecipeBot.Discord;
 
 /// <summary>
-/// Module containing commands to interact with recipe entries.
+/// Module containing commands to interact with author entries.
 /// </summary>
 public class AuthorInteractionModule : InteractionModuleBase<SocketInteractionContext>
 {
