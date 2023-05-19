@@ -103,7 +103,7 @@ public class RecipeInteractionModuleTest
 
         // Assert
         const string expectedName = "myrecipes-delete";
-        const string expectedDescription = "Deletes a or all user recipes";
+        const string expectedDescription = "Deletes an user recipe based on the id";
 
         commandAttribute.Should().NotBeNull();
         commandAttribute!.Name.Should().Be(expectedName);
