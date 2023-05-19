@@ -72,7 +72,7 @@ public class AuthorController : IAuthorController
             await repository.DeleteEntityAsync(authorId);
 
             return ControllerResult<string>.CreateControllerResultWithValidResult(
-                string.Format("All data of '{0}' was successfully deleted.", userData.Username));
+                string.Format(Resources.AuthorController_DeleteAuthor_All_data_of_Author_0_was_successfully_deleted, userData.Username));
         }
         catch (RepositoryDataDeleteException e)
         {
