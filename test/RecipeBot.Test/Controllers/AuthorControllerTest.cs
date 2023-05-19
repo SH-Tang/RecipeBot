@@ -46,7 +46,7 @@ public class AuthorControllerTest
         var controller = new AuthorController(userDataProvider, repository, logger);
 
         // Assert
-        controller.Should().BeAssignableTo<IRecipeController>();
+        controller.Should().BeAssignableTo<IAuthorController>();
     }
 
     [Fact]
