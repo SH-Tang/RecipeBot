@@ -32,10 +32,12 @@ namespace RecipeBot.Services
         public RecipeBotLoggingService()
         {
             Log.Logger = new LoggerConfiguration()
-                         .MinimumLevel.Debug()
+                         .MinimumLevel.Information()
                          .WriteTo.Console()
                          .WriteTo.File("logs/RecipeBot.txt", rollingInterval: RollingInterval.Day)
                          .CreateLogger();
+
+            LogDebug("Logger successfully created");
         }
 
         public void Dispose()
