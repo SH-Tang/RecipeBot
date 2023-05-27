@@ -91,12 +91,6 @@ public class RecipeBotApplication
 
     private static async Task ConfigureCommandHandlingService(IServiceProvider services)
     {
-        var textCommandHandlingService = services.GetRequiredService<TextDiscordCommandHandler>();
-        await textCommandHandlingService.InitializeHandlerAsync(new[]
-        {
-            typeof(InfoTextModule)
-        });
-
         var interactionCommandHandlingServices = services.GetRequiredService<InteractionDiscordCommandHandler>();
         await interactionCommandHandlingServices.InitializeHandlerAsync(new[]
         {

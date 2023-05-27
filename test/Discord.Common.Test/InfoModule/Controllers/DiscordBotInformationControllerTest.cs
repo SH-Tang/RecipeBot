@@ -15,11 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using Discord.Commands;
 using Discord.Common.InfoModule;
 using Discord.Common.InfoModule.Controllers;
 using Discord.Common.InfoModule.Data;
-using Discord.Common.Options;
 using Discord.Interactions;
 using Discord.WebSocket;
 using FluentAssertions;
@@ -35,16 +33,13 @@ public class DiscordBotInformationControllerTest
     public void Controller_is_bot_information_controller()
     {
         // Setup
-        var commandService = Substitute.For<CommandService>();
-
         var socketClient = Substitute.For<DiscordSocketClient>();
         var interactionService = new InteractionService(socketClient);
 
-        var commandOptions = Substitute.For<IOptions<DiscordCommandOptions>>();
         var botInformation = Substitute.For<IOptions<BotInformation>>();
 
         // Call
-        var controller = new DiscordBotInformationController(commandService, interactionService, commandOptions, botInformation);
+        var controller = new DiscordBotInformationController(interactionService, botInformation);
 
         // Assert
         controller.Should().BeAssignableTo<IDiscordBotInformationController>();

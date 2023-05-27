@@ -40,7 +40,6 @@ public class DiscordCommandOptionsTest
         var options = new DiscordCommandOptions();
 
         // Assert
-        options.CommandPrefix.Should().Be('~');
         options.TestGuildId.Should().BeNull();
     }
 }
