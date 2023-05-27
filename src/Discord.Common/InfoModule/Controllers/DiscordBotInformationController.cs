@@ -55,7 +55,7 @@ public class DiscordBotInformationController : IDiscordBotInformationController
 
         this.commandService = commandService;
         this.interactionService = interactionService;
-        this.commandInfoFactory = new DiscordCommandInfoFactory(commandOptions);
+        this.commandInfoFactory = new DiscordCommandInfoFactory();
         this.botInformationService = new BotInformationService(botInformation);
     }
 
@@ -65,7 +65,7 @@ public class DiscordBotInformationController : IDiscordBotInformationController
     /// <returns>A result containing all the available commands for the bot.</returns>
     public Embed GetAvailableBotCommands()
     {
-        IEnumerable<DiscordCommandInfo> commandInfos = commandInfoFactory.Create(commandService.Commands, interactionService.SlashCommands);
+        IEnumerable<DiscordCommandInfo> commandInfos = DiscordCommandInfoFactory.Create(interactionService.SlashCommands);
 
         return botInformationService.GetCommandInfoSummaries(commandInfos);
     }
