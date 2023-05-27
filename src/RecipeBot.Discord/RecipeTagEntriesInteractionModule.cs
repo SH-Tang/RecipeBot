@@ -32,9 +32,8 @@ namespace RecipeBot.Discord;
 /// <summary>
 /// Module containing commands to interact with recipe tag entries.
 /// </summary>
-public class RecipeTagEntriesInteractionModule : InteractionModuleBase<SocketInteractionContext>
+public class RecipeTagEntriesInteractionModule : DiscordInteractionModuleBase
 {
-    private readonly ILoggingService logger;
     private readonly IServiceScopeFactory scopeFactory;
 
     /// <summary>
@@ -43,45 +42,33 @@ public class RecipeTagEntriesInteractionModule : InteractionModuleBase<SocketInt
     /// <param name="scopeFactory">The <see cref="IServiceScopeFactory"/> to resolve dependencies with.</param>
     /// <param name="logger">The logger to use.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public RecipeTagEntriesInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger)
+    public RecipeTagEntriesInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger) : base(logger)
     {
         scopeFactory.IsNotNull(nameof(scopeFactory));
-        logger.IsNotNull(nameof(logger));
 
         this.scopeFactory = scopeFactory;
-        this.logger = logger;
     }
 
     [SlashCommand("tag-list", "Lists all the saved tags")]
     public async Task ListTags()
     {
-        try
+        await ExecuteControllerAction(async () =>
         {
-            using(IServiceScope scope = scopeFactory.CreateScope())
+            using (IServiceScope scope = scopeFactory.CreateScope())
             {
                 var controller = scope.ServiceProvider.GetRequiredService<IRecipeTagEntriesController>();
 
                 IEnumerable<Task> tasks = await GetTasksAsync(controller.ListAllTagsAsync());
                 await Task.WhenAll(tasks);
             }
-        }
-        catch (Exception e)
-        {
-            Task[] tasks =
-            {
-                RespondAsync(e.Message, ephemeral: true),
-                Task.Run(() => logger.LogError(e))
-            };
-
-            await Task.WhenAll(tasks);
-        }
+        });
     }
 
     [SlashCommand("tag-delete", "Deletes a tag based on the id")]
     [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ModerateMembers)]
     public async Task DeleteTag([Summary("TagId", "The id of the tag to delete")] long tagIdToDelete)
     {
-        try
+        await ExecuteControllerAction(async () =>
         {
             using(IServiceScope scope = scopeFactory.CreateScope())
             {
@@ -96,17 +83,7 @@ public class RecipeTagEntriesInteractionModule : InteractionModuleBase<SocketInt
                     await RespondAsync(response.Result, ephemeral: true);
                 }
             }
-        }
-        catch (Exception e)
-        {
-            Task[] tasks =
-            {
-                RespondAsync(e.Message, ephemeral: true),
-                Task.Run(() => logger.LogError(e))
-            };
-
-            await Task.WhenAll(tasks);
-        }
+        });
     }
 
     private async Task<IEnumerable<Task>> GetTasksAsync(Task<ControllerResult<IReadOnlyList<string>>> getControllerResultTask)
@@ -126,8 +103,8 @@ public class RecipeTagEntriesInteractionModule : InteractionModuleBase<SocketInt
             return new[]
             {
                 RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_,
-                                           Resources.Controller_should_not_have_returned_an_empty_collection_when_querying),
-                             ephemeral: true)
+                        Resources.Controller_should_not_have_returned_an_empty_collection_when_querying),
+                    ephemeral: true)
             };
         }
 
