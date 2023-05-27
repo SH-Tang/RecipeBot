@@ -17,7 +17,7 @@
 
 using System;
 using System.Threading.Tasks;
-using Discord.Common;
+using Discord.Common.Providers;
 
 namespace RecipeBot.Services
 {
