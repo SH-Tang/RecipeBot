@@ -19,7 +19,6 @@ using Discord.Commands;
 using Discord.Common.InfoModule;
 using Discord.Common.InfoModule.Controllers;
 using Discord.Common.InfoModule.Data;
-using Discord.Common.InfoModule.Services;
 using Discord.Common.Options;
 using Discord.Interactions;
 using Discord.WebSocket;
@@ -41,14 +40,11 @@ public class DiscordBotInformationControllerTest
         var socketClient = Substitute.For<DiscordSocketClient>();
         var interactionService = new InteractionService(socketClient);
 
-        var discordCommandOptions = Substitute.For<IOptions<DiscordCommandOptions>>();
-        var commandInfoFactory = new DiscordCommandInfoFactory(discordCommandOptions);
-
-        var options = Substitute.For<IOptions<BotInformation>>();
-        var infoService = new BotInformationService(options);
+        var commandOptions = Substitute.For<IOptions<DiscordCommandOptions>>();
+        var botInformation = Substitute.For<IOptions<BotInformation>>();
 
         // Call
-        var controller = new DiscordBotInformationController(commandService, interactionService, commandInfoFactory, infoService);
+        var controller = new DiscordBotInformationController(commandService, interactionService, commandOptions, botInformation);
 
         // Assert
         controller.Should().BeAssignableTo<IDiscordBotInformationController>();

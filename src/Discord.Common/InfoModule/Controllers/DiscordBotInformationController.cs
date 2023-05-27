@@ -21,7 +21,9 @@ using Common.Utils;
 using Discord.Commands;
 using Discord.Common.InfoModule.Data;
 using Discord.Common.InfoModule.Services;
+using Discord.Common.Options;
 using Discord.Interactions;
+using Microsoft.Extensions.Options;
 
 namespace Discord.Common.InfoModule.Controllers;
 
@@ -40,21 +42,21 @@ public class DiscordBotInformationController : IDiscordBotInformationController
     /// </summary>
     /// <param name="commandService">The <see cref="CommandService"/>.</param>
     /// <param name="interactionService">The <see cref="InteractionService"/>.</param>
-    /// <param name="commandInfoFactory">The <see cref="DiscordCommandInfoFactory"/>.</param>
-    /// <param name="botInformationService">The <see cref="BotInformationService"/>.</param>
+    /// <param name="commandOptions">The <see cref="DiscordCommandOptions"/> that were used to configure the application with.</param>
+    /// <param name="botInformation">The <see cref="BotInformation"/> to supply additional information about the bot.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     public DiscordBotInformationController(CommandService commandService, InteractionService interactionService,
-                                           DiscordCommandInfoFactory commandInfoFactory, BotInformationService botInformationService)
+                                           IOptions<DiscordCommandOptions> commandOptions, IOptions<BotInformation> botInformation)
     {
         commandService.IsNotNull(nameof(commandService));
         interactionService.IsNotNull(nameof(interactionService));
-        commandInfoFactory.IsNotNull(nameof(commandInfoFactory));
-        botInformationService.IsNotNull(nameof(botInformationService));
+        commandOptions.IsNotNull(nameof(commandOptions));
+        botInformation.IsNotNull(nameof(botInformation));
 
         this.commandService = commandService;
         this.interactionService = interactionService;
-        this.commandInfoFactory = commandInfoFactory;
-        this.botInformationService = botInformationService;
+        this.commandInfoFactory = new DiscordCommandInfoFactory(commandOptions);
+        this.botInformationService = new BotInformationService(botInformation);
     }
 
     /// <summary>

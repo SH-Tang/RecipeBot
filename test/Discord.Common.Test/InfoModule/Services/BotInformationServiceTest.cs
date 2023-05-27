@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Threading.Tasks;
 using Discord.Common.InfoModule.Data;
 using Discord.Common.InfoModule.Services;
 using FluentAssertions;
