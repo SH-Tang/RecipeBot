@@ -15,8 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-namespace Discord.Common.InfoModule.Controllers;
+namespace Discord.Common.InfoModule;
 
+/// <summary>
+/// Interface for describing a controller for requesting information about a bot.
+/// </summary>
 public interface IDiscordBotInformationController
 {
     /// <summary>
