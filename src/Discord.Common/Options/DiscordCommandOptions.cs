@@ -28,11 +28,6 @@ public class DiscordCommandOptions
     public const string SectionKey = "CommandOptions";
 
     /// <summary>
-    /// Gets or sets the prefix the Discord commands should have before being invoked.
-    /// </summary>
-    public char CommandPrefix { get; set; } = '~';
-
-    /// <summary>
     /// Gets or sets the id for the test Discord server.
     /// </summary>
     public ulong? TestGuildId { get; set; }
