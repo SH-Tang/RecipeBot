@@ -33,7 +33,7 @@ public class BotInformationServiceTest
 {
     [Theory]
     [MemberData(nameof(GetInfoOptions))]
-    public async Task GetCommandInfoSummaries_WithOptions_ReturnsEmbedWithExpectedMetaData(
+    public void GetCommandInfoSummaries_WithOptions_ReturnsEmbedWithExpectedMetaData(
         BotInformation botInformation)
     {
         // Setup
@@ -43,7 +43,7 @@ public class BotInformationServiceTest
         var service = new BotInformationService(options);
 
         // Call
-        Embed result = await service.GetCommandInfoSummaries(Enumerable.Empty<DiscordCommandInfo>());
+        Embed result = service.GetCommandInfoSummaries(Enumerable.Empty<DiscordCommandInfo>());
 
         // Assert
         result.Color.Should().Be(Color.Blue);
@@ -65,7 +65,7 @@ public class BotInformationServiceTest
     }
 
     [Fact]
-    public async Task GetCommandInfoSummaries_WithCommandInfos_ReturnsExpectedEmbedFields()
+    public void GetCommandInfoSummaries_WithCommandInfos_ReturnsExpectedEmbedFields()
     {
         // Setup
         var options = Substitute.For<IOptions<BotInformation>>();
@@ -85,7 +85,7 @@ public class BotInformationServiceTest
         };
 
         // Call
-        Embed result = await service.GetCommandInfoSummaries(commandInfos);
+        Embed result = service.GetCommandInfoSummaries(commandInfos);
 
         // Assert
         ImmutableArray<EmbedField> embedFields = result.Fields;

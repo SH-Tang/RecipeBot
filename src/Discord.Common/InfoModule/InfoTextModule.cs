@@ -64,7 +64,7 @@ public class InfoTextModule : ModuleBase<SocketCommandContext>
     {
         IEnumerable<DiscordCommandInfo> commandInfos = commandInfoFactory.Create(commandService.Commands, interactionService.SlashCommands);
 
-        Embed embedSummaryInformation = await botInformationService.GetCommandInfoSummaries(commandInfos);
+        Embed embedSummaryInformation = botInformationService.GetCommandInfoSummaries(commandInfos);
         await ReplyAsync(null, false, embedSummaryInformation);
     }
 }

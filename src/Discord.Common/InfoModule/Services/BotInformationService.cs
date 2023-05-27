@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Common.Utils;
 using Discord.Common.InfoModule.Data;
 using Microsoft.Extensions.Options;
@@ -47,7 +46,7 @@ public class BotInformationService
     /// </summary>
     /// <returns>A <see cref="Embed"/> containing summaries of all available commands.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="commandInfos"/> is <c>null</c>.</exception>
-    public Task<Embed> GetCommandInfoSummaries(IEnumerable<DiscordCommandInfo> commandInfos)
+    public Embed GetCommandInfoSummaries(IEnumerable<DiscordCommandInfo> commandInfos)
     {
         commandInfos.IsNotNull(nameof(commandInfos));
 
@@ -58,7 +57,7 @@ public class BotInformationService
             embedBuilder.AddField(command.Name, embedFieldText);
         }
 
-        return Task.FromResult(embedBuilder.Build());
+        return embedBuilder.Build();
     }
 
     private EmbedBuilder CreateEmbedBuilder()
@@ -82,7 +81,7 @@ public class BotInformationService
     private string GetSummaryTitle()
     {
         return botInformation.BotName == null
-                   ? "Available commands"
-                   : $"Available commands for {botInformation.BotName}";
+            ? "Available commands"
+            : $"Available commands for {botInformation.BotName}";
     }
 }
