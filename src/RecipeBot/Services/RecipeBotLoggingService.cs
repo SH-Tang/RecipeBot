@@ -16,7 +16,6 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Threading.Tasks;
 using Discord.Common.Services;
 using Serilog;
 
@@ -39,6 +38,11 @@ namespace RecipeBot.Services
                          .CreateLogger();
         }
 
+        public void Dispose()
+        {
+            Log.CloseAndFlush();
+        }
+
         public void LogInfo(string message)
         {
             Log.Information(message);
@@ -57,11 +61,6 @@ namespace RecipeBot.Services
         public void LogDebug(string message)
         {
             Log.Debug(message);
-        }
-
-        public void Dispose()
-        {
-            Log.CloseAndFlush();
         }
     }
 }
