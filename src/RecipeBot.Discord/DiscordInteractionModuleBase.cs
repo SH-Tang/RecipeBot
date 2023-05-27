@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using Common.Utils;
 using Discord.Common.Services;
 using Discord.Interactions;
+using RecipeBot.Discord.Properties;
 
 namespace RecipeBot.Discord;
 
@@ -52,7 +53,7 @@ public abstract class DiscordInteractionModuleBase : InteractionModuleBase<Socke
         {
             Task[] tasks =
             {
-                RespondAsync(e.Message, ephemeral: true),
+                RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, e.Message), ephemeral: true),
                 Task.Run(() => Logger.LogError(e))
             };
 
