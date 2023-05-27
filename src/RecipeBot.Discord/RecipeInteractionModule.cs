@@ -33,9 +33,8 @@ namespace RecipeBot.Discord;
 /// <summary>
 /// Module containing commands to interact with individual recipes.
 /// </summary>
-public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionContext>
+public class RecipeInteractionModule : DiscordInteractionModuleBase
 {
-    private readonly ILoggingService logger;
     private readonly IServiceScopeFactory scopeFactory;
 
     /// <summary>
@@ -44,13 +43,11 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
     /// <param name="scopeFactory">The <see cref="IServiceScopeFactory"/> to resolve dependencies with.</param>
     /// <param name="logger">The logger to use.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public RecipeInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger)
+    public RecipeInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger) : base(logger)
     {
         scopeFactory.IsNotNull(nameof(scopeFactory));
-        logger.IsNotNull(nameof(logger));
 
         this.scopeFactory = scopeFactory;
-        this.logger = logger;
     }
 
     [SlashCommand("recipe-get", "Gets a recipe based on the id")]
@@ -109,7 +106,7 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
         }
         catch (Exception e)
         {
-            logger.LogError(e);
+            Logger.LogError(e);
             arguments.ResetArguments();
         }
     }
@@ -133,24 +130,6 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
                 }
             }
         });
-    }
-
-    private async Task ExecuteControllerAction(Func<Task> controllerFunc)
-    {
-        try
-        {
-            await controllerFunc();
-        }
-        catch (Exception e)
-        {
-            Task[] tasks =
-            {
-                RespondAsync(e.Message, ephemeral: true),
-                Task.Run(() => logger.LogError(e))
-            };
-
-            await Task.WhenAll(tasks);
-        }
     }
 
     [ModalInteraction(RecipeModal.ModalId)]
@@ -184,7 +163,7 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
             Task[] tasks =
             {
                 RespondAsync(e.Message, ephemeral: true),
-                Task.Run(() => logger.LogError(e))
+                Task.Run(() => Logger.LogError(e))
             };
 
             await Task.WhenAll(tasks);
