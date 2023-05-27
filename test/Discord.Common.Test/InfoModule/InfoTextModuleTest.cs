@@ -17,6 +17,7 @@
 
 using Discord.Commands;
 using Discord.Common.InfoModule;
+using Discord.Common.Services;
 using FluentAssertions;
 using NSubstitute;
 using RecipeBot.TestUtils;

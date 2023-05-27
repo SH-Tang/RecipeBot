@@ -21,7 +21,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using Discord;
-using Discord.Common;
+using Discord.Common.Services;
 using FluentAssertions;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;

@@ -18,8 +18,8 @@
 using System.Threading.Tasks;
 using AutoFixture;
 using Discord;
-using Discord.Common;
 using Discord.Common.Providers;
+using Discord.Common.Services;
 using Discord.Common.TestUtils;
 using FluentAssertions;
 using NSubstitute;

@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Common.Utils;
-using Discord.Common;
+using Discord.Common.Services;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Repositories;

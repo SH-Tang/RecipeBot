@@ -19,7 +19,7 @@ using System;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
-using Discord.Common;
+using Discord.Common.Services;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;

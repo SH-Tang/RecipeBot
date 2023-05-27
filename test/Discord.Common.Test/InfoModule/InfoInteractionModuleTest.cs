@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using Discord.Common.InfoModule;
+using Discord.Common.Services;
 using Discord.Interactions;
 using FluentAssertions;
 using NSubstitute;

@@ -18,7 +18,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Discord.Common;
+namespace Discord.Common.Services;
 
 /// <summary>
 /// Interface describing a service for logging.
