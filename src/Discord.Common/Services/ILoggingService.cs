@@ -33,13 +33,6 @@ public interface ILoggingService
     Task LogInfoAsync(string message);
 
     /// <summary>
-    /// Logs a warning message.
-    /// </summary>
-    /// <param name="message">The message to log.</param>
-    /// <returns>The task object representing the asynchronous operation.</returns>
-    Task LogWarningAsync(string message);
-
-    /// <summary>
     /// Logs an error message.
     /// </summary>
     /// <param name="message">The message to log.</param>
