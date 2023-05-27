@@ -29,10 +29,9 @@ namespace RecipeBot.Discord;
 /// <summary>
 /// Module containing commands to interact with author entries.
 /// </summary>
-public class AuthorInteractionModule : InteractionModuleBase<SocketInteractionContext>
+public class AuthorInteractionModule : DiscordInteractionModuleBase
 {
     private readonly IServiceScopeFactory scopeFactory;
-    private readonly ILoggingService logger;
 
     /// <summary>
     /// Creates a new instance of <see cref="AuthorInteractionModule"/>.
@@ -40,21 +39,20 @@ public class AuthorInteractionModule : InteractionModuleBase<SocketInteractionCo
     /// <param name="scopeFactory">The <see cref="IServiceScopeFactory"/> to resolve dependencies with.</param>
     /// <param name="logger">The logger to use.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public AuthorInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger)
+    public AuthorInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger):
+        base(logger)
     {
         scopeFactory.IsNotNull(nameof(scopeFactory));
-        logger.IsNotNull(nameof(logger));
 
         this.scopeFactory = scopeFactory;
-        this.logger = logger;
     }
 
     [SlashCommand("myuserdata-delete-all", "Deletes all user data")]
     public async Task DeleteAuthor()
     {
-        try
+        await ExecuteControllerAction(async () =>
         {
-            using (IServiceScope scope = scopeFactory.CreateScope())
+            using(IServiceScope scope = scopeFactory.CreateScope())
             {
                 var controller = scope.ServiceProvider.GetRequiredService<IAuthorController>();
                 ControllerResult<string> response = await controller.DeleteAuthorAsync(Context.User);
@@ -67,16 +65,6 @@ public class AuthorInteractionModule : InteractionModuleBase<SocketInteractionCo
                     await RespondAsync(response.Result, ephemeral: true);
                 }
             }
-        }
-        catch (Exception e)
-        {
-            Task[] tasks =
-            {
-                RespondAsync(e.Message, ephemeral: true),
-                Task.Run(() => logger.LogError(e))
-            };
-
-            await Task.WhenAll(tasks);
-        }
+        });
     }
 }

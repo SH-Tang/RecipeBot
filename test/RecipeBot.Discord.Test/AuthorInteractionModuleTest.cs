@@ -38,7 +38,7 @@ public class AuthorInteractionModuleTest
         var module = new AuthorInteractionModule(scopeFactory, loggingService);
 
         // Assert
-        module.Should().BeAssignableTo<InteractionModuleBase<SocketInteractionContext>>();
+        module.Should().BeAssignableTo<DiscordInteractionModuleBase>();
     }
 
     [Fact]
