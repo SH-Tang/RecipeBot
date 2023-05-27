@@ -57,7 +57,7 @@ namespace RecipeBot.Services
 
         public void LogError(Exception exception)
         {
-            Log.Error(exception, "An error occurred");
+            Log.Error(exception, "A critical error occurred:");
         }
 
         public void LogDebug(string message)
