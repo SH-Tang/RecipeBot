@@ -15,15 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using Discord.Commands;
 using Discord.Common.InfoModule;
-using Discord.Common.InfoModule.Data;
-using Discord.Common.InfoModule.Services;
-using Discord.Common.Options;
 using Discord.Interactions;
-using Discord.WebSocket;
 using FluentAssertions;
-using Microsoft.Extensions.Options;
 using NSubstitute;
 using RecipeBot.TestUtils;
 using Xunit;
@@ -36,19 +30,11 @@ public class InfoInteractionModuleTest
     public void Module_is_interactive_module()
     {
         // Setup
-        var commandService = Substitute.For<CommandService>();
-
-        var socketClient = Substitute.For<DiscordSocketClient>();
-        var interactionService = new InteractionService(socketClient);
-
-        var discordCommandOptions = Substitute.For<IOptions<DiscordCommandOptions>>();
-        var commandInfoFactory = new DiscordCommandInfoFactory(discordCommandOptions);
-
-        var options = Substitute.For<IOptions<BotInformation>>();
-        var infoService = new BotInformationService(options);
+        var controller = Substitute.For<IDiscordBotInformationController>();
+        var logger = Substitute.For<ILoggingService>();
 
         // Call
-        var module = new InfoInteractionModule(commandService, interactionService, commandInfoFactory, infoService);
+        var module = new InfoInteractionModule(controller, logger);
 
         // Assert
         module.Should().BeAssignableTo<InteractionModuleBase<SocketInteractionContext>>();
