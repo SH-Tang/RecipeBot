@@ -42,6 +42,7 @@ public class RecipeInteractionModuleTest
 
         // Assert
         module.Should().BeAssignableTo<DiscordInteractionModuleBase>();
+        module.Should().BeAssignableTo<InteractionModuleBase<SocketInteractionContext>>();
     }
 
     [Fact]

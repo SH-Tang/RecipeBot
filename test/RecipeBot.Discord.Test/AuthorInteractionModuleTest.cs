@@ -39,6 +39,7 @@ public class AuthorInteractionModuleTest
 
         // Assert
         module.Should().BeAssignableTo<DiscordInteractionModuleBase>();
+        module.Should().BeAssignableTo<InteractionModuleBase<SocketInteractionContext>>();
     }
 
     [Fact]
