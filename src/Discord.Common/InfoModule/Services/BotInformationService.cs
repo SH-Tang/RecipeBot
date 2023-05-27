@@ -22,7 +22,7 @@ using Common.Utils;
 using Discord.Common.InfoModule.Data;
 using Microsoft.Extensions.Options;
 
-namespace Discord.Common.InfoModule;
+namespace Discord.Common.InfoModule.Services;
 
 /// <summary>
 /// Service for providing information about the bot.

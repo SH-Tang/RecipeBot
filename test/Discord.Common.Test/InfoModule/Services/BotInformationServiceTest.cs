@@ -20,14 +20,14 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
-using Discord.Common.InfoModule;
 using Discord.Common.InfoModule.Data;
+using Discord.Common.InfoModule.Services;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using Xunit;
 
-namespace Discord.Common.Test.InfoModule;
+namespace Discord.Common.Test.InfoModule.Services;
 
 public class BotInformationServiceTest
 {
@@ -48,9 +48,9 @@ public class BotInformationServiceTest
         // Assert
         result.Color.Should().Be(Color.Blue);
 
-        string expectedTitle = botInformation.BotInformationUrl == null
-                                   ? "Available commands"
-                                   : $"Available commands for {botInformation.BotName}";
+        string expectedTitle = botInformation.BotName == null
+            ? "Available commands"
+            : $"Available commands for {botInformation.BotName}";
         result.Title.Should().Be(expectedTitle);
         result.Url.Should().Be(botInformation.BotInformationUrl);
 
