@@ -81,7 +81,6 @@ public class RecipeBotApplicationServiceProvider
         services.AddSingleton(socketConfig)
                 .AddSingleton<DiscordSocketClient>()
                 .AddSingleton<CommandService>()
-                .AddSingleton<TextDiscordCommandHandler>()
                 .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
                 .AddSingleton<InteractionDiscordCommandHandler>()
                 .AddSingleton<ILoggingService, ConsoleLoggingService>()
