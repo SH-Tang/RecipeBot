@@ -15,33 +15,29 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using Discord.Common.InfoModule;
-using FluentAssertions;
-using Xunit;
+using System.ComponentModel.DataAnnotations;
 
-namespace Discord.Common.Test.InfoModule;
+namespace Discord.Common.InfoModule.Data;
 
-public class BotInformationTest
+/// <summary>
+/// Class containing information about the author.
+/// </summary>
+public class AuthorInformation
 {
-    [Fact]
-    public void SectionKey_Always_ReturnsExpectedValue()
-    {
-        // Call
-        const string key = BotInformation.SectionKey;
+    /// <summary>
+    /// Gets or sets the author of the bot.
+    /// </summary>
+    public string? AuthorName { get; set; }
 
-        // Assert
-        key.Should().Be("BotInformation");
-    }
+    /// <summary>
+    /// Gets or sets the url of the author of the bot.
+    /// </summary>
+    [Url]
+    public string? AuthorAvatarUrl { get; set; }
 
-    [Fact]
-    public void Constructor_Always_ExpectedProperties()
-    {
-        // Call
-        var options = new BotInformation();
-
-        // Assert
-        options.AuthorInformation.Should().BeNull();
-        options.BotInformationUrl.Should().BeNull();
-        options.BotName.Should().BeNull();
-    }
+    /// <summary>
+    /// Gets or sets the url of the author
+    /// </summary>
+    [Url]
+    public string? AuthorUrl { get; set; }
 }

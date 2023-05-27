@@ -21,6 +21,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.Common.InfoModule;
+using Discord.Common.InfoModule.Data;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using NSubstitute;

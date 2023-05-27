@@ -15,11 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using Discord.Common.InfoModule;
+using Discord.Common.InfoModule.Data;
 using FluentAssertions;
 using Xunit;
 
-namespace Discord.Common.Test.InfoModule;
+namespace Discord.Common.Test.InfoModule.Data;
 
 public class AuthorInformationTest
 {

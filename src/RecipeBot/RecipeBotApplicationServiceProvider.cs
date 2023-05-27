@@ -21,6 +21,7 @@ using Discord.Commands;
 using Discord.Common;
 using Discord.Common.Handlers;
 using Discord.Common.InfoModule;
+using Discord.Common.InfoModule.Data;
 using Discord.Common.Options;
 using Discord.Common.Providers;
 using Discord.Interactions;

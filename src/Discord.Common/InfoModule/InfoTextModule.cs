@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord.Commands;
+using Discord.Common.InfoModule.Data;
 using Discord.Interactions;
 
 namespace Discord.Common.InfoModule;

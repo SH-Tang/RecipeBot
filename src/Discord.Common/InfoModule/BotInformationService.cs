@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Common.Utils;
+using Discord.Common.InfoModule.Data;
 using Microsoft.Extensions.Options;
 
 namespace Discord.Common.InfoModule;
