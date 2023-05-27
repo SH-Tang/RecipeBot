@@ -83,7 +83,7 @@ public class RecipeBotApplicationServiceProvider
                 .AddSingleton<CommandService>()
                 .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
                 .AddSingleton<InteractionDiscordCommandHandler>()
-                .AddSingleton<ILoggingService, ConsoleLoggingService>()
+                .AddSingleton<ILoggingService, RecipeBotLoggingService>()
                 .AddSingleton<DiscordCharacterLimitProvider>()
                 .AddSingleton<IRecipeModelCharacterLimitProvider>(x => x.GetRequiredService<DiscordCharacterLimitProvider>())
                 .AddSingleton<IMessageCharacterLimitProvider>(x => x.GetRequiredService<DiscordCharacterLimitProvider>())
