@@ -15,33 +15,35 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using System.ComponentModel.DataAnnotations;
+using System;
+using Common.Utils;
 
-namespace Discord.Common.InfoModule;
+namespace Discord.Common.InfoModule.Data;
 
 /// <summary>
-/// Class containing data for displaying information about the bot.
+/// Class containing information about Discord commands.
 /// </summary>
-public class BotInformation
+public class DiscordCommandInfo
 {
     /// <summary>
-    /// Gets the key of the section to retrieve the settings from.
+    /// Creates a new instance of <see cref="DiscordCommandInfo"/>.
     /// </summary>
-    public const string SectionKey = "BotInformation";
+    /// <param name="name">The name of the command.</param>
+    /// <exception cref="ArgumentException">Thrown when the <paramref name="name"/> is <c>null</c> or consists
+    /// of whitespaces only.</exception>
+    public DiscordCommandInfo(string name)
+    {
+        name.IsNotNullOrWhiteSpaces(nameof(name));
+        Name = name;
+    }
 
     /// <summary>
-    /// Gets or sets the <see cref="Common.InfoModule.AuthorInformation"/>
+    /// Gets the name of the command.
     /// </summary>
-    public AuthorInformation? AuthorInformation { get; set; }
+    public string Name { get; }
 
     /// <summary>
-    /// Gets or sets the name of the bot.
+    /// Gets or sets the summary of the command.
     /// </summary>
-    public string? BotName { get; set; }
-
-    /// <summary>
-    /// Gets or sets the url of the bot to retrieve more information from.
-    /// </summary>
-    [Url]
-    public string? BotInformationUrl { get; set; }
+    public string? Summary { get; init; }
 }

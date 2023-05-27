@@ -15,20 +15,29 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Threading.Tasks;
-using Discord.Common.Providers;
+using System.ComponentModel.DataAnnotations;
 
-namespace RecipeBot.Services
+namespace Discord.Common.InfoModule.Data;
+
+/// <summary>
+/// Class containing information about the author.
+/// </summary>
+public class AuthorInformation
 {
     /// <summary>
-    /// Provider for providing time information.
+    /// Gets or sets the author of the bot.
     /// </summary>
-    public class TimeProvider : ITimeProvider
-    {
-        public Task<DateTime> GetCurrentDateTimeAsync()
-        {
-            return Task.FromResult(DateTime.Now);
-        }
-    }
+    public string? AuthorName { get; set; }
+
+    /// <summary>
+    /// Gets or sets the url of the author of the bot.
+    /// </summary>
+    [Url]
+    public string? AuthorAvatarUrl { get; set; }
+
+    /// <summary>
+    /// Gets or sets the url of the author
+    /// </summary>
+    [Url]
+    public string? AuthorUrl { get; set; }
 }

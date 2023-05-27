@@ -16,11 +16,10 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord.Commands;
-using Discord.Interactions;
+using Discord.Common.Services;
 
 namespace Discord.Common.InfoModule;
 
@@ -29,40 +28,42 @@ namespace Discord.Common.InfoModule;
 /// </summary>
 public class InfoTextModule : ModuleBase<SocketCommandContext>
 {
-    private readonly BotInformationService botInformationService;
-    private readonly DiscordCommandInfoFactory commandInfoFactory;
-    private readonly CommandService commandService;
-    private readonly InteractionService interactionService;
+    private readonly IDiscordBotInformationController controller;
+    private readonly ILoggingService logger;
 
     /// <summary>
     /// Creates a new instance of <see cref="InfoTextModule"/>.
     /// </summary>
-    /// <param name="commandService">The <see cref="CommandService"/>.</param>
-    /// <param name="interactionService">The <see cref="InteractionService"/>.</param>
-    /// <param name="commandInfoFactory">The <see cref="DiscordCommandInfoFactory"/>.</param>
-    /// <param name="botInformationService">The <see cref="BotInformationService"/>.</param>
+    /// <param name="controller">The <see cref="IDiscordBotInformationController"/> to coordinate the interactions with.</param>
+    /// <param name="logger">The logger to use.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public InfoTextModule(CommandService commandService, InteractionService interactionService,
-                          DiscordCommandInfoFactory commandInfoFactory, BotInformationService botInformationService)
+    public InfoTextModule(IDiscordBotInformationController controller, ILoggingService logger)
     {
-        commandService.IsNotNull(nameof(commandService));
-        interactionService.IsNotNull(nameof(interactionService));
-        commandInfoFactory.IsNotNull(nameof(commandInfoFactory));
-        botInformationService.IsNotNull(nameof(botInformationService));
+        controller.IsNotNull(nameof(controller));
+        logger.IsNotNull(nameof(logger));
 
-        this.commandService = commandService;
-        this.interactionService = interactionService;
-        this.commandInfoFactory = commandInfoFactory;
-        this.botInformationService = botInformationService;
+        this.controller = controller;
+        this.logger = logger;
     }
 
     [Command("help")]
-    [Commands.Summary("Provides information about all the available commands.")]
+    [Summary("Provides information about all the available commands.")]
     public async Task GetHelpResponseAsync()
     {
-        IEnumerable<DiscordCommandInfo> commandInfos = commandInfoFactory.Create(commandService.Commands, interactionService.SlashCommands);
+        try
+        {
+            Embed embedSummaryInformation = controller.GetAvailableBotCommands();
+            await ReplyAsync(null, false, embedSummaryInformation);
+        }
+        catch (Exception e)
+        {
+            Task[] tasks =
+            {
+                ReplyAsync(e.Message),
+                logger.LogErrorAsync(e)
+            };
 
-        Embed embedSummaryInformation = await botInformationService.GetCommandInfoSummaries(commandInfos);
-        await ReplyAsync(null, false, embedSummaryInformation);
+            await Task.WhenAll(tasks);
+        }
     }
 }

@@ -17,27 +17,31 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace Discord.Common.InfoModule;
+namespace Discord.Common.InfoModule.Data;
 
 /// <summary>
-/// Class containing information about the author.
+/// Class containing data for displaying information about the bot.
 /// </summary>
-public class AuthorInformation
+public class BotInformation
 {
     /// <summary>
-    /// Gets or sets the author of the bot.
+    /// Gets the key of the section to retrieve the settings from.
     /// </summary>
-    public string? AuthorName { get; set; }
+    public const string SectionKey = "BotInformation";
 
     /// <summary>
-    /// Gets or sets the url of the author of the bot.
+    /// Gets or sets the <see cref="Data.AuthorInformation"/>
     /// </summary>
-    [Url]
-    public string? AuthorAvatarUrl { get; set; }
+    public AuthorInformation? AuthorInformation { get; set; }
 
     /// <summary>
-    /// Gets or sets the url of the author
+    /// Gets or sets the name of the bot.
+    /// </summary>
+    public string? BotName { get; set; }
+
+    /// <summary>
+    /// Gets or sets the url of the bot to retrieve more information from.
     /// </summary>
     [Url]
-    public string? AuthorUrl { get; set; }
+    public string? BotInformationUrl { get; set; }
 }

@@ -18,8 +18,9 @@
 using System;
 using System.Threading.Tasks;
 using Common.Utils;
-using Discord.Common;
 using Discord.Common.Options;
+using Discord.Common.Providers;
+using Discord.Common.Services;
 using Microsoft.Extensions.Options;
 
 namespace RecipeBot.Services;

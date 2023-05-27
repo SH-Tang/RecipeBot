@@ -17,15 +17,11 @@
 
 using Discord.Commands;
 using Discord.Common.InfoModule;
-using Discord.Common.Options;
-using Discord.Interactions;
-using Discord.WebSocket;
+using Discord.Common.Services;
 using FluentAssertions;
-using Microsoft.Extensions.Options;
 using NSubstitute;
 using RecipeBot.TestUtils;
 using Xunit;
-using SummaryAttribute = Discord.Commands.SummaryAttribute;
 
 namespace Discord.Common.Test.InfoModule;
 
@@ -35,19 +31,11 @@ public class InfoTextModuleTest
     public void Module_is_text_based_module()
     {
         // Setup
-        var commandService = Substitute.For<CommandService>();
-
-        var socketClient = Substitute.For<DiscordSocketClient>();
-        var interactionService = new InteractionService(socketClient);
-
-        var discordCommandOptions = Substitute.For<IOptions<DiscordCommandOptions>>();
-        var commandInfoFactory = new DiscordCommandInfoFactory(discordCommandOptions);
-
-        var options = Substitute.For<IOptions<BotInformation>>();
-        var infoService = new BotInformationService(options);
+        var controller = Substitute.For<IDiscordBotInformationController>();
+        var logging = Substitute.For<ILoggingService>();
 
         // Call
-        var module = new InfoTextModule(commandService, interactionService, commandInfoFactory, infoService);
+        var module = new InfoTextModule(controller, logging);
 
         // Assert
         module.Should().BeAssignableTo<ModuleBase<SocketCommandContext>>();

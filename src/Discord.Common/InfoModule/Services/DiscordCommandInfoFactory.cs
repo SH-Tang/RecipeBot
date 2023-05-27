@@ -20,11 +20,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Common.Utils;
 using Discord.Commands;
+using Discord.Common.InfoModule.Data;
 using Discord.Common.Options;
 using Discord.Interactions;
 using Microsoft.Extensions.Options;
 
-namespace Discord.Common.InfoModule;
+namespace Discord.Common.InfoModule.Services;
 
 /// <summary>
 /// Factory to create instances eof <see cref="DiscordCommandInfo"/>.

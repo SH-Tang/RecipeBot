@@ -15,20 +15,33 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Threading.Tasks;
+using Discord.Common.InfoModule.Data;
+using FluentAssertions;
+using Xunit;
 
-namespace Discord.Common
+namespace Discord.Common.Test.InfoModule.Data;
+
+public class BotInformationTest
 {
-    /// <summary>
-    /// Interface for providing the time.
-    /// </summary>
-    public interface ITimeProvider
+    [Fact]
+    public void SectionKey_Always_ReturnsExpectedValue()
     {
-        /// <summary>
-        /// Gets the current date time on the host.
-        /// </summary>
-        /// <returns>A <see cref="DateTime"/> representing the current date time on the host.</returns>
-        Task<DateTime> GetCurrentDateTimeAsync();
+        // Call
+        const string key = BotInformation.SectionKey;
+
+        // Assert
+        key.Should().Be("BotInformation");
+    }
+
+    [Fact]
+    public void Constructor_Always_ExpectedProperties()
+    {
+        // Call
+        var options = new BotInformation();
+
+        // Assert
+        options.AuthorInformation.Should().BeNull();
+        options.BotInformationUrl.Should().BeNull();
+        options.BotName.Should().BeNull();
     }
 }

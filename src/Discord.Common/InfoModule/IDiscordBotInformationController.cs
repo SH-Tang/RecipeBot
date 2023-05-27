@@ -15,33 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using Discord.Common.InfoModule;
-using FluentAssertions;
-using Xunit;
+namespace Discord.Common.InfoModule;
 
-namespace Discord.Common.Test.InfoModule;
-
-public class BotInformationTest
+/// <summary>
+/// Interface for describing a controller for requesting information about a bot.
+/// </summary>
+public interface IDiscordBotInformationController
 {
-    [Fact]
-    public void SectionKey_Always_ReturnsExpectedValue()
-    {
-        // Call
-        const string key = BotInformation.SectionKey;
-
-        // Assert
-        key.Should().Be("BotInformation");
-    }
-
-    [Fact]
-    public void Constructor_Always_ExpectedProperties()
-    {
-        // Call
-        var options = new BotInformation();
-
-        // Assert
-        options.AuthorInformation.Should().BeNull();
-        options.BotInformationUrl.Should().BeNull();
-        options.BotName.Should().BeNull();
-    }
+    /// <summary>
+    /// Gets the information about the available bot command.
+    /// </summary>
+    /// <returns>A result containing all the available commands for the bot.</returns>
+    Embed GetAvailableBotCommands();
 }

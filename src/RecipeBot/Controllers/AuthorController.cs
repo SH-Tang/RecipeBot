@@ -21,7 +21,6 @@ using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
 using Discord.Common.Providers;
-using Discord.Common;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Factories;
@@ -29,6 +28,7 @@ using RecipeBot.Domain.Repositories;
 using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.Properties;
 using RecipeBot.Services;
+using Discord.Common.Services;
 
 namespace RecipeBot.Controllers;
 

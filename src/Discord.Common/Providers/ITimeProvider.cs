@@ -16,34 +16,19 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using Common.Utils;
+using System.Threading.Tasks;
 
-namespace Discord.Common.InfoModule;
-
-/// <summary>
-/// Class containing information about Discord commands.
-/// </summary>
-public class DiscordCommandInfo
+namespace Discord.Common.Providers
 {
     /// <summary>
-    /// Creates a new instance of <see cref="DiscordCommandInfo"/>.
+    /// Interface for providing the time.
     /// </summary>
-    /// <param name="name">The name of the command.</param>
-    /// <exception cref="ArgumentException">Thrown when the <paramref name="name"/> is <c>null</c> or consists
-    /// of whitespaces only.</exception>
-    public DiscordCommandInfo(string name)
+    public interface ITimeProvider
     {
-        name.IsNotNullOrWhiteSpaces(nameof(name));
-        Name = name;
+        /// <summary>
+        /// Gets the current date time on the host.
+        /// </summary>
+        /// <returns>A <see cref="DateTime"/> representing the current date time on the host.</returns>
+        Task<DateTime> GetCurrentDateTimeAsync();
     }
-
-    /// <summary>
-    /// Gets the name of the command.
-    /// </summary>
-    public string Name { get; }
-
-    /// <summary>
-    /// Gets or sets the summary of the command.
-    /// </summary>
-    public string? Summary { get; init; }
 }

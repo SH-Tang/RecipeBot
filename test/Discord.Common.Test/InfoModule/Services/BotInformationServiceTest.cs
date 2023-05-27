@@ -19,20 +19,20 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Threading.Tasks;
-using Discord.Common.InfoModule;
+using Discord.Common.InfoModule.Data;
+using Discord.Common.InfoModule.Services;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using Xunit;
 
-namespace Discord.Common.Test.InfoModule;
+namespace Discord.Common.Test.InfoModule.Services;
 
 public class BotInformationServiceTest
 {
     [Theory]
     [MemberData(nameof(GetInfoOptions))]
-    public async Task GetCommandInfoSummaries_WithOptions_ReturnsEmbedWithExpectedMetaData(
+    public void GetCommandInfoSummaries_WithOptions_ReturnsEmbedWithExpectedMetaData(
         BotInformation botInformation)
     {
         // Setup
@@ -42,14 +42,14 @@ public class BotInformationServiceTest
         var service = new BotInformationService(options);
 
         // Call
-        Embed result = await service.GetCommandInfoSummaries(Enumerable.Empty<DiscordCommandInfo>());
+        Embed result = service.GetCommandInfoSummaries(Enumerable.Empty<DiscordCommandInfo>());
 
         // Assert
         result.Color.Should().Be(Color.Blue);
 
-        string expectedTitle = botInformation.BotInformationUrl == null
-                                   ? "Available commands"
-                                   : $"Available commands for {botInformation.BotName}";
+        string expectedTitle = botInformation.BotName == null
+            ? "Available commands"
+            : $"Available commands for {botInformation.BotName}";
         result.Title.Should().Be(expectedTitle);
         result.Url.Should().Be(botInformation.BotInformationUrl);
 
@@ -64,7 +64,7 @@ public class BotInformationServiceTest
     }
 
     [Fact]
-    public async Task GetCommandInfoSummaries_WithCommandInfos_ReturnsExpectedEmbedFields()
+    public void GetCommandInfoSummaries_WithCommandInfos_ReturnsExpectedEmbedFields()
     {
         // Setup
         var options = Substitute.For<IOptions<BotInformation>>();
@@ -84,7 +84,7 @@ public class BotInformationServiceTest
         };
 
         // Call
-        Embed result = await service.GetCommandInfoSummaries(commandInfos);
+        Embed result = service.GetCommandInfoSummaries(commandInfos);
 
         // Assert
         ImmutableArray<EmbedField> embedFields = result.Fields;

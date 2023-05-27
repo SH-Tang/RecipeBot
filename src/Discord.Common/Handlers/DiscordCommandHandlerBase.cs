@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord.Common.Options;
+using Discord.Common.Services;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 
