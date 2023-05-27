@@ -24,7 +24,7 @@ namespace RecipeBot.Services
     /// <summary>
     /// Service responsible for logging in the application.
     /// </summary>
-    internal class RecipeBotLoggingService : ILoggingService, IDisposable
+    internal sealed class RecipeBotLoggingService : ILoggingService, IDisposable
     {
         /// <summary>
         /// Creates a new instance of the <see cref="RecipeBotLoggingService"/>.
@@ -34,7 +34,7 @@ namespace RecipeBot.Services
             Log.Logger = new LoggerConfiguration()
                          .MinimumLevel.Information()
                          .WriteTo.Console()
-                         .WriteTo.Async(log => log.File("logs/RecipeBot.txt", rollingInterval: RollingInterval.Day))
+                         .WriteTo.Async(log => log.File("logs/RecipeBot-.txt", rollingInterval: RollingInterval.Day))
                          .CreateLogger();
 
             LogDebug("Logger successfully created");
