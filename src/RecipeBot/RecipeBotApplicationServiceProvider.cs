@@ -87,7 +87,6 @@ public class RecipeBotApplicationServiceProvider
                 .AddSingleton<DiscordCharacterLimitProvider>()
                 .AddSingleton<IRecipeModelCharacterLimitProvider>(x => x.GetRequiredService<DiscordCharacterLimitProvider>())
                 .AddSingleton<IMessageCharacterLimitProvider>(x => x.GetRequiredService<DiscordCharacterLimitProvider>())
-                .AddTransient<ITimeProvider, TimeProvider>()
                 .AddTransient<IUserDataProvider, UserDataProvider>()
                 .AddTransient<IDiscordBotInformationController, DiscordBotInformationController>()
                 .AddScoped<IRecipeController, RecipeController>()
