@@ -47,6 +47,7 @@ This is the Discord token as provided by the Discord Developer portal.
 * Discord.Net
 * ReHackt.Extensions.Options.Validations
 * Microsoft.Entity.Framework.Core
+* Serilog 
 
 ## Testing purposes
 * xUnit 
