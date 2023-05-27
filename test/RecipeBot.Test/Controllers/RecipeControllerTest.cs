@@ -294,7 +294,7 @@ public class RecipeControllerTest
         result.HasError.Should().BeTrue();
         result.ErrorMessage.Should().Be(exceptionMessage);
 
-        await logger.Received(1).LogError(exception);
+        logger.Received(1).LogError(exception);
     }
 
     [Fact]
@@ -352,7 +352,7 @@ public class RecipeControllerTest
         result.HasError.Should().BeTrue();
         result.ErrorMessage.Should().Be(exceptionMessage);
 
-        await logger.Received(1).LogError(exception);
+        logger.Received(1).LogError(exception);
     }
 
     [Fact]
@@ -378,7 +378,7 @@ public class RecipeControllerTest
         result.HasError.Should().BeTrue();
         result.ErrorMessage.Should().Be(exceptionMessage);
 
-        await logger.Received(1).LogError(exception);
+        logger.Received(1).LogError(exception);
     }
 
     [Fact]
@@ -409,7 +409,7 @@ public class RecipeControllerTest
         controllerResult.HasError.Should().BeTrue();
         controllerResult.ErrorMessage.Should().NotBeNullOrWhiteSpace();
 
-        await logger.Received(1).LogError(Arg.Any<ModelCreateException>());
+        logger.Received(1).LogError(Arg.Any<ModelCreateException>());
     }
 
     [Fact]

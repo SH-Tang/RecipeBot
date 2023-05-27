@@ -30,14 +30,14 @@ public interface ILoggingService
     /// </summary>
     /// <param name="message">The message to log.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    Task LogInfo(string message);
+    void LogInfo(string message);
 
     /// <summary>
     /// Logs an error message.
     /// </summary>
     /// <param name="message">The message to log.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    Task LogError(string message);
+    void LogError(string message);
 
     /// <summary>
     /// Logs an error message.
@@ -45,12 +45,12 @@ public interface ILoggingService
     /// <param name="exception">The exception to log.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="exception"/> is <c>null</c>.</exception>
-    Task LogError(Exception exception);
+    void LogError(Exception exception);
 
     /// <summary>
     /// Logs an informational message when in debug mode.
     /// </summary>
     /// <param name="message">The message to log.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    Task LogDebug(string message);
+    void LogDebug(string message);
 }

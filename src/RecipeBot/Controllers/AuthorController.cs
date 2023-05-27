@@ -76,12 +76,12 @@ public class AuthorController : IAuthorController
         }
         catch (RepositoryDataDeleteException e)
         {
-            return await HandleException<string>(e);
+            return HandleException<string>(e);
         }
     }
-    private async Task<ControllerResult<TResult>> HandleException<TResult>(Exception e) where TResult : class
+    private ControllerResult<TResult> HandleException<TResult>(Exception e) where TResult : class
     {
-        await logger.LogError(e);
+        logger.LogError(e);
         return ControllerResult<TResult>.CreateControllerResultWithError(e.Message);
     }
 }

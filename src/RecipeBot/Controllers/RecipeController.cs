@@ -99,15 +99,15 @@ public class RecipeController : IRecipeController
         }
         catch (ModelCreateException e)
         {
-            return await HandleException<Embed>(e);
+            return HandleException<Embed>(e);
         }
         catch (EmbedCreateException e)
         {
-            return await HandleException<Embed>(e);
+            return HandleException<Embed>(e);
         }
         catch (RepositoryDataSaveException e)
         {
-            return await HandleException<Embed>(e);
+            return HandleException<Embed>(e);
         }
     }
 
@@ -123,7 +123,7 @@ public class RecipeController : IRecipeController
         }
         catch (RepositoryDataDeleteException e)
         {
-            return await HandleException<string>(e);
+            return HandleException<string>(e);
         }
     }
 
@@ -142,7 +142,7 @@ public class RecipeController : IRecipeController
         }
         catch (RepositoryDataDeleteException e)
         {
-            return await HandleException<string>(e);
+            return HandleException<string>(e);
         }
     }
 
@@ -158,21 +158,21 @@ public class RecipeController : IRecipeController
         }
         catch (ModelCreateException e)
         {
-            return await HandleException<Embed>(e);
+            return HandleException<Embed>(e);
         }
         catch (EmbedCreateException e)
         {
-            return await HandleException<Embed>(e);
+            return HandleException<Embed>(e);
         }
         catch (RepositoryDataLoadException e)
         {
-            return await HandleException<Embed>(e);
+            return HandleException<Embed>(e);
         }
     }
 
-    private async Task<ControllerResult<TResult>> HandleException<TResult>(Exception e) where TResult : class
+    private ControllerResult<TResult> HandleException<TResult>(Exception e) where TResult : class
     {
-        await logger.LogError(e);
+        logger.LogError(e);
         return ControllerResult<TResult>.CreateControllerResultWithError(e.Message);
     }
 }

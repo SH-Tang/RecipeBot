@@ -79,7 +79,7 @@ public class RecipeTagEntriesController : IRecipeTagEntriesController
         }
         catch (RepositoryDataDeleteException e)
         {
-            await logger.LogError(e);
+            logger.LogError(e);
             return ControllerResult<string>.CreateControllerResultWithError(e.Message);
         }
     }

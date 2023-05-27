@@ -191,6 +191,6 @@ public class RecipeTagEntriesControllerTest
         result.HasError.Should().BeTrue();
         result.ErrorMessage.Should().Be(exceptionMessage);
 
-        await logger.Received(1).LogError(exception);
+        logger.Received(1).LogError(exception);
     }
 }

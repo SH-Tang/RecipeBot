@@ -73,7 +73,7 @@ public class AuthorInteractionModule : InteractionModuleBase<SocketInteractionCo
             Task[] tasks =
             {
                 RespondAsync(e.Message, ephemeral: true),
-                logger.LogError(e)
+                Task.Run(() => logger.LogError(e))
             };
 
             await Task.WhenAll(tasks);

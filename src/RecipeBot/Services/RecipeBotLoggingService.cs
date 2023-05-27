@@ -39,28 +39,24 @@ namespace RecipeBot.Services
                          .CreateLogger();
         }
 
-        public Task LogInfo(string message)
+        public void LogInfo(string message)
         {
             Log.Information(message);
-            return Task.CompletedTask;
         }
 
-        public Task LogError(string message)
+        public void LogError(string message)
         {
             Log.Error(message);
-            return Task.CompletedTask;
         }
 
-        public Task LogError(Exception exception)
+        public void LogError(Exception exception)
         {
             Log.Error(exception, "An error occurred");
-            return Task.CompletedTask;
         }
 
-        public Task LogDebug(string message)
+        public void LogDebug(string message)
         {
             Log.Debug(message);
-            return Task.CompletedTask;
         }
 
         public void Dispose()
