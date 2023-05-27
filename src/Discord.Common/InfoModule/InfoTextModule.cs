@@ -34,7 +34,7 @@ public class InfoTextModule : ModuleBase<SocketCommandContext>
     /// <summary>
     /// Creates a new instance of <see cref="InfoTextModule"/>.
     /// </summary>
-    /// <param name="controller">The <see cref="IDiscordBotInformationController"/> to coordinate the interactions.</param>
+    /// <param name="controller">The <see cref="IDiscordBotInformationController"/> to coordinate the interactions with.</param>
     /// <param name="logger">The logger to use.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     public InfoTextModule(IDiscordBotInformationController controller, ILoggingService logger)
