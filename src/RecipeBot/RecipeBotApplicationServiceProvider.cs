@@ -19,8 +19,9 @@ using System;
 using Common.Utils;
 using Discord.Commands;
 using Discord.Common.Handlers;
+using Discord.Common.InfoModule;
+using Discord.Common.InfoModule.Controllers;
 using Discord.Common.InfoModule.Data;
-using Discord.Common.InfoModule.Services;
 using Discord.Common.Options;
 using Discord.Common.Providers;
 using Discord.Common.Services;
@@ -89,8 +90,7 @@ public class RecipeBotApplicationServiceProvider
                 .AddSingleton<IMessageCharacterLimitProvider>(x => x.GetRequiredService<DiscordCharacterLimitProvider>())
                 .AddTransient<ITimeProvider, TimeProvider>()
                 .AddTransient<IUserDataProvider, UserDataProvider>()
-                .AddTransient<DiscordCommandInfoFactory>()
-                .AddTransient<BotInformationService>()
+                .AddTransient<IDiscordBotInformationController, DiscordBotInformationController>()
                 .AddScoped<IRecipeController, RecipeController>()
                 .AddScoped<IRecipeEntriesController, RecipeEntriesController>()
                 .AddScoped<IRecipeTagEntriesController, RecipeTagEntriesController>()
