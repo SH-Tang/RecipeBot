@@ -103,7 +103,7 @@ public class RecipeEntriesInteractionModule : InteractionModuleBase<SocketIntera
             return new[]
             {
                 RespondAsync(e.Message, ephemeral: true),
-                logger.LogErrorAsync(e)
+                logger.LogError(e)
             };
         }
     }

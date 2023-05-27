@@ -103,18 +103,18 @@ public abstract class DiscordCommandHandlerBase
         string message = arg.Message;
         if (!string.IsNullOrWhiteSpace(message))
         {
-            await Logger.LogDebugAsync($"{arg.Source} - {message}");
+            await Logger.LogDebug($"{arg.Source} - {message}");
         }
 
         Exception exception = arg.Exception;
         if (exception != null)
         {
-            await Logger.LogErrorAsync($"{arg.Source} - {exception.Message}");
+            await Logger.LogError($"{arg.Source} - {exception.Message}");
 
             string? stackTrace = exception.StackTrace;
             if (!string.IsNullOrWhiteSpace(stackTrace))
             {
-                await Logger.LogErrorAsync(stackTrace);
+                await Logger.LogError(stackTrace);
             }
         }
     }

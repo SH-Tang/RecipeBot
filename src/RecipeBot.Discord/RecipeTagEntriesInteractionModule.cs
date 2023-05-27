@@ -70,7 +70,7 @@ public class RecipeTagEntriesInteractionModule : InteractionModuleBase<SocketInt
             Task[] tasks =
             {
                 RespondAsync(e.Message, ephemeral: true),
-                logger.LogErrorAsync(e)
+                logger.LogError(e)
             };
 
             await Task.WhenAll(tasks);
@@ -102,7 +102,7 @@ public class RecipeTagEntriesInteractionModule : InteractionModuleBase<SocketInt
             Task[] tasks =
             {
                 RespondAsync(e.Message, ephemeral: true),
-                logger.LogErrorAsync(e)
+                logger.LogError(e)
             };
 
             await Task.WhenAll(tasks);

@@ -113,7 +113,7 @@ public class RecipeBotApplication
     private static Task LogAsync(IServiceProvider services, LogMessage msg)
     {
         var logger = services.GetRequiredService<ILoggingService>();
-        logger.LogInfoAsync(msg.Message);
+        logger.LogInfo(msg.Message);
 
         return Task.CompletedTask;
     }

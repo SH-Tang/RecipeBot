@@ -39,25 +39,25 @@ namespace RecipeBot.Services
                          .CreateLogger();
         }
 
-        public Task LogInfoAsync(string message)
+        public Task LogInfo(string message)
         {
             Log.Information(message);
             return Task.CompletedTask;
         }
 
-        public Task LogErrorAsync(string message)
+        public Task LogError(string message)
         {
             Log.Error(message);
             return Task.CompletedTask;
         }
 
-        public Task LogErrorAsync(Exception exception)
+        public Task LogError(Exception exception)
         {
             Log.Error(exception, "An error occurred");
             return Task.CompletedTask;
         }
 
-        public Task LogDebugAsync(string message)
+        public Task LogDebug(string message)
         {
             Log.Debug(message);
             return Task.CompletedTask;

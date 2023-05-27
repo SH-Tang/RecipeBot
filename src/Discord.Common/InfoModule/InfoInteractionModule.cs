@@ -62,7 +62,7 @@ public class InfoInteractionModule : InteractionModuleBase<SocketInteractionCont
             Task[] tasks =
             {
                 RespondAsync(e.Message, ephemeral: true),
-                logger.LogErrorAsync(e)
+                logger.LogError(e)
             };
 
             await Task.WhenAll(tasks);

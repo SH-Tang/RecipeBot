@@ -81,7 +81,7 @@ public class AuthorController : IAuthorController
     }
     private async Task<ControllerResult<TResult>> HandleException<TResult>(Exception e) where TResult : class
     {
-        await logger.LogErrorAsync(e);
+        await logger.LogError(e);
         return ControllerResult<TResult>.CreateControllerResultWithError(e.Message);
     }
 }
