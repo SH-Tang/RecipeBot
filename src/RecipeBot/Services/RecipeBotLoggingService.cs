@@ -34,7 +34,7 @@ namespace RecipeBot.Services
             Log.Logger = new LoggerConfiguration()
                          .MinimumLevel.Information()
                          .WriteTo.Console()
-                         .WriteTo.Async(log => log.File("logs/RecipeBot-.txt", rollingInterval: RollingInterval.Day))
+                         .WriteTo.Async(log => log.File("logs/RecipeBot-.txt", rollOnFileSizeLimit: true, fileSizeLimitBytes: 1048576, rollingInterval: RollingInterval.Day))
                          .CreateLogger();
 
             LogDebug("Logger successfully created");
