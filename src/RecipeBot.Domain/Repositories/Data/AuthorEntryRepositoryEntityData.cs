@@ -34,7 +34,7 @@ public class AuthorEntryRepositoryEntityData
     }
 
     /// <summary>
-    /// Gets the entity id of the author.
+    /// Gets the author entity id.
     /// </summary>
     public int EntityId { get; }
 

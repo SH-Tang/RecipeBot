@@ -17,7 +17,7 @@ public class RecipeTagRepositoryEntityData
     }
 
     /// <summary>
-    /// Gets the entity id of the tag entry.
+    /// Gets the tag entity id.
     /// </summary>
     public long EntityId { get; }
 
