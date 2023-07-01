@@ -867,7 +867,7 @@ public class RecipeEntriesControllerTest
         }, options => options.WithStrictOrdering());
     }
 
-    private IReadOnlyList<UserData> GetUsers(Fixture fixture, int nrOfUsers)
+    private static IReadOnlyList<UserData> GetUsers(Fixture fixture, int nrOfUsers)
     {
         var users = new UserData[nrOfUsers];
         for (var i = 0; i < nrOfUsers; i++)

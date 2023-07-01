@@ -155,7 +155,7 @@ public class RecipeEntriesController : IRecipeEntriesController
         public string Title { get; init; } = null!;
 
         /// <summary>
-        /// Gets the id of the author of the recipe.
+        /// Gets the name of the author of the recipe.
         /// </summary>
         public string AuthorName { get; init; } = null!;
     }
