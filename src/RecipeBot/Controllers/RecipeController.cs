@@ -40,9 +40,8 @@ namespace RecipeBot.Controllers;
 /// <summary>
 /// A concrete implementation of the <see cref="IRecipeController"/>.
 /// </summary>
-public class RecipeController : IRecipeController
+public class RecipeController : ControllerBase, IRecipeController
 {
-    private readonly ILoggingService logger;
     private readonly RecipeModelCreationService modelCreationService;
     private readonly RecipeModelFactory modelFactory;
     private readonly IRecipeRepository repository;
@@ -59,19 +58,17 @@ public class RecipeController : IRecipeController
     public RecipeController(IRecipeModelCharacterLimitProvider limitProvider,
                             IUserDataProvider userDataProvider,
                             IRecipeRepository repository,
-                            ILoggingService logger)
+                            ILoggingService logger) : base(logger)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
         userDataProvider.IsNotNull(nameof(userDataProvider));
         repository.IsNotNull(nameof(repository));
-        logger.IsNotNull(nameof(logger));
 
         modelCreationService = new RecipeModelCreationService(limitProvider);
         modelFactory = new RecipeModelFactory(limitProvider);
 
         this.userDataProvider = userDataProvider;
         this.repository = repository;
-        this.logger = logger;
     }
 
     public async Task<ControllerResult<Embed>> SaveRecipeAsync(RecipeModal modal, IUser user,
@@ -168,11 +165,5 @@ public class RecipeController : IRecipeController
         {
             return await HandleException<Embed>(e);
         }
-    }
-
-    private async Task<ControllerResult<TResult>> HandleException<TResult>(Exception e) where TResult : class
-    {
-        await logger.LogErrorAsync(e);
-        return ControllerResult<TResult>.CreateControllerResultWithError(e.Message);
     }
 }
