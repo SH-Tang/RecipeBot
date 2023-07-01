@@ -50,7 +50,7 @@ public class RecipeCollectionRepository : IRecipeCollectionRepository
         this.context = context;
     }
 
-    public async Task<IReadOnlyList<RecipeEntryRepositoryData>> LoadRecipeEntriesAsync()
+    public async Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesAsync()
     {
         IEnumerable<RecipeDatabaseEntry> recipeEntities = await context.RecipeEntities
                                                                        .Include(r => r.Author)
@@ -61,7 +61,7 @@ public class RecipeCollectionRepository : IRecipeCollectionRepository
         return CreateRecipeEntryDataCollection(recipeEntities);
     }
 
-    public async Task<IReadOnlyList<RecipeEntryRepositoryData>> LoadRecipeEntriesByCategoryAsync(RecipeCategory category)
+    public async Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesByCategoryAsync(RecipeCategory category)
     {
         PersistentRecipeCategory persistentCategory = PersistentRecipeCategoryCreator.Create(category);
 
@@ -75,7 +75,7 @@ public class RecipeCollectionRepository : IRecipeCollectionRepository
         return CreateRecipeEntryDataCollection(recipeEntities);
     }
 
-    public async Task<IReadOnlyList<RecipeEntryRepositoryData>> LoadRecipeEntriesByTagAsync(string tag)
+    public async Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesByTagAsync(string tag)
     {
         IEnumerable<RecipeDatabaseEntry> recipeDatabaseEntries = await context.RecipeTagEntities
                                                                               .Include(te => te.Tag)
@@ -88,7 +88,7 @@ public class RecipeCollectionRepository : IRecipeCollectionRepository
         return CreateRecipeEntryDataCollection(recipeDatabaseEntries);
     }
 
-    public async Task<IReadOnlyList<RecipeEntryRepositoryData>> LoadRecipeEntriesByTagIdAsync(long tagEntityId)
+    public async Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesByTagIdAsync(long tagEntityId)
     {
         IEnumerable<RecipeDatabaseEntry> recipeDatabaseEntries = await context.RecipeTagEntities
                                                                               .Include(te => te.Tag)
@@ -101,7 +101,7 @@ public class RecipeCollectionRepository : IRecipeCollectionRepository
         return CreateRecipeEntryDataCollection(recipeDatabaseEntries);
     }
 
-    public async Task<IReadOnlyList<RecipeEntryRepositoryData>> LoadRecipeEntriesByAuthorIdAsync(ulong authorId)
+    public async Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesByAuthorIdAsync(ulong authorId)
     {
         IEnumerable<RecipeDatabaseEntry> recipeEntries = await context.AuthorEntities
                                                                       .Where(a => a.AuthorId == authorId.ToString())
@@ -163,9 +163,9 @@ public class RecipeCollectionRepository : IRecipeCollectionRepository
         }
     }
 
-    private static RecipeEntryRepositoryData[] CreateRecipeEntryDataCollection(IEnumerable<RecipeDatabaseEntry> recipeDatabaseEntries)
+    private static RecipeRepositoryEntityData[] CreateRecipeEntryDataCollection(IEnumerable<RecipeDatabaseEntry> recipeDatabaseEntries)
     {
-        return recipeDatabaseEntries.Select(r => new RecipeEntryRepositoryData(r.Id, r.Title, r.AuthorId))
+        return recipeDatabaseEntries.Select(r => new RecipeRepositoryEntityData(r.Id, r.Title, r.AuthorId))
                                     .OrderBy(r => r.EntityId)
                                     .ToArray();
     }

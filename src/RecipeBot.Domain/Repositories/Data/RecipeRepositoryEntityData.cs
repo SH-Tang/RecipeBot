@@ -20,15 +20,15 @@ namespace RecipeBot.Domain.Repositories.Data;
 /// <summary>
 /// Class representing a recipe entity data in the repository.
 /// </summary>
-public class RecipeEntryRepositoryData
+public class RecipeRepositoryEntityData
 {
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeEntryRepositoryData"/>.
+    /// Creates a new instance of <see cref="RecipeRepositoryEntityData"/>.
     /// </summary>
     /// <param name="entityId">The entity id of the recipe.</param>
     /// <param name="title">The title of the recipe.</param>
     /// <param name="authorId">The id of the author of the recipe.</param>
-    public RecipeEntryRepositoryData(long entityId, string title, ulong authorId)
+    public RecipeRepositoryEntityData(long entityId, string title, ulong authorId)
     {
         EntityId = entityId;
         Title = title;

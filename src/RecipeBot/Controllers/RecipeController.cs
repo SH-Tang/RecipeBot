@@ -115,7 +115,7 @@ public class RecipeController : IRecipeController
     {
         try
         {
-            RecipeEntryRepositoryData deletedRecipe = await repository.DeleteRecipeAsync(idToDelete);
+            RecipeRepositoryEntityData deletedRecipe = await repository.DeleteRecipeAsync(idToDelete);
 
             UserData userData = await userDataProvider.GetUserDataAsync(deletedRecipe.AuthorId);
             return ControllerResult<string>.CreateControllerResultWithValidResult(string.Format(Resources.RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted,
@@ -134,7 +134,7 @@ public class RecipeController : IRecipeController
         try
         {
             ulong authorId = user.Id;
-            RecipeEntryRepositoryData deletedRecipe = await repository.DeleteRecipeAsync(idToDelete, authorId);
+            RecipeRepositoryEntityData deletedRecipe = await repository.DeleteRecipeAsync(idToDelete, authorId);
 
             UserData userData = await userDataProvider.GetUserDataAsync(authorId);
             return ControllerResult<string>.CreateControllerResultWithValidResult(string.Format(Resources.RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted,

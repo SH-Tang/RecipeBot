@@ -472,7 +472,7 @@ public class RecipeRepositoryTest
             var repository = new RecipeRepository(context);
 
             // Call
-            RecipeEntryRepositoryData result = await repository.DeleteRecipeAsync(recipeToDelete.RecipeEntityId);
+            RecipeRepositoryEntityData result = await repository.DeleteRecipeAsync(recipeToDelete.RecipeEntityId);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -1030,7 +1030,7 @@ public class RecipeRepositoryTest
             var repository = new RecipeRepository(context);
 
             // Call
-            RecipeEntryRepositoryData result = await repository.DeleteRecipeAsync(recipeToDelete.RecipeEntityId, affectedAuthorId);
+            RecipeRepositoryEntityData result = await repository.DeleteRecipeAsync(recipeToDelete.RecipeEntityId, affectedAuthorId);
             context.ChangeTracker.Clear();
 
             // Assert

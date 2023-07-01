@@ -61,7 +61,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeCollectionRepository>();
-        repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
+        repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
 
@@ -86,8 +86,8 @@ public class RecipeEntriesControllerTest
 
         var entries = new[]
         {
-            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
-            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
+            new RecipeRepositoryEntityData(fixture.Create<long>(), fixture.Create<string>(), authorId),
+            new RecipeRepositoryEntityData(fixture.Create<long>(), fixture.Create<string>(), authorId)
         };
 
         var repository = Substitute.For<IRecipeCollectionRepository>();
@@ -120,7 +120,7 @@ public class RecipeEntriesControllerTest
         limitProvider.MaxMessageLength.Returns(int.MaxValue);
 
         var fixture = new Fixture();
-        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
+        RecipeRepositoryEntityData[] entries = fixture.CreateMany<RecipeRepositoryEntityData>(3).ToArray();
 
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(entries);
@@ -158,7 +158,7 @@ public class RecipeEntriesControllerTest
         limitProvider.MaxMessageLength.Returns(maxMessageLength);
 
         var fixture = new Fixture();
-        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
+        RecipeRepositoryEntityData[] entries = fixture.CreateMany<RecipeRepositoryEntityData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
@@ -201,7 +201,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeCollectionRepository>();
-        repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
+        repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
 
@@ -233,7 +233,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeCollectionRepository>();
-        repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
+        repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
 
@@ -256,8 +256,8 @@ public class RecipeEntriesControllerTest
 
         var entries = new[]
         {
-            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
-            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
+            new RecipeRepositoryEntityData(fixture.Create<long>(), fixture.Create<string>(), authorId),
+            new RecipeRepositoryEntityData(fixture.Create<long>(), fixture.Create<string>(), authorId)
         };
 
         var userName = fixture.Create<string>();
@@ -290,7 +290,7 @@ public class RecipeEntriesControllerTest
         limitProvider.MaxMessageLength.Returns(int.MaxValue);
 
         var fixture = new Fixture();
-        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
+        RecipeRepositoryEntityData[] entries = fixture.CreateMany<RecipeRepositoryEntityData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
@@ -328,7 +328,7 @@ public class RecipeEntriesControllerTest
         limitProvider.MaxMessageLength.Returns(maxMessageLength);
 
         var fixture = new Fixture();
-        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
+        RecipeRepositoryEntityData[] entries = fixture.CreateMany<RecipeRepositoryEntityData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
@@ -374,7 +374,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeCollectionRepository>();
-        repository.LoadRecipeEntriesByTagAsync(Arg.Any<string>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
+        repository.LoadRecipeEntriesByTagAsync(Arg.Any<string>()).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
 
@@ -401,7 +401,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeCollectionRepository>();
-        repository.LoadRecipeEntriesByTagAsync(expectedTagArgument).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
+        repository.LoadRecipeEntriesByTagAsync(expectedTagArgument).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
 
@@ -424,8 +424,8 @@ public class RecipeEntriesControllerTest
 
         var entries = new[]
         {
-            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
-            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
+            new RecipeRepositoryEntityData(fixture.Create<long>(), fixture.Create<string>(), authorId),
+            new RecipeRepositoryEntityData(fixture.Create<long>(), fixture.Create<string>(), authorId)
         };
 
         var userName = fixture.Create<string>();
@@ -458,7 +458,7 @@ public class RecipeEntriesControllerTest
         limitProvider.MaxMessageLength.Returns(int.MaxValue);
 
         var fixture = new Fixture();
-        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
+        RecipeRepositoryEntityData[] entries = fixture.CreateMany<RecipeRepositoryEntityData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
@@ -496,7 +496,7 @@ public class RecipeEntriesControllerTest
         limitProvider.MaxMessageLength.Returns(maxMessageLength);
 
         var fixture = new Fixture();
-        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
+        RecipeRepositoryEntityData[] entries = fixture.CreateMany<RecipeRepositoryEntityData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
@@ -542,7 +542,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeCollectionRepository>();
-        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
+        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
 
@@ -566,7 +566,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeCollectionRepository>();
-        repository.LoadRecipeEntriesByTagIdAsync(idToFilter).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
+        repository.LoadRecipeEntriesByTagIdAsync(idToFilter).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
 
@@ -589,8 +589,8 @@ public class RecipeEntriesControllerTest
 
         var entries = new[]
         {
-            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
-            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
+            new RecipeRepositoryEntityData(fixture.Create<long>(), fixture.Create<string>(), authorId),
+            new RecipeRepositoryEntityData(fixture.Create<long>(), fixture.Create<string>(), authorId)
         };
 
         var userName = fixture.Create<string>();
@@ -623,7 +623,7 @@ public class RecipeEntriesControllerTest
         limitProvider.MaxMessageLength.Returns(int.MaxValue);
 
         var fixture = new Fixture();
-        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
+        RecipeRepositoryEntityData[] entries = fixture.CreateMany<RecipeRepositoryEntityData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
@@ -661,7 +661,7 @@ public class RecipeEntriesControllerTest
         limitProvider.MaxMessageLength.Returns(maxMessageLength);
 
         var fixture = new Fixture();
-        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
+        RecipeRepositoryEntityData[] entries = fixture.CreateMany<RecipeRepositoryEntityData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
@@ -704,7 +704,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeCollectionRepository>();
-        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
+        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
         var user = Substitute.For<IUser>();
 
@@ -733,7 +733,7 @@ public class RecipeEntriesControllerTest
         user.Id.Returns(idToFilter);
 
         var repository = Substitute.For<IRecipeCollectionRepository>();
-        repository.LoadRecipeEntriesByAuthorIdAsync(idToFilter).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
+        repository.LoadRecipeEntriesByAuthorIdAsync(idToFilter).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
 
@@ -756,8 +756,8 @@ public class RecipeEntriesControllerTest
 
         var entries = new[]
         {
-            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
-            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
+            new RecipeRepositoryEntityData(fixture.Create<long>(), fixture.Create<string>(), authorId),
+            new RecipeRepositoryEntityData(fixture.Create<long>(), fixture.Create<string>(), authorId)
         };
 
         var userName = fixture.Create<string>();
@@ -792,7 +792,7 @@ public class RecipeEntriesControllerTest
         var fixture = new Fixture();
         var user = Substitute.For<IUser>();
 
-        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
+        RecipeRepositoryEntityData[] entries = fixture.CreateMany<RecipeRepositoryEntityData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
@@ -832,7 +832,7 @@ public class RecipeEntriesControllerTest
         var fixture = new Fixture();
         var user = Substitute.For<IUser>();
         
-        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
+        RecipeRepositoryEntityData[] entries = fixture.CreateMany<RecipeRepositoryEntityData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();

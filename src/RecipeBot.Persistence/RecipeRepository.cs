@@ -72,7 +72,7 @@ public class RecipeRepository : IRecipeRepository
         }
     }
 
-    public async Task<RecipeEntryRepositoryData> DeleteRecipeAsync(long entityId)
+    public async Task<RecipeRepositoryEntityData> DeleteRecipeAsync(long entityId)
     {
         RecipeEntity? entityToDelete = await context.RecipeEntities
                                                     .Include(e => e.Author)
@@ -85,7 +85,7 @@ public class RecipeRepository : IRecipeRepository
         return await DeleteEntityAsync(entityToDelete);
     }
 
-    public async Task<RecipeEntryRepositoryData> DeleteRecipeAsync(long entityId, ulong authorId)
+    public async Task<RecipeRepositoryEntityData> DeleteRecipeAsync(long entityId, ulong authorId)
     {
         RecipeEntity? entityToDelete = await context.RecipeEntities
                                                     .Include(e => e.Author)
@@ -119,9 +119,9 @@ public class RecipeRepository : IRecipeRepository
     /// Deletes the entity from the database.
     /// </summary>
     /// <param name="entityToDelete">The entity to delete.</param>
-    /// <returns>A <see cref="RecipeEntryRepositoryData"/> containing the information of the deleted entity.</returns>
+    /// <returns>A <see cref="RecipeRepositoryEntityData"/> containing the information of the deleted entity.</returns>
     /// <exception cref="RepositoryDataDeleteException">Thrown when the entity could not be deleted successfully.</exception>
-    private async Task<RecipeEntryRepositoryData> DeleteEntityAsync(RecipeEntity entityToDelete)
+    private async Task<RecipeRepositoryEntityData> DeleteEntityAsync(RecipeEntity entityToDelete)
     {
         string authorId = entityToDelete.Author.AuthorId;
 
@@ -132,7 +132,7 @@ public class RecipeRepository : IRecipeRepository
             context.RecipeEntities.Remove(entityToDelete);
             await context.SaveChangesAsync();
 
-            return new RecipeEntryRepositoryData(entityToDelete.RecipeEntityId, entityToDelete.RecipeTitle, parsedAuthorId);
+            return new RecipeRepositoryEntityData(entityToDelete.RecipeEntityId, entityToDelete.RecipeTitle, parsedAuthorId);
         }
         catch (Exception e) when (e is FormatException || e is OverflowException)
         {

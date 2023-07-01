@@ -250,7 +250,7 @@ public class RecipeControllerTest
         var fixture = new Fixture();
         var idToDelete = fixture.Create<long>();
 
-        var deletedResult = fixture.Create<RecipeEntryRepositoryData>();
+        var deletedResult = fixture.Create<RecipeRepositoryEntityData>();
         var repository = Substitute.For<IRecipeRepository>();
         repository.DeleteRecipeAsync(idToDelete).Returns(deletedResult);
 
@@ -308,7 +308,7 @@ public class RecipeControllerTest
         var author = Substitute.For<IUser>();
         author.Id.Returns(authorId);
 
-        var deletedResult = fixture.Create<RecipeEntryRepositoryData>();
+        var deletedResult = fixture.Create<RecipeRepositoryEntityData>();
         var repository = Substitute.For<IRecipeRepository>();
         repository.DeleteRecipeAsync(idToDelete, authorId).Returns(deletedResult);
 

@@ -33,7 +33,7 @@ public interface IRecipeCollectionRepository
     /// Gets all the recipes.
     /// </summary>
     /// <returns>A collection of recipe entries.</returns>
-    Task<IReadOnlyList<RecipeEntryRepositoryData>> LoadRecipeEntriesAsync();
+    Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesAsync();
 
     /// <summary>
     /// Gets all the recipes filtered by a <see cref="RecipeCategory"/>.
@@ -42,7 +42,7 @@ public interface IRecipeCollectionRepository
     /// <returns>A collection of filtered recipe entries.</returns>
     /// <exception cref="InvalidEnumArgumentException">Thrown when <paramref name="category"/> is an invalid <see cref="RecipeCategory"/>.</exception>
     /// <exception cref="RepositoryDataLoadException">Thrown when the entries could not be successfully loaded.</exception>
-    Task<IReadOnlyList<RecipeEntryRepositoryData>> LoadRecipeEntriesByCategoryAsync(RecipeCategory category);
+    Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesByCategoryAsync(RecipeCategory category);
 
     /// <summary>
     /// Gets all the recipes filtered by a tag.
@@ -50,7 +50,7 @@ public interface IRecipeCollectionRepository
     /// <param name="tag">The tag to filter the recipes with.</param>
     /// <returns>A collection of filtered recipe entries.</returns>
     /// <exception cref="RepositoryDataLoadException">Thrown when the entries could not be successfully loaded.</exception>
-    Task<IReadOnlyList<RecipeEntryRepositoryData>> LoadRecipeEntriesByTagAsync(string tag);
+    Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesByTagAsync(string tag);
 
     /// <summary>
     /// Gets all the recipes filtered by a tag entity id.
@@ -58,7 +58,7 @@ public interface IRecipeCollectionRepository
     /// <param name="tagEntityId">The id of the tag entity to filter the recipes with.</param>
     /// <returns>A collection of filtered recipe entries.</returns>
     /// <exception cref="RepositoryDataLoadException">Thrown when the entries could not be successfully loaded.</exception>
-    Task<IReadOnlyList<RecipeEntryRepositoryData>> LoadRecipeEntriesByTagIdAsync(long tagEntityId);
+    Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesByTagIdAsync(long tagEntityId);
 
     /// <summary>
     /// Gets all the recipes filtered by an author id.
@@ -66,5 +66,5 @@ public interface IRecipeCollectionRepository
     /// <param name="authorId">The author id to filter the recipes with.</param>
     /// <returns>A collection of filtered recipe entries.</returns>
     /// <exception cref="RepositoryDataLoadException">Thrown when the entries could not be successfully loaded.</exception>
-    Task<IReadOnlyList<RecipeEntryRepositoryData>> LoadRecipeEntriesByAuthorIdAsync(ulong authorId);
+    Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesByAuthorIdAsync(ulong authorId);
 }

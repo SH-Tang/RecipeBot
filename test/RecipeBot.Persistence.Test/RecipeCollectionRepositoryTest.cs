@@ -53,7 +53,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
             var repository = new RecipeCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesAsync();
+            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesAsync();
 
             // Assert
             entries.Should().BeEmpty();
@@ -112,16 +112,16 @@ public class RecipeCollectionRepositoryTest : IDisposable
             var repository = new RecipeCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesAsync();
+            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesAsync();
 
             // Assert
             entries.Should().BeInAscendingOrder(s => s.EntityId).And.BeEquivalentTo(
                 recipes,
                 options => options.ExcludingMissingMembers()
                                   .WithAutoConversion()
-                                  .WithMapping<RecipeEntryRepositoryData>(e => e.RecipeEntityId, s => s.EntityId)
-                                  .WithMapping<RecipeEntryRepositoryData>(e => e.RecipeTitle, s => s.Title)
-                                  .WithMapping<AuthorEntity, RecipeEntryRepositoryData>(e => e.AuthorId, s => s.AuthorId));
+                                  .WithMapping<RecipeRepositoryEntityData>(e => e.RecipeEntityId, s => s.EntityId)
+                                  .WithMapping<RecipeRepositoryEntityData>(e => e.RecipeTitle, s => s.Title)
+                                  .WithMapping<AuthorEntity, RecipeRepositoryEntityData>(e => e.AuthorId, s => s.AuthorId));
         }
     }
 
@@ -174,7 +174,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
             var repository = new RecipeCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByCategoryAsync(fixture.Create<RecipeCategory>());
+            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByCategoryAsync(fixture.Create<RecipeCategory>());
 
             // Assert
             entries.Should().BeEmpty();
@@ -232,7 +232,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
             var repository = new RecipeCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByCategoryAsync(RecipeCategory.Dessert);
+            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByCategoryAsync(RecipeCategory.Dessert);
 
             // Assert
             entries.Should().BeEmpty();
@@ -264,16 +264,16 @@ public class RecipeCollectionRepositoryTest : IDisposable
             var repository = new RecipeCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByCategoryAsync(categoryToFilter);
+            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByCategoryAsync(categoryToFilter);
 
             // Assert
             entries.Should().BeInAscendingOrder(s => s.EntityId).And.BeEquivalentTo(
                 expectedRecipes,
                 options => options.ExcludingMissingMembers()
                                   .WithAutoConversion()
-                                  .WithMapping<RecipeEntryRepositoryData>(e => e.RecipeEntityId, s => s.EntityId)
-                                  .WithMapping<RecipeEntryRepositoryData>(e => e.RecipeTitle, s => s.Title)
-                                  .WithMapping<AuthorEntity, RecipeEntryRepositoryData>(e => e.AuthorId, s => s.AuthorId));
+                                  .WithMapping<RecipeRepositoryEntityData>(e => e.RecipeEntityId, s => s.EntityId)
+                                  .WithMapping<RecipeRepositoryEntityData>(e => e.RecipeTitle, s => s.Title)
+                                  .WithMapping<AuthorEntity, RecipeRepositoryEntityData>(e => e.AuthorId, s => s.AuthorId));
         }
     }
 
@@ -327,7 +327,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
             var repository = new RecipeCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByTagIdAsync(fixture.Create<long>());
+            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByTagIdAsync(fixture.Create<long>());
 
             // Assert
             entries.Should().BeEmpty();
@@ -377,7 +377,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
             var repository = new RecipeCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByTagIdAsync(fixture.Create<long>());
+            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByTagIdAsync(fixture.Create<long>());
 
             // Assert
             entries.Should().BeEmpty();
@@ -463,7 +463,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
             var repository = new RecipeCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByTagIdAsync(tagToFilter.TagEntityId);
+            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByTagIdAsync(tagToFilter.TagEntityId);
 
             // Assert
             entries.Should().BeInAscendingOrder(s => s.EntityId).And.BeEquivalentTo(
@@ -474,9 +474,9 @@ public class RecipeCollectionRepositoryTest : IDisposable
                 },
                 options => options.ExcludingMissingMembers()
                                   .WithAutoConversion()
-                                  .WithMapping<RecipeEntryRepositoryData>(e => e.RecipeEntityId, s => s.EntityId)
-                                  .WithMapping<RecipeEntryRepositoryData>(e => e.RecipeTitle, s => s.Title)
-                                  .WithMapping<AuthorEntity, RecipeEntryRepositoryData>(e => e.AuthorId, s => s.AuthorId));
+                                  .WithMapping<RecipeRepositoryEntityData>(e => e.RecipeEntityId, s => s.EntityId)
+                                  .WithMapping<RecipeRepositoryEntityData>(e => e.RecipeTitle, s => s.Title)
+                                  .WithMapping<AuthorEntity, RecipeRepositoryEntityData>(e => e.AuthorId, s => s.AuthorId));
         }
     }
 
@@ -544,7 +544,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
             var repository = new RecipeCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByTagAsync(fixture.Create<string>());
+            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByTagAsync(fixture.Create<string>());
 
             // Assert
             entries.Should().BeEmpty();
@@ -594,7 +594,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
             var repository = new RecipeCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByTagAsync(fixture.Create<string>());
+            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByTagAsync(fixture.Create<string>());
 
             // Assert
             entries.Should().BeEmpty();
@@ -680,7 +680,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
             var repository = new RecipeCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByTagAsync(tagToFilter.Tag);
+            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByTagAsync(tagToFilter.Tag);
 
             // Assert
             entries.Should().BeInAscendingOrder(s => s.EntityId).And.BeEquivalentTo(
@@ -691,9 +691,9 @@ public class RecipeCollectionRepositoryTest : IDisposable
                 },
                 options => options.ExcludingMissingMembers()
                                   .WithAutoConversion()
-                                  .WithMapping<RecipeEntryRepositoryData>(e => e.RecipeEntityId, s => s.EntityId)
-                                  .WithMapping<RecipeEntryRepositoryData>(e => e.RecipeTitle, s => s.Title)
-                                  .WithMapping<AuthorEntity, RecipeEntryRepositoryData>(e => e.AuthorId, s => s.AuthorId));
+                                  .WithMapping<RecipeRepositoryEntityData>(e => e.RecipeEntityId, s => s.EntityId)
+                                  .WithMapping<RecipeRepositoryEntityData>(e => e.RecipeTitle, s => s.Title)
+                                  .WithMapping<AuthorEntity, RecipeRepositoryEntityData>(e => e.AuthorId, s => s.AuthorId));
         }
     }
 
@@ -764,7 +764,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
             var repository = new RecipeCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByAuthorIdAsync(authorId);
+            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByAuthorIdAsync(authorId);
 
             // Assert
             entries.Should().BeEmpty();
@@ -822,7 +822,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
             var repository = new RecipeCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByAuthorIdAsync(authorId);
+            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByAuthorIdAsync(authorId);
 
             // Assert
             entries.Should().BeInAscendingOrder(s => s.EntityId).And.BeEquivalentTo(
@@ -833,9 +833,9 @@ public class RecipeCollectionRepositoryTest : IDisposable
                 },
                 options => options.ExcludingMissingMembers()
                                   .WithAutoConversion()
-                                  .WithMapping<RecipeEntryRepositoryData>(e => e.RecipeEntityId, s => s.EntityId)
-                                  .WithMapping<RecipeEntryRepositoryData>(e => e.RecipeTitle, s => s.Title)
-                                  .WithMapping<AuthorEntity, RecipeEntryRepositoryData>(e => e.AuthorId, s => s.AuthorId));
+                                  .WithMapping<RecipeRepositoryEntityData>(e => e.RecipeEntityId, s => s.EntityId)
+                                  .WithMapping<RecipeRepositoryEntityData>(e => e.RecipeTitle, s => s.Title)
+                                  .WithMapping<AuthorEntity, RecipeRepositoryEntityData>(e => e.AuthorId, s => s.AuthorId));
         }
 
     }
