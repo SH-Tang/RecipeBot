@@ -15,19 +15,31 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using System.Threading.Tasks;
-
-namespace Discord.Common.Providers;
+namespace RecipeBot.Domain.Repositories.Data;
 
 /// <summary>
-/// Interface for describing providers of user data.
+/// Class containing the recipe tag entity data in the repository.
 /// </summary>
-public interface IUserDataProvider
+public class RecipeTagRepositoryEntityData
 {
     /// <summary>
-    /// Gets the <see cref="UserData"/> based on its input arguments.
+    /// Creates a new instance of <see cref="RecipeTagRepositoryEntityData"/>.
     /// </summary>
-    /// <param name="userId">The user id to retrieve the user data for.</param>
-    /// <returns>The <see cref="UserData"/>.</returns>
-    Task<UserData> GetUserDataAsync(ulong userId);
+    /// <param name="EntityId">The entity id of the recipe tag.</param>
+    /// <param name="tag">The value of the tag.</param>
+    public RecipeTagRepositoryEntityData(long EntityId, string tag)
+    {
+        this.EntityId = EntityId;
+        Tag = tag;
+    }
+
+    /// <summary>
+    /// Gets the tag entity id.
+    /// </summary>
+    public long EntityId { get; }
+
+    /// <summary>
+    /// Gets the value of the tag.
+    /// </summary>
+    public string Tag { get; }
 }

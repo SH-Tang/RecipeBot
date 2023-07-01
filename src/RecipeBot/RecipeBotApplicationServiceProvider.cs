@@ -96,8 +96,8 @@ public class RecipeBotApplicationServiceProvider
                 .AddScoped<IAuthorController, AuthorController>()
                 .AddDbContext<RecipeBotDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")))
                 .AddScoped<IRecipeRepository, RecipeRepository>()
-                .AddScoped<IRecipeDataEntryCollectionRepository, RecipeDataEntryCollectionRepository>()
-                .AddScoped<IRecipeTagEntryDataRepository, RecipeTagEntryRepository>()
+                .AddScoped<IRecipeCollectionRepository, RecipeCollectionRepository>()
+                .AddScoped<IRecipeTagRepository, RecipeTagRepository>()
                 .AddScoped<IAuthorRepository, AuthorRepository>();
     }
 

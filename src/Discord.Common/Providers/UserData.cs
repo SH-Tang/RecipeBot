@@ -28,7 +28,7 @@ public class UserData
     /// <summary>
     /// Gets the default user.
     /// </summary>
-    internal static readonly UserData UnknownUser = new UserData("Unknown user", null); 
+    internal static readonly UserData UnknownUser = new UserData("Unknown user", null);
 
     /// <summary>
     /// Creates a new instance of <see cref="UserData"/>.

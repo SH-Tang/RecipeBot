@@ -32,25 +32,25 @@ using RecipeBot.Persistence.Properties;
 namespace RecipeBot.Persistence;
 
 /// <summary>
-/// An EF Core implementation of the <see cref="IRecipeDataEntryCollectionRepository"/>.
+/// An EF Core implementation of the <see cref="IRecipeCollectionRepository"/>.
 /// </summary>
-public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRepository
+public class RecipeCollectionRepository : IRecipeCollectionRepository
 {
     private readonly RecipeBotDbContext context;
 
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeDataEntryCollectionRepository"/>.
+    /// Creates a new instance of <see cref="RecipeCollectionRepository"/>.
     /// </summary>
     /// <param name="context">The <see cref="RecipeBotDbContext"/>.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <c>null</c>.</exception>
-    public RecipeDataEntryCollectionRepository(RecipeBotDbContext context)
+    public RecipeCollectionRepository(RecipeBotDbContext context)
     {
         context.IsNotNull(nameof(context));
 
         this.context = context;
     }
 
-    public async Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesAsync()
+    public async Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesAsync()
     {
         IEnumerable<RecipeDatabaseEntry> recipeEntities = await context.RecipeEntities
                                                                        .Include(r => r.Author)
@@ -61,7 +61,7 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
         return CreateRecipeEntryDataCollection(recipeEntities);
     }
 
-    public async Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesByCategoryAsync(RecipeCategory category)
+    public async Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesByCategoryAsync(RecipeCategory category)
     {
         PersistentRecipeCategory persistentCategory = PersistentRecipeCategoryCreator.Create(category);
 
@@ -75,7 +75,7 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
         return CreateRecipeEntryDataCollection(recipeEntities);
     }
 
-    public async Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesByTagAsync(string tag)
+    public async Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesByTagAsync(string tag)
     {
         IEnumerable<RecipeDatabaseEntry> recipeDatabaseEntries = await context.RecipeTagEntities
                                                                               .Include(te => te.Tag)
@@ -88,11 +88,11 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
         return CreateRecipeEntryDataCollection(recipeDatabaseEntries);
     }
 
-    public async Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesByTagIdAsync(long tagId)
+    public async Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesByTagEntityIdAsync(long tagEntityId)
     {
         IEnumerable<RecipeDatabaseEntry> recipeDatabaseEntries = await context.RecipeTagEntities
                                                                               .Include(te => te.Tag)
-                                                                              .Where(te => te.Tag.TagEntityId == tagId)
+                                                                              .Where(te => te.Tag.TagEntityId == tagEntityId)
                                                                               .Include(te => te.Recipe)
                                                                               .ThenInclude(r => r.Author)
                                                                               .Select(e => CreateRecipeDatabaseEntry(e))
@@ -101,7 +101,7 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
         return CreateRecipeEntryDataCollection(recipeDatabaseEntries);
     }
 
-    public async Task<IReadOnlyList<RecipeEntryData>> LoadRecipeEntriesByAuthorIdAsync(ulong authorId)
+    public async Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesByAuthorIdAsync(ulong authorId)
     {
         IEnumerable<RecipeDatabaseEntry> recipeEntries = await context.AuthorEntities
                                                                       .Where(a => a.AuthorId == authorId.ToString())
@@ -163,10 +163,10 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
         }
     }
 
-    private static RecipeEntryData[] CreateRecipeEntryDataCollection(IEnumerable<RecipeDatabaseEntry> recipeDatabaseEntries)
+    private static RecipeRepositoryEntityData[] CreateRecipeEntryDataCollection(IEnumerable<RecipeDatabaseEntry> recipeDatabaseEntries)
     {
-        return recipeDatabaseEntries.Select(r => new RecipeEntryData(r.Id, r.Title, r.AuthorId))
-                                    .OrderBy(r => r.Id)
+        return recipeDatabaseEntries.Select(r => new RecipeRepositoryEntityData(r.Id, r.Title, r.AuthorId))
+                                    .OrderBy(r => r.EntityId)
                                     .ToArray();
     }
 

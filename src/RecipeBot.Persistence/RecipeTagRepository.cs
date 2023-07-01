@@ -30,46 +30,46 @@ using RecipeBot.Persistence.Properties;
 namespace RecipeBot.Persistence;
 
 /// <summary>
-/// An EF implementation of <see cref="IRecipeTagEntryDataRepository"/>.
+/// An EF implementation of <see cref="IRecipeTagRepository"/>.
 /// </summary>
-public class RecipeTagEntryRepository : IRecipeTagEntryDataRepository
+public class RecipeTagRepository : IRecipeTagRepository
 {
     private readonly RecipeBotDbContext context;
 
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeTagEntryRepository"/>.
+    /// Creates a new instance of <see cref="RecipeTagRepository"/>.
     /// </summary>
     /// <param name="context">The <see cref="RecipeBotDbContext"/>.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <c>null</c>.</exception>
-    public RecipeTagEntryRepository(RecipeBotDbContext context)
+    public RecipeTagRepository(RecipeBotDbContext context)
     {
         context.IsNotNull(nameof(context));
         this.context = context;
     }
 
-    public async Task<IReadOnlyList<RecipeTagEntryData>> LoadRecipeTagEntriesAsync()
+    public async Task<IReadOnlyList<RecipeTagRepositoryEntityData>> LoadRecipeTagEntriesAsync()
     {
         TagEntity[] tagEntities = await context.TagEntities.AsNoTracking().ToArrayAsync();
 
         return tagEntities.OrderBy(e => e.TagEntityId)
-                          .Select(e => new RecipeTagEntryData(e.TagEntityId, e.Tag))
+                          .Select(e => new RecipeTagRepositoryEntityData(e.TagEntityId, e.Tag))
                           .ToArray();
     }
 
-    public async Task<RecipeTagEntryData> DeleteTagAsync(long id)
+    public async Task<RecipeTagRepositoryEntityData> DeleteTagAsync(long entityId)
     {
         try
         {
-            TagEntity? tagToDelete = await context.TagEntities.SingleOrDefaultAsync(e => e.TagEntityId == id);
+            TagEntity? tagToDelete = await context.TagEntities.SingleOrDefaultAsync(e => e.TagEntityId == entityId);
             if (tagToDelete == null)
             {
-                throw new RepositoryDataDeleteException(string.Format(Resources.RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_Id_0_, id));
+                throw new RepositoryDataDeleteException(string.Format(Resources.RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_EntityId_0_, entityId));
             }
 
             context.TagEntities.Remove(tagToDelete);
             await context.SaveChangesAsync();
 
-            return new RecipeTagEntryData(tagToDelete.TagEntityId, tagToDelete.Tag);
+            return new RecipeTagRepositoryEntityData(tagToDelete.TagEntityId, tagToDelete.Tag);
         }
         catch (DbUpdateException ex)
         {

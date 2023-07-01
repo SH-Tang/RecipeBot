@@ -250,7 +250,7 @@ public class RecipeControllerTest
         var fixture = new Fixture();
         var idToDelete = fixture.Create<long>();
 
-        var deletedResult = fixture.Create<RecipeEntryData>();
+        var deletedResult = fixture.Create<RecipeRepositoryEntityData>();
         var repository = Substitute.For<IRecipeRepository>();
         repository.DeleteRecipeAsync(idToDelete).Returns(deletedResult);
 
@@ -268,7 +268,7 @@ public class RecipeControllerTest
         // Assert
         result.HasError.Should().BeFalse();
 
-        result.Result.Should().Be($"Recipe titled '{deletedResult.Title}' with id '{deletedResult.Id}' and author '{userData.Username}' was successfully deleted.");
+        result.Result.Should().Be($"Recipe titled '{deletedResult.Title}' with id '{deletedResult.EntityId}' and author '{userData.Username}' was successfully deleted.");
     }
 
     [Fact]
@@ -308,7 +308,7 @@ public class RecipeControllerTest
         var author = Substitute.For<IUser>();
         author.Id.Returns(authorId);
 
-        var deletedResult = fixture.Create<RecipeEntryData>();
+        var deletedResult = fixture.Create<RecipeRepositoryEntityData>();
         var repository = Substitute.For<IRecipeRepository>();
         repository.DeleteRecipeAsync(idToDelete, authorId).Returns(deletedResult);
 
@@ -326,7 +326,7 @@ public class RecipeControllerTest
         // Assert
         result.HasError.Should().BeFalse();
 
-        result.Result.Should().Be($"Recipe titled '{deletedResult.Title}' with id '{deletedResult.Id}' and author '{userData.Username}' was successfully deleted.");
+        result.Result.Should().Be($"Recipe titled '{deletedResult.Title}' with id '{deletedResult.EntityId}' and author '{userData.Username}' was successfully deleted.");
     }
 
     [Fact]

@@ -39,27 +39,27 @@ public interface IRecipeRepository
     public Task SaveRecipeAsync(RecipeModel model);
 
     /// <summary>
-    /// Deletes a recipe based on its id.
+    /// Deletes a recipe based on its entity id.
     /// </summary>
-    /// <param name="id">The id of the recipe to delete.</param>
-    /// <returns>A <see cref="RecipeEntryData"/> containing the information of the deleted recipe.</returns>
+    /// <param name="entityId">The id of the recipe entity to delete.</param>
+    /// <returns>A <see cref="RecipeRepositoryEntityData"/> containing the information of the deleted recipe.</returns>
     /// <exception cref="RepositoryDataDeleteException">Thrown when the data could not be successfully deleted.</exception>
-    Task<RecipeEntryData> DeleteRecipeAsync(long id);
+    Task<RecipeRepositoryEntityData> DeleteRecipeAsync(long entityId);
 
     /// <summary>
     /// Deletes a recipe based on its input arguments.
     /// </summary>
-    /// <param name="id">The id of the recipe to delete.</param>
+    /// <param name="entityId">The id of the recipe entity to delete.</param>
     /// <param name="authorId">The id of the author the recipe belongs to.</param>
-    /// <returns>A <see cref="RecipeEntryData"/> containing the information of the deleted recipe.</returns>
+    /// <returns>A <see cref="RecipeRepositoryEntityData"/> containing the information of the deleted recipe.</returns>
     /// <exception cref="RepositoryDataDeleteException">Thrown when the data could not be successfully deleted.</exception>
-    Task<RecipeEntryData> DeleteRecipeAsync(long id, ulong authorId);
+    Task<RecipeRepositoryEntityData> DeleteRecipeAsync(long entityId, ulong authorId);
 
     /// <summary>
-    /// Gets a <see cref="RecipeData"/> based on its id.
+    /// Gets a <see cref="RecipeData"/> based on its entity id.
     /// </summary>
-    /// <param name="id">The id of the recipe to retrieve.</param>
+    /// <param name="entityId">The id of the recipe entity to retrieve.</param>
     /// <returns>A <see cref="RecipeData"/>.</returns>
     /// <exception cref="RepositoryDataLoadException">Thrown when the data could not be successfully loaded.</exception>
-    Task<RecipeData> GetRecipeAsync(long id);
+    Task<RecipeData> GetRecipeAsync(long entityId);
 }

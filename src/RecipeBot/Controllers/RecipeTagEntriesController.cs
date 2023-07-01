@@ -32,13 +32,12 @@ namespace RecipeBot.Controllers;
 /// <summary>
 /// A concrete implementation of the <see cref="IRecipeTagEntriesController"/>.
 /// </summary>
-public class RecipeTagEntriesController : IRecipeTagEntriesController
+public class RecipeTagEntriesController : ControllerBase, IRecipeTagEntriesController
 {
     private static readonly string header = $"{"Id",-3} {"Tag",-50} ";
 
-    private readonly DataEntryCollectionMessageFormattingService<RecipeTagEntryData> messageFormattingService;
-    private readonly IRecipeTagEntryDataRepository repository;
-    private readonly ILoggingService logger;
+    private readonly DataEntryCollectionMessageFormattingService<RecipeTagRepositoryEntityData> messageFormattingService;
+    private readonly IRecipeTagRepository repository;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeTagEntriesController"/>.
@@ -48,21 +47,19 @@ public class RecipeTagEntriesController : IRecipeTagEntriesController
     /// <param name="logger">The logger to log with.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     public RecipeTagEntriesController(IMessageCharacterLimitProvider limitProvider,
-                                      IRecipeTagEntryDataRepository repository, ILoggingService logger)
+                                      IRecipeTagRepository repository, ILoggingService logger) : base(logger)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
         repository.IsNotNull(nameof(repository));
-        logger.IsNotNull(nameof(logger));
 
-        messageFormattingService = new DataEntryCollectionMessageFormattingService<RecipeTagEntryData>(
-            limitProvider, header, entry => $"{entry.Id,-3} {entry.Tag,-50}");
+        messageFormattingService = new DataEntryCollectionMessageFormattingService<RecipeTagRepositoryEntityData>(
+            limitProvider, header, entry => $"{entry.EntityId,-3} {entry.Tag,-50}");
         this.repository = repository;
-        this.logger = logger;
     }
 
     public async Task<ControllerResult<IReadOnlyList<string>>> ListAllTagsAsync()
     {
-        IReadOnlyList<RecipeTagEntryData> tags = await repository.LoadRecipeTagEntriesAsync();
+        IReadOnlyList<RecipeTagRepositoryEntityData> tags = await repository.LoadRecipeTagEntriesAsync();
 
         return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
             messageFormattingService.CreateMessages(tags, Resources.RecipeTagEntriesController_No_saved_tags_are_found));
@@ -72,15 +69,14 @@ public class RecipeTagEntriesController : IRecipeTagEntriesController
     {
         try
         {
-            RecipeTagEntryData deletedTag = await repository.DeleteTagAsync(idToDelete);
+            RecipeTagRepositoryEntityData deletedTag = await repository.DeleteTagAsync(idToDelete);
 
             return ControllerResult<string>.CreateControllerResultWithValidResult(string.Format(Resources.RecipeTagEntriesController_DeleteTagAsync_Tag_0_with_Id_1_was_successfully_deleted,
-                                                                                                deletedTag.Tag, deletedTag.Id));
+                                                                                                deletedTag.Tag, deletedTag.EntityId));
         }
         catch (RepositoryDataDeleteException e)
         {
-            await logger.LogErrorAsync(e);
-            return ControllerResult<string>.CreateControllerResultWithError(e.Message);
+            return await HandleException<string>(e);
         }
     }
 }

@@ -17,48 +17,55 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
 using Discord.Common.Providers;
+using Discord.Common.Services;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Domain.Exceptions;
-using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Repositories;
 using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.Properties;
 using RecipeBot.Services;
-using Discord.Common.Services;
 
 namespace RecipeBot.Controllers;
 
 /// <summary>
 /// A concrete implementation of <see cref="IAuthorController"/>.
 /// </summary>
-public class AuthorController : IAuthorController
+public class AuthorController : ControllerBase, IAuthorController
 {
-    private readonly ILoggingService logger;
+    private static readonly string header = $"{"Id",-3} {"Author",-50} ";
+
+    private readonly DataEntryCollectionMessageFormattingService<AuthorEntryRow> messageFormattingService;
+
     private readonly IAuthorRepository repository;
     private readonly IUserDataProvider userDataProvider;
 
     /// <summary>
     /// Creates a new instance of <see cref="AuthorController"/>.
     /// </summary>
+    /// <param name="limitProvider">The limit provider to retrieve the message character limits from.</param>
     /// <param name="userDataProvider">The provider to retrieve user data with.</param>
     /// <param name="repository">The repository to handle with the persistence of authors.</param>
     /// <param name="logger">The logger to log with.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public AuthorController(IUserDataProvider userDataProvider,
+    public AuthorController(IMessageCharacterLimitProvider limitProvider,
+                            IUserDataProvider userDataProvider,
                             IAuthorRepository repository,
-                            ILoggingService logger)
+                            ILoggingService logger) : base(logger)
     {
+        limitProvider.IsNotNull(nameof(limitProvider));
         userDataProvider.IsNotNull(nameof(userDataProvider));
         repository.IsNotNull(nameof(repository));
-        logger.IsNotNull(nameof(logger));
+
+        messageFormattingService = new DataEntryCollectionMessageFormattingService<AuthorEntryRow>(
+            limitProvider, header, entry => $"{entry.EntityId,-3} {entry.AuthorName,-50}");
 
         this.userDataProvider = userDataProvider;
         this.repository = repository;
-        this.logger = logger;
     }
 
     public async Task<ControllerResult<string>> DeleteAuthorAsync(IUser user)
@@ -79,9 +86,51 @@ public class AuthorController : IAuthorController
             return await HandleException<string>(e);
         }
     }
-    private async Task<ControllerResult<TResult>> HandleException<TResult>(Exception e) where TResult : class
+
+    public async Task<ControllerResult<IReadOnlyList<string>>> GetAllAuthorsAsync()
     {
-        await logger.LogErrorAsync(e);
-        return ControllerResult<TResult>.CreateControllerResultWithError(e.Message);
+        try
+        {
+            IReadOnlyCollection<AuthorRepositoryEntityData> entries = await repository.LoadAuthorsAsync();
+            IEnumerable<AuthorEntryRow> rows = await CreateRows(entries);
+
+            return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
+                messageFormattingService.CreateMessages(rows, Resources.AuthorController_GetAuthors_No_saved_authors_are_found));
+        }
+        catch (RepositoryDataLoadException e)
+        {
+            return await HandleException<IReadOnlyList<string>>(e);
+        }
+    }
+
+    private async Task<IEnumerable<AuthorEntryRow>> CreateRows(IEnumerable<AuthorRepositoryEntityData> entries)
+    {
+        IEnumerable<Task<AuthorEntryRow>> authorEntryTasks = entries.Select(CreateAuthorEntryRow);
+        return await Task.WhenAll(authorEntryTasks);
+    }
+
+    private async Task<AuthorEntryRow> CreateAuthorEntryRow(AuthorRepositoryEntityData entry)
+    {
+        ulong authorId = entry.AuthorId;
+        UserData userData = await userDataProvider.GetUserDataAsync(authorId);
+
+        return new AuthorEntryRow
+        {
+            EntityId = entry.EntityId,
+            AuthorName = userData.Username
+        };
+    }
+
+    private sealed record AuthorEntryRow
+    {
+        /// <summary>
+        /// Gets the entity id of the author.
+        /// </summary>
+        public long EntityId { get; init; }
+
+        /// <summary>
+        /// Gets the name of the author of the recipe.
+        /// </summary>
+        public string AuthorName { get; init; } = null!;
     }
 }

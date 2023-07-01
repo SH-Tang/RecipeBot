@@ -16,11 +16,14 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Microsoft.EntityFrameworkCore;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Repositories;
+using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.Persistence.Entities;
 using RecipeBot.Persistence.Properties;
 
@@ -62,6 +65,27 @@ public class AuthorRepository : IAuthorRepository
         catch (DbUpdateException ex)
         {
             throw new RepositoryDataDeleteException(ex.Message, ex);
+        }
+    }
+
+    public async Task<IReadOnlyCollection<AuthorRepositoryEntityData>> LoadAuthorsAsync()
+    {
+        AuthorEntity[] authorEntities = await context.AuthorEntities.AsNoTracking().ToArrayAsync();
+
+        return authorEntities.OrderBy(e => e.AuthorEntityId)
+                             .Select(CreateAuthorRepositoryEntityData)
+                             .ToArray();
+    }
+
+    private AuthorRepositoryEntityData CreateAuthorRepositoryEntityData(AuthorEntity entity)
+    {
+        try
+        {
+            return new AuthorRepositoryEntityData(entity.AuthorEntityId, ulong.Parse(entity.AuthorId));
+        }
+        catch (Exception e) when (e is OverflowException || e is FormatException)
+        {
+            throw new RepositoryDataLoadException(string.Format(Resources.AuthorRepository_Author_entries_could_not_be_loaded_due_to_invalid_AuthorId_0_, entity.AuthorId));
         }
     }
 }

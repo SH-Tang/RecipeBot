@@ -30,11 +30,11 @@ using Xunit;
 
 namespace RecipeBot.Persistence.Test;
 
-public class RecipeTagEntryRepositoryTest : IDisposable
+public class RecipeTagRepositoryTest : IDisposable
 {
     private readonly SqliteConnection connection;
 
-    public RecipeTagEntryRepositoryTest()
+    public RecipeTagRepositoryTest()
     {
         connection = new SqliteConnection("Filename=:memory:");
         connection.Open();
@@ -48,10 +48,10 @@ public class RecipeTagEntryRepositoryTest : IDisposable
         {
             await context.Database.EnsureCreatedAsync();
 
-            var repository = new RecipeTagEntryRepository(context);
+            var repository = new RecipeTagRepository(context);
 
             // Call
-            IReadOnlyList<RecipeTagEntryData> entries = await repository.LoadRecipeTagEntriesAsync();
+            IReadOnlyList<RecipeTagRepositoryEntityData> entries = await repository.LoadRecipeTagEntriesAsync();
 
             // Assert
             entries.Should().BeEmpty();
@@ -85,16 +85,16 @@ public class RecipeTagEntryRepositoryTest : IDisposable
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeTagEntryRepository(context);
+            var repository = new RecipeTagRepository(context);
 
             // Call
-            IReadOnlyList<RecipeTagEntryData> entries = await repository.LoadRecipeTagEntriesAsync();
+            IReadOnlyList<RecipeTagRepositoryEntityData> entries = await repository.LoadRecipeTagEntriesAsync();
 
             // Assert
             entries.Should().BeEquivalentTo(tagEntities, options => options.ExcludingMissingMembers()
                                                                            .WithStrictOrderingFor(e => e.TagEntityId)
-                                                                           .WithMapping<TagEntity, RecipeTagEntryData>(s => s.TagEntityId, e => e.Id)
-                                                                           .WithMapping<TagEntity, RecipeTagEntryData>(s => s.Tag, e => e.Tag));
+                                                                           .WithMapping<TagEntity, RecipeTagRepositoryEntityData>(s => s.TagEntityId, e => e.EntityId)
+                                                                           .WithMapping<TagEntity, RecipeTagRepositoryEntityData>(s => s.Tag, e => e.Tag));
         }
     }
 
@@ -106,7 +106,7 @@ public class RecipeTagEntryRepositoryTest : IDisposable
         {
             await context.Database.EnsureCreatedAsync();
 
-            var repository = new RecipeTagEntryRepository(context);
+            var repository = new RecipeTagRepository(context);
 
             var fixture = new Fixture();
             var idToDelete = fixture.Create<long>();
@@ -164,7 +164,7 @@ public class RecipeTagEntryRepositoryTest : IDisposable
 
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeTagEntryRepository(context);
+            var repository = new RecipeTagRepository(context);
 
             // Call
             Func<Task> call = () => repository.DeleteTagAsync(idToDelete);
@@ -240,14 +240,14 @@ public class RecipeTagEntryRepositoryTest : IDisposable
 
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeTagEntryRepository(context);
+            var repository = new RecipeTagRepository(context);
 
             // Call
-            RecipeTagEntryData result = await repository.DeleteTagAsync(tagToDelete.TagEntityId);
+            RecipeTagRepositoryEntityData result = await repository.DeleteTagAsync(tagToDelete.TagEntityId);
             context.ChangeTracker.Clear();
 
             // Assert
-            result.Id.Should().Be(tagToDelete.TagEntityId);
+            result.EntityId.Should().Be(tagToDelete.TagEntityId);
             result.Tag.Should().Be(tagToDelete.Tag);
 
             context.AuthorEntities.Should().BeEquivalentTo(new[]

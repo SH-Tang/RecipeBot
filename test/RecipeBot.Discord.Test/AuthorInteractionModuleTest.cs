@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using Discord;
 using Discord.Common.Services;
 using Discord.Interactions;
 using FluentAssertions;
@@ -55,5 +56,27 @@ public class AuthorInteractionModuleTest
         commandAttribute.Should().NotBeNull();
         commandAttribute!.Name.Should().Be(expectedName);
         commandAttribute.Description.Should().Be(expectedDescription);
+    }
+
+    [Fact]
+    public void List_authors_command_has_expected_attributes()
+    {
+        // Call
+        SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<AuthorInteractionModule, SlashCommandAttribute>(
+            nameof(AuthorInteractionModule.ListAuthors));
+
+        DefaultMemberPermissionsAttribute? permissionAttribute = ReflectionHelper.GetCustomAttributeFromMethod<AuthorInteractionModule, DefaultMemberPermissionsAttribute>(
+            nameof(AuthorInteractionModule.ListAuthors));
+
+        // Assert
+        const string expectedName = "author-list";
+        const string expectedDescription = "Lists all stored authors in the database";
+
+        commandAttribute.Should().NotBeNull();
+        commandAttribute!.Name.Should().Be(expectedName);
+        commandAttribute.Description.Should().Be(expectedDescription);
+
+        permissionAttribute.Should().NotBeNull();
+        permissionAttribute!.Permissions.Should().Be(GuildPermission.Administrator | GuildPermission.ModerateMembers);
     }
 }

@@ -18,39 +18,32 @@
 using System;
 using System.Threading.Tasks;
 using Common.Utils;
-using Discord.WebSocket;
+using Discord.Common.Services;
+using RecipeBot.Discord.Controllers;
 
-namespace Discord.Common.Providers;
+namespace RecipeBot.Controllers;
 
 /// <summary>
-/// Class for providing user data.
+/// Base implementation of controllers.
 /// </summary>
-public class UserDataProvider : IUserDataProvider
+public abstract class ControllerBase
 {
-    private readonly DiscordSocketClient client;
+    private readonly ILoggingService logger;
 
     /// <summary>
-    /// Creates a <see cref="UserDataProvider"/>.
+    /// Creates a new instance of <see cref="ControllerBase"/>. 
     /// </summary>
-    /// <param name="client">The <see cref="DiscordSocketClient"/>.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="client"/> is <c>null</c>.</exception>
-    public UserDataProvider(DiscordSocketClient client)
+    /// <param name="logger">The logger to log with.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="logger"/> is <c>null</c>.</exception>
+    protected ControllerBase(ILoggingService logger)
     {
-        client.IsNotNull(nameof(client));
-
-        this.client = client;
+        logger.IsNotNull(nameof(logger));
+        this.logger = logger;
     }
 
-    public async Task<UserData> GetUserDataAsync(ulong userId)
+    protected async Task<ControllerResult<TResult>> HandleException<TResult>(Exception e) where TResult : class
     {
-        IUser? user = await client.GetUserAsync(userId);
-
-        if (user == null)
-        {
-            return UserData.UnknownUser;
-        }
-
-        string displayName = user.GlobalName ?? user.Username;
-        return new UserData(displayName, user.GetAvatarUrl());
+        await logger.LogErrorAsync(e);
+        return ControllerResult<TResult>.CreateControllerResultWithError(e.Message);
     }
 }

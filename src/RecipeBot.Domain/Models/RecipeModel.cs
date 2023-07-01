@@ -49,7 +49,7 @@ public class RecipeModel
         RecipeTags = new RecipeTagsModelWrapper(metaData.Tags, metaData.Category);
         Title = title;
     }
-    
+
     /// <summary>
     /// Gets the title of the recipe.
     /// </summary>
