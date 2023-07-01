@@ -87,38 +87,4 @@ public class AuthorInteractionModule : DiscordInteractionModuleBase
             }
         });
     }
-
-    private async Task<IEnumerable<Task>> GetTasksAsync(Task<ControllerResult<IReadOnlyList<string>>> getControllerResultTask)
-    {
-        ControllerResult<IReadOnlyList<string>> result = await getControllerResultTask;
-        if (result.HasError)
-        {
-            return new[]
-            {
-                RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, result.ErrorMessage), ephemeral: true)
-            };
-        }
-
-        IReadOnlyList<string> messages = result.Result!;
-        if (!messages.Any())
-        {
-            return new[]
-            {
-                RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_,
-                                           Resources.Controller_should_not_have_returned_an_empty_collection_when_querying),
-                             ephemeral: true)
-            };
-        }
-
-        var tasks = new List<Task>
-        {
-            RespondAsync(messages[0], ephemeral: true)
-        };
-        for (var i = 1; i < messages.Count; i++)
-        {
-            tasks.Add(FollowupAsync(messages[i], ephemeral: true));
-        }
-
-        return tasks;
-    }
 }

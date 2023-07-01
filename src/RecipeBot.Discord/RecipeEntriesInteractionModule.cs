@@ -86,41 +86,8 @@ public class RecipeEntriesInteractionModule : DiscordInteractionModuleBase
         using(IServiceScope scope = scopeFactory.CreateScope())
         {
             var controller = scope.ServiceProvider.GetRequiredService<IRecipeEntriesController>();
-
-            ControllerResult<IReadOnlyList<string>> getRecipeEntriesTask = await getControllerResultTaskFunc(controller);
-            await Task.WhenAll(GetTasksFromControllerResult(getRecipeEntriesTask));
+            IEnumerable<Task> tasks = await GetTasksAsync(getControllerResultTaskFunc(controller));
+            await Task.WhenAll(tasks);
         }
-    }
-
-    private IEnumerable<Task> GetTasksFromControllerResult(ControllerResult<IReadOnlyList<string>> controllerResult)
-    {
-        if (controllerResult.HasError)
-        {
-            return new[]
-            {
-                RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, controllerResult.ErrorMessage), ephemeral: true)
-            };
-        }
-
-        IReadOnlyList<string> messages = controllerResult.Result!;
-        if (!messages.Any())
-        {
-            return new[]
-            {
-                RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, Resources.Controller_should_not_have_returned_an_empty_collection_when_querying),
-                    ephemeral: true)
-            };
-        }
-
-        var tasks = new List<Task>
-        {
-            RespondAsync(messages[0], ephemeral: true)
-        };
-        for (var i = 1; i < messages.Count; i++)
-        {
-            tasks.Add(FollowupAsync(messages[i], ephemeral: true));
-        }
-
-        return tasks;
     }
 }
