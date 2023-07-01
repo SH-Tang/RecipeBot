@@ -202,7 +202,7 @@ public class RecipeEntriesControllerTest
     }
 
     [Fact]
-    public async Task Listing_all_recipes_and_retrieval_unsuccessful_logs_and_returns_result_with_error()
+    public async Task Given_repository_throwing_exception_when_listing_all_recipes_then_logs_and_returns_result_with_error()
     {
         // Setup
         var fixture = new Fixture();
@@ -403,7 +403,7 @@ public class RecipeEntriesControllerTest
     }
 
     [Fact]
-    public async Task Listing_recipes_by_category_and_retrieval_unsuccessful_logs_and_returns_result_with_error()
+    public async Task Given_repository_throwing_exception_when_listing_recipes_by_category_then_logs_and_returns_result_with_error()
     {
         // Setup
         var fixture = new Fixture();
@@ -602,7 +602,7 @@ public class RecipeEntriesControllerTest
     }
 
     [Fact]
-    public async Task Listing_recipes_by_tag_and_retrieval_unsuccessful_logs_and_returns_result_with_error()
+    public async Task Given_repository_throwing_exception_when_listing_by_tag_then_logs_and_returns_result_with_error()
     {
         // Setup
         var fixture = new Fixture();
@@ -798,7 +798,7 @@ public class RecipeEntriesControllerTest
     }
 
     [Fact]
-    public async Task Listing_recipes_by_tag_id_and_retrieval_unsuccessful_logs_and_returns_result_with_error()
+    public async Task Given_repository_throwing_exception_when_listing_by_tag_id_then_logs_and_returns_result_with_error()
     {
         // Setup
         var fixture = new Fixture();
@@ -1000,7 +1000,7 @@ public class RecipeEntriesControllerTest
     }
 
     [Fact]
-    public async Task Listing_recipes_by_author_id_and_retrieval_unsuccessful_logs_and_returns_result_with_error()
+    public async Task Given_repository_throwing_exception_when_listing_by_author_id_then_logs_and_returns_result_with_error()
     {
         // Setup
         var fixture = new Fixture();
