@@ -30,18 +30,18 @@ using RecipeBot.Persistence.Properties;
 namespace RecipeBot.Persistence;
 
 /// <summary>
-/// An EF implementation of <see cref="IRecipeTagEntryDataRepository"/>.
+/// An EF implementation of <see cref="IRecipeTagRepository"/>.
 /// </summary>
-public class RecipeTagEntryRepository : IRecipeTagEntryDataRepository
+public class RecipeTagRepository : IRecipeTagRepository
 {
     private readonly RecipeBotDbContext context;
 
     /// <summary>
-    /// Creates a new instance of <see cref="RecipeTagEntryRepository"/>.
+    /// Creates a new instance of <see cref="RecipeTagRepository"/>.
     /// </summary>
     /// <param name="context">The <see cref="RecipeBotDbContext"/>.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is <c>null</c>.</exception>
-    public RecipeTagEntryRepository(RecipeBotDbContext context)
+    public RecipeTagRepository(RecipeBotDbContext context)
     {
         context.IsNotNull(nameof(context));
         this.context = context;

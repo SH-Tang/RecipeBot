@@ -37,7 +37,7 @@ public class RecipeTagEntriesController : IRecipeTagEntriesController
     private static readonly string header = $"{"Id",-3} {"Tag",-50} ";
 
     private readonly DataEntryCollectionMessageFormattingService<RecipeTagRepositoryEntityData> messageFormattingService;
-    private readonly IRecipeTagEntryDataRepository repository;
+    private readonly IRecipeTagRepository repository;
     private readonly ILoggingService logger;
 
     /// <summary>
@@ -48,7 +48,7 @@ public class RecipeTagEntriesController : IRecipeTagEntriesController
     /// <param name="logger">The logger to log with.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     public RecipeTagEntriesController(IMessageCharacterLimitProvider limitProvider,
-                                      IRecipeTagEntryDataRepository repository, ILoggingService logger)
+                                      IRecipeTagRepository repository, ILoggingService logger)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
         repository.IsNotNull(nameof(repository));

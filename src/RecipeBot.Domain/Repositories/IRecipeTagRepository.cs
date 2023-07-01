@@ -25,7 +25,7 @@ namespace RecipeBot.Domain.Repositories;
 /// <summary>
 /// Interface for describing a repository for handling with data persistence of recipe tags.
 /// </summary>
-public interface IRecipeTagEntryDataRepository
+public interface IRecipeTagRepository
 {
     /// <summary>
     /// Gets all the tags.

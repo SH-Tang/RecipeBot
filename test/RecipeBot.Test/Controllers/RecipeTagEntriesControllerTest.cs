@@ -41,7 +41,7 @@ public class RecipeTagEntriesControllerTest
     {
         // Setup
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
-        var repository = Substitute.For<IRecipeTagEntryDataRepository>();
+        var repository = Substitute.For<IRecipeTagRepository>();
         var logger = Substitute.For<ILoggingService>();
 
         // Call
@@ -57,7 +57,7 @@ public class RecipeTagEntriesControllerTest
         // Setup
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
 
-        var repository = Substitute.For<IRecipeTagEntryDataRepository>();
+        var repository = Substitute.For<IRecipeTagRepository>();
         repository.LoadRecipeTagEntriesAsync().ReturnsForAnyArgs(Array.Empty<RecipeTagRepositoryEntityData>());
 
         var logger = Substitute.For<ILoggingService>();
@@ -82,7 +82,7 @@ public class RecipeTagEntriesControllerTest
         var fixture = new Fixture();
         RecipeTagRepositoryEntityData[] entries = fixture.CreateMany<RecipeTagRepositoryEntityData>(3).ToArray();
 
-        var repository = Substitute.For<IRecipeTagEntryDataRepository>();
+        var repository = Substitute.For<IRecipeTagRepository>();
         repository.LoadRecipeTagEntriesAsync().ReturnsForAnyArgs(entries);
 
         var logger = Substitute.For<ILoggingService>();
@@ -115,7 +115,7 @@ public class RecipeTagEntriesControllerTest
         var fixture = new Fixture();
         RecipeTagRepositoryEntityData[] entries = fixture.CreateMany<RecipeTagRepositoryEntityData>(3).ToArray();
 
-        var repository = Substitute.For<IRecipeTagEntryDataRepository>();
+        var repository = Substitute.For<IRecipeTagRepository>();
         repository.LoadRecipeTagEntriesAsync().ReturnsForAnyArgs(entries);
 
         var logger = Substitute.For<ILoggingService>();
@@ -151,7 +151,7 @@ public class RecipeTagEntriesControllerTest
         var idToDelete = fixture.Create<long>();
 
         var deletedTag = fixture.Create<RecipeTagRepositoryEntityData>();
-        var repository = Substitute.For<IRecipeTagEntryDataRepository>();
+        var repository = Substitute.For<IRecipeTagRepository>();
         repository.DeleteTagAsync(idToDelete).Returns(deletedTag);
 
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
@@ -175,7 +175,7 @@ public class RecipeTagEntriesControllerTest
         var fixture = new Fixture();
         var exceptionMessage = fixture.Create<string>();
 
-        var repository = Substitute.For<IRecipeTagEntryDataRepository>();
+        var repository = Substitute.For<IRecipeTagRepository>();
         var exception = new RepositoryDataDeleteException(exceptionMessage);
         repository.DeleteTagAsync(Arg.Any<long>()).ThrowsAsyncForAnyArgs(exception);
 

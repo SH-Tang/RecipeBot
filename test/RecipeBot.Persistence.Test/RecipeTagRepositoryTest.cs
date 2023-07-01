@@ -30,11 +30,11 @@ using Xunit;
 
 namespace RecipeBot.Persistence.Test;
 
-public class RecipeTagEntryRepositoryTest : IDisposable
+public class RecipeTagRepositoryTest : IDisposable
 {
     private readonly SqliteConnection connection;
 
-    public RecipeTagEntryRepositoryTest()
+    public RecipeTagRepositoryTest()
     {
         connection = new SqliteConnection("Filename=:memory:");
         connection.Open();
@@ -48,7 +48,7 @@ public class RecipeTagEntryRepositoryTest : IDisposable
         {
             await context.Database.EnsureCreatedAsync();
 
-            var repository = new RecipeTagEntryRepository(context);
+            var repository = new RecipeTagRepository(context);
 
             // Call
             IReadOnlyList<RecipeTagRepositoryEntityData> entries = await repository.LoadRecipeTagEntriesAsync();
@@ -85,7 +85,7 @@ public class RecipeTagEntryRepositoryTest : IDisposable
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeTagEntryRepository(context);
+            var repository = new RecipeTagRepository(context);
 
             // Call
             IReadOnlyList<RecipeTagRepositoryEntityData> entries = await repository.LoadRecipeTagEntriesAsync();
@@ -106,7 +106,7 @@ public class RecipeTagEntryRepositoryTest : IDisposable
         {
             await context.Database.EnsureCreatedAsync();
 
-            var repository = new RecipeTagEntryRepository(context);
+            var repository = new RecipeTagRepository(context);
 
             var fixture = new Fixture();
             var idToDelete = fixture.Create<long>();
@@ -164,7 +164,7 @@ public class RecipeTagEntryRepositoryTest : IDisposable
 
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeTagEntryRepository(context);
+            var repository = new RecipeTagRepository(context);
 
             // Call
             Func<Task> call = () => repository.DeleteTagAsync(idToDelete);
@@ -240,7 +240,7 @@ public class RecipeTagEntryRepositoryTest : IDisposable
 
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeTagEntryRepository(context);
+            var repository = new RecipeTagRepository(context);
 
             // Call
             RecipeTagRepositoryEntityData result = await repository.DeleteTagAsync(tagToDelete.TagEntityId);
