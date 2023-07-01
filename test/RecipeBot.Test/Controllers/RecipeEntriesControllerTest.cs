@@ -22,13 +22,16 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Discord;
 using Discord.Common.Providers;
+using Discord.Common.Services;
 using Discord.Common.TestUtils;
 using FluentAssertions;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using RecipeBot.Controllers;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
 using RecipeBot.Domain.Data;
+using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Repositories;
 using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.TestUtils;
@@ -45,9 +48,10 @@ public class RecipeEntriesControllerTest
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var userDataProvider = Substitute.For<IUserDataProvider>();
         var repository = Substitute.For<IRecipeCollectionRepository>();
+        var logger = Substitute.For<ILoggingService>();
 
         // Call
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Assert
         controller.Should().BeAssignableTo<IRecipeEntriesController>();
@@ -63,7 +67,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesAsync();
@@ -97,8 +102,9 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(authorId).Returns(UserDataTestFactory.Create(userName));
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
-        
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
+
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesAsync();
 
@@ -131,7 +137,8 @@ public class RecipeEntriesControllerTest
         userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
         userDataProvider.GetUserDataAsync(entries[2].AuthorId).Returns(userData[2]);
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesAsync();
@@ -169,7 +176,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesAsync();
@@ -194,6 +202,32 @@ public class RecipeEntriesControllerTest
     }
 
     [Fact]
+    public async Task Listing_all_recipes_and_retrieval_unsuccessful_logs_and_returns_result_with_error()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var exceptionMessage = fixture.Create<string>();
+
+        var repository = Substitute.For<IRecipeCollectionRepository>();
+        var exception = new RepositoryDataLoadException(exceptionMessage);
+        repository.LoadRecipeEntriesAsync().ThrowsAsyncForAnyArgs(exception);
+
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesAsync();
+
+        // Assert
+        result.HasError.Should().BeTrue();
+        result.ErrorMessage.Should().Be(exceptionMessage);
+
+        await logger.Received(1).LogErrorAsync(exception);
+    }
+
+    [Fact]
     public async Task Given_repository_returning_empty_collection_when_filtering_recipes_by_category_returns_expected_message()
     {
         // Setup
@@ -203,7 +237,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         var fixture = new Fixture();
 
@@ -235,7 +270,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         await controller.GetAllRecipesByCategoryAsync(category);
@@ -267,7 +303,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByCategoryAsync(fixture.Create<DiscordRecipeCategory>());
@@ -301,7 +338,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByCategoryAsync(fixture.Create<DiscordRecipeCategory>());
@@ -339,7 +377,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByCategoryAsync(fixture.Create<DiscordRecipeCategory>());
@@ -364,6 +403,32 @@ public class RecipeEntriesControllerTest
     }
 
     [Fact]
+    public async Task Listing_recipes_by_category_and_retrieval_unsuccessful_logs_and_returns_result_with_error()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var exceptionMessage = fixture.Create<string>();
+
+        var repository = Substitute.For<IRecipeCollectionRepository>();
+        var exception = new RepositoryDataLoadException(exceptionMessage);
+        repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ThrowsAsyncForAnyArgs(exception);
+
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByCategoryAsync(fixture.Create<DiscordRecipeCategory>());
+
+        // Assert
+        result.HasError.Should().BeTrue();
+        result.ErrorMessage.Should().Be(exceptionMessage);
+
+        await logger.Received(1).LogErrorAsync(exception);
+    }
+
+    [Fact]
     public async Task Given_repository_returning_empty_collection_when_filtering_recipes_by_tag_returns_expected_message()
     {
         // Setup
@@ -376,7 +441,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagAsync(Arg.Any<string>()).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByTagAsync(tagToFilter);
@@ -403,7 +469,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagAsync(expectedTagArgument).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         await controller.GetAllRecipesByTagAsync(tag);
@@ -435,7 +502,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagAsync(Arg.Any<string>()).ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByTagAsync(fixture.Create<string>());
@@ -469,7 +537,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagAsync(Arg.Any<string>()).ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByTagAsync(fixture.Create<string>());
@@ -507,7 +576,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagAsync(Arg.Any<string>()).ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByTagAsync(fixture.Create<string>());
@@ -532,6 +602,32 @@ public class RecipeEntriesControllerTest
     }
 
     [Fact]
+    public async Task Listing_recipes_by_tag_and_retrieval_unsuccessful_logs_and_returns_result_with_error()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var exceptionMessage = fixture.Create<string>();
+
+        var repository = Substitute.For<IRecipeCollectionRepository>();
+        var exception = new RepositoryDataLoadException(exceptionMessage);
+        repository.LoadRecipeEntriesByTagAsync(Arg.Any<string>()).ThrowsAsyncForAnyArgs(exception);
+
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByTagAsync(fixture.Create<string>());
+
+        // Assert
+        result.HasError.Should().BeTrue();
+        result.ErrorMessage.Should().Be(exceptionMessage);
+
+        await logger.Received(1).LogErrorAsync(exception);
+    }
+
+    [Fact]
     public async Task Given_repository_returning_empty_collection_when_filtering_recipes_by_tag_id_returns_expected_message()
     {
         // Setup
@@ -544,7 +640,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByTagIdAsync(idToFilter);
@@ -568,7 +665,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagIdAsync(idToFilter).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         await controller.GetAllRecipesByTagIdAsync(idToFilter);
@@ -600,7 +698,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByTagIdAsync(fixture.Create<long>());
@@ -634,7 +733,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByTagIdAsync(fixture.Create<long>());
@@ -672,7 +772,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByTagIdAsync(fixture.Create<long>());
@@ -697,6 +798,32 @@ public class RecipeEntriesControllerTest
     }
 
     [Fact]
+    public async Task Listing_recipes_by_tag_id_and_retrieval_unsuccessful_logs_and_returns_result_with_error()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var exceptionMessage = fixture.Create<string>();
+
+        var repository = Substitute.For<IRecipeCollectionRepository>();
+        var exception = new RepositoryDataLoadException(exceptionMessage);
+        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ThrowsAsyncForAnyArgs(exception);
+
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByTagIdAsync(fixture.Create<long>());
+
+        // Assert
+        result.HasError.Should().BeTrue();
+        result.ErrorMessage.Should().Be(exceptionMessage);
+
+        await logger.Received(1).LogErrorAsync(exception);
+    }
+
+    [Fact]
     public async Task Given_repository_returning_empty_collection_when_filtering_recipes_by_author_returns_expected_message()
     {
         // Setup
@@ -706,9 +833,10 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
-        var user = Substitute.For<IUser>();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var user = Substitute.For<IUser>();
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByUserAsync(user);
@@ -735,7 +863,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByAuthorIdAsync(idToFilter).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         await controller.GetAllRecipesByUserAsync(user);
@@ -767,7 +896,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByAuthorIdAsync(Arg.Any<ulong>()).ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByUserAsync(Substitute.For<IUser>());
@@ -803,7 +933,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByAuthorIdAsync(Arg.Any<ulong>()).ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByUserAsync(user);
@@ -831,7 +962,7 @@ public class RecipeEntriesControllerTest
 
         var fixture = new Fixture();
         var user = Substitute.For<IUser>();
-        
+
         RecipeRepositoryEntityData[] entries = fixture.CreateMany<RecipeRepositoryEntityData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
@@ -843,7 +974,8 @@ public class RecipeEntriesControllerTest
         var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByAuthorIdAsync(Arg.Any<ulong>()).ReturnsForAnyArgs(entries);
 
-        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
 
         // Call
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByUserAsync(user);
@@ -865,6 +997,34 @@ public class RecipeEntriesControllerTest
             Format.Code(expectedMessageOne),
             Format.Code(expectedMessageTwo)
         }, options => options.WithStrictOrdering());
+    }
+
+    [Fact]
+    public async Task Listing_recipes_by_author_id_and_retrieval_unsuccessful_logs_and_returns_result_with_error()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var user = Substitute.For<IUser>();
+
+        var exceptionMessage = fixture.Create<string>();
+
+        var repository = Substitute.For<IRecipeCollectionRepository>();
+        var exception = new RepositoryDataLoadException(exceptionMessage);
+        repository.LoadRecipeEntriesByAuthorIdAsync(Arg.Any<ulong>()).ThrowsAsyncForAnyArgs(exception);
+
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
+
+        // Call
+        ControllerResult<IReadOnlyList<string>> result = await controller.GetAllRecipesByUserAsync(user);
+
+        // Assert
+        result.HasError.Should().BeTrue();
+        result.ErrorMessage.Should().Be(exceptionMessage);
+
+        await logger.Received(1).LogErrorAsync(exception);
     }
 
     private static IReadOnlyList<UserData> GetUsers(Fixture fixture, int nrOfUsers)

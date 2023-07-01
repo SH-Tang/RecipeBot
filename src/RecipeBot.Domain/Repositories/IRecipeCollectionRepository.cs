@@ -33,6 +33,7 @@ public interface IRecipeCollectionRepository
     /// Gets all the recipes.
     /// </summary>
     /// <returns>A collection of recipe entries.</returns>
+    /// <exception cref="RepositoryDataLoadException">Thrown when the entries could not be successfully loaded.</exception>
     Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesAsync();
 
     /// <summary>
