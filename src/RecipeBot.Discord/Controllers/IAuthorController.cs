@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 
@@ -33,4 +34,10 @@ public interface IAuthorController
     /// <returns>The result of the delete action.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="user"/> is <c>null</c>.</exception>
     Task<ControllerResult<string>> DeleteAuthorAsync(IUser user);
+
+    /// <summary>
+    /// Lists all authors.
+    /// </summary>
+    /// <returns>A collection of messages containing formatted author entries.</returns>
+    Task<ControllerResult<IReadOnlyList<string>>> GetAllAuthorsAsync();
 }
