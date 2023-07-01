@@ -6,7 +6,7 @@ using RecipeBot.Domain.Repositories.Data;
 namespace RecipeBot.Domain.Repositories;
 
 /// <summary>
-/// Interface for describing a repository for handling data persistence of author.
+/// Interface for describing a repository for handling data persistence of authors.
 /// </summary>
 public interface IAuthorRepository
 {

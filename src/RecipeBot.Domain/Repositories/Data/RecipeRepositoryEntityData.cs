@@ -18,7 +18,7 @@
 namespace RecipeBot.Domain.Repositories.Data;
 
 /// <summary>
-/// Class representing a recipe entity data in the repository.
+/// Class containing the recipe entity data in the repository.
 /// </summary>
 public class RecipeRepositoryEntityData
 {

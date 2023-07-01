@@ -49,7 +49,7 @@ public interface IRecipeRepository
     /// <summary>
     /// Deletes a recipe based on its input arguments.
     /// </summary>
-    /// <param name="entityId">The id of the recipe to delete.</param>
+    /// <param name="entityId">The id of the recipe entity to delete.</param>
     /// <param name="authorId">The id of the author the recipe belongs to.</param>
     /// <returns>A <see cref="RecipeRepositoryEntityData"/> containing the information of the deleted recipe.</returns>
     /// <exception cref="RepositoryDataDeleteException">Thrown when the data could not be successfully deleted.</exception>

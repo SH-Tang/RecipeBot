@@ -30,7 +30,7 @@ public interface IRecipeTagRepository
     /// <summary>
     /// Gets all the tags.
     /// </summary>
-    /// <returns>A collection of recipe tag entities.</returns>
+    /// <returns>A collection of recipe tags.</returns>
     Task<IReadOnlyList<RecipeTagRepositoryEntityData>> LoadRecipeTagEntriesAsync();
 
     /// <summary>
