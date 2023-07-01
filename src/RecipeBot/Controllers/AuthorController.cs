@@ -62,7 +62,7 @@ public class AuthorController : ControllerBase, IAuthorController
         repository.IsNotNull(nameof(repository));
 
         messageFormattingService = new DataEntryCollectionMessageFormattingService<AuthorEntryRow>(
-            limitProvider, header, entry => $"{entry.Id,-3} {entry.AuthorName,-50}");
+            limitProvider, header, entry => $"{entry.EntityId,-3} {entry.AuthorName,-50}");
 
         this.userDataProvider = userDataProvider;
         this.repository = repository;
@@ -105,31 +105,28 @@ public class AuthorController : ControllerBase, IAuthorController
 
     private async Task<IEnumerable<AuthorEntryRow>> CreateRows(IEnumerable<AuthorRepositoryEntityData> entries)
     {
-        IEnumerable<Task<Tuple<ulong, string>>> authorEntryTasks = entries.Select(CreateAuthorEntry);
-        Tuple<ulong, string>[] authorEntries = await Task.WhenAll(authorEntryTasks);
-        Dictionary<ulong, string> authorLookup = authorEntries.ToDictionary(entry => entry.Item1, entry => entry.Item2);
-
-        return entries.Select(e => new AuthorEntryRow
-        {
-            Id = e.EntityId,
-            AuthorName = authorLookup[e.AuthorId]
-        }).ToArray();
+        IEnumerable<Task<AuthorEntryRow>> authorEntryTasks = entries.Select(CreateAuthorEntryRow);
+        return await Task.WhenAll(authorEntryTasks);
     }
 
-    private async Task<Tuple<ulong, string>> CreateAuthorEntry(AuthorRepositoryEntityData entry)
+    private async Task<AuthorEntryRow> CreateAuthorEntryRow(AuthorRepositoryEntityData entry)
     {
         ulong authorId = entry.AuthorId;
         UserData userData = await userDataProvider.GetUserDataAsync(authorId);
 
-        return new Tuple<ulong, string>(authorId, userData.Username);
+        return new AuthorEntryRow
+        {
+            EntityId = entry.EntityId,
+            AuthorName = userData.Username
+        };
     }
 
     private sealed record AuthorEntryRow
     {
         /// <summary>
-        /// Gets the id of the author.
+        /// Gets the entity id of the author.
         /// </summary>
-        public long Id { get; init; }
+        public long EntityId { get; init; }
 
         /// <summary>
         /// Gets the name of the author of the recipe.
