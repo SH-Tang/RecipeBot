@@ -41,7 +41,7 @@ public class RecipeTagEntriesControllerTest
     {
         // Setup
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
-        var repository = Substitute.For<IRecipeTagEntryDataRepository>();
+        var repository = Substitute.For<IRecipeTagRepository>();
         var logger = Substitute.For<ILoggingService>();
 
         // Call
@@ -57,8 +57,8 @@ public class RecipeTagEntriesControllerTest
         // Setup
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
 
-        var repository = Substitute.For<IRecipeTagEntryDataRepository>();
-        repository.LoadRecipeTagEntriesAsync().ReturnsForAnyArgs(Array.Empty<RecipeTagEntryData>());
+        var repository = Substitute.For<IRecipeTagRepository>();
+        repository.LoadRecipeTagEntriesAsync().ReturnsForAnyArgs(Array.Empty<RecipeTagRepositoryEntityData>());
 
         var logger = Substitute.For<ILoggingService>();
         var controller = new RecipeTagEntriesController(limitProvider, repository, logger);
@@ -80,9 +80,9 @@ public class RecipeTagEntriesControllerTest
         limitProvider.MaxMessageLength.Returns(int.MaxValue);
 
         var fixture = new Fixture();
-        RecipeTagEntryData[] entries = fixture.CreateMany<RecipeTagEntryData>(3).ToArray();
+        RecipeTagRepositoryEntityData[] entries = fixture.CreateMany<RecipeTagRepositoryEntityData>(3).ToArray();
 
-        var repository = Substitute.For<IRecipeTagEntryDataRepository>();
+        var repository = Substitute.For<IRecipeTagRepository>();
         repository.LoadRecipeTagEntriesAsync().ReturnsForAnyArgs(entries);
 
         var logger = Substitute.For<ILoggingService>();
@@ -96,9 +96,9 @@ public class RecipeTagEntriesControllerTest
 
         string expectedMessage =
             $"{"Id",-3} {"Tag",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Tag,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Tag,-50}{Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Tag,-50}{Environment.NewLine}";
+            $"{entries[0].EntityId,-3} {entries[0].Tag,-50}{Environment.NewLine}" +
+            $"{entries[1].EntityId,-3} {entries[1].Tag,-50}{Environment.NewLine}" +
+            $"{entries[2].EntityId,-3} {entries[2].Tag,-50}{Environment.NewLine}";
         result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
@@ -113,9 +113,9 @@ public class RecipeTagEntriesControllerTest
         limitProvider.MaxMessageLength.Returns(maxMessageLength);
 
         var fixture = new Fixture();
-        RecipeTagEntryData[] entries = fixture.CreateMany<RecipeTagEntryData>(3).ToArray();
+        RecipeTagRepositoryEntityData[] entries = fixture.CreateMany<RecipeTagRepositoryEntityData>(3).ToArray();
 
-        var repository = Substitute.For<IRecipeTagEntryDataRepository>();
+        var repository = Substitute.For<IRecipeTagRepository>();
         repository.LoadRecipeTagEntriesAsync().ReturnsForAnyArgs(entries);
 
         var logger = Substitute.For<ILoggingService>();
@@ -129,12 +129,12 @@ public class RecipeTagEntriesControllerTest
 
         string expectedMessageOne =
             $"{"Id",-3} {"Tag",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Tag,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Tag,-50}{Environment.NewLine}";
+            $"{entries[0].EntityId,-3} {entries[0].Tag,-50}{Environment.NewLine}" +
+            $"{entries[1].EntityId,-3} {entries[1].Tag,-50}{Environment.NewLine}";
 
         string expectedMessageTwo =
             $"{"Id",-3} {"Tag",-50} {Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Tag,-50}{Environment.NewLine}";
+            $"{entries[2].EntityId,-3} {entries[2].Tag,-50}{Environment.NewLine}";
 
         result.Result.Should().BeEquivalentTo(new[]
         {
@@ -150,8 +150,8 @@ public class RecipeTagEntriesControllerTest
         var fixture = new Fixture();
         var idToDelete = fixture.Create<long>();
 
-        var deletedTag = fixture.Create<RecipeTagEntryData>();
-        var repository = Substitute.For<IRecipeTagEntryDataRepository>();
+        var deletedTag = fixture.Create<RecipeTagRepositoryEntityData>();
+        var repository = Substitute.For<IRecipeTagRepository>();
         repository.DeleteTagAsync(idToDelete).Returns(deletedTag);
 
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
@@ -165,7 +165,7 @@ public class RecipeTagEntriesControllerTest
         // Assert
         result.HasError.Should().BeFalse();
 
-        result.Result.Should().Be($"Tag '{deletedTag.Tag}' with id '{deletedTag.Id}' was successfully deleted.");
+        result.Result.Should().Be($"Tag '{deletedTag.Tag}' with id '{deletedTag.EntityId}' was successfully deleted.");
     }
 
     [Fact]
@@ -175,7 +175,7 @@ public class RecipeTagEntriesControllerTest
         var fixture = new Fixture();
         var exceptionMessage = fixture.Create<string>();
 
-        var repository = Substitute.For<IRecipeTagEntryDataRepository>();
+        var repository = Substitute.For<IRecipeTagRepository>();
         var exception = new RepositoryDataDeleteException(exceptionMessage);
         repository.DeleteTagAsync(Arg.Any<long>()).ThrowsAsyncForAnyArgs(exception);
 

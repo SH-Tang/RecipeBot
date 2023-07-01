@@ -78,6 +78,15 @@ namespace RecipeBot.Persistence.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Author entries could not be loaded due to invalid AuthorId &apos;{0}&apos;..
+        /// </summary>
+        internal static string AuthorRepository_Author_entries_could_not_be_loaded_due_to_invalid_AuthorId_0_ {
+            get {
+                return ResourceManager.GetString("AuthorRepository_Author_entries_could_not_be_loaded_due_to_invalid_AuthorId_0_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No matching author found..
         /// </summary>
         internal static string AuthorRepository_Delete_AuthorEntity_No_matching_author_found {
@@ -114,29 +123,29 @@ namespace RecipeBot.Persistence.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No recipe matches with id &apos;{0}&apos; for the author..
+        ///   Looks up a localized string similar to Author has no recipe that matches with id &apos;{0}&apos;..
         /// </summary>
-        internal static string RecipeRepository_Author_has_no_recipe_matches_with_Id_0_ {
+        internal static string RecipeRepository_Author_has_no_recipe_matches_with_EntityId_0_ {
             get {
-                return ResourceManager.GetString("RecipeRepository_Author_has_no_recipe_matches_with_Id_0_", resourceCulture);
+                return ResourceManager.GetString("RecipeRepository_Author_has_no_recipe_matches_with_EntityId_0_", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to No recipe matches with id &apos;{0}&apos;..
         /// </summary>
-        internal static string RecipeRepository_No_recipe_matches_with_Id_0 {
+        internal static string RecipeRepository_No_recipe_matches_with_EntityId_0 {
             get {
-                return ResourceManager.GetString("RecipeRepository_No_recipe_matches_with_Id_0", resourceCulture);
+                return ResourceManager.GetString("RecipeRepository_No_recipe_matches_with_EntityId_0", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to No tag matches with id &apos;{0}&apos;..
         /// </summary>
-        internal static string RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_Id_0_ {
+        internal static string RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_EntityId_0_ {
             get {
-                return ResourceManager.GetString("RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_Id_0_", resourceCulture);
+                return ResourceManager.GetString("RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_EntityId_0_", resourceCulture);
             }
         }
     }

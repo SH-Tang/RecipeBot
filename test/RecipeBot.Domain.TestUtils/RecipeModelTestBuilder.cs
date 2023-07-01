@@ -82,7 +82,7 @@ public class RecipeModelTestBuilder
         this.category = category;
         return this;
     }
-    
+
     /// <summary>
     /// Adds a collection of tags to the <see cref="RecipeModel"/>.
     /// </summary>

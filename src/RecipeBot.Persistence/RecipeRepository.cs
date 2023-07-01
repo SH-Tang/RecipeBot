@@ -72,33 +72,33 @@ public class RecipeRepository : IRecipeRepository
         }
     }
 
-    public async Task<RecipeEntryData> DeleteRecipeAsync(long id)
+    public async Task<RecipeRepositoryEntityData> DeleteRecipeAsync(long entityId)
     {
         RecipeEntity? entityToDelete = await context.RecipeEntities
                                                     .Include(e => e.Author)
-                                                    .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
+                                                    .SingleOrDefaultAsync(e => e.RecipeEntityId == entityId);
         if (entityToDelete == null)
         {
-            throw new RepositoryDataDeleteException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_Id_0, id));
+            throw new RepositoryDataDeleteException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_EntityId_0, entityId));
         }
 
         return await DeleteEntityAsync(entityToDelete);
     }
 
-    public async Task<RecipeEntryData> DeleteRecipeAsync(long id, ulong authorId)
+    public async Task<RecipeRepositoryEntityData> DeleteRecipeAsync(long entityId, ulong authorId)
     {
         RecipeEntity? entityToDelete = await context.RecipeEntities
                                                     .Include(e => e.Author)
-                                                    .SingleOrDefaultAsync(e => e.RecipeEntityId == id && e.Author.AuthorId == authorId.ToString());
+                                                    .SingleOrDefaultAsync(e => e.RecipeEntityId == entityId && e.Author.AuthorId == authorId.ToString());
         if (entityToDelete == null)
         {
-            throw new RepositoryDataDeleteException(string.Format(Resources.RecipeRepository_Author_has_no_recipe_matches_with_Id_0_, id));
+            throw new RepositoryDataDeleteException(string.Format(Resources.RecipeRepository_Author_has_no_recipe_matches_with_EntityId_0_, entityId));
         }
 
         return await DeleteEntityAsync(entityToDelete);
     }
 
-    public async Task<RecipeData> GetRecipeAsync(long id)
+    public async Task<RecipeData> GetRecipeAsync(long entityId)
     {
         RecipeEntity? entityToRetrieve = await context.RecipeEntities
                                                       .Include(e => e.RecipeFields)
@@ -106,10 +106,10 @@ public class RecipeRepository : IRecipeRepository
                                                       .Include(e => e.Tags)
                                                       .ThenInclude(e => e.Tag)
                                                       .AsNoTracking()
-                                                      .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
+                                                      .SingleOrDefaultAsync(e => e.RecipeEntityId == entityId);
         if (entityToRetrieve == null)
         {
-            throw new RepositoryDataLoadException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_Id_0, id));
+            throw new RepositoryDataLoadException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_EntityId_0, entityId));
         }
 
         return RecipeDataReader.Read(entityToRetrieve);
@@ -119,9 +119,9 @@ public class RecipeRepository : IRecipeRepository
     /// Deletes the entity from the database.
     /// </summary>
     /// <param name="entityToDelete">The entity to delete.</param>
-    /// <returns>A <see cref="RecipeEntryData"/> containing the information of the deleted entity.</returns>
+    /// <returns>A <see cref="RecipeRepositoryEntityData"/> containing the information of the deleted entity.</returns>
     /// <exception cref="RepositoryDataDeleteException">Thrown when the entity could not be deleted successfully.</exception>
-    private async Task<RecipeEntryData> DeleteEntityAsync(RecipeEntity entityToDelete)
+    private async Task<RecipeRepositoryEntityData> DeleteEntityAsync(RecipeEntity entityToDelete)
     {
         string authorId = entityToDelete.Author.AuthorId;
 
@@ -132,7 +132,7 @@ public class RecipeRepository : IRecipeRepository
             context.RecipeEntities.Remove(entityToDelete);
             await context.SaveChangesAsync();
 
-            return new RecipeEntryData(entityToDelete.RecipeEntityId, entityToDelete.RecipeTitle, parsedAuthorId);
+            return new RecipeRepositoryEntityData(entityToDelete.RecipeEntityId, entityToDelete.RecipeTitle, parsedAuthorId);
         }
         catch (Exception e) when (e is FormatException || e is OverflowException)
         {

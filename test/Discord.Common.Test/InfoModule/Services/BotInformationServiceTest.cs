@@ -48,8 +48,8 @@ public class BotInformationServiceTest
         result.Color.Should().Be(Color.Blue);
 
         string expectedTitle = botInformation.BotName == null
-            ? "Available commands"
-            : $"Available commands for {botInformation.BotName}";
+                                   ? "Available commands"
+                                   : $"Available commands for {botInformation.BotName}";
         result.Title.Should().Be(expectedTitle);
         result.Url.Should().Be(botInformation.BotInformationUrl);
 

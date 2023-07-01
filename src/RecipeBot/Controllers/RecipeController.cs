@@ -40,9 +40,8 @@ namespace RecipeBot.Controllers;
 /// <summary>
 /// A concrete implementation of the <see cref="IRecipeController"/>.
 /// </summary>
-public class RecipeController : IRecipeController
+public class RecipeController : ControllerBase, IRecipeController
 {
-    private readonly ILoggingService logger;
     private readonly RecipeModelCreationService modelCreationService;
     private readonly RecipeModelFactory modelFactory;
     private readonly IRecipeRepository repository;
@@ -59,19 +58,17 @@ public class RecipeController : IRecipeController
     public RecipeController(IRecipeModelCharacterLimitProvider limitProvider,
                             IUserDataProvider userDataProvider,
                             IRecipeRepository repository,
-                            ILoggingService logger)
+                            ILoggingService logger) : base(logger)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
         userDataProvider.IsNotNull(nameof(userDataProvider));
         repository.IsNotNull(nameof(repository));
-        logger.IsNotNull(nameof(logger));
 
         modelCreationService = new RecipeModelCreationService(limitProvider);
         modelFactory = new RecipeModelFactory(limitProvider);
 
         this.userDataProvider = userDataProvider;
         this.repository = repository;
-        this.logger = logger;
     }
 
     public async Task<ControllerResult<Embed>> SaveRecipeAsync(RecipeModal modal, IUser user,
@@ -115,11 +112,11 @@ public class RecipeController : IRecipeController
     {
         try
         {
-            RecipeEntryData deletedRecipe = await repository.DeleteRecipeAsync(idToDelete);
+            RecipeRepositoryEntityData deletedRecipe = await repository.DeleteRecipeAsync(idToDelete);
 
             UserData userData = await userDataProvider.GetUserDataAsync(deletedRecipe.AuthorId);
             return ControllerResult<string>.CreateControllerResultWithValidResult(string.Format(Resources.RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted,
-                                                                                                deletedRecipe.Title, deletedRecipe.Id, userData.Username));
+                                                                                                deletedRecipe.Title, deletedRecipe.EntityId, userData.Username));
         }
         catch (RepositoryDataDeleteException e)
         {
@@ -134,11 +131,11 @@ public class RecipeController : IRecipeController
         try
         {
             ulong authorId = user.Id;
-            RecipeEntryData deletedRecipe = await repository.DeleteRecipeAsync(idToDelete, authorId);
+            RecipeRepositoryEntityData deletedRecipe = await repository.DeleteRecipeAsync(idToDelete, authorId);
 
             UserData userData = await userDataProvider.GetUserDataAsync(authorId);
             return ControllerResult<string>.CreateControllerResultWithValidResult(string.Format(Resources.RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted,
-                                                                                                deletedRecipe.Title, deletedRecipe.Id, userData.Username));
+                                                                                                deletedRecipe.Title, deletedRecipe.EntityId, userData.Username));
         }
         catch (RepositoryDataDeleteException e)
         {
@@ -168,11 +165,5 @@ public class RecipeController : IRecipeController
         {
             return HandleException<Embed>(e);
         }
-    }
-
-    private ControllerResult<TResult> HandleException<TResult>(Exception e) where TResult : class
-    {
-        logger.LogError(e);
-        return ControllerResult<TResult>.CreateControllerResultWithError(e.Message);
     }
 }
