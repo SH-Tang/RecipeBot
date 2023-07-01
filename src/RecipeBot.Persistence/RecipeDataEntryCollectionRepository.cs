@@ -88,11 +88,11 @@ public class RecipeDataEntryCollectionRepository : IRecipeDataEntryCollectionRep
         return CreateRecipeEntryDataCollection(recipeDatabaseEntries);
     }
 
-    public async Task<IReadOnlyList<RecipeEntryRepositoryData>> LoadRecipeEntriesByTagIdAsync(long tagId)
+    public async Task<IReadOnlyList<RecipeEntryRepositoryData>> LoadRecipeEntriesByTagIdAsync(long tagEntityId)
     {
         IEnumerable<RecipeDatabaseEntry> recipeDatabaseEntries = await context.RecipeTagEntities
                                                                               .Include(te => te.Tag)
-                                                                              .Where(te => te.Tag.TagEntityId == tagId)
+                                                                              .Where(te => te.Tag.TagEntityId == tagEntityId)
                                                                               .Include(te => te.Recipe)
                                                                               .ThenInclude(r => r.Author)
                                                                               .Select(e => CreateRecipeDatabaseEntry(e))

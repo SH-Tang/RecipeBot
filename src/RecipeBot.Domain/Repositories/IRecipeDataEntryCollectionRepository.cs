@@ -53,12 +53,12 @@ public interface IRecipeDataEntryCollectionRepository
     Task<IReadOnlyList<RecipeEntryRepositoryData>> LoadRecipeEntriesByTagAsync(string tag);
 
     /// <summary>
-    /// Gets all the recipes filtered by a tag id.
+    /// Gets all the recipes filtered by a tag entity id.
     /// </summary>
-    /// <param name="tagId">The tag id to filter the recipes with.</param>
+    /// <param name="tagEntityId">The id of the tag entity to filter the recipes with.</param>
     /// <returns>A collection of filtered recipe entries.</returns>
     /// <exception cref="RepositoryDataLoadException">Thrown when the entries could not be successfully loaded.</exception>
-    Task<IReadOnlyList<RecipeEntryRepositoryData>> LoadRecipeEntriesByTagIdAsync(long tagId);
+    Task<IReadOnlyList<RecipeEntryRepositoryData>> LoadRecipeEntriesByTagIdAsync(long tagEntityId);
 
     /// <summary>
     /// Gets all the recipes filtered by an author id.
