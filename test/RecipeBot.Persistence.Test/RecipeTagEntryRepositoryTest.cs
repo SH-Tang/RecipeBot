@@ -51,7 +51,7 @@ public class RecipeTagEntryRepositoryTest : IDisposable
             var repository = new RecipeTagEntryRepository(context);
 
             // Call
-            IReadOnlyList<RecipeTagEntryData> entries = await repository.LoadRecipeTagEntriesAsync();
+            IReadOnlyList<RecipeTagRepositoryEntityData> entries = await repository.LoadRecipeTagEntriesAsync();
 
             // Assert
             entries.Should().BeEmpty();
@@ -88,13 +88,13 @@ public class RecipeTagEntryRepositoryTest : IDisposable
             var repository = new RecipeTagEntryRepository(context);
 
             // Call
-            IReadOnlyList<RecipeTagEntryData> entries = await repository.LoadRecipeTagEntriesAsync();
+            IReadOnlyList<RecipeTagRepositoryEntityData> entries = await repository.LoadRecipeTagEntriesAsync();
 
             // Assert
             entries.Should().BeEquivalentTo(tagEntities, options => options.ExcludingMissingMembers()
                                                                            .WithStrictOrderingFor(e => e.TagEntityId)
-                                                                           .WithMapping<TagEntity, RecipeTagEntryData>(s => s.TagEntityId, e => e.Id)
-                                                                           .WithMapping<TagEntity, RecipeTagEntryData>(s => s.Tag, e => e.Tag));
+                                                                           .WithMapping<TagEntity, RecipeTagRepositoryEntityData>(s => s.TagEntityId, e => e.EntityId)
+                                                                           .WithMapping<TagEntity, RecipeTagRepositoryEntityData>(s => s.Tag, e => e.Tag));
         }
     }
 
@@ -243,11 +243,11 @@ public class RecipeTagEntryRepositoryTest : IDisposable
             var repository = new RecipeTagEntryRepository(context);
 
             // Call
-            RecipeTagEntryData result = await repository.DeleteTagAsync(tagToDelete.TagEntityId);
+            RecipeTagRepositoryEntityData result = await repository.DeleteTagAsync(tagToDelete.TagEntityId);
             context.ChangeTracker.Clear();
 
             // Assert
-            result.Id.Should().Be(tagToDelete.TagEntityId);
+            result.EntityId.Should().Be(tagToDelete.TagEntityId);
             result.Tag.Should().Be(tagToDelete.Tag);
 
             context.AuthorEntities.Should().BeEquivalentTo(new[]

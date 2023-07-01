@@ -134,9 +134,9 @@ namespace RecipeBot.Persistence.Properties {
         /// <summary>
         ///   Looks up a localized string similar to No tag matches with id &apos;{0}&apos;..
         /// </summary>
-        internal static string RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_Id_0_ {
+        internal static string RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_EntityId_0_ {
             get {
-                return ResourceManager.GetString("RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_Id_0_", resourceCulture);
+                return ResourceManager.GetString("RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_EntityId_0_", resourceCulture);
             }
         }
     }

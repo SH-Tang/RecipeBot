@@ -30,14 +30,14 @@ public interface IRecipeTagEntryDataRepository
     /// <summary>
     /// Gets all the tags.
     /// </summary>
-    /// <returns>A collection of recipe tag entries.</returns>
-    Task<IReadOnlyList<RecipeTagEntryData>> LoadRecipeTagEntriesAsync();
+    /// <returns>A collection of recipe tag entities.</returns>
+    Task<IReadOnlyList<RecipeTagRepositoryEntityData>> LoadRecipeTagEntriesAsync();
 
     /// <summary>
-    /// Deletes a tag based on its id.
+    /// Deletes a tag based on its entity id.
     /// </summary>
-    /// <param name="id">The id of the tag to delete.</param>
-    /// <returns>A <see cref="RecipeTagEntryData"/> containing the information of the deleted tag.</returns>
+    /// <param name="entityId">The id of the tag entity to delete.</param>
+    /// <returns>A <see cref="RecipeTagRepositoryEntityData"/> containing the information of the deleted tag.</returns>
     /// <exception cref="RepositoryDataDeleteException">Thrown when the data could not be successfully deleted.</exception>
-    Task<RecipeTagEntryData> DeleteTagAsync(long id);
+    Task<RecipeTagRepositoryEntityData> DeleteTagAsync(long entityId);
 }

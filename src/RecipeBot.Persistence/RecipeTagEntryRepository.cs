@@ -47,29 +47,29 @@ public class RecipeTagEntryRepository : IRecipeTagEntryDataRepository
         this.context = context;
     }
 
-    public async Task<IReadOnlyList<RecipeTagEntryData>> LoadRecipeTagEntriesAsync()
+    public async Task<IReadOnlyList<RecipeTagRepositoryEntityData>> LoadRecipeTagEntriesAsync()
     {
         TagEntity[] tagEntities = await context.TagEntities.AsNoTracking().ToArrayAsync();
 
         return tagEntities.OrderBy(e => e.TagEntityId)
-                          .Select(e => new RecipeTagEntryData(e.TagEntityId, e.Tag))
+                          .Select(e => new RecipeTagRepositoryEntityData(e.TagEntityId, e.Tag))
                           .ToArray();
     }
 
-    public async Task<RecipeTagEntryData> DeleteTagAsync(long id)
+    public async Task<RecipeTagRepositoryEntityData> DeleteTagAsync(long entityId)
     {
         try
         {
-            TagEntity? tagToDelete = await context.TagEntities.SingleOrDefaultAsync(e => e.TagEntityId == id);
+            TagEntity? tagToDelete = await context.TagEntities.SingleOrDefaultAsync(e => e.TagEntityId == entityId);
             if (tagToDelete == null)
             {
-                throw new RepositoryDataDeleteException(string.Format(Resources.RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_Id_0_, id));
+                throw new RepositoryDataDeleteException(string.Format(Resources.RecipeTagEntryRepository_DeleteTagAsync_No_tag_matches_with_EntityId_0_, entityId));
             }
 
             context.TagEntities.Remove(tagToDelete);
             await context.SaveChangesAsync();
 
-            return new RecipeTagEntryData(tagToDelete.TagEntityId, tagToDelete.Tag);
+            return new RecipeTagRepositoryEntityData(tagToDelete.TagEntityId, tagToDelete.Tag);
         }
         catch (DbUpdateException ex)
         {

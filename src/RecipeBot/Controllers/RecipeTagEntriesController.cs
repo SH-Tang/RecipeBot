@@ -36,7 +36,7 @@ public class RecipeTagEntriesController : IRecipeTagEntriesController
 {
     private static readonly string header = $"{"Id",-3} {"Tag",-50} ";
 
-    private readonly DataEntryCollectionMessageFormattingService<RecipeTagEntryData> messageFormattingService;
+    private readonly DataEntryCollectionMessageFormattingService<RecipeTagRepositoryEntityData> messageFormattingService;
     private readonly IRecipeTagEntryDataRepository repository;
     private readonly ILoggingService logger;
 
@@ -54,15 +54,15 @@ public class RecipeTagEntriesController : IRecipeTagEntriesController
         repository.IsNotNull(nameof(repository));
         logger.IsNotNull(nameof(logger));
 
-        messageFormattingService = new DataEntryCollectionMessageFormattingService<RecipeTagEntryData>(
-            limitProvider, header, entry => $"{entry.Id,-3} {entry.Tag,-50}");
+        messageFormattingService = new DataEntryCollectionMessageFormattingService<RecipeTagRepositoryEntityData>(
+            limitProvider, header, entry => $"{entry.EntityId,-3} {entry.Tag,-50}");
         this.repository = repository;
         this.logger = logger;
     }
 
     public async Task<ControllerResult<IReadOnlyList<string>>> ListAllTagsAsync()
     {
-        IReadOnlyList<RecipeTagEntryData> tags = await repository.LoadRecipeTagEntriesAsync();
+        IReadOnlyList<RecipeTagRepositoryEntityData> tags = await repository.LoadRecipeTagEntriesAsync();
 
         return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
             messageFormattingService.CreateMessages(tags, Resources.RecipeTagEntriesController_No_saved_tags_are_found));
@@ -72,10 +72,10 @@ public class RecipeTagEntriesController : IRecipeTagEntriesController
     {
         try
         {
-            RecipeTagEntryData deletedTag = await repository.DeleteTagAsync(idToDelete);
+            RecipeTagRepositoryEntityData deletedTag = await repository.DeleteTagAsync(idToDelete);
 
             return ControllerResult<string>.CreateControllerResultWithValidResult(string.Format(Resources.RecipeTagEntriesController_DeleteTagAsync_Tag_0_with_Id_1_was_successfully_deleted,
-                                                                                                deletedTag.Tag, deletedTag.Id));
+                                                                                                deletedTag.Tag, deletedTag.EntityId));
         }
         catch (RepositoryDataDeleteException e)
         {
