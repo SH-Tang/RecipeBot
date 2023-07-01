@@ -300,6 +300,7 @@ public class AuthorRepositoryTest : IDisposable
     [InlineData("18446744073709551616")]
     public async Task Given_seeded_database_when_loading_authors_with_invalid_author_id_throws_exception(string invalidAuthorId)
     {
+        // Setup
         using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
