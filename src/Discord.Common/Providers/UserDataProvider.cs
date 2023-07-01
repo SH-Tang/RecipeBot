@@ -28,6 +28,12 @@ public class UserDataProvider : IUserDataProvider
     {
         IUser? user = await client.GetUserAsync(userId);
 
-        return user == null ? UserData.UnknownUser : new UserData(user.Username, user.GetAvatarUrl());
+        if (user == null)
+        {
+            return UserData.UnknownUser;
+        }
+
+        string displayName = user.GlobalName ?? user.Username;
+        return new UserData(displayName, user.GetAvatarUrl());
     }
 }
