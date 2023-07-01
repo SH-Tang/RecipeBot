@@ -64,7 +64,7 @@ public class RecipeEntriesController : ControllerBase, IRecipeEntriesController
         repository.IsNotNull(nameof(repository));
 
         messageFormattingService = new DataEntryCollectionMessageFormattingService<RecipeEntryRow>(
-            limitProvider, header, entry => $"{entry.Id,-3} {entry.Title,-50} {entry.AuthorName,-50}");
+            limitProvider, header, entry => $"{entry.EntityId,-3} {entry.Title,-50} {entry.AuthorName,-50}");
         this.userDataProvider = userDataProvider;
         this.repository = repository;
     }
@@ -166,7 +166,7 @@ public class RecipeEntriesController : ControllerBase, IRecipeEntriesController
 
         return entries.Select(e => new RecipeEntryRow
         {
-            Id = e.EntityId,
+            EntityId = e.EntityId,
             Title = e.Title,
             AuthorName = authorLookup[e.AuthorId]
         }).ToArray();
@@ -183,9 +183,9 @@ public class RecipeEntriesController : ControllerBase, IRecipeEntriesController
     private sealed record RecipeEntryRow
     {
         /// <summary>
-        /// Gets the id of the recipe.
+        /// Gets the entity id of the recipe.
         /// </summary>
-        public long Id { get; init; }
+        public long EntityId { get; init; }
 
         /// <summary>
         /// Gets the title of the recipe.
