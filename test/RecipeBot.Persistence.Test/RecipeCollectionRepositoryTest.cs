@@ -143,7 +143,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
             RecipeTitle = fixture.Create<string>()
         };
 
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
             await context.RecipeEntities.AddAsync(recipe);
@@ -296,7 +296,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
             RecipeTitle = fixture.Create<string>()
         };
 
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
             await context.RecipeEntities.AddAsync(recipe);
@@ -485,7 +485,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
     public async Task Given_database_with_invalid_author_when_loading_entries_by_tag_id_and_match_found_throws_exception(string invalidAuthorId)
     {
         // Setup
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
@@ -702,7 +702,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
     public async Task Given_database_with_invalid_author_when_loading_entries_by_tag_and_match_found_throws_exception(string invalidAuthorId)
     {
         // Setup
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
@@ -753,13 +753,12 @@ public class RecipeCollectionRepositoryTest : IDisposable
     public async Task Given_empty_database_when_loading_entries_by_author_id_returns_empty_collection()
     {
         // Given
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
             var fixture = new Fixture();
             var authorId = fixture.Create<ulong>();
-            
 
             var repository = new RecipeCollectionRepository(context);
 
@@ -775,7 +774,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
     public async Task Given_seeded_database_when_loading_entries_by_author_id_and_match_found_returns_filtered_and_sorted_by_id()
     {
         // Given
-        using (RecipeBotDbContext context = CreateContext())
+        using(RecipeBotDbContext context = CreateContext())
         {
             await context.Database.EnsureCreatedAsync();
 
@@ -837,7 +836,6 @@ public class RecipeCollectionRepositoryTest : IDisposable
                                   .WithMapping<RecipeRepositoryEntityData>(e => e.RecipeTitle, s => s.Title)
                                   .WithMapping<AuthorEntity, RecipeRepositoryEntityData>(e => e.AuthorId, s => s.AuthorId));
         }
-
     }
 
     public static IEnumerable<object[]> GetCategoryTests(RecipeCategory categoryToFilter)

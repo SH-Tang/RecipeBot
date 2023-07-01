@@ -81,7 +81,7 @@ public class BotInformationService
     private string GetSummaryTitle()
     {
         return botInformation.BotName == null
-            ? "Available commands"
-            : $"Available commands for {botInformation.BotName}";
+                   ? "Available commands"
+                   : $"Available commands for {botInformation.BotName}";
     }
 }

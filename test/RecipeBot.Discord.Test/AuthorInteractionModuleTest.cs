@@ -76,7 +76,6 @@ public class AuthorInteractionModuleTest
         commandAttribute!.Name.Should().Be(expectedName);
         commandAttribute.Description.Should().Be(expectedDescription);
 
-
         permissionAttribute.Should().NotBeNull();
         permissionAttribute!.Permissions.Should().Be(GuildPermission.Administrator | GuildPermission.ModerateMembers);
     }

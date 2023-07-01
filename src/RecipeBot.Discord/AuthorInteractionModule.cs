@@ -57,7 +57,7 @@ public class AuthorInteractionModule : InteractionModuleBase<SocketInteractionCo
     {
         try
         {
-            using (IServiceScope scope = scopeFactory.CreateScope())
+            using(IServiceScope scope = scopeFactory.CreateScope())
             {
                 var controller = scope.ServiceProvider.GetRequiredService<IAuthorController>();
                 ControllerResult<string> response = await controller.DeleteAuthorAsync(Context.User);
@@ -89,7 +89,7 @@ public class AuthorInteractionModule : InteractionModuleBase<SocketInteractionCo
     {
         try
         {
-            using (IServiceScope scope = scopeFactory.CreateScope())
+            using(IServiceScope scope = scopeFactory.CreateScope())
             {
                 var controller = scope.ServiceProvider.GetRequiredService<IAuthorController>();
                 IEnumerable<Task> tasks = await GetTasksAsync(controller.GetAllAuthorsAsync());
