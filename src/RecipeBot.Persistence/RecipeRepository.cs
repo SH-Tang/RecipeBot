@@ -72,33 +72,33 @@ public class RecipeRepository : IRecipeRepository
         }
     }
 
-    public async Task<RecipeEntryRepositoryData> DeleteRecipeAsync(long id)
+    public async Task<RecipeEntryRepositoryData> DeleteRecipeAsync(long entityId)
     {
         RecipeEntity? entityToDelete = await context.RecipeEntities
                                                     .Include(e => e.Author)
-                                                    .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
+                                                    .SingleOrDefaultAsync(e => e.RecipeEntityId == entityId);
         if (entityToDelete == null)
         {
-            throw new RepositoryDataDeleteException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_Id_0, id));
+            throw new RepositoryDataDeleteException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_EntityId_0, entityId));
         }
 
         return await DeleteEntityAsync(entityToDelete);
     }
 
-    public async Task<RecipeEntryRepositoryData> DeleteRecipeAsync(long id, ulong authorId)
+    public async Task<RecipeEntryRepositoryData> DeleteRecipeAsync(long entityId, ulong authorId)
     {
         RecipeEntity? entityToDelete = await context.RecipeEntities
                                                     .Include(e => e.Author)
-                                                    .SingleOrDefaultAsync(e => e.RecipeEntityId == id && e.Author.AuthorId == authorId.ToString());
+                                                    .SingleOrDefaultAsync(e => e.RecipeEntityId == entityId && e.Author.AuthorId == authorId.ToString());
         if (entityToDelete == null)
         {
-            throw new RepositoryDataDeleteException(string.Format(Resources.RecipeRepository_Author_has_no_recipe_matches_with_Id_0_, id));
+            throw new RepositoryDataDeleteException(string.Format(Resources.RecipeRepository_Author_has_no_recipe_matches_with_EntityId_0_, entityId));
         }
 
         return await DeleteEntityAsync(entityToDelete);
     }
 
-    public async Task<RecipeData> GetRecipeAsync(long id)
+    public async Task<RecipeData> GetRecipeAsync(long entityId)
     {
         RecipeEntity? entityToRetrieve = await context.RecipeEntities
                                                       .Include(e => e.RecipeFields)
@@ -106,10 +106,10 @@ public class RecipeRepository : IRecipeRepository
                                                       .Include(e => e.Tags)
                                                       .ThenInclude(e => e.Tag)
                                                       .AsNoTracking()
-                                                      .SingleOrDefaultAsync(e => e.RecipeEntityId == id);
+                                                      .SingleOrDefaultAsync(e => e.RecipeEntityId == entityId);
         if (entityToRetrieve == null)
         {
-            throw new RepositoryDataLoadException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_Id_0, id));
+            throw new RepositoryDataLoadException(string.Format(Resources.RecipeRepository_No_recipe_matches_with_EntityId_0, entityId));
         }
 
         return RecipeDataReader.Read(entityToRetrieve);
