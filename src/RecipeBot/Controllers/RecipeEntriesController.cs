@@ -125,7 +125,7 @@ public class RecipeEntriesController : ControllerBase, IRecipeEntriesController
     {
         try
         {
-            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByTagIdAsync(tagId);
+            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByTagEntityIdAsync(tagId);
             IEnumerable<RecipeEntryRow> rows = await CreateRows(entries);
             return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
                 messageFormattingService.CreateMessages(rows, string.Format(Resources.RecipeEntriesController_GetAllRecipesByTagAsync_No_saved_recipes_are_found_with_TagId_0_, tagId)));

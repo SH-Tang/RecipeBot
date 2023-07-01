@@ -327,7 +327,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
             var repository = new RecipeCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByTagIdAsync(fixture.Create<long>());
+            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByTagEntityIdAsync(fixture.Create<long>());
 
             // Assert
             entries.Should().BeEmpty();
@@ -377,7 +377,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
             var repository = new RecipeCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByTagIdAsync(fixture.Create<long>());
+            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByTagEntityIdAsync(fixture.Create<long>());
 
             // Assert
             entries.Should().BeEmpty();
@@ -463,7 +463,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
             var repository = new RecipeCollectionRepository(context);
 
             // Call
-            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByTagIdAsync(tagToFilter.TagEntityId);
+            IReadOnlyList<RecipeRepositoryEntityData> entries = await repository.LoadRecipeEntriesByTagEntityIdAsync(tagToFilter.TagEntityId);
 
             // Assert
             entries.Should().BeInAscendingOrder(s => s.EntityId).And.BeEquivalentTo(
@@ -524,7 +524,7 @@ public class RecipeCollectionRepositoryTest : IDisposable
             var repository = new RecipeCollectionRepository(context);
 
             // Call
-            Func<Task> call = () => repository.LoadRecipeEntriesByTagIdAsync(tagToFilter.TagEntityId);
+            Func<Task> call = () => repository.LoadRecipeEntriesByTagEntityIdAsync(tagToFilter.TagEntityId);
 
             // Assert
             await call.Should().ThrowAsync<RepositoryDataLoadException>()

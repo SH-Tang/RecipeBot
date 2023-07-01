@@ -88,7 +88,7 @@ public class RecipeCollectionRepository : IRecipeCollectionRepository
         return CreateRecipeEntryDataCollection(recipeDatabaseEntries);
     }
 
-    public async Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesByTagIdAsync(long tagEntityId)
+    public async Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesByTagEntityIdAsync(long tagEntityId)
     {
         IEnumerable<RecipeDatabaseEntry> recipeDatabaseEntries = await context.RecipeTagEntities
                                                                               .Include(te => te.Tag)

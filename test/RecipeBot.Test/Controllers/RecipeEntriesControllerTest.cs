@@ -638,7 +638,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeCollectionRepository>();
-        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
+        repository.LoadRecipeEntriesByTagEntityIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
         var logger = Substitute.For<ILoggingService>();
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
@@ -663,7 +663,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeCollectionRepository>();
-        repository.LoadRecipeEntriesByTagIdAsync(idToFilter).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
+        repository.LoadRecipeEntriesByTagEntityIdAsync(idToFilter).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
         var logger = Substitute.For<ILoggingService>();
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
@@ -672,7 +672,7 @@ public class RecipeEntriesControllerTest
         await controller.GetAllRecipesByTagIdAsync(idToFilter);
 
         // Assert
-        await repository.Received(1).LoadRecipeEntriesByTagIdAsync(idToFilter);
+        await repository.Received(1).LoadRecipeEntriesByTagEntityIdAsync(idToFilter);
     }
 
     [Fact]
@@ -696,7 +696,7 @@ public class RecipeEntriesControllerTest
         userDataProvider.GetUserDataAsync(authorId).Returns(UserDataTestFactory.Create(userName));
 
         var repository = Substitute.For<IRecipeCollectionRepository>();
-        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(entries);
+        repository.LoadRecipeEntriesByTagEntityIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(entries);
 
         var logger = Substitute.For<ILoggingService>();
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
@@ -731,7 +731,7 @@ public class RecipeEntriesControllerTest
         userDataProvider.GetUserDataAsync(entries[2].AuthorId).Returns(userData[2]);
 
         var repository = Substitute.For<IRecipeCollectionRepository>();
-        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(entries);
+        repository.LoadRecipeEntriesByTagEntityIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(entries);
 
         var logger = Substitute.For<ILoggingService>();
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
@@ -770,7 +770,7 @@ public class RecipeEntriesControllerTest
         userDataProvider.GetUserDataAsync(entries[2].AuthorId).Returns(userData[2]);
 
         var repository = Substitute.For<IRecipeCollectionRepository>();
-        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(entries);
+        repository.LoadRecipeEntriesByTagEntityIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(entries);
 
         var logger = Substitute.For<ILoggingService>();
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);
@@ -806,7 +806,7 @@ public class RecipeEntriesControllerTest
 
         var repository = Substitute.For<IRecipeCollectionRepository>();
         var exception = new RepositoryDataLoadException(exceptionMessage);
-        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ThrowsAsyncForAnyArgs(exception);
+        repository.LoadRecipeEntriesByTagEntityIdAsync(Arg.Any<long>()).ThrowsAsyncForAnyArgs(exception);
 
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var userDataProvider = Substitute.For<IUserDataProvider>();
@@ -831,7 +831,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeCollectionRepository>();
-        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
+        repository.LoadRecipeEntriesByTagEntityIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(Array.Empty<RecipeRepositoryEntityData>());
 
         var logger = Substitute.For<ILoggingService>();
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository, logger);

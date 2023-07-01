@@ -59,7 +59,7 @@ public interface IRecipeCollectionRepository
     /// <param name="tagEntityId">The id of the tag entity to filter the recipes with.</param>
     /// <returns>A collection of filtered recipe entries.</returns>
     /// <exception cref="RepositoryDataLoadException">Thrown when the entries could not be successfully loaded.</exception>
-    Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesByTagIdAsync(long tagEntityId);
+    Task<IReadOnlyList<RecipeRepositoryEntityData>> LoadRecipeEntriesByTagEntityIdAsync(long tagEntityId);
 
     /// <summary>
     /// Gets all the recipes filtered by an author id.
