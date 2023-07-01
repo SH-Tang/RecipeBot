@@ -44,7 +44,7 @@ public class RecipeEntriesControllerTest
         // Setup
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var userDataProvider = Substitute.For<IUserDataProvider>();
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
 
         // Call
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -60,7 +60,7 @@ public class RecipeEntriesControllerTest
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -90,7 +90,7 @@ public class RecipeEntriesControllerTest
             new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
         };
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(entries);
 
         var userName = fixture.Create<string>();
@@ -122,7 +122,7 @@ public class RecipeEntriesControllerTest
         var fixture = new Fixture();
         RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(entries);
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
@@ -166,7 +166,7 @@ public class RecipeEntriesControllerTest
         userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
         userDataProvider.GetUserDataAsync(entries[2].AuthorId).Returns(userData[2]);
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(entries);
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -200,7 +200,7 @@ public class RecipeEntriesControllerTest
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -232,7 +232,7 @@ public class RecipeEntriesControllerTest
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -264,7 +264,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(authorId).Returns(UserDataTestFactory.Create(userName));
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(entries);
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -298,7 +298,7 @@ public class RecipeEntriesControllerTest
         userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
         userDataProvider.GetUserDataAsync(entries[2].AuthorId).Returns(userData[2]);
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(entries);
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -336,7 +336,7 @@ public class RecipeEntriesControllerTest
         userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
         userDataProvider.GetUserDataAsync(entries[2].AuthorId).Returns(userData[2]);
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(entries);
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -373,7 +373,7 @@ public class RecipeEntriesControllerTest
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagAsync(Arg.Any<string>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -400,7 +400,7 @@ public class RecipeEntriesControllerTest
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagAsync(expectedTagArgument).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -432,7 +432,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(authorId).Returns(UserDataTestFactory.Create(userName));
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagAsync(Arg.Any<string>()).ReturnsForAnyArgs(entries);
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -466,7 +466,7 @@ public class RecipeEntriesControllerTest
         userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
         userDataProvider.GetUserDataAsync(entries[2].AuthorId).Returns(userData[2]);
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagAsync(Arg.Any<string>()).ReturnsForAnyArgs(entries);
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -504,7 +504,7 @@ public class RecipeEntriesControllerTest
         userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
         userDataProvider.GetUserDataAsync(entries[2].AuthorId).Returns(userData[2]);
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagAsync(Arg.Any<string>()).ReturnsForAnyArgs(entries);
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -541,7 +541,7 @@ public class RecipeEntriesControllerTest
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -565,7 +565,7 @@ public class RecipeEntriesControllerTest
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagIdAsync(idToFilter).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -597,7 +597,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(authorId).Returns(UserDataTestFactory.Create(userName));
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(entries);
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -631,7 +631,7 @@ public class RecipeEntriesControllerTest
         userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
         userDataProvider.GetUserDataAsync(entries[2].AuthorId).Returns(userData[2]);
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(entries);
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -669,7 +669,7 @@ public class RecipeEntriesControllerTest
         userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
         userDataProvider.GetUserDataAsync(entries[2].AuthorId).Returns(userData[2]);
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(entries);
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -703,7 +703,7 @@ public class RecipeEntriesControllerTest
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
 
         var user = Substitute.For<IUser>();
@@ -732,7 +732,7 @@ public class RecipeEntriesControllerTest
         var idToFilter = fixture.Create<ulong>();
         user.Id.Returns(idToFilter);
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByAuthorIdAsync(idToFilter).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -764,7 +764,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(authorId).Returns(UserDataTestFactory.Create(userName));
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByAuthorIdAsync(Arg.Any<ulong>()).ReturnsForAnyArgs(entries);
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -800,7 +800,7 @@ public class RecipeEntriesControllerTest
         userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
         userDataProvider.GetUserDataAsync(entries[2].AuthorId).Returns(userData[2]);
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByAuthorIdAsync(Arg.Any<ulong>()).ReturnsForAnyArgs(entries);
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
@@ -840,7 +840,7 @@ public class RecipeEntriesControllerTest
         userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
         userDataProvider.GetUserDataAsync(entries[2].AuthorId).Returns(userData[2]);
 
-        var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
+        var repository = Substitute.For<IRecipeCollectionRepository>();
         repository.LoadRecipeEntriesByAuthorIdAsync(Arg.Any<ulong>()).ReturnsForAnyArgs(entries);
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);

@@ -32,11 +32,11 @@ using Xunit;
 
 namespace RecipeBot.Persistence.Test;
 
-public class RecipeDataEntryCollectionRepositoryTest : IDisposable
+public class RecipeCollectionRepositoryTest : IDisposable
 {
     private readonly SqliteConnection connection;
 
-    public RecipeDataEntryCollectionRepositoryTest()
+    public RecipeCollectionRepositoryTest()
     {
         connection = new SqliteConnection("Filename=:memory:");
         connection.Open();
@@ -50,7 +50,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
         {
             await context.Database.EnsureCreatedAsync();
 
-            var repository = new RecipeDataEntryCollectionRepository(context);
+            var repository = new RecipeCollectionRepository(context);
 
             // Call
             IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesAsync();
@@ -109,7 +109,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
 
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeDataEntryCollectionRepository(context);
+            var repository = new RecipeCollectionRepository(context);
 
             // Call
             IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesAsync();
@@ -151,7 +151,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
 
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeDataEntryCollectionRepository(context);
+            var repository = new RecipeCollectionRepository(context);
 
             // Call
             Func<Task> call = () => repository.LoadRecipeEntriesAsync();
@@ -171,7 +171,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
         {
             await context.Database.EnsureCreatedAsync();
 
-            var repository = new RecipeDataEntryCollectionRepository(context);
+            var repository = new RecipeCollectionRepository(context);
 
             // Call
             IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByCategoryAsync(fixture.Create<RecipeCategory>());
@@ -229,7 +229,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
 
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeDataEntryCollectionRepository(context);
+            var repository = new RecipeCollectionRepository(context);
 
             // Call
             IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByCategoryAsync(RecipeCategory.Dessert);
@@ -261,7 +261,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
 
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeDataEntryCollectionRepository(context);
+            var repository = new RecipeCollectionRepository(context);
 
             // Call
             IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByCategoryAsync(categoryToFilter);
@@ -304,7 +304,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
 
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeDataEntryCollectionRepository(context);
+            var repository = new RecipeCollectionRepository(context);
 
             // Call
             Func<Task> call = () => repository.LoadRecipeEntriesByCategoryAsync(RecipeCategory.Other);
@@ -324,7 +324,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
         {
             await context.Database.EnsureCreatedAsync();
 
-            var repository = new RecipeDataEntryCollectionRepository(context);
+            var repository = new RecipeCollectionRepository(context);
 
             // Call
             IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByTagIdAsync(fixture.Create<long>());
@@ -374,7 +374,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeDataEntryCollectionRepository(context);
+            var repository = new RecipeCollectionRepository(context);
 
             // Call
             IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByTagIdAsync(fixture.Create<long>());
@@ -460,7 +460,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeDataEntryCollectionRepository(context);
+            var repository = new RecipeCollectionRepository(context);
 
             // Call
             IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByTagIdAsync(tagToFilter.TagEntityId);
@@ -521,7 +521,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeDataEntryCollectionRepository(context);
+            var repository = new RecipeCollectionRepository(context);
 
             // Call
             Func<Task> call = () => repository.LoadRecipeEntriesByTagIdAsync(tagToFilter.TagEntityId);
@@ -541,7 +541,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
         {
             await context.Database.EnsureCreatedAsync();
 
-            var repository = new RecipeDataEntryCollectionRepository(context);
+            var repository = new RecipeCollectionRepository(context);
 
             // Call
             IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByTagAsync(fixture.Create<string>());
@@ -591,7 +591,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeDataEntryCollectionRepository(context);
+            var repository = new RecipeCollectionRepository(context);
 
             // Call
             IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByTagAsync(fixture.Create<string>());
@@ -677,7 +677,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeDataEntryCollectionRepository(context);
+            var repository = new RecipeCollectionRepository(context);
 
             // Call
             IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByTagAsync(tagToFilter.Tag);
@@ -738,7 +738,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeDataEntryCollectionRepository(context);
+            var repository = new RecipeCollectionRepository(context);
 
             // Call
             Func<Task> call = () => repository.LoadRecipeEntriesByTagAsync(tagToFilter.Tag);
@@ -761,7 +761,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             var authorId = fixture.Create<ulong>();
             
 
-            var repository = new RecipeDataEntryCollectionRepository(context);
+            var repository = new RecipeCollectionRepository(context);
 
             // Call
             IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByAuthorIdAsync(authorId);
@@ -819,7 +819,7 @@ public class RecipeDataEntryCollectionRepositoryTest : IDisposable
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var repository = new RecipeDataEntryCollectionRepository(context);
+            var repository = new RecipeCollectionRepository(context);
 
             // Call
             IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByAuthorIdAsync(authorId);

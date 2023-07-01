@@ -25,9 +25,9 @@ using RecipeBot.Domain.Repositories.Data;
 namespace RecipeBot.Domain.Repositories;
 
 /// <summary>
-/// Interface for describing a repository for handling data persistence of collections of recipe entries.
+/// Interface for describing a repository for handling data persistence of recipe collections.
 /// </summary>
-public interface IRecipeDataEntryCollectionRepository
+public interface IRecipeCollectionRepository
 {
     /// <summary>
     /// Gets all the recipes.

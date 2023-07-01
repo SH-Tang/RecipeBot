@@ -42,7 +42,7 @@ public class RecipeEntriesController : IRecipeEntriesController
 
     private readonly DataEntryCollectionMessageFormattingService<RecipeEntryRow> messageFormattingService;
     private readonly IUserDataProvider userDataProvider;
-    private readonly IRecipeDataEntryCollectionRepository repository;
+    private readonly IRecipeCollectionRepository repository;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeEntriesController"/>.
@@ -53,7 +53,7 @@ public class RecipeEntriesController : IRecipeEntriesController
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     public RecipeEntriesController(IMessageCharacterLimitProvider limitProvider,
                                    IUserDataProvider userDataProvider,
-                                   IRecipeDataEntryCollectionRepository repository)
+                                   IRecipeCollectionRepository repository)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
         userDataProvider.IsNotNull(nameof(userDataProvider));
