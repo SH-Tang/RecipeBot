@@ -32,13 +32,12 @@ namespace RecipeBot.Controllers;
 /// <summary>
 /// A concrete implementation of the <see cref="IRecipeTagEntriesController"/>.
 /// </summary>
-public class RecipeTagEntriesController : IRecipeTagEntriesController
+public class RecipeTagEntriesController : ControllerBase, IRecipeTagEntriesController
 {
     private static readonly string header = $"{"Id",-3} {"Tag",-50} ";
 
     private readonly DataEntryCollectionMessageFormattingService<RecipeTagRepositoryEntityData> messageFormattingService;
     private readonly IRecipeTagRepository repository;
-    private readonly ILoggingService logger;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeTagEntriesController"/>.
@@ -48,16 +47,14 @@ public class RecipeTagEntriesController : IRecipeTagEntriesController
     /// <param name="logger">The logger to log with.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
     public RecipeTagEntriesController(IMessageCharacterLimitProvider limitProvider,
-                                      IRecipeTagRepository repository, ILoggingService logger)
+                                      IRecipeTagRepository repository, ILoggingService logger) : base(logger)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
         repository.IsNotNull(nameof(repository));
-        logger.IsNotNull(nameof(logger));
 
         messageFormattingService = new DataEntryCollectionMessageFormattingService<RecipeTagRepositoryEntityData>(
             limitProvider, header, entry => $"{entry.EntityId,-3} {entry.Tag,-50}");
         this.repository = repository;
-        this.logger = logger;
     }
 
     public async Task<ControllerResult<IReadOnlyList<string>>> ListAllTagsAsync()
@@ -79,8 +76,7 @@ public class RecipeTagEntriesController : IRecipeTagEntriesController
         }
         catch (RepositoryDataDeleteException e)
         {
-            await logger.LogErrorAsync(e);
-            return ControllerResult<string>.CreateControllerResultWithError(e.Message);
+            return await HandleException<string>(e);
         }
     }
 }

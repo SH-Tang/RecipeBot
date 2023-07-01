@@ -35,13 +35,12 @@ namespace RecipeBot.Controllers;
 /// <summary>
 /// A concrete implementation of <see cref="IAuthorController"/>.
 /// </summary>
-public class AuthorController : IAuthorController
+public class AuthorController : ControllerBase, IAuthorController
 {
     private static readonly string header = $"{"Id",-3} {"Author",-50} ";
 
     private readonly DataEntryCollectionMessageFormattingService<AuthorEntryRow> messageFormattingService;
 
-    private readonly ILoggingService logger;
     private readonly IAuthorRepository repository;
     private readonly IUserDataProvider userDataProvider;
 
@@ -56,19 +55,17 @@ public class AuthorController : IAuthorController
     public AuthorController(IMessageCharacterLimitProvider limitProvider,
                             IUserDataProvider userDataProvider,
                             IAuthorRepository repository,
-                            ILoggingService logger)
+                            ILoggingService logger) : base(logger)
     {
         limitProvider.IsNotNull(nameof(limitProvider));
         userDataProvider.IsNotNull(nameof(userDataProvider));
         repository.IsNotNull(nameof(repository));
-        logger.IsNotNull(nameof(logger));
 
         messageFormattingService = new DataEntryCollectionMessageFormattingService<AuthorEntryRow>(
             limitProvider, header, entry => $"{entry.Id,-3} {entry.AuthorName,-50}");
 
         this.userDataProvider = userDataProvider;
         this.repository = repository;
-        this.logger = logger;
     }
 
     public async Task<ControllerResult<string>> DeleteAuthorAsync(IUser user)
@@ -104,12 +101,6 @@ public class AuthorController : IAuthorController
         {
             return await HandleException<IReadOnlyList<string>>(e);
         }
-    }
-
-    private async Task<ControllerResult<TResult>> HandleException<TResult>(Exception e) where TResult : class
-    {
-        await logger.LogErrorAsync(e);
-        return ControllerResult<TResult>.CreateControllerResultWithError(e.Message);
     }
 
     private async Task<IEnumerable<AuthorEntryRow>> CreateRows(IEnumerable<AuthorRepositoryEntityData> entries)
