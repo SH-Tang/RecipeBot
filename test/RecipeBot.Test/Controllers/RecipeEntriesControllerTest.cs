@@ -61,7 +61,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
-        repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+        repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
 
@@ -86,8 +86,8 @@ public class RecipeEntriesControllerTest
 
         var entries = new[]
         {
-            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
-            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
+            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
+            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
         };
 
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
@@ -107,8 +107,8 @@ public class RecipeEntriesControllerTest
 
         string expectedMessage =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {userName,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {userName,-50}{Environment.NewLine}";
+            $"{entries[0].EntityId,-3} {entries[0].Title,-50} {userName,-50}{Environment.NewLine}" +
+            $"{entries[1].EntityId,-3} {entries[1].Title,-50} {userName,-50}{Environment.NewLine}";
         result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
@@ -120,7 +120,7 @@ public class RecipeEntriesControllerTest
         limitProvider.MaxMessageLength.Returns(int.MaxValue);
 
         var fixture = new Fixture();
-        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
 
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
         repository.LoadRecipeEntriesAsync().ReturnsForAnyArgs(entries);
@@ -141,9 +141,9 @@ public class RecipeEntriesControllerTest
 
         string expectedMessage =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
+            $"{entries[0].EntityId,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
+            $"{entries[1].EntityId,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}" +
+            $"{entries[2].EntityId,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
         result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
@@ -158,7 +158,7 @@ public class RecipeEntriesControllerTest
         limitProvider.MaxMessageLength.Returns(maxMessageLength);
 
         var fixture = new Fixture();
-        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
@@ -179,12 +179,12 @@ public class RecipeEntriesControllerTest
 
         string expectedMessageOne =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}";
+            $"{entries[0].EntityId,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
+            $"{entries[1].EntityId,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}";
 
         string expectedMessageTwo =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
+            $"{entries[2].EntityId,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
 
         result.Result.Should().BeEquivalentTo(new[]
         {
@@ -201,7 +201,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
-        repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+        repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
 
@@ -233,7 +233,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
-        repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+        repository.LoadRecipeEntriesByCategoryAsync(Arg.Any<RecipeCategory>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
 
@@ -256,8 +256,8 @@ public class RecipeEntriesControllerTest
 
         var entries = new[]
         {
-            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
-            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
+            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
+            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
         };
 
         var userName = fixture.Create<string>();
@@ -277,8 +277,8 @@ public class RecipeEntriesControllerTest
 
         string expectedMessage =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {userName,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {userName,-50}{Environment.NewLine}";
+            $"{entries[0].EntityId,-3} {entries[0].Title,-50} {userName,-50}{Environment.NewLine}" +
+            $"{entries[1].EntityId,-3} {entries[1].Title,-50} {userName,-50}{Environment.NewLine}";
         result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
@@ -290,7 +290,7 @@ public class RecipeEntriesControllerTest
         limitProvider.MaxMessageLength.Returns(int.MaxValue);
 
         var fixture = new Fixture();
-        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
@@ -311,9 +311,9 @@ public class RecipeEntriesControllerTest
 
         string expectedMessage =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
+            $"{entries[0].EntityId,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
+            $"{entries[1].EntityId,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}" +
+            $"{entries[2].EntityId,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
         result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
@@ -328,7 +328,7 @@ public class RecipeEntriesControllerTest
         limitProvider.MaxMessageLength.Returns(maxMessageLength);
 
         var fixture = new Fixture();
-        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
@@ -349,12 +349,12 @@ public class RecipeEntriesControllerTest
 
         string expectedMessageOne =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}";
+            $"{entries[0].EntityId,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
+            $"{entries[1].EntityId,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}";
 
         string expectedMessageTwo =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
+            $"{entries[2].EntityId,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
 
         result.Result.Should().BeEquivalentTo(new[]
         {
@@ -374,7 +374,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
-        repository.LoadRecipeEntriesByTagAsync(Arg.Any<string>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+        repository.LoadRecipeEntriesByTagAsync(Arg.Any<string>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
 
@@ -401,7 +401,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
-        repository.LoadRecipeEntriesByTagAsync(expectedTagArgument).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+        repository.LoadRecipeEntriesByTagAsync(expectedTagArgument).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
 
@@ -424,8 +424,8 @@ public class RecipeEntriesControllerTest
 
         var entries = new[]
         {
-            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
-            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
+            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
+            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
         };
 
         var userName = fixture.Create<string>();
@@ -445,8 +445,8 @@ public class RecipeEntriesControllerTest
 
         string expectedMessage =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {userName,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {userName,-50}{Environment.NewLine}";
+            $"{entries[0].EntityId,-3} {entries[0].Title,-50} {userName,-50}{Environment.NewLine}" +
+            $"{entries[1].EntityId,-3} {entries[1].Title,-50} {userName,-50}{Environment.NewLine}";
         result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
@@ -458,7 +458,7 @@ public class RecipeEntriesControllerTest
         limitProvider.MaxMessageLength.Returns(int.MaxValue);
 
         var fixture = new Fixture();
-        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
@@ -479,9 +479,9 @@ public class RecipeEntriesControllerTest
 
         string expectedMessage =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
+            $"{entries[0].EntityId,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
+            $"{entries[1].EntityId,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}" +
+            $"{entries[2].EntityId,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
         result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
@@ -496,7 +496,7 @@ public class RecipeEntriesControllerTest
         limitProvider.MaxMessageLength.Returns(maxMessageLength);
 
         var fixture = new Fixture();
-        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
@@ -517,12 +517,12 @@ public class RecipeEntriesControllerTest
 
         string expectedMessageOne =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}";
+            $"{entries[0].EntityId,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
+            $"{entries[1].EntityId,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}";
 
         string expectedMessageTwo =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
+            $"{entries[2].EntityId,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
 
         result.Result.Should().BeEquivalentTo(new[]
         {
@@ -542,7 +542,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
-        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
 
@@ -566,7 +566,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
-        repository.LoadRecipeEntriesByTagIdAsync(idToFilter).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+        repository.LoadRecipeEntriesByTagIdAsync(idToFilter).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
 
@@ -589,8 +589,8 @@ public class RecipeEntriesControllerTest
 
         var entries = new[]
         {
-            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
-            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
+            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
+            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
         };
 
         var userName = fixture.Create<string>();
@@ -610,8 +610,8 @@ public class RecipeEntriesControllerTest
 
         string expectedMessage =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {userName,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {userName,-50}{Environment.NewLine}";
+            $"{entries[0].EntityId,-3} {entries[0].Title,-50} {userName,-50}{Environment.NewLine}" +
+            $"{entries[1].EntityId,-3} {entries[1].Title,-50} {userName,-50}{Environment.NewLine}";
         result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
@@ -623,7 +623,7 @@ public class RecipeEntriesControllerTest
         limitProvider.MaxMessageLength.Returns(int.MaxValue);
 
         var fixture = new Fixture();
-        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
@@ -644,9 +644,9 @@ public class RecipeEntriesControllerTest
 
         string expectedMessage =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
+            $"{entries[0].EntityId,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
+            $"{entries[1].EntityId,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}" +
+            $"{entries[2].EntityId,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
         result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
@@ -661,7 +661,7 @@ public class RecipeEntriesControllerTest
         limitProvider.MaxMessageLength.Returns(maxMessageLength);
 
         var fixture = new Fixture();
-        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
@@ -682,12 +682,12 @@ public class RecipeEntriesControllerTest
 
         string expectedMessageOne =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}";
+            $"{entries[0].EntityId,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
+            $"{entries[1].EntityId,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}";
 
         string expectedMessageTwo =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
+            $"{entries[2].EntityId,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
 
         result.Result.Should().BeEquivalentTo(new[]
         {
@@ -704,7 +704,7 @@ public class RecipeEntriesControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
 
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
-        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+        repository.LoadRecipeEntriesByTagIdAsync(Arg.Any<long>()).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
 
         var user = Substitute.For<IUser>();
 
@@ -733,7 +733,7 @@ public class RecipeEntriesControllerTest
         user.Id.Returns(idToFilter);
 
         var repository = Substitute.For<IRecipeDataEntryCollectionRepository>();
-        repository.LoadRecipeEntriesByAuthorIdAsync(idToFilter).ReturnsForAnyArgs(Array.Empty<RecipeEntryData>());
+        repository.LoadRecipeEntriesByAuthorIdAsync(idToFilter).ReturnsForAnyArgs(Array.Empty<RecipeEntryRepositoryData>());
 
         var controller = new RecipeEntriesController(limitProvider, userDataProvider, repository);
 
@@ -756,8 +756,8 @@ public class RecipeEntriesControllerTest
 
         var entries = new[]
         {
-            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
-            new RecipeEntryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
+            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId),
+            new RecipeEntryRepositoryData(fixture.Create<long>(), fixture.Create<string>(), authorId)
         };
 
         var userName = fixture.Create<string>();
@@ -777,8 +777,8 @@ public class RecipeEntriesControllerTest
 
         string expectedMessage =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {userName,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {userName,-50}{Environment.NewLine}";
+            $"{entries[0].EntityId,-3} {entries[0].Title,-50} {userName,-50}{Environment.NewLine}" +
+            $"{entries[1].EntityId,-3} {entries[1].Title,-50} {userName,-50}{Environment.NewLine}";
         result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
@@ -792,7 +792,7 @@ public class RecipeEntriesControllerTest
         var fixture = new Fixture();
         var user = Substitute.For<IUser>();
 
-        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
@@ -813,9 +813,9 @@ public class RecipeEntriesControllerTest
 
         string expectedMessage =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
+            $"{entries[0].EntityId,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
+            $"{entries[1].EntityId,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}" +
+            $"{entries[2].EntityId,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
         result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
     }
 
@@ -832,7 +832,7 @@ public class RecipeEntriesControllerTest
         var fixture = new Fixture();
         var user = Substitute.For<IUser>();
         
-        RecipeEntryData[] entries = fixture.CreateMany<RecipeEntryData>(3).ToArray();
+        RecipeEntryRepositoryData[] entries = fixture.CreateMany<RecipeEntryRepositoryData>(3).ToArray();
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
@@ -853,12 +853,12 @@ public class RecipeEntriesControllerTest
 
         string expectedMessageOne =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].Id,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
-            $"{entries[1].Id,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}";
+            $"{entries[0].EntityId,-3} {entries[0].Title,-50} {userData[0].Username,-50}{Environment.NewLine}" +
+            $"{entries[1].EntityId,-3} {entries[1].Title,-50} {userData[1].Username,-50}{Environment.NewLine}";
 
         string expectedMessageTwo =
             $"{"Id",-3} {"Title",-50} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[2].Id,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
+            $"{entries[2].EntityId,-3} {entries[2].Title,-50} {userData[2].Username,-50}{Environment.NewLine}";
 
         result.Result.Should().BeEquivalentTo(new[]
         {

@@ -115,11 +115,11 @@ public class RecipeController : IRecipeController
     {
         try
         {
-            RecipeEntryData deletedRecipe = await repository.DeleteRecipeAsync(idToDelete);
+            RecipeEntryRepositoryData deletedRecipe = await repository.DeleteRecipeAsync(idToDelete);
 
             UserData userData = await userDataProvider.GetUserDataAsync(deletedRecipe.AuthorId);
             return ControllerResult<string>.CreateControllerResultWithValidResult(string.Format(Resources.RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted,
-                                                                                                deletedRecipe.Title, deletedRecipe.Id, userData.Username));
+                                                                                                deletedRecipe.Title, deletedRecipe.EntityId, userData.Username));
         }
         catch (RepositoryDataDeleteException e)
         {
@@ -134,11 +134,11 @@ public class RecipeController : IRecipeController
         try
         {
             ulong authorId = user.Id;
-            RecipeEntryData deletedRecipe = await repository.DeleteRecipeAsync(idToDelete, authorId);
+            RecipeEntryRepositoryData deletedRecipe = await repository.DeleteRecipeAsync(idToDelete, authorId);
 
             UserData userData = await userDataProvider.GetUserDataAsync(authorId);
             return ControllerResult<string>.CreateControllerResultWithValidResult(string.Format(Resources.RecipeController_DeleteRecipeAsync_RecipeTitle_0_with_RecipeId_1_and_AuthorName_2_was_succesfully_deleted,
-                                                                                                deletedRecipe.Title, deletedRecipe.Id, userData.Username));
+                                                                                                deletedRecipe.Title, deletedRecipe.EntityId, userData.Username));
         }
         catch (RepositoryDataDeleteException e)
         {

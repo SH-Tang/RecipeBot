@@ -72,7 +72,7 @@ public class RecipeRepository : IRecipeRepository
         }
     }
 
-    public async Task<RecipeEntryData> DeleteRecipeAsync(long id)
+    public async Task<RecipeEntryRepositoryData> DeleteRecipeAsync(long id)
     {
         RecipeEntity? entityToDelete = await context.RecipeEntities
                                                     .Include(e => e.Author)
@@ -85,7 +85,7 @@ public class RecipeRepository : IRecipeRepository
         return await DeleteEntityAsync(entityToDelete);
     }
 
-    public async Task<RecipeEntryData> DeleteRecipeAsync(long id, ulong authorId)
+    public async Task<RecipeEntryRepositoryData> DeleteRecipeAsync(long id, ulong authorId)
     {
         RecipeEntity? entityToDelete = await context.RecipeEntities
                                                     .Include(e => e.Author)
@@ -119,9 +119,9 @@ public class RecipeRepository : IRecipeRepository
     /// Deletes the entity from the database.
     /// </summary>
     /// <param name="entityToDelete">The entity to delete.</param>
-    /// <returns>A <see cref="RecipeEntryData"/> containing the information of the deleted entity.</returns>
+    /// <returns>A <see cref="RecipeEntryRepositoryData"/> containing the information of the deleted entity.</returns>
     /// <exception cref="RepositoryDataDeleteException">Thrown when the entity could not be deleted successfully.</exception>
-    private async Task<RecipeEntryData> DeleteEntityAsync(RecipeEntity entityToDelete)
+    private async Task<RecipeEntryRepositoryData> DeleteEntityAsync(RecipeEntity entityToDelete)
     {
         string authorId = entityToDelete.Author.AuthorId;
 
@@ -132,7 +132,7 @@ public class RecipeRepository : IRecipeRepository
             context.RecipeEntities.Remove(entityToDelete);
             await context.SaveChangesAsync();
 
-            return new RecipeEntryData(entityToDelete.RecipeEntityId, entityToDelete.RecipeTitle, parsedAuthorId);
+            return new RecipeEntryRepositoryData(entityToDelete.RecipeEntityId, entityToDelete.RecipeTitle, parsedAuthorId);
         }
         catch (Exception e) when (e is FormatException || e is OverflowException)
         {

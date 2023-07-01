@@ -67,7 +67,7 @@ public class RecipeEntriesController : IRecipeEntriesController
 
     public async Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesAsync()
     {
-        IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesAsync();
+        IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesAsync();
         IEnumerable<RecipeEntryRow> rows = await CreateRows(entries);
         
         return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
@@ -79,7 +79,7 @@ public class RecipeEntriesController : IRecipeEntriesController
         category.IsValidEnum(nameof(category));
 
         RecipeCategory repositoryCategory = RecipeCategoryConverter.ConvertFrom(category);
-        IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByCategoryAsync(repositoryCategory);
+        IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByCategoryAsync(repositoryCategory);
         IEnumerable<RecipeEntryRow> rows = await CreateRows(entries);
 
         return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
@@ -89,7 +89,7 @@ public class RecipeEntriesController : IRecipeEntriesController
     public async Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByTagAsync(string tag)
     {
         string postProcessTag = Regex.Replace(tag, @"\s+", "", RegexOptions.None, TimeSpan.FromMilliseconds(100)).ToLower();
-        IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByTagAsync(postProcessTag);
+        IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByTagAsync(postProcessTag);
         IEnumerable<RecipeEntryRow> rows = await CreateRows(entries);
         
         return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
@@ -98,7 +98,7 @@ public class RecipeEntriesController : IRecipeEntriesController
 
     public async Task<ControllerResult<IReadOnlyList<string>>> GetAllRecipesByTagIdAsync(long tagId)
     {
-        IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByTagIdAsync(tagId);
+        IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByTagIdAsync(tagId);
         IEnumerable<RecipeEntryRow> rows = await CreateRows(entries);
 
         return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
@@ -112,14 +112,14 @@ public class RecipeEntriesController : IRecipeEntriesController
             throw new ArgumentNullException(nameof(user));
         }
 
-        IReadOnlyList<RecipeEntryData> entries = await repository.LoadRecipeEntriesByAuthorIdAsync(user.Id);
+        IReadOnlyList<RecipeEntryRepositoryData> entries = await repository.LoadRecipeEntriesByAuthorIdAsync(user.Id);
         IEnumerable<RecipeEntryRow> rows = await CreateRows(entries);
 
         return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
             messageFormattingService.CreateMessages(rows, Resources.RecipeEntriesController_GetRecipes_No_saved_recipes_are_found));
     }
 
-    private async Task<IEnumerable<RecipeEntryRow>> CreateRows(IEnumerable<RecipeEntryData> entries)
+    private async Task<IEnumerable<RecipeEntryRow>> CreateRows(IEnumerable<RecipeEntryRepositoryData> entries)
     {
         IEnumerable<Task<Tuple<ulong, string>>> authorEntryTasks = entries.Select(CreateAuthorEntry);
         Tuple<ulong, string>[] authorEntries = await Task.WhenAll(authorEntryTasks);
@@ -128,13 +128,13 @@ public class RecipeEntriesController : IRecipeEntriesController
 
         return entries.Select(e => new RecipeEntryRow
         {
-            Id = e.Id,
+            Id = e.EntityId,
             Title = e.Title,
             AuthorName = authorLookup[e.AuthorId]
         }).ToArray();
     }
 
-    private async Task<Tuple<ulong, string>> CreateAuthorEntry(RecipeEntryData entry)
+    private async Task<Tuple<ulong, string>> CreateAuthorEntry(RecipeEntryRepositoryData entry)
     {
         ulong authorId = entry.AuthorId;
         UserData userData = await userDataProvider.GetUserDataAsync(authorId);
