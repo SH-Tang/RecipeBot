@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
@@ -42,7 +41,7 @@ public class AuthorInteractionModule : DiscordInteractionModuleBase
     /// <param name="scopeFactory">The <see cref="IServiceScopeFactory"/> to resolve dependencies with.</param>
     /// <param name="logger">The logger to use.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public AuthorInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger):
+    public AuthorInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger) :
         base(logger)
     {
         scopeFactory.IsNotNull(nameof(scopeFactory));
@@ -75,10 +74,9 @@ public class AuthorInteractionModule : DiscordInteractionModuleBase
     [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ModerateMembers)]
     public async Task ListAuthors()
     {
-
         await ExecuteControllerAction(async () =>
         {
-            using (IServiceScope scope = scopeFactory.CreateScope())
+            using(IServiceScope scope = scopeFactory.CreateScope())
             {
                 var controller = scope.ServiceProvider.GetRequiredService<IAuthorController>();
                 IEnumerable<Task> tasks = await GetTasksAsync(controller.GetAllAuthorsAsync());

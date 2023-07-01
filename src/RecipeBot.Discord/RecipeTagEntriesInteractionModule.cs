@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
@@ -54,7 +53,7 @@ public class RecipeTagEntriesInteractionModule : DiscordInteractionModuleBase
     {
         await ExecuteControllerAction(async () =>
         {
-            using (IServiceScope scope = scopeFactory.CreateScope())
+            using(IServiceScope scope = scopeFactory.CreateScope())
             {
                 var controller = scope.ServiceProvider.GetRequiredService<IRecipeTagEntriesController>();
 
