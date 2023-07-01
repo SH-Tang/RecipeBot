@@ -24,6 +24,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using RecipeBot.Domain.Exceptions;
 using RecipeBot.Domain.Repositories;
+using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.Persistence.Entities;
 using Xunit;
 
@@ -43,7 +44,7 @@ public class AuthorRepositoryTest : IDisposable
     public void Repository_is_recipe_repository()
     {
         // Setup
-        using (var context = new RecipeBotDbContext(new DbContextOptions<RecipeBotDbContext>()))
+        using(var context = new RecipeBotDbContext(new DbContextOptions<RecipeBotDbContext>()))
         {
             // Call
             var repository = new AuthorRepository(context);
@@ -222,6 +223,118 @@ public class AuthorRepositoryTest : IDisposable
 
             recipeEntity.RecipeFields.Should().BeEquivalentTo(unaffectedRecipe.RecipeFields, options => options.Excluding(s => s.Recipe));
         }
+    }
+
+    [Fact]
+    public async Task Given_empty_database_when_loading_authors_returns_empty_collection()
+    {
+        // Setup
+        using(RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var repository = new AuthorRepository(context);
+
+            // Call
+            IReadOnlyCollection<AuthorRepositoryEntityData> authors = await repository.LoadAuthorsAsync();
+
+            // Assert
+            authors.Should().BeEmpty();
+        }
+    }
+
+    [Fact]
+    public async Task Given_seeded_database_when_loading_authors_returns_collection_sorted_by_entity_id()
+    {
+        // Setup
+        using(RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var authorOne = new AuthorEntity
+            {
+                AuthorEntityId = 1,
+                AuthorId = fixture.Create<ulong>().ToString()
+            };
+            var authorTwo = new AuthorEntity
+            {
+                AuthorEntityId = 3,
+                AuthorId = fixture.Create<ulong>().ToString()
+            };
+            var authorThree = new AuthorEntity
+            {
+                AuthorEntityId = 2,
+                AuthorId = fixture.Create<ulong>().ToString()
+            };
+
+            AuthorEntity[] authorEntities =
+            {
+                authorOne,
+                authorTwo,
+                authorThree
+            };
+
+            await context.AuthorEntities.AddRangeAsync(authorEntities);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new AuthorRepository(context);
+
+            // Call
+            IReadOnlyCollection<AuthorRepositoryEntityData> authors = await repository.LoadAuthorsAsync();
+
+            // Assert
+            authors.Should().BeInAscendingOrder(s => s.EntityId).And.BeEquivalentTo(
+                authorEntities,
+                options => options.ExcludingMissingMembers()
+                                  .WithAutoConversion()
+                                  .WithMapping<AuthorRepositoryEntityData>(e => e.AuthorEntityId, s => s.EntityId)
+                                  .WithMapping<AuthorRepositoryEntityData>(e => e.AuthorId, s => s.AuthorId));
+        }
+    }
+
+    [Theory]
+    [InlineData("X")]
+    [InlineData("18446744073709551616")]
+    public async Task Given_seeded_database_when_loading_authors_with_invalid_author_id_throws_exception(string invalidAuthorId)
+    {
+        using (RecipeBotDbContext context = CreateContext())
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var fixture = new Fixture();
+            var authorOne = new AuthorEntity
+            {
+                AuthorId = fixture.Create<ulong>().ToString()
+            };
+            var invalidAuthor = new AuthorEntity
+            {
+                AuthorId = invalidAuthorId
+            };
+
+            AuthorEntity[] authorEntities =
+            {
+                authorOne,
+                invalidAuthor
+            };
+
+            await context.AuthorEntities.AddRangeAsync(authorEntities);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var repository = new AuthorRepository(context);
+
+            // Call
+            Func<Task> call = () => repository.LoadAuthorsAsync();
+
+            // Assert
+            await call.Should().ThrowAsync<RepositoryDataLoadException>()
+                      .WithMessage($"Author entries could not be loaded due to invalid AuthorId '{invalidAuthor.AuthorId}'.");
+        }
+
     }
 
     public void Dispose()
