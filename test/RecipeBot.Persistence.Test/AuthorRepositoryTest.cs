@@ -305,7 +305,7 @@ public class AuthorRepositoryTest : IDisposable
             await context.Database.EnsureCreatedAsync();
 
             var fixture = new Fixture();
-            var authorOne = new AuthorEntity
+            var validAuthor = new AuthorEntity
             {
                 AuthorId = fixture.Create<ulong>().ToString()
             };
@@ -316,7 +316,7 @@ public class AuthorRepositoryTest : IDisposable
 
             AuthorEntity[] authorEntities =
             {
-                authorOne,
+                validAuthor,
                 invalidAuthor
             };
 

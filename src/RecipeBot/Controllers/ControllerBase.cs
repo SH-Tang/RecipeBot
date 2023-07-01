@@ -34,7 +34,7 @@ public abstract class ControllerBase
     /// Creates a new instance of <see cref="ControllerBase"/>. 
     /// </summary>
     /// <param name="logger">The logger to log with.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref="logger"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="logger"/> is <c>null</c>.</exception>
     protected ControllerBase(ILoggingService logger)
     {
         logger.IsNotNull(nameof(logger));
