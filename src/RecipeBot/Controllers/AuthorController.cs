@@ -17,18 +17,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
 using Discord.Common.Providers;
+using Discord.Common.Services;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Domain.Exceptions;
-using RecipeBot.Domain.Factories;
 using RecipeBot.Domain.Repositories;
 using RecipeBot.Domain.Repositories.Data;
 using RecipeBot.Properties;
 using RecipeBot.Services;
-using Discord.Common.Services;
 
 namespace RecipeBot.Controllers;
 
@@ -37,6 +37,10 @@ namespace RecipeBot.Controllers;
 /// </summary>
 public class AuthorController : IAuthorController
 {
+    private static readonly string header = $"{"Id",-3} {"Author",-50} ";
+
+    private readonly DataEntryCollectionMessageFormattingService<AuthorEntryRow> messageFormattingService;
+
     private readonly ILoggingService logger;
     private readonly IAuthorRepository repository;
     private readonly IUserDataProvider userDataProvider;
@@ -44,17 +48,23 @@ public class AuthorController : IAuthorController
     /// <summary>
     /// Creates a new instance of <see cref="AuthorController"/>.
     /// </summary>
+    /// <param name="limitProvider">The limit provider to retrieve the message character limits from.</param>
     /// <param name="userDataProvider">The provider to retrieve user data with.</param>
     /// <param name="repository">The repository to handle with the persistence of authors.</param>
     /// <param name="logger">The logger to log with.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public AuthorController(IUserDataProvider userDataProvider,
+    public AuthorController(IMessageCharacterLimitProvider limitProvider,
+                            IUserDataProvider userDataProvider,
                             IAuthorRepository repository,
                             ILoggingService logger)
     {
+        limitProvider.IsNotNull(nameof(limitProvider));
         userDataProvider.IsNotNull(nameof(userDataProvider));
         repository.IsNotNull(nameof(repository));
         logger.IsNotNull(nameof(logger));
+
+        messageFormattingService = new DataEntryCollectionMessageFormattingService<AuthorEntryRow>(
+            limitProvider, header, entry => $"{entry.Id,-3} {entry.AuthorName,-50}");
 
         this.userDataProvider = userDataProvider;
         this.repository = repository;
@@ -79,9 +89,61 @@ public class AuthorController : IAuthorController
             return await HandleException<string>(e);
         }
     }
+
+    public async Task<ControllerResult<IReadOnlyList<string>>> GetAllAuthorsAsync()
+    {
+        try
+        {
+            IReadOnlyCollection<AuthorRepositoryEntityData> entries = await repository.LoadAuthorsAsync();
+            IEnumerable<AuthorEntryRow> rows = await CreateRows(entries);
+
+            return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
+                messageFormattingService.CreateMessages(rows, Resources.AuthorController_GetAuthors_No_saved_authors_are_found));
+        }
+        catch (RepositoryDataLoadException e)
+        {
+            return await HandleException<IReadOnlyList<string>>(e);
+        }
+    }
+
     private async Task<ControllerResult<TResult>> HandleException<TResult>(Exception e) where TResult : class
     {
         await logger.LogErrorAsync(e);
         return ControllerResult<TResult>.CreateControllerResultWithError(e.Message);
+    }
+
+    private async Task<IEnumerable<AuthorEntryRow>> CreateRows(IEnumerable<AuthorRepositoryEntityData> entries)
+    {
+        IEnumerable<Task<Tuple<ulong, string>>> authorEntryTasks = entries.Select(CreateAuthorEntry);
+        Tuple<ulong, string>[] authorEntries = await Task.WhenAll(authorEntryTasks);
+        Dictionary<ulong, string> authorLookup =
+            authorEntries.DistinctBy(a => a.Item1).ToDictionary(entry => entry.Item1, entry => entry.Item2);
+
+        return entries.Select(e => new AuthorEntryRow
+        {
+            Id = e.EntityId,
+            AuthorName = authorLookup[e.AuthorId]
+        }).ToArray();
+    }
+
+    private async Task<Tuple<ulong, string>> CreateAuthorEntry(AuthorRepositoryEntityData entry)
+    {
+        ulong authorId = entry.AuthorId;
+        UserData userData = await userDataProvider.GetUserDataAsync(authorId);
+
+        return new Tuple<ulong, string>(authorId, userData.Username);
+    }
+
+    private sealed record AuthorEntryRow
+    {
+        /// <summary>
+        /// Gets the id of the author.
+        /// </summary>
+        public long Id { get; init; }
+
+        /// <summary>
+        /// Gets the name of the author of the recipe.
+        /// </summary>
+        public string AuthorName { get; init; } = null!;
     }
 }

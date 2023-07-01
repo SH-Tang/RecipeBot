@@ -87,6 +87,15 @@ namespace RecipeBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No saved authors are found..
+        /// </summary>
+        internal static string AuthorController_GetAuthors_No_saved_authors_are_found {
+            get {
+                return ResourceManager.GetString("AuthorController_GetAuthors_No_saved_authors_are_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Recipe could not be successfully formatted: {0}..
         /// </summary>
         internal static string Embed_could_not_be_created_reason_0_ {
