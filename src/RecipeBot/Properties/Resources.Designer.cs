@@ -87,11 +87,30 @@ namespace RecipeBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All data of author &apos;{0}&apos; with id &apos;{1}&apos; was successfully deleted..
+        /// </summary>
+        internal static string AuthorController_DeleteAuthorAsync_All_data_of_UserName_0_with_AuthorEntityId_1_was_successfully_deleted {
+            get {
+                return ResourceManager.GetString("AuthorController_DeleteAuthorAsync_All_data_of_UserName_0_with_AuthorEntityId_1_w" +
+                        "as_successfully_deleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No saved authors are found..
         /// </summary>
         internal static string AuthorController_GetAuthors_No_saved_authors_are_found {
             get {
                 return ResourceManager.GetString("AuthorController_GetAuthors_No_saved_authors_are_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unparseable author.
+        /// </summary>
+        internal static string AuthorEntityAuthorId_Unparseable_author {
+            get {
+                return ResourceManager.GetString("AuthorEntityAuthorId_Unparseable_author", resourceCulture);
             }
         }
         

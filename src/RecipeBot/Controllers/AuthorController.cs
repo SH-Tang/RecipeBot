@@ -68,6 +68,28 @@ public class AuthorController : ControllerBase, IAuthorController
         this.repository = repository;
     }
 
+    public async Task<ControllerResult<string>> DeleteAuthorAsync(long authorId)
+    {
+        try
+        {
+            AuthorRepositoryEntityData deletedAuthor = await repository.DeleteAuthorAsync(authorId);
+
+            if (deletedAuthor.HasAuthorId)
+            {
+                UserData userData = await userDataProvider.GetUserDataAsync(deletedAuthor.AuthorId!.Value);
+                return ControllerResult<string>.CreateControllerResultWithValidResult(
+                    string.Format(Resources.AuthorController_DeleteAuthorAsync_All_data_of_UserName_0_with_AuthorEntityId_1_was_successfully_deleted, userData.Username, deletedAuthor.EntityId));
+            }
+
+            return ControllerResult<string>.CreateControllerResultWithValidResult(
+                string.Format(Resources.AuthorController_DeleteAuthorAsync_All_data_of_UserName_0_with_AuthorEntityId_1_was_successfully_deleted, Resources.AuthorEntityAuthorId_Unparseable_author, deletedAuthor.EntityId));
+        }
+        catch (RepositoryDataDeleteException e)
+        {
+            return await HandleException<string>(e);
+        }
+    }
+
     public async Task<ControllerResult<string>> DeleteAuthorAsync(IUser user)
     {
         user.IsNotNull(nameof(user));
@@ -130,6 +152,6 @@ public class AuthorController : ControllerBase, IAuthorController
         /// <summary>
         /// Gets the name of the author of the recipe.
         /// </summary>
-        public string AuthorName { get; init; } = "Unparseable author";
+        public string AuthorName { get; init; } = Resources.AuthorEntityAuthorId_Unparseable_author;
     }
 }

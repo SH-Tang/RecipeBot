@@ -30,6 +30,13 @@ public interface IAuthorController
     /// <summary>
     /// Deletes an author based on its input arguments.
     /// </summary>
+    /// <param name="authorId">The id of the author to delete.</param>
+    /// <returns>The result of the delete action.</returns>
+    Task<ControllerResult<string>> DeleteAuthorAsync(long authorId);
+
+    /// <summary>
+    /// Deletes an author based on its input arguments.
+    /// </summary>
     /// <param name="user">The user to delete.</param>
     /// <returns>The result of the delete action.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="user"/> is <c>null</c>.</exception>

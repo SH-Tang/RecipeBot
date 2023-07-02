@@ -69,8 +69,8 @@ public class AuthorControllerTest
         var userDataProvider = Substitute.For<IUserDataProvider>();
         userDataProvider.GetUserDataAsync(authorIdToDelete).Returns(userData);
 
-        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var repository = Substitute.For<IAuthorRepository>();
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var logger = Substitute.For<ILoggingService>();
         var controller = new AuthorController(limitProvider, userDataProvider, repository, logger);
 
@@ -79,8 +79,9 @@ public class AuthorControllerTest
 
         // Assert
         result.HasError.Should().BeFalse();
-
         result.Result.Should().Be($"All data of '{userData.Username}' was successfully deleted.");
+
+        await repository.Received(1).DeleteAuthorAsync(authorIdToDelete);
     }
 
     [Fact]
@@ -103,6 +104,85 @@ public class AuthorControllerTest
 
         // Call
         ControllerResult<string> result = await controller.DeleteAuthorAsync(user);
+
+        // Assert
+        result.HasError.Should().BeTrue();
+        result.ErrorMessage.Should().Be(exceptionMessage);
+
+        await logger.Received(1).LogErrorAsync(exception);
+    }
+
+    [Fact]
+    public async Task Deleting_author_by_id_and_delete_successful_returns_result()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var entityId = fixture.Create<long>();
+
+        var deletedAuthorData = new AuthorRepositoryEntityData(entityId, fixture.Create<ulong>());
+        var repository = Substitute.For<IAuthorRepository>();
+        repository.DeleteAuthorAsync(entityId).ReturnsForAnyArgs(deletedAuthorData);
+
+        UserData userData = UserDataTestFactory.CreateFullyConfigured();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        userDataProvider.GetUserDataAsync(deletedAuthorData.AuthorId!.Value).Returns(userData);
+
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new AuthorController(limitProvider, userDataProvider, repository, logger);
+
+        // Call
+        ControllerResult<string> result = await controller.DeleteAuthorAsync(entityId);
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        result.Result.Should().Be($"All data of author '{userData.Username}' with id '{entityId}' was successfully deleted.");
+    }
+
+    [Fact]
+    public async Task Deleting_author_by_id_and_unparseable_author_id_returned_and_delete_successful_returns_result()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var entityId = fixture.Create<long>();
+
+        var deletedAuthorData = new AuthorRepositoryEntityData(entityId);
+        var repository = Substitute.For<IAuthorRepository>();
+        repository.DeleteAuthorAsync(entityId).ReturnsForAnyArgs(deletedAuthorData);
+
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new AuthorController(limitProvider, userDataProvider, repository, logger);
+
+        // Call
+        ControllerResult<string> result = await controller.DeleteAuthorAsync(entityId);
+
+        // Assert
+        result.HasError.Should().BeFalse();
+
+        result.Result.Should().Be($"All data of author 'Unparseable author' with id '{entityId}' was successfully deleted.");
+    }
+
+    [Fact]
+    public async Task Deleting_author_by_id_and_delete_unsuccessful_logs_and_returns_result_with_error()
+    {
+        // Setup
+        var fixture = new Fixture();
+        var exceptionMessage = fixture.Create<string>();
+
+        var repository = Substitute.For<IAuthorRepository>();
+        var exception = new RepositoryDataDeleteException(exceptionMessage);
+        repository.DeleteAuthorAsync(Arg.Any<long>()).ThrowsAsyncForAnyArgs(exception);
+
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        var userDataProvider = Substitute.For<IUserDataProvider>();
+        var logger = Substitute.For<ILoggingService>();
+        var controller = new AuthorController(limitProvider, userDataProvider, repository, logger);
+
+        // Call
+        ControllerResult<string> result = await controller.DeleteAuthorAsync(fixture.Create<long>());
 
         // Assert
         result.HasError.Should().BeTrue();
