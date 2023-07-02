@@ -68,6 +68,26 @@ public class AuthorRepository : IAuthorRepository
         }
     }
 
+    public async Task DeleteAuthorAsync(long entityId)
+    {
+        AuthorEntity? entityToDelete = await context.AuthorEntities.SingleOrDefaultAsync(e => e.AuthorEntityId == entityId);
+        if (entityToDelete == null)
+        {
+            throw new RepositoryDataDeleteException(Resources.AuthorRepository_Delete_AuthorEntity_No_matching_author_found);
+        }
+
+        try
+        {
+            context.AuthorEntities.Remove(entityToDelete);
+            await context.SaveChangesAsync();
+            await Task.CompletedTask;
+        }
+        catch (DbUpdateException ex)
+        {
+            throw new RepositoryDataDeleteException(ex.Message, ex);
+        }
+    }
+
     public async Task<IReadOnlyCollection<AuthorRepositoryEntityData>> LoadAuthorsAsync()
     {
         AuthorEntity[] authorEntities = await context.AuthorEntities.AsNoTracking().ToArrayAsync();
