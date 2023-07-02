@@ -67,7 +67,7 @@ public class AuthorRepositoryTest : IDisposable
             var repository = new AuthorRepository(context);
 
             // Call
-            Func<Task> call = () => repository.DeleteEntityAsync(fixture.Create<ulong>());
+            Func<Task> call = () => repository.DeleteAuthorAsync(fixture.Create<ulong>());
 
             // Assert
             await call.Should().ThrowAsync<RepositoryDataDeleteException>()
@@ -194,7 +194,7 @@ public class AuthorRepositoryTest : IDisposable
             var repository = new AuthorRepository(context);
 
             // Call
-            await repository.DeleteEntityAsync(authorId);
+            await repository.DeleteAuthorAsync(authorId);
             context.ChangeTracker.Clear();
 
             // Assert

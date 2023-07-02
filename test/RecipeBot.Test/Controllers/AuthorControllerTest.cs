@@ -91,7 +91,7 @@ public class AuthorControllerTest
 
         var repository = Substitute.For<IAuthorRepository>();
         var exception = new RepositoryDataDeleteException(exceptionMessage);
-        repository.DeleteEntityAsync(Arg.Any<ulong>()).ThrowsAsyncForAnyArgs(exception);
+        repository.DeleteAuthorAsync(Arg.Any<ulong>()).ThrowsAsyncForAnyArgs(exception);
 
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var userDataProvider = Substitute.For<IUserDataProvider>();

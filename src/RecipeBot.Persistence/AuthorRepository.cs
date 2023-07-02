@@ -48,7 +48,7 @@ public class AuthorRepository : IAuthorRepository
         this.context = context;
     }
 
-    public async Task DeleteEntityAsync(ulong authorId)
+    public async Task DeleteAuthorAsync(ulong authorId)
     {
         AuthorEntity? entityToDelete = await context.AuthorEntities.SingleOrDefaultAsync(e => e.AuthorId == authorId.ToString());
         if (entityToDelete == null)

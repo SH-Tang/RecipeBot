@@ -76,7 +76,7 @@ public class AuthorController : ControllerBase, IAuthorController
         {
             ulong authorId = user.Id;
             UserData userData = await userDataProvider.GetUserDataAsync(authorId);
-            await repository.DeleteEntityAsync(authorId);
+            await repository.DeleteAuthorAsync(authorId);
 
             return ControllerResult<string>.CreateControllerResultWithValidResult(
                 string.Format(Resources.AuthorController_DeleteAuthor_All_data_of_Author_0_was_successfully_deleted, userData.Username));
