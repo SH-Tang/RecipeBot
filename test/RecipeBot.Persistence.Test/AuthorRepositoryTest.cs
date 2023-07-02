@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
@@ -624,7 +625,7 @@ public class AuthorRepositoryTest : IDisposable
 
     [Theory]
     [MemberData(nameof(GetInvalidAuthorId))]
-    public async Task Given_seeded_database_when_loading_authors_with_invalid_author_id_throws_exception(string invalidAuthorId)
+    public async Task Given_seeded_database_when_loading_authors_with_invalid_author_id_returns_expected_collection(string invalidAuthorId)
     {
         // Setup
         using(RecipeBotDbContext context = CreateContext())
@@ -655,11 +656,20 @@ public class AuthorRepositoryTest : IDisposable
             var repository = new AuthorRepository(context);
 
             // Call
-            Func<Task> call = () => repository.LoadAuthorsAsync();
+            IReadOnlyCollection<AuthorRepositoryEntityData> authors = await repository.LoadAuthorsAsync();
 
             // Assert
-            await call.Should().ThrowAsync<RepositoryDataLoadException>()
-                      .WithMessage($"Author entries could not be loaded due to invalid AuthorId '{invalidAuthor.AuthorId}'.");
+            authors.Select(a => a.EntityId)
+                   .Should()
+                   .BeEquivalentTo(authorEntities.Select(a => a.AuthorEntityId),
+                                   options => options.WithStrictOrdering()
+                                                     .WithAutoConversion());
+            authors.Select(a => a.AuthorId).Should().BeEquivalentTo(new[]
+            {
+                validAuthor.AuthorId,
+                null
+            }, options => options.WithStrictOrdering()
+                                 .WithAutoConversion());
         }
     }
 

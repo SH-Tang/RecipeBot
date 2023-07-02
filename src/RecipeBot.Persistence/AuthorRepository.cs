@@ -81,12 +81,7 @@ public class AuthorRepository : IAuthorRepository
             context.AuthorEntities.Remove(entityToDelete);
             await context.SaveChangesAsync();
 
-            if (ulong.TryParse(entityToDelete.AuthorId, out ulong parsedAuthorId))
-            {
-                return new AuthorRepositoryEntityData(entityToDelete.AuthorEntityId, parsedAuthorId);
-            }
-
-            return new AuthorRepositoryEntityData(entityToDelete.AuthorEntityId);
+            return CreateAuthorRepositoryEntityData(entityToDelete);
         }
         catch (DbUpdateException ex)
         {
@@ -103,15 +98,10 @@ public class AuthorRepository : IAuthorRepository
                              .ToArray();
     }
 
-    private AuthorRepositoryEntityData CreateAuthorRepositoryEntityData(AuthorEntity entity)
+    private static AuthorRepositoryEntityData CreateAuthorRepositoryEntityData(AuthorEntity entity)
     {
-        try
-        {
-            return new AuthorRepositoryEntityData(entity.AuthorEntityId, ulong.Parse(entity.AuthorId));
-        }
-        catch (Exception e) when (e is OverflowException || e is FormatException)
-        {
-            throw new RepositoryDataLoadException(string.Format(Resources.AuthorRepository_Author_entries_could_not_be_loaded_due_to_invalid_AuthorId_0_, entity.AuthorId));
-        }
+        return ulong.TryParse(entity.AuthorId, out ulong parsedAuthorId) 
+                   ? new AuthorRepositoryEntityData(entity.AuthorEntityId, parsedAuthorId) 
+                   : new AuthorRepositoryEntityData(entity.AuthorEntityId);
     }
 }
