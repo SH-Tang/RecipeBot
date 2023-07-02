@@ -68,7 +68,7 @@ public class AuthorRepository : IAuthorRepository
         }
     }
 
-    public async Task DeleteAuthorAsync(long entityId)
+    public async Task<AuthorRepositoryEntityData> DeleteAuthorAsync(long entityId)
     {
         AuthorEntity? entityToDelete = await context.AuthorEntities.SingleOrDefaultAsync(e => e.AuthorEntityId == entityId);
         if (entityToDelete == null)
@@ -80,7 +80,13 @@ public class AuthorRepository : IAuthorRepository
         {
             context.AuthorEntities.Remove(entityToDelete);
             await context.SaveChangesAsync();
-            await Task.CompletedTask;
+
+            if (ulong.TryParse(entityToDelete.AuthorId, out ulong parsedAuthorId))
+            {
+                return new AuthorRepositoryEntityData(entityToDelete.AuthorEntityId, parsedAuthorId);
+            }
+
+            return new AuthorRepositoryEntityData(entityToDelete.AuthorEntityId);
         }
         catch (DbUpdateException ex)
         {
