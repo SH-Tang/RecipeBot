@@ -48,7 +48,7 @@ public class AuthorRepository : IAuthorRepository
         this.context = context;
     }
 
-    public async Task DeleteEntityAsync(ulong authorId)
+    public async Task DeleteAuthorAsync(ulong authorId)
     {
         AuthorEntity? entityToDelete = await context.AuthorEntities.SingleOrDefaultAsync(e => e.AuthorId == authorId.ToString());
         if (entityToDelete == null)
@@ -68,6 +68,27 @@ public class AuthorRepository : IAuthorRepository
         }
     }
 
+    public async Task<AuthorRepositoryEntityData> DeleteAuthorAsync(long entityId)
+    {
+        AuthorEntity? entityToDelete = await context.AuthorEntities.SingleOrDefaultAsync(e => e.AuthorEntityId == entityId);
+        if (entityToDelete == null)
+        {
+            throw new RepositoryDataDeleteException(Resources.AuthorRepository_Delete_AuthorEntity_No_matching_author_found);
+        }
+
+        try
+        {
+            context.AuthorEntities.Remove(entityToDelete);
+            await context.SaveChangesAsync();
+
+            return CreateAuthorRepositoryEntityData(entityToDelete);
+        }
+        catch (DbUpdateException ex)
+        {
+            throw new RepositoryDataDeleteException(ex.Message, ex);
+        }
+    }
+
     public async Task<IReadOnlyCollection<AuthorRepositoryEntityData>> LoadAuthorsAsync()
     {
         AuthorEntity[] authorEntities = await context.AuthorEntities.AsNoTracking().ToArrayAsync();
@@ -77,15 +98,10 @@ public class AuthorRepository : IAuthorRepository
                              .ToArray();
     }
 
-    private AuthorRepositoryEntityData CreateAuthorRepositoryEntityData(AuthorEntity entity)
+    private static AuthorRepositoryEntityData CreateAuthorRepositoryEntityData(AuthorEntity entity)
     {
-        try
-        {
-            return new AuthorRepositoryEntityData(entity.AuthorEntityId, ulong.Parse(entity.AuthorId));
-        }
-        catch (Exception e) when (e is OverflowException || e is FormatException)
-        {
-            throw new RepositoryDataLoadException(string.Format(Resources.AuthorRepository_Author_entries_could_not_be_loaded_due_to_invalid_AuthorId_0_, entity.AuthorId));
-        }
+        return ulong.TryParse(entity.AuthorId, out ulong parsedAuthorId) 
+                   ? new AuthorRepositoryEntityData(entity.AuthorEntityId, parsedAuthorId) 
+                   : new AuthorRepositoryEntityData(entity.AuthorEntityId);
     }
 }

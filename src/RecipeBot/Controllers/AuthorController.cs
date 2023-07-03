@@ -68,6 +68,28 @@ public class AuthorController : ControllerBase, IAuthorController
         this.repository = repository;
     }
 
+    public async Task<ControllerResult<string>> DeleteAuthorAsync(long authorId)
+    {
+        try
+        {
+            AuthorRepositoryEntityData deletedAuthor = await repository.DeleteAuthorAsync(authorId);
+
+            if (deletedAuthor.HasAuthorId)
+            {
+                UserData userData = await userDataProvider.GetUserDataAsync(deletedAuthor.AuthorId!.Value);
+                return ControllerResult<string>.CreateControllerResultWithValidResult(
+                    string.Format(Resources.AuthorController_DeleteAuthorAsync_All_data_of_UserName_0_with_AuthorEntityId_1_was_successfully_deleted, userData.Username, deletedAuthor.EntityId));
+            }
+
+            return ControllerResult<string>.CreateControllerResultWithValidResult(
+                string.Format(Resources.AuthorController_DeleteAuthorAsync_All_data_of_UserName_0_with_AuthorEntityId_1_was_successfully_deleted, Resources.AuthorEntityAuthorId_Unparseable_author, deletedAuthor.EntityId));
+        }
+        catch (RepositoryDataDeleteException e)
+        {
+            return await HandleException<string>(e);
+        }
+    }
+
     public async Task<ControllerResult<string>> DeleteAuthorAsync(IUser user)
     {
         user.IsNotNull(nameof(user));
@@ -76,7 +98,7 @@ public class AuthorController : ControllerBase, IAuthorController
         {
             ulong authorId = user.Id;
             UserData userData = await userDataProvider.GetUserDataAsync(authorId);
-            await repository.DeleteEntityAsync(authorId);
+            await repository.DeleteAuthorAsync(authorId);
 
             return ControllerResult<string>.CreateControllerResultWithValidResult(
                 string.Format(Resources.AuthorController_DeleteAuthor_All_data_of_Author_0_was_successfully_deleted, userData.Username));
@@ -89,18 +111,11 @@ public class AuthorController : ControllerBase, IAuthorController
 
     public async Task<ControllerResult<IReadOnlyList<string>>> GetAllAuthorsAsync()
     {
-        try
-        {
-            IReadOnlyCollection<AuthorRepositoryEntityData> entries = await repository.LoadAuthorsAsync();
-            IEnumerable<AuthorEntryRow> rows = await CreateRows(entries);
+        IReadOnlyCollection<AuthorRepositoryEntityData> entries = await repository.LoadAuthorsAsync();
+        IEnumerable<AuthorEntryRow> rows = await CreateRows(entries);
 
-            return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
-                messageFormattingService.CreateMessages(rows, Resources.AuthorController_GetAuthors_No_saved_authors_are_found));
-        }
-        catch (RepositoryDataLoadException e)
-        {
-            return await HandleException<IReadOnlyList<string>>(e);
-        }
+        return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
+            messageFormattingService.CreateMessages(rows, Resources.AuthorController_GetAuthors_No_saved_authors_are_found));
     }
 
     private async Task<IEnumerable<AuthorEntryRow>> CreateRows(IEnumerable<AuthorRepositoryEntityData> entries)
@@ -111,13 +126,19 @@ public class AuthorController : ControllerBase, IAuthorController
 
     private async Task<AuthorEntryRow> CreateAuthorEntryRow(AuthorRepositoryEntityData entry)
     {
-        ulong authorId = entry.AuthorId;
-        UserData userData = await userDataProvider.GetUserDataAsync(authorId);
+        if (entry.HasAuthorId)
+        {
+            UserData userData = await userDataProvider.GetUserDataAsync(entry.AuthorId!.Value);
+            return new AuthorEntryRow
+            {
+                EntityId = entry.EntityId,
+                AuthorName = userData.Username
+            };
+        }
 
         return new AuthorEntryRow
         {
             EntityId = entry.EntityId,
-            AuthorName = userData.Username
         };
     }
 
@@ -131,6 +152,6 @@ public class AuthorController : ControllerBase, IAuthorController
         /// <summary>
         /// Gets the name of the author of the recipe.
         /// </summary>
-        public string AuthorName { get; init; } = null!;
+        public string AuthorName { get; init; } = Resources.AuthorEntityAuthorId_Unparseable_author;
     }
 }

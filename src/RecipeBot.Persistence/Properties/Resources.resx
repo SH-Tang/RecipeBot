@@ -138,7 +138,4 @@
   <data name="RecipeRepository_Author_has_no_recipe_matches_with_EntityId_0_" xml:space="preserve">
     <value>Author has no recipe that matches with id '{0}'.</value>
   </data>
-  <data name="AuthorRepository_Author_entries_could_not_be_loaded_due_to_invalid_AuthorId_0_" xml:space="preserve">
-    <value>Author entries could not be loaded due to invalid AuthorId '{0}'.</value>
-  </data>
 </root>

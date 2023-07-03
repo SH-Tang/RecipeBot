@@ -33,12 +33,19 @@ public interface IAuthorRepository
     /// <param name="authorId">The id of the author to be deleted.</param>
     /// <returns>A <see cref="Task{TResult}"/>.</returns>
     /// <exception cref="RepositoryDataDeleteException">Thrown when the data could not be successfully deleted.</exception>
-    Task DeleteEntityAsync(ulong authorId);
+    Task DeleteAuthorAsync(ulong authorId);
+
+    /// <summary>
+    /// Deletes an author based on the author entity id.
+    /// </summary>
+    /// <param name="entityId">The id of the author entity to be deleted.</param>
+    /// <returns>A <see cref="AuthorRepositoryEntityData"/> containing the information of the deleted author.</returns>
+    /// <exception cref="RepositoryDataDeleteException">Thrown when the data could not be successfully deleted.</exception>
+    Task<AuthorRepositoryEntityData> DeleteAuthorAsync(long entityId);
 
     /// <summary>
     /// Gets all the authors.
     /// </summary>
     /// <returns>A collection of author entities.</returns>
-    /// <exception cref="RepositoryDataLoadException">Thrown when the authors could not be loaded successfully.</exception>
     Task<IReadOnlyCollection<AuthorRepositoryEntityData>> LoadAuthorsAsync();
 }
