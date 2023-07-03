@@ -59,6 +59,25 @@ public class AuthorInteractionModuleTest
     }
 
     [Fact]
+    public void Delete_author_by_id_command_has_expected_attributes()
+    {
+        // Call
+        SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<AuthorInteractionModule, SlashCommandAttribute>(
+            nameof(AuthorInteractionModule.DeleteAuthorById), new []
+            {
+                typeof(long)
+            });
+
+        // Assert
+        const string expectedName = "author-delete";
+        const string expectedDescription = "Deletes an author and its associated data";
+
+        commandAttribute.Should().NotBeNull();
+        commandAttribute!.Name.Should().Be(expectedName);
+        commandAttribute.Description.Should().Be(expectedDescription);
+    }
+
+    [Fact]
     public void List_authors_command_has_expected_attributes()
     {
         // Call

@@ -83,6 +83,38 @@ public class AuthorInteractionModule : InteractionModuleBase<SocketInteractionCo
         }
     }
 
+    [SlashCommand("author-delete", "Deletes an author and its associated data")]
+    [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ModerateMembers)]
+    public async Task DeleteAuthorById([Summary("authorId", "The id of the author to delete")] long authorId)
+    {
+        try
+        {
+            using(IServiceScope scope = scopeFactory.CreateScope())
+            {
+                var controller = scope.ServiceProvider.GetRequiredService<IAuthorController>();
+                ControllerResult<string> response = await controller.DeleteAuthorAsync(authorId);
+                if (response.HasError)
+                {
+                    await RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, response.ErrorMessage), ephemeral: true);
+                }
+                else
+                {
+                    await RespondAsync(response.Result, ephemeral: true);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Task[] tasks =
+            {
+                RespondAsync(e.Message, ephemeral: true),
+                logger.LogErrorAsync(e)
+            };
+
+            await Task.WhenAll(tasks);
+        }
+    }
+
     [SlashCommand("author-list", "Lists all stored authors in the database")]
     [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ModerateMembers)]
     public async Task ListAuthors()
