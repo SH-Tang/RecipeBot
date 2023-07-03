@@ -70,6 +70,28 @@ public class AuthorInteractionModule : DiscordInteractionModuleBase
         });
     }
 
+    [SlashCommand("author-delete", "Deletes an author and its associated data")]
+    [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ModerateMembers)]
+    public async Task DeleteAuthorById([Summary("authorId", "The id of the author to delete")] long authorId)
+    {
+        await ExecuteControllerAction(async () =>
+        {
+            using(IServiceScope scope = scopeFactory.CreateScope())
+            {
+                var controller = scope.ServiceProvider.GetRequiredService<IAuthorController>();
+                ControllerResult<string> response = await controller.DeleteAuthorAsync(authorId);
+                if (response.HasError)
+                {
+                    await RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, response.ErrorMessage), ephemeral: true);
+                }
+                else
+                {
+                    await RespondAsync(response.Result, ephemeral: true);
+                }
+            }
+        });
+    }
+
     [SlashCommand("author-list", "Lists all stored authors in the database")]
     [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ModerateMembers)]
     public async Task ListAuthors()

@@ -78,15 +78,6 @@ namespace RecipeBot.Persistence.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Author entries could not be loaded due to invalid AuthorId &apos;{0}&apos;..
-        /// </summary>
-        internal static string AuthorRepository_Author_entries_could_not_be_loaded_due_to_invalid_AuthorId_0_ {
-            get {
-                return ResourceManager.GetString("AuthorRepository_Author_entries_could_not_be_loaded_due_to_invalid_AuthorId_0_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No matching author found..
         /// </summary>
         internal static string AuthorRepository_Delete_AuthorEntity_No_matching_author_found {

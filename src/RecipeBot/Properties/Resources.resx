@@ -156,4 +156,10 @@
   <data name="AuthorController_GetAuthors_No_saved_authors_are_found" xml:space="preserve">
     <value>No saved authors are found.</value>
   </data>
+  <data name="AuthorController_DeleteAuthorAsync_All_data_of_UserName_0_with_AuthorEntityId_1_was_successfully_deleted" xml:space="preserve">
+    <value>All data of author '{0}' with id '{1}' was successfully deleted.</value>
+  </data>
+  <data name="AuthorEntityAuthorId_Unparseable_author" xml:space="preserve">
+    <value>Unparseable author</value>
+  </data>
 </root>
