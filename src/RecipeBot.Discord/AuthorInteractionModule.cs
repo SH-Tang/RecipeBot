@@ -41,8 +41,7 @@ public class AuthorInteractionModule : DiscordInteractionModuleBase
     /// <param name="scopeFactory">The <see cref="IServiceScopeFactory"/> to resolve dependencies with.</param>
     /// <param name="logger">The logger to use.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public AuthorInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger) :
-        base(logger)
+    public AuthorInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger) : base(logger)
     {
         scopeFactory.IsNotNull(nameof(scopeFactory));
 

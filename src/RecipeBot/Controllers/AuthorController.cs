@@ -78,11 +78,13 @@ public class AuthorController : ControllerBase, IAuthorController
             {
                 UserData userData = await userDataProvider.GetUserDataAsync(deletedAuthor.AuthorId!.Value);
                 return ControllerResult<string>.CreateControllerResultWithValidResult(
-                    string.Format(Resources.AuthorController_DeleteAuthorAsync_All_data_of_UserName_0_with_AuthorEntityId_1_was_successfully_deleted, userData.Username, deletedAuthor.EntityId));
+                    string.Format(Resources.AuthorController_DeleteAuthorAsync_All_data_of_UserName_0_with_AuthorEntityId_1_was_successfully_deleted,
+                        userData.Username, deletedAuthor.EntityId));
             }
 
             return ControllerResult<string>.CreateControllerResultWithValidResult(
-                string.Format(Resources.AuthorController_DeleteAuthorAsync_All_data_of_UserName_0_with_AuthorEntityId_1_was_successfully_deleted, Resources.AuthorEntityAuthorId_Unparseable_author, deletedAuthor.EntityId));
+                string.Format(Resources.AuthorController_DeleteAuthorAsync_All_data_of_UserName_0_with_AuthorEntityId_1_was_successfully_deleted,
+                    Resources.AuthorEntityAuthorId_Unparseable_author, deletedAuthor.EntityId));
         }
         catch (RepositoryDataDeleteException e)
         {
