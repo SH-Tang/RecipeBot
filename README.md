@@ -41,23 +41,6 @@ This is the Discord token as provided by the Discord Developer portal.
 |---|---|
 | DefaultConnection | Set this to the path of the SQLite database to store and retrieve the data from. In case the database does not exist, the database is created by the application. |
 
-# Used libraries
-
-## Functionality
-* Discord.Net
-* ReHackt.Extensions.Options.Validations
-* Microsoft.Entity.Framework.Core
-* Serilog 
-
-## Testing purposes
-* xUnit 
-* xUnit.runner.visualstudio
-* NSubstitute
-* Microsoft.NET.Test.Sdk
-* AutoFixture
-* coverlet.collector
-* Fluent Assertions
-
 # License
 
 This project was released under the GPLv3 license. A copy of this license can be found [here](https://www.gnu.org/licenses/gpl-3.0.html).
