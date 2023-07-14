@@ -98,25 +98,27 @@ public abstract class DiscordCommandHandlerBase
     /// <returns>A <see cref="Func{TResult}"/> that describes how module types are added.</returns>
     protected abstract Func<Type, IServiceProvider, Task> AddModuleFunc { get; }
 
-    protected async Task LogEventHandler(LogMessage arg)
+    protected Task LogEventHandler(LogMessage arg)
     {
         string message = arg.Message;
         if (!string.IsNullOrWhiteSpace(message))
         {
-            await Logger.LogDebugAsync($"{arg.Source} - {message}");
+            Logger.LogDebug($"{arg.Source} - {message}");
         }
 
         Exception exception = arg.Exception;
         if (exception != null)
         {
-            await Logger.LogErrorAsync($"{arg.Source} - {exception.Message}");
+            Logger.LogError($"{arg.Source} - {exception.Message}");
 
             string? stackTrace = exception.StackTrace;
             if (!string.IsNullOrWhiteSpace(stackTrace))
             {
-                await Logger.LogErrorAsync(stackTrace);
+                Logger.LogError(stackTrace);
             }
         }
+
+        return Task.CompletedTask;
     }
 
     protected virtual void PostProcessInitialization() {}

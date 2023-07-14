@@ -41,9 +41,9 @@ public abstract class ControllerBase
         this.logger = logger;
     }
 
-    protected async Task<ControllerResult<TResult>> HandleException<TResult>(Exception e) where TResult : class
+    protected ControllerResult<TResult> HandleException<TResult>(Exception e) where TResult : class
     {
-        await logger.LogErrorAsync(e);
+        logger.LogError(e);
         return ControllerResult<TResult>.CreateControllerResultWithError(e.Message);
     }
 }

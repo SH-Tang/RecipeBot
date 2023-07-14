@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
@@ -32,10 +31,9 @@ namespace RecipeBot.Discord;
 /// <summary>
 /// Module containing commands to interact with author entries.
 /// </summary>
-public class AuthorInteractionModule : InteractionModuleBase<SocketInteractionContext>
+public class AuthorInteractionModule : DiscordInteractionModuleBase
 {
     private readonly IServiceScopeFactory scopeFactory;
-    private readonly ILoggingService logger;
 
     /// <summary>
     /// Creates a new instance of <see cref="AuthorInteractionModule"/>.
@@ -43,19 +41,17 @@ public class AuthorInteractionModule : InteractionModuleBase<SocketInteractionCo
     /// <param name="scopeFactory">The <see cref="IServiceScopeFactory"/> to resolve dependencies with.</param>
     /// <param name="logger">The logger to use.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public AuthorInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger)
+    public AuthorInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger) : base(logger)
     {
         scopeFactory.IsNotNull(nameof(scopeFactory));
-        logger.IsNotNull(nameof(logger));
 
         this.scopeFactory = scopeFactory;
-        this.logger = logger;
     }
 
     [SlashCommand("myuserdata-delete-all", "Deletes all user data")]
-    public async Task DeleteAuthor()
+    public Task DeleteAuthor()
     {
-        try
+        return ExecuteControllerAction(async () =>
         {
             using(IServiceScope scope = scopeFactory.CreateScope())
             {
@@ -70,24 +66,14 @@ public class AuthorInteractionModule : InteractionModuleBase<SocketInteractionCo
                     await RespondAsync(response.Result, ephemeral: true);
                 }
             }
-        }
-        catch (Exception e)
-        {
-            Task[] tasks =
-            {
-                RespondAsync(e.Message, ephemeral: true),
-                logger.LogErrorAsync(e)
-            };
-
-            await Task.WhenAll(tasks);
-        }
+        });
     }
 
     [SlashCommand("author-delete", "Deletes an author and its associated data")]
     [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ModerateMembers)]
-    public async Task DeleteAuthorById([Summary("authorId", "The id of the author to delete")] long authorId)
+    public Task DeleteAuthorById([Summary("authorId", "The id of the author to delete")] long authorId)
     {
-        try
+        return ExecuteControllerAction(async () =>
         {
             using(IServiceScope scope = scopeFactory.CreateScope())
             {
@@ -102,24 +88,14 @@ public class AuthorInteractionModule : InteractionModuleBase<SocketInteractionCo
                     await RespondAsync(response.Result, ephemeral: true);
                 }
             }
-        }
-        catch (Exception e)
-        {
-            Task[] tasks =
-            {
-                RespondAsync(e.Message, ephemeral: true),
-                logger.LogErrorAsync(e)
-            };
-
-            await Task.WhenAll(tasks);
-        }
+        });
     }
 
     [SlashCommand("author-list", "Lists all stored authors in the database")]
     [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ModerateMembers)]
-    public async Task ListAuthors()
+    public Task ListAuthors()
     {
-        try
+        return ExecuteControllerAction(async () =>
         {
             using(IServiceScope scope = scopeFactory.CreateScope())
             {
@@ -128,50 +104,6 @@ public class AuthorInteractionModule : InteractionModuleBase<SocketInteractionCo
 
                 await Task.WhenAll(tasks);
             }
-        }
-        catch (Exception e)
-        {
-            Task[] tasks =
-            {
-                RespondAsync(e.Message, ephemeral: true),
-                logger.LogErrorAsync(e)
-            };
-
-            await Task.WhenAll(tasks);
-        }
-    }
-
-    private async Task<IEnumerable<Task>> GetTasksAsync(Task<ControllerResult<IReadOnlyList<string>>> getControllerResultTask)
-    {
-        ControllerResult<IReadOnlyList<string>> result = await getControllerResultTask;
-        if (result.HasError)
-        {
-            return new[]
-            {
-                RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, result.ErrorMessage), ephemeral: true)
-            };
-        }
-
-        IReadOnlyList<string> messages = result.Result!;
-        if (!messages.Any())
-        {
-            return new[]
-            {
-                RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_,
-                                           Resources.Controller_should_not_have_returned_an_empty_collection_when_querying),
-                             ephemeral: true)
-            };
-        }
-
-        var tasks = new List<Task>
-        {
-            RespondAsync(messages[0], ephemeral: true)
-        };
-        for (var i = 1; i < messages.Count; i++)
-        {
-            tasks.Add(FollowupAsync(messages[i], ephemeral: true));
-        }
-
-        return tasks;
+        });
     }
 }

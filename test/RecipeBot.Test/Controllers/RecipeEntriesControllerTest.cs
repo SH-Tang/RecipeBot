@@ -224,7 +224,7 @@ public class RecipeEntriesControllerTest
         result.HasError.Should().BeTrue();
         result.ErrorMessage.Should().Be(exceptionMessage);
 
-        await logger.Received(1).LogErrorAsync(exception);
+        logger.Received(1).LogError(exception);
     }
 
     [Fact]
@@ -425,7 +425,7 @@ public class RecipeEntriesControllerTest
         result.HasError.Should().BeTrue();
         result.ErrorMessage.Should().Be(exceptionMessage);
 
-        await logger.Received(1).LogErrorAsync(exception);
+        logger.Received(1).LogError(exception);
     }
 
     [Fact]
@@ -624,7 +624,7 @@ public class RecipeEntriesControllerTest
         result.HasError.Should().BeTrue();
         result.ErrorMessage.Should().Be(exceptionMessage);
 
-        await logger.Received(1).LogErrorAsync(exception);
+        logger.Received(1).LogError(exception);
     }
 
     [Fact]
@@ -820,7 +820,7 @@ public class RecipeEntriesControllerTest
         result.HasError.Should().BeTrue();
         result.ErrorMessage.Should().Be(exceptionMessage);
 
-        await logger.Received(1).LogErrorAsync(exception);
+        logger.Received(1).LogError(exception);
     }
 
     [Fact]
@@ -1024,7 +1024,7 @@ public class RecipeEntriesControllerTest
         result.HasError.Should().BeTrue();
         result.ErrorMessage.Should().Be(exceptionMessage);
 
-        await logger.Received(1).LogErrorAsync(exception);
+        logger.Received(1).LogError(exception);
     }
 
     private static IReadOnlyList<UserData> GetUsers(Fixture fixture, int nrOfUsers)

@@ -81,7 +81,7 @@ public class RecipeEntriesController : ControllerBase, IRecipeEntriesController
         }
         catch (RepositoryDataLoadException e)
         {
-            return await HandleException<IReadOnlyList<string>>(e);
+            return HandleException<IReadOnlyList<string>>(e);
         }
     }
 
@@ -100,7 +100,7 @@ public class RecipeEntriesController : ControllerBase, IRecipeEntriesController
         }
         catch (RepositoryDataLoadException e)
         {
-            return await HandleException<IReadOnlyList<string>>(e);
+            return HandleException<IReadOnlyList<string>>(e);
         }
     }
 
@@ -117,7 +117,7 @@ public class RecipeEntriesController : ControllerBase, IRecipeEntriesController
         }
         catch (RepositoryDataLoadException e)
         {
-            return await HandleException<IReadOnlyList<string>>(e);
+            return HandleException<IReadOnlyList<string>>(e);
         }
     }
 
@@ -132,7 +132,7 @@ public class RecipeEntriesController : ControllerBase, IRecipeEntriesController
         }
         catch (RepositoryDataLoadException e)
         {
-            return await HandleException<IReadOnlyList<string>>(e);
+            return HandleException<IReadOnlyList<string>>(e);
         }
     }
 
@@ -153,7 +153,7 @@ public class RecipeEntriesController : ControllerBase, IRecipeEntriesController
         }
         catch (RepositoryDataLoadException e)
         {
-            return await HandleException<IReadOnlyList<string>>(e);
+            return HandleException<IReadOnlyList<string>>(e);
         }
     }
 

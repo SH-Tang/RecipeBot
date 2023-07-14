@@ -76,7 +76,7 @@ public class RecipeTagEntriesController : ControllerBase, IRecipeTagEntriesContr
         }
         catch (RepositoryDataDeleteException e)
         {
-            return await HandleException<string>(e);
+            return HandleException<string>(e);
         }
     }
 }

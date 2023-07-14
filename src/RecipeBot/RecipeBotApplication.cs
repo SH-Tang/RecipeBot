@@ -70,6 +70,11 @@ public class RecipeBotApplication
         var services = new RecipeBotApplicationServiceProvider(configurationRoot);
         using(ServiceProvider serviceProvider = services.GetServiceProvider())
         {
+            var logger = serviceProvider.GetRequiredService<ILoggingService>();
+            logger.LogInfo("======================== RecipeBot ========================");
+            logger.LogInfo($"Session started at {DateTime.Now}");
+            logger.LogInfo("===========================================================");
+
             await SetupDatabase(serviceProvider);
             await ConfigureDiscordClient(serviceProvider);
             await ConfigureCommandService(serviceProvider);
@@ -113,7 +118,7 @@ public class RecipeBotApplication
     private static Task LogAsync(IServiceProvider services, LogMessage msg)
     {
         var logger = services.GetRequiredService<ILoggingService>();
-        logger.LogInfoAsync(msg.Message);
+        logger.LogInfo(msg.Message);
 
         return Task.CompletedTask;
     }

@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord;
@@ -32,9 +31,8 @@ namespace RecipeBot.Discord;
 /// <summary>
 /// Module containing commands to interact with recipe tag entries.
 /// </summary>
-public class RecipeTagEntriesInteractionModule : InteractionModuleBase<SocketInteractionContext>
+public class RecipeTagEntriesInteractionModule : DiscordInteractionModuleBase
 {
-    private readonly ILoggingService logger;
     private readonly IServiceScopeFactory scopeFactory;
 
     /// <summary>
@@ -43,19 +41,17 @@ public class RecipeTagEntriesInteractionModule : InteractionModuleBase<SocketInt
     /// <param name="scopeFactory">The <see cref="IServiceScopeFactory"/> to resolve dependencies with.</param>
     /// <param name="logger">The logger to use.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public RecipeTagEntriesInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger)
+    public RecipeTagEntriesInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger) : base(logger)
     {
         scopeFactory.IsNotNull(nameof(scopeFactory));
-        logger.IsNotNull(nameof(logger));
 
         this.scopeFactory = scopeFactory;
-        this.logger = logger;
     }
 
     [SlashCommand("tag-list", "Lists all the saved tags")]
-    public async Task ListTags()
+    public Task ListTags()
     {
-        try
+        return ExecuteControllerAction(async () =>
         {
             using(IServiceScope scope = scopeFactory.CreateScope())
             {
@@ -64,24 +60,14 @@ public class RecipeTagEntriesInteractionModule : InteractionModuleBase<SocketInt
                 IEnumerable<Task> tasks = await GetTasksAsync(controller.ListAllTagsAsync());
                 await Task.WhenAll(tasks);
             }
-        }
-        catch (Exception e)
-        {
-            Task[] tasks =
-            {
-                RespondAsync(e.Message, ephemeral: true),
-                logger.LogErrorAsync(e)
-            };
-
-            await Task.WhenAll(tasks);
-        }
+        });
     }
 
     [SlashCommand("tag-delete", "Deletes a tag based on the id")]
     [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ModerateMembers)]
-    public async Task DeleteTag([Summary("TagId", "The id of the tag to delete")] long tagIdToDelete)
+    public Task DeleteTag([Summary("TagId", "The id of the tag to delete")] long tagIdToDelete)
     {
-        try
+        return ExecuteControllerAction(async () =>
         {
             using(IServiceScope scope = scopeFactory.CreateScope())
             {
@@ -96,50 +82,6 @@ public class RecipeTagEntriesInteractionModule : InteractionModuleBase<SocketInt
                     await RespondAsync(response.Result, ephemeral: true);
                 }
             }
-        }
-        catch (Exception e)
-        {
-            Task[] tasks =
-            {
-                RespondAsync(e.Message, ephemeral: true),
-                logger.LogErrorAsync(e)
-            };
-
-            await Task.WhenAll(tasks);
-        }
-    }
-
-    private async Task<IEnumerable<Task>> GetTasksAsync(Task<ControllerResult<IReadOnlyList<string>>> getControllerResultTask)
-    {
-        ControllerResult<IReadOnlyList<string>> result = await getControllerResultTask;
-        if (result.HasError)
-        {
-            return new[]
-            {
-                RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, result.ErrorMessage), ephemeral: true)
-            };
-        }
-
-        IReadOnlyList<string> messages = result.Result!;
-        if (!messages.Any())
-        {
-            return new[]
-            {
-                RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_,
-                                           Resources.Controller_should_not_have_returned_an_empty_collection_when_querying),
-                             ephemeral: true)
-            };
-        }
-
-        var tasks = new List<Task>
-        {
-            RespondAsync(messages[0], ephemeral: true)
-        };
-        for (var i = 1; i < messages.Count; i++)
-        {
-            tasks.Add(FollowupAsync(messages[i], ephemeral: true));
-        }
-
-        return tasks;
+        });
     }
 }

@@ -33,10 +33,9 @@ namespace RecipeBot.Discord;
 /// <summary>
 /// Module containing commands to interact with individual recipes.
 /// </summary>
-public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionContext>
+public class RecipeInteractionModule : DiscordInteractionModuleBase
 {
     private readonly IServiceScopeFactory scopeFactory;
-    private readonly ILoggingService logger;
 
     /// <summary>
     /// Creates a new instance of <see cref="RecipeInteractionModule"/>.
@@ -44,19 +43,17 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
     /// <param name="scopeFactory">The <see cref="IServiceScopeFactory"/> to resolve dependencies with.</param>
     /// <param name="logger">The logger to use.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public RecipeInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger)
+    public RecipeInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger) : base(logger)
     {
         scopeFactory.IsNotNull(nameof(scopeFactory));
-        logger.IsNotNull(nameof(logger));
 
         this.scopeFactory = scopeFactory;
-        this.logger = logger;
     }
 
     [SlashCommand("recipe-get", "Gets a recipe based on the id")]
-    public async Task GetRecipe([Summary("RecipeId", "The id of the recipe to retrieve")] long recipeIdToRetrieve)
+    public Task GetRecipe([Summary("RecipeId", "The id of the recipe to retrieve")] long recipeIdToRetrieve)
     {
-        try
+        return ExecuteControllerAction(async () =>
         {
             using(IServiceScope scope = scopeFactory.CreateScope())
             {
@@ -71,24 +68,14 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
                     await RespondAsync(embed: response.Result, ephemeral: true);
                 }
             }
-        }
-        catch (Exception e)
-        {
-            Task[] tasks =
-            {
-                RespondAsync(e.Message, ephemeral: true),
-                logger.LogErrorAsync(e)
-            };
-
-            await Task.WhenAll(tasks);
-        }
+        });
     }
 
     [SlashCommand("recipe-delete", "Deletes a recipe based on the id")]
     [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ModerateMembers)]
-    public async Task DeleteRecipe([Summary("RecipeId", "The id of the recipe to delete")] long recipeIdToDelete)
+    public Task DeleteRecipe([Summary("RecipeId", "The id of the recipe to delete")] long recipeIdToDelete)
     {
-        try
+        return ExecuteControllerAction(async () =>
         {
             using(IServiceScope scope = scopeFactory.CreateScope())
             {
@@ -103,21 +90,11 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
                     await RespondAsync(response.Result, ephemeral: true);
                 }
             }
-        }
-        catch (Exception e)
-        {
-            Task[] tasks =
-            {
-                RespondAsync(e.Message, ephemeral: true),
-                logger.LogErrorAsync(e)
-            };
-
-            await Task.WhenAll(tasks);
-        }
+        });
     }
 
     [SlashCommand("recipe", "Formats and stores an user recipe")]
-    public async Task SaveRecipe([Summary("category", "The category the recipe belongs to")] DiscordRecipeCategory category)
+    public Task SaveRecipe([Summary("category", "The category the recipe belongs to")] DiscordRecipeCategory category)
     {
         var arguments = CommandArguments.Instance;
 
@@ -125,19 +102,21 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
         {
             arguments.CategoryArgument = category;
 
-            await Context.Interaction.RespondWithModalAsync<RecipeModal>(RecipeModal.ModalId);
+            return Context.Interaction.RespondWithModalAsync<RecipeModal>(RecipeModal.ModalId);
         }
         catch (Exception e)
         {
-            await logger.LogErrorAsync(e);
+            Logger.LogError(e);
             arguments.ResetArguments();
+
+            return RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, e.Message), ephemeral: true);
         }
     }
 
     [SlashCommand("myrecipes-delete", "Deletes an user recipe based on the id")]
-    public async Task DeleteMyRecipe([Summary("RecipeId", "The id of the recipe to delete")] long recipeIdToDelete)
+    public Task DeleteMyRecipe([Summary("RecipeId", "The id of the recipe to delete")] long recipeIdToDelete)
     {
-        try
+        return ExecuteControllerAction(async () =>
         {
             using(IServiceScope scope = scopeFactory.CreateScope())
             {
@@ -152,17 +131,7 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
                     await RespondAsync(response.Result, ephemeral: true);
                 }
             }
-        }
-        catch (Exception e)
-        {
-            Task[] tasks =
-            {
-                RespondAsync(e.Message, ephemeral: true),
-                logger.LogErrorAsync(e)
-            };
-
-            await Task.WhenAll(tasks);
-        }
+        });
     }
 
     [ModalInteraction(RecipeModal.ModalId)]
@@ -196,7 +165,7 @@ public class RecipeInteractionModule : InteractionModuleBase<SocketInteractionCo
             Task[] tasks =
             {
                 RespondAsync(e.Message, ephemeral: true),
-                logger.LogErrorAsync(e)
+                Task.Run(() => Logger.LogError(e))
             };
 
             await Task.WhenAll(tasks);

@@ -46,9 +46,9 @@ public class InteractionDiscordCommandHandler : DiscordCommandHandlerBase
         interactionService.IsNotNull(nameof(interactionService));
 
         this.interactionService = interactionService;
-        interactionService.Log += async message => await LogEventHandler(message);
+        interactionService.Log += LogEventHandler;
 
-        Client.InteractionCreated += async arg => await InteractionCreatedEventHandler(arg);
+        Client.InteractionCreated += InteractionCreatedEventHandler;
     }
 
     protected override Func<Type, IServiceProvider, Task> AddModuleFunc => interactionService.AddModuleAsync;
@@ -85,12 +85,12 @@ public class InteractionDiscordCommandHandler : DiscordCommandHandlerBase
             {
                 var errorMessage = $"Command failed: {result.ErrorReason}";
                 await context.Channel.SendMessageAsync(errorMessage);
-                await Logger.LogErrorAsync(errorMessage);
+                Logger.LogError(errorMessage);
             }
         }
         catch (Exception e)
         {
-            await Logger.LogErrorAsync(e);
+            Logger.LogError(e);
 
             // If Slash Command execution fails it is most likely that the original interaction acknowledgement will persist. It is a good idea to delete the original
             // response, or at least let the user know that something went wrong during the command execution.

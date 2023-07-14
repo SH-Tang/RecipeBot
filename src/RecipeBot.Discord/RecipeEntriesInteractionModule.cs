@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Common.Utils;
 using Discord.Common.Services;
@@ -25,16 +24,14 @@ using Discord.Interactions;
 using Microsoft.Extensions.DependencyInjection;
 using RecipeBot.Discord.Controllers;
 using RecipeBot.Discord.Data;
-using RecipeBot.Discord.Properties;
 
 namespace RecipeBot.Discord;
 
 /// <summary>
 /// Module containing commands to interact with recipe entries.
 /// </summary>
-public class RecipeEntriesInteractionModule : InteractionModuleBase<SocketInteractionContext>
+public class RecipeEntriesInteractionModule : DiscordInteractionModuleBase
 {
-    private readonly ILoggingService logger;
     private readonly IServiceScopeFactory scopeFactory;
 
     /// <summary>
@@ -43,101 +40,51 @@ public class RecipeEntriesInteractionModule : InteractionModuleBase<SocketIntera
     /// <param name="scopeFactory">The <see cref="IServiceScopeFactory"/> to resolve dependencies with.</param>
     /// <param name="logger">The logger to use.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is <c>null</c>.</exception>
-    public RecipeEntriesInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger)
+    public RecipeEntriesInteractionModule(IServiceScopeFactory scopeFactory, ILoggingService logger) : base(logger)
     {
         scopeFactory.IsNotNull(nameof(scopeFactory));
         logger.IsNotNull(nameof(logger));
 
         this.scopeFactory = scopeFactory;
-        this.logger = logger;
     }
 
     [SlashCommand("recipe-list", "Lists all the saved user recipes")]
-    public async Task GetAllRecipes()
+    public Task GetAllRecipes()
     {
-        await Task.WhenAll(GetRecipeResponseTasks(c => c.GetAllRecipesAsync()));
+        return ExecuteControllerAction(async () => await GetRecipeResponseTasks(c => c.GetAllRecipesAsync()));
     }
 
     [SlashCommand("recipe-list-by-category", "Lists all the saved user recipes filtered by category")]
-    public async Task GetAllRecipeByCategory([Summary("category", "The category to filter the recipes with")] DiscordRecipeCategory category)
+    public Task GetAllRecipeByCategory([Summary("category", "The category to filter the recipes with")] DiscordRecipeCategory category)
     {
-        await Task.WhenAll(GetRecipeResponseTasks(c => c.GetAllRecipesByCategoryAsync(category)));
+        return ExecuteControllerAction(async () => await GetRecipeResponseTasks(c => c.GetAllRecipesByCategoryAsync(category)));
     }
 
     [SlashCommand("recipe-list-by-tag-id", "Lists all the saved user recipes filtered by tag id")]
-    public async Task GetAllRecipeByTagId([Summary("tagId", "The tag id to filter the recipes with")] long tagId)
+    public Task GetAllRecipeByTagId([Summary("tagId", "The tag id to filter the recipes with")] long tagId)
     {
-        await Task.WhenAll(GetRecipeResponseTasks(c => c.GetAllRecipesByTagIdAsync(tagId)));
+        return ExecuteControllerAction(async () => await GetRecipeResponseTasks(c => c.GetAllRecipesByTagIdAsync(tagId)));
     }
 
     [SlashCommand("recipe-list-by-tag", "Lists all the saved user recipes filtered by tag")]
-    public async Task GetAllRecipeByTag([Summary("tag", "The tag to filter the recipes with")] string tag)
+    public Task GetAllRecipeByTag([Summary("tag", "The tag to filter the recipes with")] string tag)
     {
-        await Task.WhenAll(GetRecipeResponseTasks(c => c.GetAllRecipesByTagAsync(tag)));
+        return ExecuteControllerAction(async () => await GetRecipeResponseTasks(c => c.GetAllRecipesByTagAsync(tag)));
     }
 
     [SlashCommand("myrecipes-list", "Lists all your saved user recipes")]
-    public async Task GetAllRecipeByUser()
+    public Task GetAllRecipeByUser()
     {
-        await Task.WhenAll(GetRecipeResponseTasks(c => c.GetAllRecipesByUserAsync(Context.User)));
+        return ExecuteControllerAction(async () => await GetRecipeResponseTasks(c => c.GetAllRecipesByUserAsync(Context.User)));
     }
 
-    private IEnumerable<Task> GetRecipeResponseTasks(Func<IRecipeEntriesController, Task<ControllerResult<IReadOnlyList<string>>>> getControllerResultTaskFunc)
+    private async Task GetRecipeResponseTasks(Func<IRecipeEntriesController, Task<ControllerResult<IReadOnlyList<string>>>> getControllerResultTaskFunc)
     {
-        try
+        using(IServiceScope scope = scopeFactory.CreateScope())
         {
-            using(IServiceScope scope = scopeFactory.CreateScope())
-            {
-                var controller = scope.ServiceProvider.GetRequiredService<IRecipeEntriesController>();
-
-                Task<ControllerResult<IReadOnlyList<string>>> getRecipeEntriesTask = getControllerResultTaskFunc(controller);
-
-                return new[]
-                {
-                    getRecipeEntriesTask.ContinueWith(GetTasksFromControllerResultAsync)
-                };
-            }
+            var controller = scope.ServiceProvider.GetRequiredService<IRecipeEntriesController>();
+            IEnumerable<Task> tasks = await GetTasksAsync(getControllerResultTaskFunc(controller));
+            await Task.WhenAll(tasks);
         }
-        catch (Exception e)
-        {
-            return new[]
-            {
-                RespondAsync(e.Message, ephemeral: true),
-                logger.LogErrorAsync(e)
-            };
-        }
-    }
-
-    private async Task<IEnumerable<Task>> GetTasksFromControllerResultAsync(Task<ControllerResult<IReadOnlyList<string>>> controllerResultTask)
-    {
-        ControllerResult<IReadOnlyList<string>> result = await controllerResultTask;
-        if (result.HasError)
-        {
-            return new[]
-            {
-                RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, result.ErrorMessage), ephemeral: true)
-            };
-        }
-
-        IReadOnlyList<string> messages = result.Result!;
-        if (!messages.Any())
-        {
-            return new[]
-            {
-                RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, Resources.Controller_should_not_have_returned_an_empty_collection_when_querying),
-                             ephemeral: true)
-            };
-        }
-
-        var tasks = new List<Task>
-        {
-            RespondAsync(messages[0], ephemeral: true)
-        };
-        for (var i = 1; i < messages.Count; i++)
-        {
-            tasks.Add(FollowupAsync(messages[i], ephemeral: true));
-        }
-
-        return tasks;
     }
 }

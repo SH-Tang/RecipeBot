@@ -39,6 +39,7 @@ public class RecipeEntriesInteractionModuleTest
         var module = new RecipeEntriesInteractionModule(scopeFactory, loggingService);
 
         // Assert
+        module.Should().BeAssignableTo<DiscordInteractionModuleBase>();
         module.Should().BeAssignableTo<InteractionModuleBase<SocketInteractionContext>>();
     }
 

@@ -16,7 +16,6 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Threading.Tasks;
 
 namespace Discord.Common.Services;
 
@@ -29,35 +28,24 @@ public interface ILoggingService
     /// Logs an informational message.
     /// </summary>
     /// <param name="message">The message to log.</param>
-    /// <returns>The task object representing the asynchronous operation.</returns>
-    Task LogInfoAsync(string message);
-
-    /// <summary>
-    /// Logs a warning message.
-    /// </summary>
-    /// <param name="message">The message to log.</param>
-    /// <returns>The task object representing the asynchronous operation.</returns>
-    Task LogWarningAsync(string message);
+    void LogInfo(string message);
 
     /// <summary>
     /// Logs an error message.
     /// </summary>
     /// <param name="message">The message to log.</param>
-    /// <returns>The task object representing the asynchronous operation.</returns>
-    Task LogErrorAsync(string message);
+    void LogError(string message);
 
     /// <summary>
     /// Logs an error message.
     /// </summary>
     /// <param name="exception">The exception to log.</param>
-    /// <returns>The task object representing the asynchronous operation.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="exception"/> is <c>null</c>.</exception>
-    Task LogErrorAsync(Exception exception);
+    void LogError(Exception exception);
 
     /// <summary>
     /// Logs an informational message when in debug mode.
     /// </summary>
     /// <param name="message">The message to log.</param>
-    /// <returns>The task object representing the asynchronous operation.</returns>
-    Task LogDebugAsync(string message);
+    void LogDebug(string message);
 }

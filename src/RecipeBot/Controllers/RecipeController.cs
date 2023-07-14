@@ -96,15 +96,15 @@ public class RecipeController : ControllerBase, IRecipeController
         }
         catch (ModelCreateException e)
         {
-            return await HandleException<Embed>(e);
+            return HandleException<Embed>(e);
         }
         catch (EmbedCreateException e)
         {
-            return await HandleException<Embed>(e);
+            return HandleException<Embed>(e);
         }
         catch (RepositoryDataSaveException e)
         {
-            return await HandleException<Embed>(e);
+            return HandleException<Embed>(e);
         }
     }
 
@@ -120,7 +120,7 @@ public class RecipeController : ControllerBase, IRecipeController
         }
         catch (RepositoryDataDeleteException e)
         {
-            return await HandleException<string>(e);
+            return HandleException<string>(e);
         }
     }
 
@@ -139,7 +139,7 @@ public class RecipeController : ControllerBase, IRecipeController
         }
         catch (RepositoryDataDeleteException e)
         {
-            return await HandleException<string>(e);
+            return HandleException<string>(e);
         }
     }
 
@@ -155,15 +155,15 @@ public class RecipeController : ControllerBase, IRecipeController
         }
         catch (ModelCreateException e)
         {
-            return await HandleException<Embed>(e);
+            return HandleException<Embed>(e);
         }
         catch (EmbedCreateException e)
         {
-            return await HandleException<Embed>(e);
+            return HandleException<Embed>(e);
         }
         catch (RepositoryDataLoadException e)
         {
-            return await HandleException<Embed>(e);
+            return HandleException<Embed>(e);
         }
     }
 }
