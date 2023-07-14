@@ -105,11 +105,18 @@ public class AuthorController : ControllerBase, IAuthorController
 
     public async Task<ControllerResult<IReadOnlyList<string>>> GetAllAuthorsAsync()
     {
-        IReadOnlyCollection<AuthorRepositoryEntityData> entries = await repository.LoadAuthorsAsync();
-        IEnumerable<AuthorEntryRow> rows = await CreateRows(entries);
+        try
+        {
+            IReadOnlyCollection<AuthorRepositoryEntityData> entries = await repository.LoadAuthorsAsync();
+            IEnumerable<AuthorEntryRow> rows = await CreateRows(entries);
 
-        return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
-            messageFormattingService.CreateMessages(rows, Resources.AuthorController_GetAuthors_No_saved_authors_are_found));
+            return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
+                messageFormattingService.CreateMessages(rows, Resources.AuthorController_GetAuthors_No_saved_authors_are_found));
+        }
+        catch (RepositoryDataLoadException e)
+        {
+            return HandleException<IReadOnlyList<string>>(e);
+        }
     }
 
     private async Task<IEnumerable<AuthorEntryRow>> CreateRows(IEnumerable<AuthorRepositoryEntityData> entries)
