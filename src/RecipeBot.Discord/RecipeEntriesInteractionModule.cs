@@ -49,33 +49,33 @@ public class RecipeEntriesInteractionModule : DiscordInteractionModuleBase
     }
 
     [SlashCommand("recipe-list", "Lists all the saved user recipes")]
-    public async Task GetAllRecipes()
+    public Task GetAllRecipes()
     {
-        await ExecuteControllerAction(async () => await GetRecipeResponseTasks(c => c.GetAllRecipesAsync()));
+        return ExecuteControllerAction(async () => await GetRecipeResponseTasks(c => c.GetAllRecipesAsync()));
     }
 
     [SlashCommand("recipe-list-by-category", "Lists all the saved user recipes filtered by category")]
-    public async Task GetAllRecipeByCategory([Summary("category", "The category to filter the recipes with")] DiscordRecipeCategory category)
+    public Task GetAllRecipeByCategory([Summary("category", "The category to filter the recipes with")] DiscordRecipeCategory category)
     {
-        await ExecuteControllerAction(async () => await GetRecipeResponseTasks(c => c.GetAllRecipesByCategoryAsync(category)));
+        return ExecuteControllerAction(async () => await GetRecipeResponseTasks(c => c.GetAllRecipesByCategoryAsync(category)));
     }
 
     [SlashCommand("recipe-list-by-tag-id", "Lists all the saved user recipes filtered by tag id")]
-    public async Task GetAllRecipeByTagId([Summary("tagId", "The tag id to filter the recipes with")] long tagId)
+    public Task GetAllRecipeByTagId([Summary("tagId", "The tag id to filter the recipes with")] long tagId)
     {
-        await ExecuteControllerAction(async () => await GetRecipeResponseTasks(c => c.GetAllRecipesByTagIdAsync(tagId)));
+        return ExecuteControllerAction(async () => await GetRecipeResponseTasks(c => c.GetAllRecipesByTagIdAsync(tagId)));
     }
 
     [SlashCommand("recipe-list-by-tag", "Lists all the saved user recipes filtered by tag")]
-    public async Task GetAllRecipeByTag([Summary("tag", "The tag to filter the recipes with")] string tag)
+    public Task GetAllRecipeByTag([Summary("tag", "The tag to filter the recipes with")] string tag)
     {
-        await ExecuteControllerAction(async () => await GetRecipeResponseTasks(c => c.GetAllRecipesByTagAsync(tag)));
+        return ExecuteControllerAction(async () => await GetRecipeResponseTasks(c => c.GetAllRecipesByTagAsync(tag)));
     }
 
     [SlashCommand("myrecipes-list", "Lists all your saved user recipes")]
-    public async Task GetAllRecipeByUser()
+    public Task GetAllRecipeByUser()
     {
-        await ExecuteControllerAction(async () => await GetRecipeResponseTasks(c => c.GetAllRecipesByUserAsync(Context.User)));
+        return ExecuteControllerAction(async () => await GetRecipeResponseTasks(c => c.GetAllRecipesByUserAsync(Context.User)));
     }
 
     private async Task GetRecipeResponseTasks(Func<IRecipeEntriesController, Task<ControllerResult<IReadOnlyList<string>>>> getControllerResultTaskFunc)

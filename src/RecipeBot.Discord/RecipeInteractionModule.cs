@@ -51,9 +51,9 @@ public class RecipeInteractionModule : DiscordInteractionModuleBase
     }
 
     [SlashCommand("recipe-get", "Gets a recipe based on the id")]
-    public async Task GetRecipe([Summary("RecipeId", "The id of the recipe to retrieve")] long recipeIdToRetrieve)
+    public Task GetRecipe([Summary("RecipeId", "The id of the recipe to retrieve")] long recipeIdToRetrieve)
     {
-        await ExecuteControllerAction(async () =>
+        return ExecuteControllerAction(async () =>
         {
             using(IServiceScope scope = scopeFactory.CreateScope())
             {
@@ -73,9 +73,9 @@ public class RecipeInteractionModule : DiscordInteractionModuleBase
 
     [SlashCommand("recipe-delete", "Deletes a recipe based on the id")]
     [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ModerateMembers)]
-    public async Task DeleteRecipe([Summary("RecipeId", "The id of the recipe to delete")] long recipeIdToDelete)
+    public Task DeleteRecipe([Summary("RecipeId", "The id of the recipe to delete")] long recipeIdToDelete)
     {
-        await ExecuteControllerAction(async () =>
+        return ExecuteControllerAction(async () =>
         {
             using(IServiceScope scope = scopeFactory.CreateScope())
             {
@@ -94,7 +94,7 @@ public class RecipeInteractionModule : DiscordInteractionModuleBase
     }
 
     [SlashCommand("recipe", "Formats and stores an user recipe")]
-    public async Task SaveRecipe([Summary("category", "The category the recipe belongs to")] DiscordRecipeCategory category)
+    public Task SaveRecipe([Summary("category", "The category the recipe belongs to")] DiscordRecipeCategory category)
     {
         var arguments = CommandArguments.Instance;
 
@@ -102,19 +102,21 @@ public class RecipeInteractionModule : DiscordInteractionModuleBase
         {
             arguments.CategoryArgument = category;
 
-            await Context.Interaction.RespondWithModalAsync<RecipeModal>(RecipeModal.ModalId);
+            return Context.Interaction.RespondWithModalAsync<RecipeModal>(RecipeModal.ModalId);
         }
         catch (Exception e)
         {
             Logger.LogError(e);
             arguments.ResetArguments();
+
+            return RespondAsync(string.Format(Resources.InteractionModule_ERROR_0_, e.Message), ephemeral: true);
         }
     }
 
     [SlashCommand("myrecipes-delete", "Deletes an user recipe based on the id")]
-    public async Task DeleteMyRecipe([Summary("RecipeId", "The id of the recipe to delete")] long recipeIdToDelete)
+    public Task DeleteMyRecipe([Summary("RecipeId", "The id of the recipe to delete")] long recipeIdToDelete)
     {
-        await ExecuteControllerAction(async () =>
+        return ExecuteControllerAction(async () =>
         {
             using(IServiceScope scope = scopeFactory.CreateScope())
             {

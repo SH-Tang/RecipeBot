@@ -49,9 +49,9 @@ public class RecipeTagEntriesInteractionModule : DiscordInteractionModuleBase
     }
 
     [SlashCommand("tag-list", "Lists all the saved tags")]
-    public async Task ListTags()
+    public Task ListTags()
     {
-        await ExecuteControllerAction(async () =>
+        return ExecuteControllerAction(async () =>
         {
             using(IServiceScope scope = scopeFactory.CreateScope())
             {
@@ -65,9 +65,9 @@ public class RecipeTagEntriesInteractionModule : DiscordInteractionModuleBase
 
     [SlashCommand("tag-delete", "Deletes a tag based on the id")]
     [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ModerateMembers)]
-    public async Task DeleteTag([Summary("TagId", "The id of the tag to delete")] long tagIdToDelete)
+    public Task DeleteTag([Summary("TagId", "The id of the tag to delete")] long tagIdToDelete)
     {
-        await ExecuteControllerAction(async () =>
+        return ExecuteControllerAction(async () =>
         {
             using(IServiceScope scope = scopeFactory.CreateScope())
             {

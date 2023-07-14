@@ -50,9 +50,9 @@ public class AuthorInteractionModule : DiscordInteractionModuleBase
     }
 
     [SlashCommand("myuserdata-delete-all", "Deletes all user data")]
-    public async Task DeleteAuthor()
+    public Task DeleteAuthor()
     {
-        await ExecuteControllerAction(async () =>
+        return ExecuteControllerAction(async () =>
         {
             using(IServiceScope scope = scopeFactory.CreateScope())
             {
@@ -72,9 +72,9 @@ public class AuthorInteractionModule : DiscordInteractionModuleBase
 
     [SlashCommand("author-delete", "Deletes an author and its associated data")]
     [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ModerateMembers)]
-    public async Task DeleteAuthorById([Summary("authorId", "The id of the author to delete")] long authorId)
+    public Task DeleteAuthorById([Summary("authorId", "The id of the author to delete")] long authorId)
     {
-        await ExecuteControllerAction(async () =>
+        return ExecuteControllerAction(async () =>
         {
             using(IServiceScope scope = scopeFactory.CreateScope())
             {
@@ -94,9 +94,9 @@ public class AuthorInteractionModule : DiscordInteractionModuleBase
 
     [SlashCommand("author-list", "Lists all stored authors in the database")]
     [DefaultMemberPermissions(GuildPermission.Administrator | GuildPermission.ModerateMembers)]
-    public async Task ListAuthors()
+    public Task ListAuthors()
     {
-        await ExecuteControllerAction(async () =>
+        return ExecuteControllerAction(async () =>
         {
             using(IServiceScope scope = scopeFactory.CreateScope())
             {
