@@ -141,7 +141,7 @@
   <data name="AuthorRepository_AuthorEntityId_0_could_not_be_deleted_due_to_invalid_AuthorId_1" xml:space="preserve">
     <value>Author with id '{0}' could not be deleted due to invalid AuthorId '{1}'.</value>
   </data>
-  <data name="AuthorRepository_AuthorEntityId_0_could_not_be_created_due_to_invalid_AuthorId_1" xml:space="preserve">
-    <value>Author with id '{0}' could not be created due to invalid AuthorId '{1}'.</value>
+  <data name="AuthorRepository_AuthorEntityId_0_could_not_be_loaded_due_to_invalid_AuthorId_1" xml:space="preserve">
+    <value>Author with id '{0}' could not be loaded due to invalid AuthorId '{1}'.</value>
   </data>
 </root>

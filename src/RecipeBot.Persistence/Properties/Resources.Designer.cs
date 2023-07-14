@@ -78,20 +78,20 @@ namespace RecipeBot.Persistence.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Author with id &apos;{0}&apos; could not be created due to invalid AuthorId &apos;{1}&apos;..
-        /// </summary>
-        internal static string AuthorRepository_AuthorEntityId_0_could_not_be_created_due_to_invalid_AuthorId_1 {
-            get {
-                return ResourceManager.GetString("AuthorRepository_AuthorEntityId_0_could_not_be_created_due_to_invalid_AuthorId_1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Author with id &apos;{0}&apos; could not be deleted due to invalid AuthorId &apos;{1}&apos;..
         /// </summary>
         internal static string AuthorRepository_AuthorEntityId_0_could_not_be_deleted_due_to_invalid_AuthorId_1 {
             get {
                 return ResourceManager.GetString("AuthorRepository_AuthorEntityId_0_could_not_be_deleted_due_to_invalid_AuthorId_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Author with id &apos;{0}&apos; could not be created due to invalid AuthorId &apos;{1}&apos;..
+        /// </summary>
+        internal static string AuthorRepository_AuthorEntityId_0_could_not_be_loaded_due_to_invalid_AuthorId_1 {
+            get {
+                return ResourceManager.GetString("AuthorRepository_AuthorEntityId_0_could_not_be_loaded_due_to_invalid_AuthorId_1", resourceCulture);
             }
         }
         

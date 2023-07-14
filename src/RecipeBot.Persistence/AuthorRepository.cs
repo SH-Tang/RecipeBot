@@ -112,7 +112,7 @@ public class AuthorRepository : IAuthorRepository
         string authorId = entity.AuthorId;
         return ulong.TryParse(authorId, out ulong parsedAuthorId)
             ? new AuthorRepositoryEntityData(entity.AuthorEntityId, parsedAuthorId)
-            : throw new RepositoryDataLoadException(string.Format(Resources.AuthorRepository_AuthorEntityId_0_could_not_be_created_due_to_invalid_AuthorId_1,
+            : throw new RepositoryDataLoadException(string.Format(Resources.AuthorRepository_AuthorEntityId_0_could_not_be_loaded_due_to_invalid_AuthorId_1,
                 entity.AuthorEntityId, authorId));
     }
 }
