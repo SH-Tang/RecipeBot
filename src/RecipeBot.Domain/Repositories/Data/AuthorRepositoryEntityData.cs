@@ -26,15 +26,6 @@ public class AuthorRepositoryEntityData
     /// Creates a new instance of <see cref="AuthorRepositoryEntityData"/>.
     /// </summary>
     /// <param name="entityId">The entity id of the author.</param>
-    public AuthorRepositoryEntityData(long entityId)
-    {
-        EntityId = entityId;
-    }
-
-    /// <summary>
-    /// Creates a new instance of <see cref="AuthorRepositoryEntityData"/>.
-    /// </summary>
-    /// <param name="entityId">The entity id of the author.</param>
     /// <param name="authorId">The id of the author.</param>
     public AuthorRepositoryEntityData(long entityId, ulong authorId)
     {
@@ -50,10 +41,5 @@ public class AuthorRepositoryEntityData
     /// <summary>
     /// Gets the id of the author.
     /// </summary>
-    public ulong? AuthorId { get; }
-
-    /// <summary>
-    /// Gets an indicator whether the author id is set.
-    /// </summary>
-    public bool HasAuthorId => AuthorId != null;
+    public ulong AuthorId { get; }
 }

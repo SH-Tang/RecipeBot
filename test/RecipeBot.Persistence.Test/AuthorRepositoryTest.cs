@@ -402,7 +402,7 @@ public class AuthorRepositoryTest : IDisposable
 
     [Theory]
     [MemberData(nameof(GetInvalidAuthorId))]
-    public async Task Given_seeded_database_when_deleting_author_by_entity_id_with_invalid_author_id_only_deletes_affected_data_and_returns_expected_data(string invalidAuthorId)
+    public async Task Given_seeded_database_when_deleting_author_by_entity_id_with_invalid_author_id_throws_exception(string invalidAuthorId)
     {
         // Setup
         using(RecipeBotDbContext context = CreateContext())
@@ -414,104 +414,16 @@ public class AuthorRepositoryTest : IDisposable
             {
                 AuthorId = invalidAuthorId
             };
-            var author = new AuthorEntity
-            {
-                AuthorId = fixture.Create<ulong>().ToString()
-            };
-
-            IReadOnlyList<TagEntity> tagEntities = new[]
-            {
-                new TagEntity
-                {
-                    Tag = fixture.Create<string>()
-                },
-                new TagEntity
-                {
-                    Tag = fixture.Create<string>()
-                },
-                new TagEntity
-                {
-                    Tag = fixture.Create<string>()
-                },
-                new TagEntity
-                {
-                    Tag = fixture.Create<string>()
-                }
-            };
 
             var recipeToDelete = new RecipeEntity
             {
                 RecipeEntityId = fixture.Create<long>(),
                 RecipeTitle = fixture.Create<string>(),
                 Author = authorToDelete,
-                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
-                RecipeFields = new[]
-                {
-                    new RecipeFieldEntity
-                    {
-                        RecipeFieldData = fixture.Create<string>(),
-                        RecipeFieldName = fixture.Create<string>(),
-                        Order = fixture.Create<byte>()
-                    },
-                    new RecipeFieldEntity
-                    {
-                        RecipeFieldData = fixture.Create<string>(),
-                        RecipeFieldName = fixture.Create<string>(),
-                        Order = fixture.Create<byte>()
-                    }
-                },
-                Tags = new[]
-                {
-                    new RecipeTagEntity
-                    {
-                        Tag = tagEntities[0],
-                        Order = fixture.Create<byte>()
-                    },
-                    new RecipeTagEntity
-                    {
-                        Tag = tagEntities[3],
-                        Order = fixture.Create<byte>()
-                    }
-                }
+                RecipeCategory = fixture.Create<PersistentRecipeCategory>()
             };
 
-            var unaffectedRecipe = new RecipeEntity
-            {
-                RecipeEntityId = fixture.Create<long>(),
-                RecipeTitle = fixture.Create<string>(),
-                Author = author,
-                RecipeCategory = fixture.Create<PersistentRecipeCategory>(),
-                RecipeFields = new[]
-                {
-                    new RecipeFieldEntity
-                    {
-                        RecipeFieldData = fixture.Create<string>(),
-                        RecipeFieldName = fixture.Create<string>(),
-                        Order = fixture.Create<byte>()
-                    },
-                    new RecipeFieldEntity
-                    {
-                        RecipeFieldData = fixture.Create<string>(),
-                        RecipeFieldName = fixture.Create<string>(),
-                        Order = fixture.Create<byte>()
-                    }
-                },
-                Tags = new[]
-                {
-                    new RecipeTagEntity
-                    {
-                        Tag = tagEntities[1],
-                        Order = fixture.Create<byte>()
-                    },
-                    new RecipeTagEntity
-                    {
-                        Tag = tagEntities[2],
-                        Order = fixture.Create<byte>()
-                    }
-                }
-            };
-
-            await context.RecipeEntities.AddRangeAsync(recipeToDelete, unaffectedRecipe);
+            await context.RecipeEntities.AddAsync(recipeToDelete);
 
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
@@ -519,37 +431,12 @@ public class AuthorRepositoryTest : IDisposable
             var repository = new AuthorRepository(context);
 
             // Call
-            AuthorRepositoryEntityData deletedData = await repository.DeleteAuthorAsync(authorToDelete.AuthorEntityId);
+            Func<Task> call = () => repository.DeleteAuthorAsync(authorToDelete.AuthorEntityId);
             context.ChangeTracker.Clear();
 
             // Assert
-            deletedData.EntityId.Should().Be(authorToDelete.AuthorEntityId);
-            deletedData.HasAuthorId.Should().BeFalse();
-
-            context.AuthorEntities.Should().BeEquivalentTo(new[]
-            {
-                author
-            }, options => options.Excluding(s => s.Recipes));
-
-            context.TagEntities.Should().BeEquivalentTo(tagEntities, options => options.Excluding(s => s.Recipes));
-            context.RecipeFieldEntities.Should().BeEquivalentTo(unaffectedRecipe.RecipeFields, options => options.Excluding(s => s.Recipe));
-            context.RecipeTagEntities.Should().BeEquivalentTo(unaffectedRecipe.Tags, options => options.Excluding(s => s.Recipe)
-                                                                                                       .Excluding(s => s.Tag));
-
-            RecipeEntity recipeEntity = await context.RecipeEntities
-                                                     .Include(e => e.Author)
-                                                     .Include(e => e.RecipeFields)
-                                                     .Include(e => e.Tags)
-                                                     .AsNoTracking()
-                                                     .SingleAsync();
-            recipeEntity.Should().BeEquivalentTo(unaffectedRecipe, options => options.Excluding(s => s.Author)
-                                                                                     .Excluding(s => s.Tags)
-                                                                                     .Excluding(s => s.RecipeFields));
-            recipeEntity.Author.Should().BeEquivalentTo(unaffectedRecipe.Author, options => options.Excluding(s => s.Recipes));
-            recipeEntity.Tags.Should().BeEquivalentTo(unaffectedRecipe.Tags, options => options.Excluding(s => s.Recipe)
-                                                                                               .Excluding(s => s.Tag));
-
-            recipeEntity.RecipeFields.Should().BeEquivalentTo(unaffectedRecipe.RecipeFields, options => options.Excluding(s => s.Recipe));
+            await call.Should().ThrowAsync<RepositoryDataLoadException>()
+                      .WithMessage($"Author with id '{authorToDelete.AuthorEntityId}' could not be deleted due to invalid AuthorId '{invalidAuthorId}'.");
         }
     }
 
@@ -625,7 +512,7 @@ public class AuthorRepositoryTest : IDisposable
 
     [Theory]
     [MemberData(nameof(GetInvalidAuthorId))]
-    public async Task Given_seeded_database_when_loading_authors_with_invalid_author_id_returns_expected_collection(string invalidAuthorId)
+    public async Task Given_seeded_database_when_loading_authors_with_invalid_author_id_throws_exception(string invalidAuthorId)
     {
         // Setup
         using(RecipeBotDbContext context = CreateContext())
@@ -656,20 +543,11 @@ public class AuthorRepositoryTest : IDisposable
             var repository = new AuthorRepository(context);
 
             // Call
-            IReadOnlyCollection<AuthorRepositoryEntityData> authors = await repository.LoadAuthorsAsync();
+            Func<Task> call  = () => repository.LoadAuthorsAsync();
 
             // Assert
-            authors.Select(a => a.EntityId)
-                   .Should()
-                   .BeEquivalentTo(authorEntities.Select(a => a.AuthorEntityId),
-                                   options => options.WithStrictOrdering()
-                                                     .WithAutoConversion());
-            authors.Select(a => a.AuthorId).Should().BeEquivalentTo(new[]
-            {
-                validAuthor.AuthorId,
-                null
-            }, options => options.WithStrictOrdering()
-                                 .WithAutoConversion());
+            await call.Should().ThrowAsync<RepositoryDataLoadException>()
+                      .WithMessage($"Author with id '{invalidAuthor.AuthorEntityId}' could not be loaded due to invalid AuthorId '{invalidAuthorId}'.");
         }
     }
 

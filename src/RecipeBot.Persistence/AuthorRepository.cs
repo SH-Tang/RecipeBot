@@ -81,7 +81,7 @@ public class AuthorRepository : IAuthorRepository
             context.AuthorEntities.Remove(entityToDelete);
             await context.SaveChangesAsync();
 
-            return CreateAuthorRepositoryEntityData(entityToDelete);
+            return CreateDeletedAuthorRepositoryEntityData(entityToDelete);
         }
         catch (DbUpdateException ex)
         {
@@ -94,14 +94,30 @@ public class AuthorRepository : IAuthorRepository
         AuthorEntity[] authorEntities = await context.AuthorEntities.AsNoTracking().ToArrayAsync();
 
         return authorEntities.OrderBy(e => e.AuthorEntityId)
-                             .Select(CreateAuthorRepositoryEntityData)
+                             .Select(CreateListedAuthorRepositoryEntityData)
                              .ToArray();
     }
 
-    private static AuthorRepositoryEntityData CreateAuthorRepositoryEntityData(AuthorEntity entity)
+    private static AuthorRepositoryEntityData CreateDeletedAuthorRepositoryEntityData(AuthorEntity entity)
     {
-        return ulong.TryParse(entity.AuthorId, out ulong parsedAuthorId) 
-                   ? new AuthorRepositoryEntityData(entity.AuthorEntityId, parsedAuthorId) 
-                   : new AuthorRepositoryEntityData(entity.AuthorEntityId);
+        string errorMessage = string.Format(Resources.AuthorRepository_AuthorEntityId_0_could_not_be_deleted_due_to_invalid_AuthorId_1,
+            entity.AuthorEntityId, entity.AuthorId);
+
+        return CreateAuthorRepositoryEntityData(entity, errorMessage);
+    }
+
+    private static AuthorRepositoryEntityData CreateListedAuthorRepositoryEntityData(AuthorEntity entity)
+    {
+        string errorMessage = string.Format(Resources.AuthorRepository_AuthorEntityId_0_could_not_be_loaded_due_to_invalid_AuthorId_1,
+            entity.AuthorEntityId, entity.AuthorId);
+
+        return CreateAuthorRepositoryEntityData(entity, errorMessage);
+    }
+
+    private static AuthorRepositoryEntityData CreateAuthorRepositoryEntityData(AuthorEntity entity, string errorMessage)
+    {
+        return ulong.TryParse(entity.AuthorId, out ulong parsedAuthorId)
+            ? new AuthorRepositoryEntityData(entity.AuthorEntityId, parsedAuthorId)
+            : throw new RepositoryDataLoadException(errorMessage);
     }
 }

@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.Kernel;
 using Discord;
 using Discord.Common.Providers;
 using Discord.Common.Services;
@@ -125,7 +124,7 @@ public class AuthorControllerTest
 
         UserData userData = UserDataTestFactory.CreateFullyConfigured();
         var userDataProvider = Substitute.For<IUserDataProvider>();
-        userDataProvider.GetUserDataAsync(deletedAuthorData.AuthorId!.Value).Returns(userData);
+        userDataProvider.GetUserDataAsync(deletedAuthorData.AuthorId).Returns(userData);
 
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         var logger = Substitute.For<ILoggingService>();
@@ -138,31 +137,6 @@ public class AuthorControllerTest
         result.HasError.Should().BeFalse();
 
         result.Result.Should().Be($"All data of author '{userData.Username}' with id '{entityId}' was successfully deleted.");
-    }
-
-    [Fact]
-    public async Task Deleting_author_by_id_and_unparseable_author_id_returned_and_delete_successful_returns_result()
-    {
-        // Setup
-        var fixture = new Fixture();
-        var entityId = fixture.Create<long>();
-
-        var deletedAuthorData = new AuthorRepositoryEntityData(entityId);
-        var repository = Substitute.For<IAuthorRepository>();
-        repository.DeleteAuthorAsync(entityId).ReturnsForAnyArgs(deletedAuthorData);
-
-        var userDataProvider = Substitute.For<IUserDataProvider>();
-        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
-        var logger = Substitute.For<ILoggingService>();
-        var controller = new AuthorController(limitProvider, userDataProvider, repository, logger);
-
-        // Call
-        ControllerResult<string> result = await controller.DeleteAuthorAsync(entityId);
-
-        // Assert
-        result.HasError.Should().BeFalse();
-
-        result.Result.Should().Be($"All data of author 'Unparseable author' with id '{entityId}' was successfully deleted.");
     }
 
     [Fact]
@@ -222,7 +196,6 @@ public class AuthorControllerTest
         limitProvider.MaxMessageLength.Returns(int.MaxValue);
 
         var fixture = new Fixture();
-        fixture.Customize<AuthorRepositoryEntityData>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
         AuthorRepositoryEntityData[] entries = fixture.CreateMany<AuthorRepositoryEntityData>(3).ToArray();
 
         var repository = Substitute.For<IAuthorRepository>();
@@ -230,9 +203,9 @@ public class AuthorControllerTest
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
-        userDataProvider.GetUserDataAsync(entries[0].AuthorId!.Value).Returns(userData[0]);
-        userDataProvider.GetUserDataAsync(entries[1].AuthorId!.Value).Returns(userData[1]);
-        userDataProvider.GetUserDataAsync(entries[2].AuthorId!.Value).Returns(userData[2]);
+        userDataProvider.GetUserDataAsync(entries[0].AuthorId).Returns(userData[0]);
+        userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
+        userDataProvider.GetUserDataAsync(entries[2].AuthorId).Returns(userData[2]);
 
         var logger = Substitute.For<ILoggingService>();
         var controller = new AuthorController(limitProvider, userDataProvider, repository, logger);
@@ -252,18 +225,19 @@ public class AuthorControllerTest
     }
 
     [Fact]
-    public async Task Given_repository_returning_collection_with_invalid_author_ids_and_message_within_limits_when_listing_authors_returns_expected_messages()
+    public async Task Given_repository_returning_collection_unsuccessful_and_message_within_limits_when_listing_authors_returns_expected_messages()
     {
         // Setup
-        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
-        limitProvider.MaxMessageLength.Returns(int.MaxValue);
-
         var fixture = new Fixture();
-        AuthorRepositoryEntityData[] entries = fixture.CreateMany<AuthorRepositoryEntityData>(3).ToArray();
+        var exceptionMessage = fixture.Create<string>();
 
         var repository = Substitute.For<IAuthorRepository>();
-        repository.LoadAuthorsAsync().ReturnsForAnyArgs(entries);
+        var exception = new RepositoryDataLoadException(exceptionMessage);
+        repository.LoadAuthorsAsync().ThrowsAsyncForAnyArgs(exception);
 
+        var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
+        limitProvider.MaxMessageLength.Returns(int.MaxValue);
+        
         var userDataProvider = Substitute.For<IUserDataProvider>();
         var logger = Substitute.For<ILoggingService>();
         var controller = new AuthorController(limitProvider, userDataProvider, repository, logger);
@@ -272,14 +246,10 @@ public class AuthorControllerTest
         ControllerResult<IReadOnlyList<string>> result = await controller.GetAllAuthorsAsync();
 
         // Assert
-        result.HasError.Should().BeFalse();
+        result.HasError.Should().BeTrue();
+        result.ErrorMessage.Should().Be(exceptionMessage);
 
-        string expectedMessage =
-            $"{"Id",-3} {"Author",-50} {Environment.NewLine}" +
-            $"{entries[0].EntityId,-3} {"Unparseable author",-50}{Environment.NewLine}" +
-            $"{entries[1].EntityId,-3} {"Unparseable author",-50}{Environment.NewLine}" +
-            $"{entries[2].EntityId,-3} {"Unparseable author",-50}{Environment.NewLine}";
-        result.Result.Should().HaveCount(1).And.Contain(Format.Code(expectedMessage));
+        logger.Received(1).LogError(exception);
     }
 
     [Theory]
@@ -293,7 +263,6 @@ public class AuthorControllerTest
         limitProvider.MaxMessageLength.Returns(maxMessageLength);
 
         var fixture = new Fixture();
-        fixture.Customize<AuthorRepositoryEntityData>(c => c.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
         AuthorRepositoryEntityData[] entries = fixture.CreateMany<AuthorRepositoryEntityData>(3).ToArray();
 
         var repository = Substitute.For<IAuthorRepository>();
@@ -301,9 +270,9 @@ public class AuthorControllerTest
 
         IReadOnlyList<UserData> userData = GetUsers(fixture, entries.Length);
         var userDataProvider = Substitute.For<IUserDataProvider>();
-        userDataProvider.GetUserDataAsync(entries[0].AuthorId!.Value).Returns(userData[0]);
-        userDataProvider.GetUserDataAsync(entries[1].AuthorId!.Value).Returns(userData[1]);
-        userDataProvider.GetUserDataAsync(entries[2].AuthorId!.Value).Returns(userData[2]);
+        userDataProvider.GetUserDataAsync(entries[0].AuthorId).Returns(userData[0]);
+        userDataProvider.GetUserDataAsync(entries[1].AuthorId).Returns(userData[1]);
+        userDataProvider.GetUserDataAsync(entries[2].AuthorId).Returns(userData[2]);
 
         var logger = Substitute.For<ILoggingService>();
         var controller = new AuthorController(limitProvider, userDataProvider, repository, logger);

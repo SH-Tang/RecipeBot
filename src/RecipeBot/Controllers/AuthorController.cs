@@ -74,17 +74,9 @@ public class AuthorController : ControllerBase, IAuthorController
         {
             AuthorRepositoryEntityData deletedAuthor = await repository.DeleteAuthorAsync(authorId);
 
-            if (deletedAuthor.HasAuthorId)
-            {
-                UserData userData = await userDataProvider.GetUserDataAsync(deletedAuthor.AuthorId!.Value);
-                return ControllerResult<string>.CreateControllerResultWithValidResult(
-                    string.Format(Resources.AuthorController_DeleteAuthorAsync_All_data_of_UserName_0_with_AuthorEntityId_1_was_successfully_deleted,
-                        userData.Username, deletedAuthor.EntityId));
-            }
-
+            UserData userData = await userDataProvider.GetUserDataAsync(deletedAuthor.AuthorId);
             return ControllerResult<string>.CreateControllerResultWithValidResult(
-                string.Format(Resources.AuthorController_DeleteAuthorAsync_All_data_of_UserName_0_with_AuthorEntityId_1_was_successfully_deleted,
-                    Resources.AuthorEntityAuthorId_Unparseable_author, deletedAuthor.EntityId));
+                string.Format(Resources.AuthorController_DeleteAuthorAsync_All_data_of_UserName_0_with_AuthorEntityId_1_was_successfully_deleted, userData.Username, deletedAuthor.EntityId));
         }
         catch (RepositoryDataDeleteException e)
         {
@@ -113,11 +105,18 @@ public class AuthorController : ControllerBase, IAuthorController
 
     public async Task<ControllerResult<IReadOnlyList<string>>> GetAllAuthorsAsync()
     {
-        IReadOnlyCollection<AuthorRepositoryEntityData> entries = await repository.LoadAuthorsAsync();
-        IEnumerable<AuthorEntryRow> rows = await CreateRows(entries);
+        try
+        {
+            IReadOnlyCollection<AuthorRepositoryEntityData> entries = await repository.LoadAuthorsAsync();
+            IEnumerable<AuthorEntryRow> rows = await CreateRows(entries);
 
-        return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
-            messageFormattingService.CreateMessages(rows, Resources.AuthorController_GetAuthors_No_saved_authors_are_found));
+            return ControllerResult<IReadOnlyList<string>>.CreateControllerResultWithValidResult(
+                messageFormattingService.CreateMessages(rows, Resources.AuthorController_GetAuthors_No_saved_authors_are_found));
+        }
+        catch (RepositoryDataLoadException e)
+        {
+            return HandleException<IReadOnlyList<string>>(e);
+        }
     }
 
     private async Task<IEnumerable<AuthorEntryRow>> CreateRows(IEnumerable<AuthorRepositoryEntityData> entries)
@@ -128,19 +127,11 @@ public class AuthorController : ControllerBase, IAuthorController
 
     private async Task<AuthorEntryRow> CreateAuthorEntryRow(AuthorRepositoryEntityData entry)
     {
-        if (entry.HasAuthorId)
-        {
-            UserData userData = await userDataProvider.GetUserDataAsync(entry.AuthorId!.Value);
-            return new AuthorEntryRow
-            {
-                EntityId = entry.EntityId,
-                AuthorName = userData.Username
-            };
-        }
-
+        UserData userData = await userDataProvider.GetUserDataAsync(entry.AuthorId);
         return new AuthorEntryRow
         {
             EntityId = entry.EntityId,
+            AuthorName = userData.Username
         };
     }
 
