@@ -37,7 +37,7 @@ public abstract class DiscordInteractionModuleBase : InteractionModuleBase<Socke
     /// <summary>
     /// Creates a new instance of <see cref="DiscordInteractionModuleBase"/>.
     /// </summary>
-    /// <param name="logger">The logger to use</param>
+    /// <param name="logger">The logger to use.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="logger"/> is <c>null</c>.</exception>
     protected DiscordInteractionModuleBase(ILoggingService logger)
     {
