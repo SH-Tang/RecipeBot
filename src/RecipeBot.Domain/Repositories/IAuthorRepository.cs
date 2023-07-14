@@ -47,5 +47,6 @@ public interface IAuthorRepository
     /// Gets all the authors.
     /// </summary>
     /// <returns>A collection of author entities.</returns>
+    /// <exception cref="RepositoryDataLoadException">Thrown when the data could not be successfully loaded.</exception>
     Task<IReadOnlyCollection<AuthorRepositoryEntityData>> LoadAuthorsAsync();
 }
