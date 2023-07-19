@@ -64,13 +64,13 @@ public class AuthorInteractionModuleTest
     {
         // Call
         SlashCommandAttribute? commandAttribute = ReflectionHelper.GetCustomAttributeFromMethod<AuthorInteractionModule, SlashCommandAttribute>(
-            nameof(AuthorInteractionModule.DeleteAuthorById), new []
+            nameof(AuthorInteractionModule.DeleteAuthorById), new[]
             {
                 typeof(long)
             });
 
         DefaultMemberPermissionsAttribute? permissionAttribute = ReflectionHelper.GetCustomAttributeFromMethod<AuthorInteractionModule, DefaultMemberPermissionsAttribute>(
-            nameof(AuthorInteractionModule.DeleteAuthorById), new []
+            nameof(AuthorInteractionModule.DeleteAuthorById), new[]
             {
                 typeof(long)
             });

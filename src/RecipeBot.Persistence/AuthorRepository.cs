@@ -101,7 +101,7 @@ public class AuthorRepository : IAuthorRepository
     private static AuthorRepositoryEntityData CreateDeletedAuthorRepositoryEntityData(AuthorEntity entity)
     {
         string errorMessage = string.Format(Resources.AuthorRepository_AuthorEntityId_0_could_not_be_deleted_due_to_invalid_AuthorId_1,
-            entity.AuthorEntityId, entity.AuthorId);
+                                            entity.AuthorEntityId, entity.AuthorId);
 
         return CreateAuthorRepositoryEntityData(entity, errorMessage);
     }
@@ -109,7 +109,7 @@ public class AuthorRepository : IAuthorRepository
     private static AuthorRepositoryEntityData CreateListedAuthorRepositoryEntityData(AuthorEntity entity)
     {
         string errorMessage = string.Format(Resources.AuthorRepository_AuthorEntityId_0_could_not_be_loaded_due_to_invalid_AuthorId_1,
-            entity.AuthorEntityId, entity.AuthorId);
+                                            entity.AuthorEntityId, entity.AuthorId);
 
         return CreateAuthorRepositoryEntityData(entity, errorMessage);
     }
@@ -117,7 +117,7 @@ public class AuthorRepository : IAuthorRepository
     private static AuthorRepositoryEntityData CreateAuthorRepositoryEntityData(AuthorEntity entity, string errorMessage)
     {
         return ulong.TryParse(entity.AuthorId, out ulong parsedAuthorId)
-            ? new AuthorRepositoryEntityData(entity.AuthorEntityId, parsedAuthorId)
-            : throw new RepositoryDataLoadException(errorMessage);
+                   ? new AuthorRepositoryEntityData(entity.AuthorEntityId, parsedAuthorId)
+                   : throw new RepositoryDataLoadException(errorMessage);
     }
 }

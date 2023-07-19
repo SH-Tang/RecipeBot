@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
@@ -543,7 +542,7 @@ public class AuthorRepositoryTest : IDisposable
             var repository = new AuthorRepository(context);
 
             // Call
-            Func<Task> call  = () => repository.LoadAuthorsAsync();
+            Func<Task> call = () => repository.LoadAuthorsAsync();
 
             // Assert
             await call.Should().ThrowAsync<RepositoryDataLoadException>()

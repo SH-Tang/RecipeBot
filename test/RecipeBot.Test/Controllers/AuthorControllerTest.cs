@@ -237,7 +237,7 @@ public class AuthorControllerTest
 
         var limitProvider = Substitute.For<IMessageCharacterLimitProvider>();
         limitProvider.MaxMessageLength.Returns(int.MaxValue);
-        
+
         var userDataProvider = Substitute.For<IUserDataProvider>();
         var logger = Substitute.For<ILoggingService>();
         var controller = new AuthorController(limitProvider, userDataProvider, repository, logger);
