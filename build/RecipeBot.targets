@@ -10,7 +10,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <Copyright>Copyright © Dennis Tang $([System.DateTime]::Today.ToString(yyyy))</Copyright>
-    <Version>0.4.0</Version>
+    <Version>0.5.0</Version>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 </Project>
