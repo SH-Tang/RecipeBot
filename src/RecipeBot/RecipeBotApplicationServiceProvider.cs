@@ -78,7 +78,9 @@ public class RecipeBotApplicationServiceProvider
             UseInteractionSnowflakeDate = false
         };
 
-        services.AddSingleton(socketConfig)
+        services.AddHttpClient()
+                .AddTransient<IHtmlContentProvider, HtmlContentProvider>()
+                .AddSingleton(socketConfig)
                 .AddSingleton<DiscordSocketClient>()
                 .AddSingleton<CommandService>()
                 .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
