@@ -24,7 +24,7 @@ namespace Common.Utils;
 /// <summary>
 /// Class for providing html content.
 /// </summary>
-public class HtmlContentProvider
+public class HtmlContentProvider : IHtmlContentProvider
 {
     private readonly HttpClient httpClient;
 
@@ -40,12 +40,6 @@ public class HtmlContentProvider
         this.httpClient = httpClient;
     }
 
-    /// <summary>
-    /// Gets the html content based on an url.
-    /// </summary>
-    /// <param name="url">The url to get the html content from.</param>
-    /// <returns>A string containing the html content.</returns>
-    /// <exception cref="ArgumentException">Thrown when the <paramref name="url"/> is invalid.</exception>
     public async Task<string> GetHtmlContent(string url)
     {
         UrlValidationHelper.ValidateHttpUrl(url);
