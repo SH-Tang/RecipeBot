@@ -16,11 +16,14 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 using Common.Utils;
 using Discord;
 using Discord.Common.Services;
 using Discord.Interactions;
+using HtmlAgilityPack;
 
 namespace RecipeBot.Discord;
 
@@ -50,7 +53,20 @@ public class WebRecipeInteractionModule : DiscordInteractionModuleBase
         return ExecuteControllerAction(async () =>
         {
             string content = await provider.GetHtmlContent(webRecipe);
-            await RespondAsync(Format.Code(content.Substring(0, 1990)));
+            
+            await RespondAsync($"Title: {ParseTitle(content)}");
         });
+    }
+
+    private static string ParseTitle(string content)
+    {
+        var doc = new HtmlDocument();
+        doc.LoadHtml(content);
+
+        XPathNavigator? navigator = doc.CreateNavigator();
+        XPathNavigator? temp = navigator!.SelectSingleNode("//meta[@name='title']/@content | //meta[@property='og:title']/@content");
+
+
+        return temp?.Value ?? "Untitled";
     }
 }
