@@ -74,6 +74,12 @@ public class WebRecipeInteractionModule : DiscordInteractionModuleBase
     {
         ParsedWebRecipeData data =  ParseHtmlWebRecipe(content);
 
+        // Also hold the following the data:
+        // - Author (user)
+        // - Tags
+        // - Category (for color later)
+        // - RecipeField (notes)
+
         return new ParsedWebRecipeDataWrapper(data);
     }
 
