@@ -16,6 +16,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Drawing;
 using System.Threading.Tasks;
 using System.Xml.XPath;
 using Common.Utils;
@@ -62,6 +63,7 @@ public class WebRecipeInteractionModule : DiscordInteractionModuleBase
     {
         var builder = new EmbedBuilder();
         builder.WithUrl(url);
+        builder.WithAuthor(data.WebRecipeData.SiteName);
         builder.WithTitle(data.WebRecipeData.Title);
         builder.WithDescription(data.WebRecipeData.Description);
         builder.WithImageUrl(data.WebRecipeData.ImageUrl);
@@ -90,12 +92,14 @@ public class WebRecipeInteractionModule : DiscordInteractionModuleBase
 
         XPathNavigator? navigator = doc.CreateNavigator();
         XPathNavigator? title = navigator!.SelectSingleNode("//meta[@property='og:title']/@content");
+        XPathNavigator? siteName = navigator!.SelectSingleNode("//meta[@property='og:site_name']/@content");
         XPathNavigator? description = navigator!.SelectSingleNode("//meta[@property='og:description']/@content");
         XPathNavigator? imageUrl = navigator!.SelectSingleNode("//meta[@property='og:image']/@content");
 
         // Use user title in case title could not be found.
         var parsedWebRecipeData = new ParsedWebRecipeData(title?.Value ?? "No title",
-                                                          description?.Value ?? "No description available",
+                                                          description?.Value ?? "No description available", 
+                                                          siteName?.Value ?? "Use calling author",
                                                           imageUrl?.Value);
 
         return parsedWebRecipeData;
@@ -126,13 +130,15 @@ public class WebRecipeInteractionModule : DiscordInteractionModuleBase
 
     private class ParsedWebRecipeData
     {
-        public ParsedWebRecipeData(string title, string description, string? imageUrl)
+        public ParsedWebRecipeData(string title, string description, string? siteName, string? imageUrl)
         {
             title.IsNotNullOrWhiteSpaces(nameof(title));
             description.IsNotNullOrWhiteSpaces(nameof(description));
 
             Title = title;
             Description = description;
+
+            SiteName = siteName;
             ImageUrl = imageUrl;
         }
 
@@ -145,6 +151,11 @@ public class WebRecipeInteractionModule : DiscordInteractionModuleBase
         /// Gets the description.
         /// </summary>
         public string Description { get; }
+
+        /// <summary>
+        /// Gets the short name of the website.
+        /// </summary>
+        public string? SiteName { get; }
 
         /// <summary>
         /// Gets the image url.
