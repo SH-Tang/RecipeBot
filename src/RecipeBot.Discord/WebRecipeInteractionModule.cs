@@ -16,7 +16,6 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.XPath;
 using Common.Utils;
@@ -53,20 +52,97 @@ public class WebRecipeInteractionModule : DiscordInteractionModuleBase
         return ExecuteControllerAction(async () =>
         {
             string content = await provider.GetHtmlContent(webRecipe);
-            
-            await RespondAsync($"Title: {ParseTitle(content)}");
+            ParsedWebRecipeDataWrapper parsedData = GetParsedWebRecipe(content);
+
+            await RespondAsync(embed:GetEmbed(parsedData, webRecipe));
         });
     }
 
-    private static string ParseTitle(string content)
+    private static Embed GetEmbed(ParsedWebRecipeDataWrapper data, string url)
+    {
+        var builder = new EmbedBuilder();
+        builder.WithUrl(url);
+        builder.WithTitle(data.WebRecipeData.Title);
+        builder.WithDescription(data.WebRecipeData.Description);
+        builder.WithImageUrl(data.WebRecipeData.ImageUrl);
+        builder.WithTimestamp(data.RetrievalDate);
+        
+        return builder.Build();
+    }
+
+    private static ParsedWebRecipeDataWrapper GetParsedWebRecipe(string content)
+    {
+        ParsedWebRecipeData data =  ParseHtmlWebRecipe(content);
+
+        return new ParsedWebRecipeDataWrapper(data);
+    }
+
+    private static ParsedWebRecipeData ParseHtmlWebRecipe(string content)
     {
         var doc = new HtmlDocument();
         doc.LoadHtml(content);
 
         XPathNavigator? navigator = doc.CreateNavigator();
-        XPathNavigator? temp = navigator!.SelectSingleNode("//meta[@name='title']/@content | //meta[@property='og:title']/@content");
+        XPathNavigator? title = navigator!.SelectSingleNode("//meta[@property='og:title']/@content");
+        XPathNavigator? description = navigator!.SelectSingleNode("//meta[@property='og:description']/@content");
+        XPathNavigator? imageUrl = navigator!.SelectSingleNode("//meta[@property='og:image']/@content");
 
+        // Use user title in case title could not be found.
+        var parsedWebRecipeData = new ParsedWebRecipeData(title?.Value ?? "No title",
+                                                          description?.Value ?? "No description available",
+                                                          imageUrl?.Value);
 
-        return temp?.Value ?? "Untitled";
+        return parsedWebRecipeData;
+    }
+
+    private class ParsedWebRecipeDataWrapper
+    {
+        public ParsedWebRecipeDataWrapper(ParsedWebRecipeData webRecipeData)
+        {
+            webRecipeData.IsNotNull(nameof(webRecipeData));
+
+            // Use author that made the request to be retrieved --> user data
+
+            RetrievalDate = DateTime.Now;
+            WebRecipeData = webRecipeData;
+        }
+
+        /// <summary>
+        /// Gets the <see cref="DateTime"/> the recipe was retrieved.
+        /// </summary>
+        public DateTime RetrievalDate { get; }
+
+        /// <summary>
+        /// Gets the web recipe data.
+        /// </summary>
+        public ParsedWebRecipeData WebRecipeData { get; }
+    }
+
+    private class ParsedWebRecipeData
+    {
+        public ParsedWebRecipeData(string title, string description, string? imageUrl)
+        {
+            title.IsNotNullOrWhiteSpaces(nameof(title));
+            description.IsNotNullOrWhiteSpaces(nameof(description));
+
+            Title = title;
+            Description = description;
+            ImageUrl = imageUrl;
+        }
+
+        /// <summary>
+        /// Gets the title.
+        /// </summary>
+        public string Title { get; }
+        
+        /// <summary>
+        /// Gets the description.
+        /// </summary>
+        public string Description { get; }
+
+        /// <summary>
+        /// Gets the image url.
+        /// </summary>
+        public string? ImageUrl { get; }
     }
 }
