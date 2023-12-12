@@ -16,14 +16,11 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Drawing;
 using System.Threading.Tasks;
-using System.Xml.XPath;
-using Common.Utils;
 using Discord;
 using Discord.Common.Services;
 using Discord.Interactions;
-using HtmlAgilityPack;
+using RecipeBot.Discord.Controllers;
 
 namespace RecipeBot.Discord;
 
@@ -32,134 +29,26 @@ namespace RecipeBot.Discord;
 /// </summary>
 public class WebRecipeInteractionModule : DiscordInteractionModuleBase
 {
-    private readonly IHtmlContentProvider provider;
+    private readonly IWebRecipeController controller;
 
     /// <summary>
     /// Creates a new instance of <see cref="WebRecipeInteractionModule"/>.
     /// </summary>
-    /// <param name="provider">The provider to retrieve html content with.</param>
+    /// <param name="controller">The provider to retrieve html content with.</param>
     /// <param name="logger">The logger to use.</param>
     /// <exception cref="ArgumentNullException">Thrown when any argument is <c>null</c>.</exception>
-    public WebRecipeInteractionModule(IHtmlContentProvider provider, ILoggingService logger) : base(logger)
+    public WebRecipeInteractionModule(IWebRecipeController controller, ILoggingService logger) : base(logger)
     {
-        provider.IsNotNull(nameof(provider));
-
-        this.provider = provider;
+        this.controller = controller;
     }
 
     [SlashCommand("webrecipe-parse", "Parses a web recipe.")]
-    public Task ParseWebRecipe([Summary("WebRecipe", "The website of the recipe to parse")] string webRecipe)
+    public Task ParseWebRecipe([Summary("WebRecipe", "The website of the recipe to parse")] string webRecipeUrl, string title = "Alternative title")
     {
         return ExecuteControllerAction(async () =>
         {
-            string content = await provider.GetHtmlContent(webRecipe);
-            ParsedWebRecipeDataWrapper parsedData = GetParsedWebRecipe(content);
-
-            await RespondAsync(embed:GetEmbed(parsedData, webRecipe));
+            ControllerResult<Embed> result = await controller.ParseRecipe(webRecipeUrl, Context.User, title);
+            await RespondAsync(embed: result.Result);
         });
-    }
-
-    private static Embed GetEmbed(ParsedWebRecipeDataWrapper data, string url)
-    {
-        var builder = new EmbedBuilder();
-        builder.WithUrl(url);
-        builder.WithAuthor(data.WebRecipeData.SiteName);
-        builder.WithTitle(data.WebRecipeData.Title);
-        builder.WithDescription(data.WebRecipeData.Description);
-        builder.WithImageUrl(data.WebRecipeData.ImageUrl);
-        builder.WithTimestamp(data.RetrievalDate);
-        
-        return builder.Build();
-    }
-
-    private static ParsedWebRecipeDataWrapper GetParsedWebRecipe(string content)
-    {
-        ParsedWebRecipeData data =  ParseHtmlWebRecipe(content);
-
-        // Also hold the following the data:
-        // - Author (user)
-        // - Tags
-        // - Category (for color later)
-        // - RecipeField (notes)
-
-        return new ParsedWebRecipeDataWrapper(data);
-    }
-
-    private static ParsedWebRecipeData ParseHtmlWebRecipe(string content)
-    {
-        var doc = new HtmlDocument();
-        doc.LoadHtml(content);
-
-        XPathNavigator? navigator = doc.CreateNavigator();
-        XPathNavigator? title = navigator!.SelectSingleNode("//meta[@property='og:title']/@content");
-        XPathNavigator? siteName = navigator!.SelectSingleNode("//meta[@property='og:site_name']/@content");
-        XPathNavigator? description = navigator!.SelectSingleNode("//meta[@property='og:description']/@content");
-        XPathNavigator? imageUrl = navigator!.SelectSingleNode("//meta[@property='og:image']/@content");
-
-        // Use user title in case title could not be found.
-        var parsedWebRecipeData = new ParsedWebRecipeData(title?.Value ?? "No title",
-                                                          description?.Value ?? "No description available", 
-                                                          siteName?.Value ?? "Use calling author",
-                                                          imageUrl?.Value);
-
-        return parsedWebRecipeData;
-    }
-
-    private class ParsedWebRecipeDataWrapper
-    {
-        public ParsedWebRecipeDataWrapper(ParsedWebRecipeData webRecipeData)
-        {
-            webRecipeData.IsNotNull(nameof(webRecipeData));
-
-            // Use author that made the request to be retrieved --> user data
-
-            RetrievalDate = DateTime.Now;
-            WebRecipeData = webRecipeData;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="DateTime"/> the recipe was retrieved.
-        /// </summary>
-        public DateTime RetrievalDate { get; }
-
-        /// <summary>
-        /// Gets the web recipe data.
-        /// </summary>
-        public ParsedWebRecipeData WebRecipeData { get; }
-    }
-
-    private class ParsedWebRecipeData
-    {
-        public ParsedWebRecipeData(string title, string description, string? siteName, string? imageUrl)
-        {
-            title.IsNotNullOrWhiteSpaces(nameof(title));
-            description.IsNotNullOrWhiteSpaces(nameof(description));
-
-            Title = title;
-            Description = description;
-
-            SiteName = siteName;
-            ImageUrl = imageUrl;
-        }
-
-        /// <summary>
-        /// Gets the title.
-        /// </summary>
-        public string Title { get; }
-        
-        /// <summary>
-        /// Gets the description.
-        /// </summary>
-        public string Description { get; }
-
-        /// <summary>
-        /// Gets the short name of the website.
-        /// </summary>
-        public string? SiteName { get; }
-
-        /// <summary>
-        /// Gets the image url.
-        /// </summary>
-        public string? ImageUrl { get; }
     }
 }

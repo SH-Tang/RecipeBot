@@ -92,6 +92,7 @@ public class RecipeBotApplicationServiceProvider
                 .AddTransient<IUserDataProvider, UserDataProvider>()
                 .AddTransient<IDiscordBotInformationController, DiscordBotInformationController>()
                 .AddScoped<IRecipeController, RecipeController>()
+                .AddTransient<IWebRecipeController, WebRecipeController>()
                 .AddScoped<IRecipeEntriesController, RecipeEntriesController>()
                 .AddScoped<IRecipeTagEntriesController, RecipeTagEntriesController>()
                 .AddScoped<IAuthorController, AuthorController>()
