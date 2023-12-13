@@ -22,6 +22,9 @@ using Discord;
 using Discord.Common.Providers;
 using Discord.Common.Utils;
 using RecipeBot.Discord.Controllers;
+using RecipeBot.Discord.Data;
+using RecipeBot.Discord.Views;
+using RecipeBot.Domain.Data;
 using RecipeBot.Services;
 
 namespace RecipeBot.Controllers;
@@ -33,23 +36,34 @@ public class WebRecipeController : IWebRecipeController
 {
     private readonly WebRecipeParsingService parsingService;
 
+    /// <summary>
+    /// Creates a new instance.
+    /// </summary>
+    /// <param name="provider">The <see cref="IHtmlContentProvider"/> to retrieve the web content with.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="provider"/> is <c>null</c>.</exception>
     public WebRecipeController(IHtmlContentProvider provider)
     {
+        provider.IsNotNull(nameof(provider));
+
         parsingService = new WebRecipeParsingService(provider);
     }
 
-    public async Task<ControllerResult<Embed>> ParseRecipe(string webRecipeUrl, IUser user, string alternativeTitle)
+    public async Task<ControllerResult<Embed>> ParseWebRecipeAsync(string webRecipeUrl, WebRecipeModal modal, IUser user, DiscordRecipeCategory category)
     {
-        // Wrap this together with the date time it was parsed.
+        // TODO: Wrap this together with the date time it was parsed.
         ParsedWebRecipe parsedData = await parsingService.GetParsedWebRecipe(webRecipeUrl);
 
-        Embed getEmbedData = GetEmbed(parsedData, webRecipeUrl, user, alternativeTitle);
+        Embed getEmbedData = GetEmbed(parsedData, webRecipeUrl, user, modal.AlternativeRecipeTitle!, category);
         return ControllerResult<Embed>.CreateControllerResultWithValidResult(getEmbedData);
     }
 
-    private static Embed GetEmbed(ParsedWebRecipe data, string url, IUser user, string alternativeTitle)
+    private static Embed GetEmbed(ParsedWebRecipe data, string url, IUser user, string alternativeTitle, DiscordRecipeCategory category)
     {
+        RecipeCategory convertedCategory = RecipeCategoryConverter.ConvertFrom(category);
+        Color embedColor = RecipeCategoryConverter.ConvertTo(convertedCategory);
+
         var builder = new EmbedBuilder();
+        builder.WithColor(embedColor);
         builder.WithUrl(url);
         builder.WithTitle(data.Title ?? alternativeTitle);
 
