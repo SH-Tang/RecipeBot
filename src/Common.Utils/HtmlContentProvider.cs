@@ -47,7 +47,7 @@ public class HtmlContentProvider : IHtmlContentProvider
         httpClient.DefaultRequestHeaders.Add("User-Agent", "Discord RecipeBot");
         
         // TODO: Handle exceptions from the GetAsync and make sure the response is valid before the content is read
-        HttpResponseMessage  response = await httpClient.GetAsync(url);
+        HttpResponseMessage response = await httpClient.GetAsync(url);
         
         return await response.Content.ReadAsStringAsync();
     }
