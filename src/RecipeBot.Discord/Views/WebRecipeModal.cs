@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-using Discord.Interactions;
 using Discord;
+using Discord.Interactions;
 
 namespace RecipeBot.Discord.Views;
 
@@ -31,7 +31,7 @@ public class WebRecipeModal : IModal
     /// Gets or sets the alternative title of the recipe.
     /// </summary>
     [InputLabel("Title")]
-    [ModalTextInput("title", maxLength: EmbedBuilder.MaxTitleLength, placeholder: "Alternative title for the web recipe in case the title cannot be parsed successfully")]
+    [ModalTextInput("title", maxLength: EmbedBuilder.MaxTitleLength, placeholder: "Placeholder title")]
     public string? AlternativeRecipeTitle { get; set; }
 
     /// <summary>
